@@ -20,20 +20,62 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'abastecimiento';
             this.load({params:{start:0, limit:this.tam_pag}});
-
-            this.getBoton('sig_estado').setVisible(false);
-            this.getBoton('ant_estado').setVisible(false);
-            this.getBoton('new').setVisible(false);
-            this.getBoton('del').setVisible(true);
-            this.getBoton('edit').setVisible(true);
         },
-        tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
-        }
+        },
+        enableTabDetalle:function(){
+            if(this.TabPanelSouth.get(0)){
+                this.TabPanelSouth.get(0).enable();
+                this.TabPanelSouth.setActiveTab(0);
+            }
+        },
+        disableTabDetalle:function(){
+            if(this.TabPanelSouth.get(0)){
+                //this.TabPanelSouth.get(0).disable();
+                this.TabPanelSouth.setActiveTab(0);
+                //this.TabPanelSouth.bdel.getVisible(false);
+            }
+        },
+        preparaMenu:function(n){
+            var data = this.getSelectedData();
+            var tb =this.tbar;
+            Phx.vista.AbastecimientoSolicitud.superclass.preparaMenu.call(this,n);
+
+            if(data['estado'] ==  'cotizacion'){
+                this.getBoton('sig_estado').enable();
+                this. enableTabDetalle();
+
+
+            }else if(data['estado'] !=  'finalizado'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').enable();
+                this.disableTabDetalle();
+            }
+            else {
+                this.getBoton('sig_estado').disable();
+                this.getBoton('ant_estado').disable();
+                this.disableTabDetalle();
+            }
+            return tb;
+        },
+        liberaMenu:function(){
+            var tb = Phx.vista.AbastecimientoSolicitud.superclass.liberaMenu.call(this);
+            if(tb){
+
+                this.getBoton('sig_estado').disable();
+                this.getBoton('sig_estado').disable();
+                this.getBoton('edit').setVisible(true);
+                // this.getBoton('del').disable();
+            }
+            return tb;
+        },
+        bnew: false
+
+
 
 
     }
