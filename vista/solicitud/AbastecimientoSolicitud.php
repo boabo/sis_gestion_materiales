@@ -24,8 +24,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('sig_estado').setVisible(false);
             this.getBoton('ant_estado').setVisible(false);
             this.getBoton('new').setVisible(false);
-            this.getBoton('del').setVisible(false);
-            this.getBoton('edit').setVisible(false);
+            this.getBoton('del').setVisible(true);
+            this.getBoton('edit').setVisible(true);
         },
         tam_pag:50,
         actualizarSegunTab: function(name, indice){

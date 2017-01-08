@@ -51,7 +51,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this. enableTabDetalle();
 
 
-            }else if(data['estado'] !=  'revision'){
+            }else if(data['estado'] !=  'cotizacion'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 this.disableTabDetalle();
@@ -69,11 +69,13 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
+                this.getBoton('edit').setVisible(false);
+               // this.getBoton('del').disable();
             }
             return tb;
         },
 
-        bdel:true,
+        bdel:false,
         bsave:false,
         bnew:false
     }
