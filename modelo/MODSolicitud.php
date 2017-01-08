@@ -63,6 +63,7 @@ class MODSolicitud extends MODbase{
         $this->captura('tipo_reporte','varchar');
         $this->captura('mel','varchar');
         $this->captura('nro_no_rutina','varchar');
+        $this->captura('desc_proveedor','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

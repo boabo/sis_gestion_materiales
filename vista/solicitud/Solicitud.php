@@ -148,7 +148,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'ComboBox',
                 id_grupo:0,
                 grid:true,
-                form:true
+                form:true,
+                bottom_filter:true
 
             },
             {
@@ -194,7 +195,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 filters: {pfiltro:'fun.desc_funcionario1#fun.nombre_cargo',
                     type:'string'},
                 grid: true,
-                form: true
+                form: true,
+                bottom_filter:true
             },
             {
                 config:{
@@ -244,7 +246,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     pageSize: 100,
                     queryDelay: 1000,
                     anchor: '100%',
-                    gwidth: 150,
+                    gwidth: 230,
                     minChars: 2,
                     renderer : function(value, p, record) {
                         return String.format('{0}', record.data['matricula']);
@@ -254,7 +256,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo: 0,
                 filters: {pfiltro: 'ord.matricula',type: 'string'},
                 grid: true,
-                form: true
+                form: true,
+                bottom_filter:true
             },
             {
                 config:{
@@ -277,7 +280,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Observaciones',
                     allowBlank: false,
                     anchor: '100%',
-                    gwidth: 100,
+                    gwidth: 200,
                     maxLength:100
                 },
                 type:'TextArea',
@@ -298,6 +301,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
+                    gwidth: 200,
                     store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros'],
                     enableMultiSelect: true
                 },
@@ -438,50 +442,6 @@ header("content-type: text/javascript; charset=UTF-8");
              grid:true,
              form:true
              },*/
-            /*{
-             config: {
-             name: 'id_proveedor',
-             fieldLabel: 'id_proveedor',
-             allowBlank: true,
-             emptyText: 'Elija una opción...',
-             store: new Ext.data.JsonStore({
-             url: '../../sis_/control/Clase/Metodo',
-             id: 'id_',
-             root: 'datos',
-             sortInfo: {
-             field: 'nombre',
-             direction: 'ASC'
-             },
-             totalProperty: 'total',
-             fields: ['id_', 'nombre', 'codigo'],
-             remoteSort: true,
-             baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-             }),
-             valueField: 'id_',
-             displayField: 'nombre',
-             gdisplayField: 'desc_',
-             hiddenName: 'id_proveedor',
-             forceSelection: true,
-             typeAhead: false,
-             triggerAction: 'all',
-             lazyRender: true,
-             mode: 'remote',
-             pageSize: 15,
-             queryDelay: 1000,
-             anchor: '100%',
-             gwidth: 150,
-             minChars: 2,
-             renderer : function(value, p, record) {
-             return String.format('{0}', record.data['desc_']);
-             }
-             },
-             type: 'ComboBox',
-             id_grupo: 0,
-             filters: {pfiltro: 'movtip.nombre',type: 'string'},
-             grid: false,
-             form: false
-             },*/
-
             /* {
              config:{
              name: 'cotizacion',
@@ -501,7 +461,7 @@ header("content-type: text/javascript; charset=UTF-8");
              config:{
              name: 'nro_po',
              fieldLabel: 'Nro. PO',
-             allowBlank: false,
+             allowBlank: true,
              anchor: '100%',
              gwidth: 100,
              maxLength:50
@@ -513,10 +473,74 @@ header("content-type: text/javascript; charset=UTF-8");
              form:true
              },
             {
+                config: {
+                    name: 'id_proveedor',
+                    fieldLabel: 'Proveedor',
+                    anchor: '80%',
+                    tinit: false,
+                    allowBlank: true,
+                    origen: 'PROVEEDOR',
+                    gdisplayField: 'desc_proveedor',
+                    anchor: '100%',
+                    gwidth: 280,
+                    listWidth: '280',
+                    resizable: true
+                },
+                type: 'ComboRec',
+                filters:{pfiltro:'pv.desc_proveedor',type:'string'},
+                id_grupo:2,
+                bottom_filter: true,
+                grid: true,
+                form: true
+            },
+            /*{
+                config: {
+                    name: 'id_proveedor',
+                    fieldLabel: 'id_proveedor',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_parametros/control/Proveedor/listarProveedor',
+                        id: 'id_proveedor',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'nombre',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_proveedor', 'nombre', 'codigo'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+                    }),
+                    valueField: 'id_',
+                    displayField: 'nombre',
+                    gdisplayField: 'desc_',
+                    hiddenName: 'id_proveedor',
+                    forceSelection: true,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    anchor: '100%',
+                    gwidth: 150,
+                    minChars: 2,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['desc_']);
+                    }
+                },
+                type: 'ComboBox',
+                id_grupo: 0,
+                filters: {pfiltro: 'movtip.nombre',type: 'string'},
+                grid: false,
+                form: false
+            },*/
+             {
              config:{
              name: 'fecha_despacho_miami',
              fieldLabel: 'Fecha Despacho Miami',
-             allowBlank: false,
+             allowBlank: true,
              anchor: '100%',
              gwidth: 100,
              format: 'd/m/Y',
@@ -532,7 +556,7 @@ header("content-type: text/javascript; charset=UTF-8");
              config:{
              name: 'fecha_arribado_bolivia',
              fieldLabel: 'Fecha Arribo Bolivia',
-             allowBlank: false,
+             allowBlank: true,
              anchor: '100%',
              gwidth: 100,
              format: 'd/m/Y',
@@ -548,7 +572,7 @@ header("content-type: text/javascript; charset=UTF-8");
              config:{
              name: 'fecha_desaduanizacion',
              fieldLabel: 'Fecha Desaduanizacion',
-             allowBlank: false,
+             allowBlank: true,
              anchor: '100%',
              gwidth: 100,
              format: 'd/m/Y',
@@ -783,6 +807,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tipo_reporte', type: 'string'},
             {name:'mel', type: 'string'},
             {name:'nro_no_rutina', type: 'string'},
+            {name:'desc_proveedor', type: 'string'},
 
         ],
         sortInfo:{
@@ -793,7 +818,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bsave:false,
         btest: false,
         fwidth: '68%',
-        fheight : '65%',
+        fheight : '68%',
         tabsouth :[
             {
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',
@@ -924,7 +949,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             console.log(rec.data);
 
-            if(rec.data.estado=='cotizacion' && rec.data.nro_po=='' || rec.data.estado=='compra' && rec.data.fecha_despacho_miami == null || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
+            if(rec.data.estado=='cotizacion' && rec.data.nro_po=='' || rec.data.estado=='compra' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
                 this.onButtonEdit();
             } else {
                 var rec = this.sm.getSelected();

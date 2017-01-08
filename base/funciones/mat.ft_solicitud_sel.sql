@@ -85,13 +85,15 @@ BEGIN
                         ot.desc_orden as matricula,
                         sol.tipo_reporte,
                         sol.mel,
-                        sol.nro_no_rutina
+                        sol.nro_no_rutina,
+                        pro.desc_proveedor
                         from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
                         inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
-						where  ';
+						left join param.vproveedor pro on pro.id_proveedor =sol.id_proveedor
+                        where  ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;

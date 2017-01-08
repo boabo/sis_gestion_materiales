@@ -14,6 +14,7 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
         nombreVista: 'Consulta Requerimientos',
+        direction: 'DESC',
         constructor: function (config) {
             Phx.vista.AbastecimientoSolicitud.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
