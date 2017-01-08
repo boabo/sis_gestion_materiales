@@ -924,7 +924,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             console.log(rec.data);
 
-            if(rec.data.estado=='compra' && rec.data.nro_po=='' || rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null || rec.data.estado=='arribo' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='desaduanizado' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='almacen' && rec.data.fecha_en_almacen == null){
+            if(rec.data.estado=='cotizacion' && rec.data.nro_po=='' || rec.data.estado=='compra' && rec.data.fecha_despacho_miami == null || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
                 this.onButtonEdit();
             } else {
                 var rec = this.sm.getSelected();
