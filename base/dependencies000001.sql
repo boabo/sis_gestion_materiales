@@ -1,4 +1,4 @@
-/***********************************I-DEP-MAM-MAT-1-06/01/2014****************************************/
+/***********************************I-DEP-MAM-MAT-0-06/01/2017****************************************/
 ALTER TABLE mat.tsolicitud
  ADD CONSTRAINT testado_wf_fk FOREIGN KEY (id_estado_wf)
     REFERENCES wf.testado_wf(id_estado_wf)
@@ -34,18 +34,22 @@ ALTER TABLE mat.tsolicitud
     ON UPDATE NO ACTION
     NOT DEFERRABLE
 
-/***********************************F-DEP-MAM-MAT-1-06/01/2014****************************************/
+/***********************************F-DEP-MAM-MAT-0-06/01/2017****************************************/
 
-/***********************************I-DEP-MAM-MAT-1-06/01/2014****************************************/
+/***********************************I-DEP-MAM-MAT-1-06/01/2017****************************************/
 ALTER TABLE mat.tdetalle_sol
 ADD CONSTRAINT tsolicitud_sol_fk FOREIGN KEY (id_solicitud)
     REFERENCES mat.tsolicitud(id_solicitud)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE
-/***********************************F-DEP-MAM-MAT-1-06/01/2014****************************************/
+/***********************************F-DEP-MAM-MAT-1-06/01/2017****************************************/
 
-/***********************************I-DEP-MAM-MAT-1-06/01/2014****************************************/
+/***********************************I-DEP-MAM-MAT-0-07/01/2017****************************************/
+----------------------------------
+--COPY LINES TO dependencies.sql FILE
+---------------------------------
+
 select pxp.f_insert_testructura_gui ('MAT', 'SISTEMA');
 select pxp.f_insert_testructura_gui ('REMA', 'MAT');
 select pxp.f_delete_testructura_gui ('DET', 'MAT');
@@ -424,6 +428,10 @@ select pxp.f_insert_tprocedimiento_gui ('WF_DWF_ELI', 'ABS.4.1', 'no');
 select pxp.f_insert_tprocedimiento_gui ('WF_DWF_SEL', 'ABS.4.1', 'no');
 select pxp.f_insert_tprocedimiento_gui ('WF_CABMOM_IME', 'ABS.4.1', 'no');
 select pxp.f_insert_tprocedimiento_gui ('WF_DOCWFAR_MOD', 'ABS.5', 'no');
+select pxp.f_insert_tprocedimiento_gui ('WF_TIPCOLFOR_SEL', 'REMA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('WF_TIPCOLFOR_SEL', 'VBS', 'no');
+select pxp.f_insert_tprocedimiento_gui ('WF_TIPCOLFOR_SEL', 'CR', 'no');
+select pxp.f_insert_tprocedimiento_gui ('WF_TIPCOLFOR_SEL', 'ABS', 'no');
 select pxp.f_delete_tgui_rol ('REMA', 'GM - Solicitante');
 select pxp.f_delete_tgui_rol ('MAT', 'GM - Solicitante');
 select pxp.f_delete_tgui_rol ('SISTEMA', 'GM - Solicitante');
@@ -1092,4 +1100,5 @@ select pxp.f_insert_trol_procedimiento_gui ('GM - Visto Bueno Solicitud', 'MAT_D
 select pxp.f_insert_trol_procedimiento_gui ('GM - Visto Bueno Solicitud', 'MAT_DET_MOD', 'VBS.1');
 select pxp.f_insert_trol_procedimiento_gui ('GM - Visto Bueno Solicitud', 'MAT_DET_ELI', 'VBS.1');
 select pxp.f_insert_trol_procedimiento_gui ('GM - Visto Bueno Solicitud', 'MAT_DET_SEL', 'VBS.1');
-/***********************************F-DEP-MAM-MAT-1-06/01/2014****************************************/
+
+/***********************************F-DEP-MAM-MAT-0-07/01/2017****************************************/
