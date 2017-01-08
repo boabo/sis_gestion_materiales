@@ -32,7 +32,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.estado  in (''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }
        else  if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
-            $this->objParam->addFiltro("sol.estado  in (''vobo_area'')");
+            $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'',''revision'')");
         }
 
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){

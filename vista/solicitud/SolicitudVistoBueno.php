@@ -22,16 +22,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
         },
-        gruposBarraTareas:[
-            {name:'vobo_area',title:'<H1 "center"><i class="fa fa-eye"></i>Visto Bueno</h1>',grupo:0,height:0, width: 100},
-            {name:'revision',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Proceso</h1>',grupo:0,height:0},
-            {name:'finalizado',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Finalizado</h1>',grupo:0,height:0}
-        ],
-        beditGroups: [0],
-        bdelGroups:  [0],
-        bactGroups:  [0,1,2],
-        bexcelGroups: [0,1,2],
-        tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
@@ -61,7 +51,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this. enableTabDetalle();
 
 
-            }else if(data['estado'] !=  'finalizado'){
+            }else if(data['estado'] !=  'revision'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 this.disableTabDetalle();
