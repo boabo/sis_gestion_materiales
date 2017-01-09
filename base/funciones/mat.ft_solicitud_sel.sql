@@ -86,18 +86,61 @@ BEGIN
                         sol.tipo_reporte,
                         sol.mel,
                         sol.nro_no_rutina,
-                        pro.desc_proveedor
+                        pro.desc_proveedor,
+                     	pxp.list (de.nro_parte) as nro_partes
                         from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
                         inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
 						left join param.vproveedor pro on pro.id_proveedor =sol.id_proveedor
+                        inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                         where  ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			v_consulta:=v_consulta||'GROUP BY sol.id_solicitud,
+						sol.id_funcionario_sol,
+						sol.id_proveedor,
+						sol.id_proceso_wf,
+						sol.id_estado_wf,
+						sol.nro_po,
+						sol.tipo_solicitud,
+						sol.fecha_entrega_miami,
+						sol.origen_pedido,
+						sol.fecha_requerida,
+						sol.observacion_nota,
+						sol.fecha_solicitud,
+						sol.estado_reg,
+						sol.observaciones_sol,
+						sol.fecha_tentativa_llegada,
+						sol.fecha_despacho_miami,
+						sol.justificacion,
+						sol.fecha_arribado_bolivia,
+						sol.fecha_desaduanizacion,
+						sol.fecha_entrega_almacen,
+						sol.cotizacion,
+						sol.tipo_falla,
+						sol.nro_tramite,
+						sol.id_matricula,
+						sol.nro_solicitud,
+						sol.motivo_solicitud,
+						sol.fecha_en_almacen,
+						sol.estado,
+						sol.id_usuario_reg,
+						sol.usuario_ai,
+						sol.fecha_reg,
+						sol.id_usuario_ai,
+						sol.fecha_mod,
+						sol.id_usuario_mod,
+						usu1.cuenta,
+						usu2.cuenta,
+                        f.desc_funcionario1,
+                        ot.desc_orden,
+                        sol.tipo_reporte,
+                        sol.mel,
+                        sol.nro_no_rutina,
+                        pro.desc_proveedor order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
