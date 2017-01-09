@@ -154,3 +154,76 @@ FROM mat.tsolicitud sol
 GROUP BY sol.id_solicitud, sol.fecha_solicitud, ot.motivo_orden, ot.desc_orden,
     sol.nro_tramite, de.nro_parte, de.referencia, de.descripcion, de.cantidad_sol, de.unidad_medida, sol.justificacion, sol.tipo_solicitud, sol.fecha_requerida, sol.motivo_solicitud, sol.observaciones_sol, f.desc_funcionario1, sol.tipo_falla, sol.tipo_reporte, sol.mel, ti.codigo;
 /***********************************F-SCP-MAM-MAT-3-08/01/2017****************************************/
+
+/***********************************I-SCP-MAM-MAT-0-09/01/2017****************************************/
+CREATE OR REPLACE VIEW mat.vsolicitud (
+    id_solicitud,
+    fecha_solicitud,
+    motivo_orden,
+    matricula,
+    nro_tramite,
+    nro_parte,
+    referencia,
+    descripcion,
+    cantidad_sol,
+    unidad_medida,
+    justificacion,
+    tipo_solicitud,
+    fecha_requerida,
+    motivo_solicitud,
+    observaciones_sol,
+    desc_funcionario1,
+    tipo_falla,
+    tipo_reporte,
+    mel,
+    estado,
+    detalle,
+    origen_pedido,
+    id_estado_wf,
+    id_proceso_wf)
+AS
+SELECT sol.id_solicitud,
+    to_char(sol.fecha_solicitud::timestamp with time zone, 'DD/MM/YYYY'::text)
+        AS fecha_solicitud,
+    ot.motivo_orden,
+    "left"(ot.desc_orden::text, 20) AS matricula,
+    sol.nro_tramite,
+    de.nro_parte,
+    de.referencia,
+    de.descripcion,
+    de.cantidad_sol,
+    de.unidad_medida,
+    sol.justificacion,
+    sol.tipo_solicitud,
+    to_char(sol.fecha_requerida::timestamp with time zone, 'DD/MM/YYYY'::text)
+        AS fecha_requerida,
+    sol.motivo_solicitud,
+    sol.observaciones_sol,
+    initcap(f.desc_funcionario1) AS desc_funcionario1,
+    sol.tipo_falla,
+    sol.tipo_reporte,
+    sol.mel,
+    ti.codigo AS estado,
+    ('<table border="1"><TR>
+   								<TH>Nro. Parte</TH>
+   								<TH>Referencia</TH>
+   								<TH>Descripción</TH>
+   								<TH>Cantidad</TH>
+   								<TH>Unidad de
+       Medida</TH>'::text || pxp.html_rows((((((((((('<td>'::text || COALESCE(de.nro_parte::text, '-'::text)) || '</td>
+       							<td>'::text) || COALESCE(de.referencia::text, '-'::text)) || '</td>
+           						<td>'::text) || COALESCE(de.descripcion::text, '-'::text)) || '</td>
+             					<td>'::text) || COALESCE(de.cantidad_sol::text, '-'::text)) || '</td>
+             					<td>'::text) || COALESCE(de.unidad_medida::text, '-'::text)) || '</td>'::character varying::text)::character varying)::text) || '</table>'::text AS detalle,
+    sol.origen_pedido,
+    sol.id_estado_wf,
+    sol.id_proceso_wf
+FROM mat.tsolicitud sol
+   JOIN mat.tdetalle_sol de ON de.id_solicitud = sol.id_solicitud
+   LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = sol.id_matricula
+   JOIN orga.vfuncionario f ON f.id_funcionario = sol.id_funcionario_sol
+   JOIN wf.testado_wf wof ON wof.id_estado_wf = sol.id_estado_wf
+   JOIN wf.ttipo_estado ti ON ti.id_tipo_estado = wof.id_tipo_estado
+GROUP BY sol.id_solicitud, sol.fecha_solicitud, ot.motivo_orden, ot.desc_orden,
+    sol.nro_tramite, de.nro_parte, de.referencia, de.descripcion, de.cantidad_sol, de.unidad_medida, sol.justificacion, sol.tipo_solicitud, sol.fecha_requerida, sol.motivo_solicitud, sol.observaciones_sol, f.desc_funcionario1, sol.tipo_falla, sol.tipo_reporte, sol.mel, ti.codigo;
+/***********************************F-SCP-MAM-MAT-0-09/01/2017****************************************/

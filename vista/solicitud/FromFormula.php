@@ -30,6 +30,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.onNew();
             this.iniciarEventos();
             //console(setValue);
+
         },
         buildComponentesDetalle: function () {
 
@@ -40,8 +41,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         msgTarget: 'title',
                         fieldLabel: 'Nro. Partes',
                         allowBlank: false,
-                        anchor: '80%',
-                        maxLength:10
+                        anchor: '90%',
+                        maxLength:50
 
                     }),
                     'nro_parte_alterno': new Ext.form.TextField({
@@ -49,16 +50,16 @@ header("content-type: text/javascript; charset=UTF-8");
                         msgTarget: 'title',
                         fieldLabel: 'Nro. Parte alterno',
                         allowBlank: false,
-                        anchor: '80%',
-                        maxLength:10
+                        anchor: '90%',
+                        maxLength:50
                     }),
                     'referencia': new Ext.form.TextField({
                         name: 'referencia',
                         msgTarget: 'title',
                         fieldLabel: 'Referencia',
                         allowBlank: false,
-                        anchor: '80%',
-                        maxLength:10
+                        anchor: '90%',
+                        maxLength:50
                     }),
 
                     'descripcion': new Ext.form.TextArea({
@@ -86,7 +87,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fieldLabel: 'Unidad Medida',
                         allowBlank: false,
                         anchor: '80%',
-                        maxLength:5000
+                        maxLength:50
                     })
                     /*'precio': new Ext.form.NumberField({
                      name: 'precio',
@@ -114,23 +115,19 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         iniciarEventos : function () {
-
-            this.Cmp.id_funcionario_sol = this.getComponente('id_funcionario');
-            this.Cmp.fecha_solicitud=this.getComponente('fecha_solicitud');
-
+            //this.CmpFuncionario = this.getComponente('id_funcionario');
+           // this.Cmp.fecha_solicitud =this.getComponente('fecha_solicitud');
             this.Cmp.fecha_solicitud.on('change',function(f){
                 Phx.CP.loadingShow();
-
                 this.obtenerGestion(this.Cmp.fecha_solicitud);
                 this.Cmp.id_funcionario_sol.reset();
                 this.Cmp.id_funcionario_sol.enable();
                 this.Cmp.id_funcionario_sol.store.baseParams.fecha = this.Cmp.fecha_solicitud.getValue().dateFormat(this.Cmp.fecha_solicitud.format);
-
                 this.Cmp.id_funcionario_sol.store.load({params:{start:0,limit:this.tam_pag},
                     callback : function (r) {
                         Phx.CP.loadingHide();
                         if (r.length == 1 ) {
-                            this.Cmp.id_funcionario_sol.setValue(r[0].data.id_funcionario_sol);
+                            this.Cmp.id_funcionario_sol.setValue(r[0].data.id_funcionario);
                             this.Cmp.id_funcionario_sol.fireEvent('select',  this.Cmp.id_funcionario_sol, r[0]);
                         }
 
@@ -139,6 +136,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             },this);
+
+            //console.log(this.Cmp.id_funcionario_sol.setValue(data.id_funcionario_sol));
             this.mostrarComponente(this.Cmp.id_funcionario_sol);
             this.Cmp.id_funcionario_sol.reset();
         },
@@ -201,7 +200,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.fecha_solicitud.enable();
             this.Cmp.id_funcionario_sol.disable();
             this.Cmp.fecha_solicitud.setValue(new Date());
-            this.Cmp.fecha_solicitud.fireEvent('change')
+            this.Cmp.fecha_solicitud.fireEvent('change');
+            //this.Cmp.id_funcionario_sol.setValue(this.Cmp.desc_funcionario1);
         },
 
         onInitAdd: function(){
@@ -307,28 +307,28 @@ header("content-type: text/javascript; charset=UTF-8");
                         header: 'Nro. Parte',
                         dataIndex: 'nro_parte',
                         align: 'center',
-                        width: 120,
+                        width: 165,
                         editor: this.detCmp.nro_parte
                     },
                     {
                         header: 'Nro. Parte Alterno',
                         dataIndex: 'nro_parte_alterno',
                         align: 'center',
-                        width: 120,
+                        width: 165,
                         editor: this.detCmp.nro_parte_alterno
                     },
                     {
                         header: 'Referencia',
                         dataIndex: 'referencia',
                         align: 'center',
-                        width: 150,
+                        width: 165,
                         editor: this.detCmp.referencia
                     },
                     {
                         header: 'Descripcion',
                         dataIndex: 'descripcion',
                         align: 'center',
-                        width: 200,
+                        width: 180,
                         editor: this.detCmp.descripcion
                     },
                     {
@@ -502,7 +502,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     triggerAction: 'all',
                     lazyRender:true,
                     mode: 'local',
-                    anchor: '100%',
+                    anchor: '105%',
                     store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables']
 
                 },
@@ -513,6 +513,51 @@ header("content-type: text/javascript; charset=UTF-8");
 
             },
             {
+                config: {
+                    name: 'id_funcionario_sol',
+                    fieldLabel: 'Funcionario Solicitante',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
+                        id: 'id_funcionario_sol',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'desc_funcionario1',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_funcionario','desc_funcionario1','email_empresa','nombre_cargo','lugar_nombre','oficina_nombre'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 'FUNCAR.desc_funcionario1#FUNCAR.nombre_cargo'}
+                    }),
+                    valueField: 'id_funcionario',
+                    displayField: 'desc_funcionario1',
+                    gdisplayField: 'desc_funcionario1',
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: blue">{nombre_cargo}<br>{email_empresa}</p><p style="color:blue">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
+                    hiddenName: 'id_funcionario_sol',
+                    forceSelection: true,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    anchor: '105%',
+                    gwidth: 230,
+                    minChars: 2,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['desc_funcionario1']);
+                    }
+                },
+                type: 'ComboBox',
+                id_grupo: 0,
+                filters: {pfiltro:' f.desc_funcionario1', type:'string'},
+                grid: true,
+                form: true,
+                bottom_filter:true
+            },
+            /*{
                 config:{
                     name:'id_funcionario_sol',
                     hiddenName: 'id_funcionario',
@@ -520,15 +565,13 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel:'Funcionario',
                     allowBlank:false,
                     gwidth:200,
-                    anchor: '100%',
                     valueField: 'id_funcionario',
                     gdisplayField: 'desc_funcionario',
                     baseParams: { es_combo_solicitud : 'si' } },
                 type: 'ComboRec',//ComboRec
                 id_grupo: 0,
                 form:true
-            },
-
+            },*/
             {
                 config:{
                     name: 'fecha_solicitud',
@@ -575,7 +618,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 100,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '105%',
                     gwidth: 150,
                     minChars: 2,
                     renderer : function(value, p, record) {
@@ -593,7 +636,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'motivo_solicitud',
                     fieldLabel: 'Motivo Solicitud',
                     allowBlank: false,
-                    anchor: '100%',
+                    anchor: '105%',
                     gwidth: 100,
                     maxLength:100
                 },
@@ -608,7 +651,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'observaciones_sol',
                     fieldLabel: 'Observaciones',
                     allowBlank: false,
-                    anchor: '100%',
+                    anchor: '105%',
                     gwidth: 100,
                     maxLength:100
                 },

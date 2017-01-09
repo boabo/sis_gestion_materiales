@@ -192,8 +192,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'ComboBox',
                 id_grupo: 0,
-                filters: {pfiltro:'fun.desc_funcionario1#fun.nombre_cargo',
-                    type:'string'},
+                filters: {pfiltro:' f.desc_funcionario1', type:'string'},
                 grid: true,
                 form: true,
                 bottom_filter:true
@@ -254,7 +253,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'ComboBox',
                 id_grupo: 0,
-                filters: {pfiltro: 'ord.matricula',type: 'string'},
+                filters: {pfiltro: 'ot.desc_orden',type: 'string'},
                 grid: true,
                 form: true,
                 bottom_filter:true
@@ -487,9 +486,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     resizable: true
                 },
                 type: 'ComboRec',
-                filters:{pfiltro:'pv.desc_proveedor',type:'string'},
+                filters:{pfiltro:'pro.desc_proveedor',type:'string'},
                 id_grupo:2,
-                bottom_filter: true,
                 grid: true,
                 form: true
             },
@@ -599,6 +597,23 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo:2,
                 grid:true,
                 form:true
+            },
+            {
+                config:{
+                    name: 'nro_partes',
+                    fieldLabel: 'Nro. de Parte',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 200,
+                    maxLength:100
+
+                },
+                type:'TextField',
+                filters:{pfiltro:'nro_partes',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:false
+                //bottom_filter:true
             },
            /* {
                 config:{
@@ -808,6 +823,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'mel', type: 'string'},
             {name:'nro_no_rutina', type: 'string'},
             {name:'desc_proveedor', type: 'string'},
+            {name:'nro_partes', type: 'string'},
 
         ],
         sortInfo:{
