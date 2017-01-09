@@ -105,7 +105,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             }else if(data['estado'] ==  'vobo_area'){
                 this.getBoton('sig_estado').disable();
-                this.getBoton('ant_estado').disable();
+                this.getBoton('ant_estado').enable();
               
 
                 this.disableTabDetalle();
@@ -113,7 +113,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             else {
                 this.getBoton('sig_estado').disable();
-                this.getBoton('ant_estado').disable();
+                this.getBoton('ant_estado').enable();
                 this.disableTabDetalle();
 
             }
