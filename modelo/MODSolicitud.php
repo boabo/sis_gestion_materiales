@@ -425,5 +425,54 @@ class MODSolicitud extends MODbase{
         return $this->respuesta;
     }
 
+    function listarFuncionarios(){
+
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_FUN_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->captura('id_funcionario','int4');
+        $this->captura('nombre_completo1','text');
+        $this->captura('nombre_cargo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function listaGetDatos(){
+
+        $this->procedimiento ='mat.ft_solicitud_ime';
+        $this->transaccion='MAT_FUN_GET';
+        $this->tipo_procedimiento='IME';
+
+        $this->setParametro('p_id_usuario','p_id_usuario','int4');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listaNroOrigen(){
+
+        $this->procedimiento ='mat.ft_solicitud_ime';
+        $this->transaccion='MAT_GET_ORG';
+        $this->tipo_procedimiento='IME';
+        $this->captura('nro_no_rutina','varchar');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 }
 ?>

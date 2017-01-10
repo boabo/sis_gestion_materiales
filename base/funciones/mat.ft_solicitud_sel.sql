@@ -28,6 +28,8 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
 
+    v_campos 			record;
+
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_solicitud_sel';
@@ -198,6 +200,36 @@ BEGIN
            return v_consulta;
 
 		end;
+    /*********************************
+ 	#TRANSACCION:  'MAT_FUN_SEL'
+ 	#DESCRIPCION:	Lista de funcionarios para registro
+ 	#AUTOR:		MMV
+ 	#FECHA:		10-01-2017 13:13:01
+	***********************************/
+
+	elsif(p_transaccion='MAT_FUN_SEL')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select  	f.id_funcionario,
+        							p.nombre_completo1,
+									uo.nombre_cargo
+ 									from orga.tfuncionario f
+                                    inner join segu.vpersona p on p.id_persona= f.id_persona and f.id_funcionario IN(308,307,309,1483,304,306,1022,766,1482)
+                                    inner JOIN orga.tuo_funcionario uof on uof.id_funcionario = f.id_funcionario
+                                    inner JOIN orga.tuo uo on  uo.id_uo = uof.id_uo and uo.estado_reg = ''activo''
+                                    inner  JOIN orga.tcargo car on car.id_cargo = uof.id_cargo
+                                    where ';
+
+            --Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--Devuelve la respuesta
+           return v_consulta;
+
+		end;
+
+
      /*********************************
  	#TRANSACCION:  'MAT_REING_SEL'
  	#DESCRIPCION:	Reporte requerimiento de materiales ingeniaeria
@@ -240,17 +272,8 @@ BEGIN
 
 		end;
 
-    /*********************************
- 	#TRANSACCION:  'MAT_OPT_SEL'
- 	#DESCRIPCION:	Optener el funcionario
- 	#AUTOR:		admin
- 	#FECHA:		23-12-2016 13:12:58
-	***********************************/
 
-
-
-
-	else
+else
 
 		raise exception 'Transaccion inexistente';
 

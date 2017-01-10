@@ -85,6 +85,27 @@ class ACTSolicitud extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+    function listarFuncionarioRegistro(){
+        $this->objParam->defecto('ordenacion','id_funcionario');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('id_funcionario') != '') {
+            $this->objParam->addFiltro(" f.id_funcionario = " . $this->objParam->getParametro('id_orden_trabajo'));
+        }
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarFuncionarios($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function getDatos(){
+        $this->objParam->defecto('ordenacion','id_funcionario');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listaGetDatos($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
     function siguienteEstadoSolicitud(){
         $this->objFunc=$this->create('MODSolicitud');
 
@@ -176,6 +197,13 @@ class ACTSolicitud extends ACTbase{
             'Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function compararNroOrigen(){
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listaNroOrigen($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
 }

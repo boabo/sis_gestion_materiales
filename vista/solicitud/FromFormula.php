@@ -30,6 +30,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.onNew();
             this.iniciarEventos();
             //console(setValue);
+            //this.Cmp.origen_pedido.store.loadData(this.arrayStore['Gerencia de Operaciones'].concat(this.arrayStore['Gerencia de Mantenimiento']));
 
         },
         buildComponentesDetalle: function () {
@@ -49,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         name: 'nro_parte_alterno',
                         msgTarget: 'title',
                         fieldLabel: 'Nro. Parte alterno',
-                        allowBlank: false,
+                        allowBlank: true,
                         anchor: '90%',
                         maxLength:50
                     }),
@@ -113,33 +114,55 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 }
         },
+        arrayStore :{
+            'Gerencia de Operaciones':[
+                ['Gerencia de Operaciones'],
+
+            ],
+            'Gerencia de Mantenimiento':[
+                ['Gerencia de Mantenimiento'],
+            ]
+        },
 
         iniciarEventos : function () {
-            //this.CmpFuncionario = this.getComponente('id_funcionario');
-           // this.Cmp.fecha_solicitud =this.getComponente('fecha_solicitud');
+
             this.Cmp.fecha_solicitud.on('change',function(f){
                 Phx.CP.loadingShow();
                 this.obtenerGestion(this.Cmp.fecha_solicitud);
                 this.Cmp.id_funcionario_sol.reset();
                 this.Cmp.id_funcionario_sol.enable();
                 this.Cmp.id_funcionario_sol.store.baseParams.fecha = this.Cmp.fecha_solicitud.getValue().dateFormat(this.Cmp.fecha_solicitud.format);
-                this.Cmp.id_funcionario_sol.store.load({params:{start:0,limit:this.tam_pag},
-                    callback : function (r) {
-                        Phx.CP.loadingHide();
-                        if (r.length == 1 ) {
-                            this.Cmp.id_funcionario_sol.setValue(r[0].data.id_funcionario);
-                            this.Cmp.id_funcionario_sol.fireEvent('select',  this.Cmp.id_funcionario_sol, r[0]);
-                        }
 
-                    }, scope : this
-                });
+            },this);
+
+            this.mostrarComponente(this.Cmp.id_funcionario_sol);
+            this.Cmp.id_funcionario_sol.reset();
+
+
+            this.Cmp.origen_pedido.on('select',function(cmp,rec){
+
+                //identificamos si es un bien o un servicio
+                if(this.isInArray(rec.json, this.arrayStore['Gerencia de Operaciones'])){
+                    this.Cmp.origen_pedido.setValue('Gerencia de Operaciones');
+                }
+                if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
+                     this.ocultarComponente(this.Cmp.mel);
+                     this.ocultarComponente(this.Cmp.tipo_reporte);
+                     this.ocultarComponente(this.Cmp.tipo_falla);
+                 }
+
+                 if(this.isInArray(rec.json, this.arrayStore['Gerencia de Mantenimiento'])){
+                    this.Cmp.origen_pedido.setValue('Gerencia de Mantenimiento');
+                }
+                if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
+                    this.mostrarComponente(this.Cmp.mel);
+                    this.mostrarComponente(this.Cmp.tipo_reporte);
+                    this.mostrarComponente(this.Cmp.tipo_falla);
+                }
 
 
             },this);
 
-            //console.log(this.Cmp.id_funcionario_sol.setValue(data.id_funcionario_sol));
-            this.mostrarComponente(this.Cmp.id_funcionario_sol);
-            this.Cmp.id_funcionario_sol.reset();
         },
         evaluaRequistos: function(){
             //valida que todos los requistosprevios esten completos y habilita la adicion en el grid
@@ -201,6 +224,22 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.id_funcionario_sol.disable();
             this.Cmp.fecha_solicitud.setValue(new Date());
             this.Cmp.fecha_solicitud.fireEvent('change');
+
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/getDatos',
+                params:{id_usuario: 0},
+                success:function(resp){
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    console.log('funcionarios',reg);
+                    this.Cmp.id_funcionario_sol.setValue(reg.ROOT.datos.id_funcionario);
+                    this.Cmp.id_funcionario_sol.setRawValue(reg.ROOT.datos.nombre_completo1);
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+
+
             //this.Cmp.id_funcionario_sol.setValue(this.Cmp.desc_funcionario1);
         },
 
@@ -519,22 +558,22 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: true,
                     emptyText: 'Elija una opción...',
                     store: new Ext.data.JsonStore({
-                        url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
-                        id: 'id_funcionario_sol',
+                        url: '../../sis_gestion_materiales/control/Solicitud/listarFuncionarioRegistro',
+                        id: 'id_funcionario',
                         root: 'datos',
                         sortInfo: {
-                            field: 'desc_funcionario1',
+                            field: 'nombre_completo1',
                             direction: 'ASC'
                         },
                         totalProperty: 'total',
-                        fields: ['id_funcionario','desc_funcionario1','email_empresa','nombre_cargo','lugar_nombre','oficina_nombre'],
+                        fields: ['id_funcionario','nombre_completo1','nombre_cargo'],
                         remoteSort: true,
-                        baseParams: {par_filtro: 'FUNCAR.desc_funcionario1#FUNCAR.nombre_cargo'}
+                        baseParams: {par_filtro: 'p.nombre_completo1#uo.nombre_cargo'}
                     }),
                     valueField: 'id_funcionario',
-                    displayField: 'desc_funcionario1',
-                    gdisplayField: 'desc_funcionario1',
-                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: blue">{nombre_cargo}<br>{email_empresa}</p><p style="color:blue">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
+                    displayField: 'nombre_completo1',
+                    gdisplayField: 'nombre_completo1',
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p style="color: blue">{nombre_cargo}</p></div></tpl>',
                     hiddenName: 'id_funcionario_sol',
                     forceSelection: true,
                     typeAhead: false,
@@ -909,7 +948,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
         ],
         title: 'Frm Materiales',
-
         onSubmit: function(o) {
             //  validar formularios
             var arra = [], i, me = this;
@@ -931,7 +969,33 @@ header("content-type: text/javascript; charset=UTF-8");
             else {
                 alert('no tiene ningun elemento en la formula')
             }
+
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/compararNroOrigen',
+                params:{id_usuario: 0},
+                success:function(resp){
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    console.log('numero de no rutina',reg.nro_no_rutina);
+                    var x;
+                    /*for (x in reg){
+
+                         reg[x];
+                        console.log('Llega',this.Cmp.nro_no_rutina);
+
+                    }*/
+
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+
+
         }
+
+
+
+
     })
 </script>
 

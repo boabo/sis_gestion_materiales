@@ -66,6 +66,12 @@ DECLARE
      v_codigo				varchar;
      v_count_sol		INTEGER;
      anho		INTEGER;
+     v_campos record;
+
+     v_nro_no_rutina record;
+     v_numero_doc varchar[] ;
+
+     v_cont integer =0;
 
 
 
@@ -635,7 +641,53 @@ END IF;
           -- Devuelve la respuesta
           return v_resp;
         end;
+	/*********************************
+ 	#TRANSACCION:  'MAT_FUN_GET'
+ 	#DESCRIPCION:	Lista de funcionarios para registro
+ 	#AUTOR:		MMV
+ 	#FECHA:		10-01-2017 13:13:01
+	***********************************/
 
+	elsif(p_transaccion='MAT_FUN_GET')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			SELECT tf.id_funcionario, vfcl.desc_funcionario1, vfcl.nombre_cargo
+            INTO v_campos
+			FROM segu.tusuario tu
+            INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
+            INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
+            WHERE tu.id_usuario = p_id_usuario;
+
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+			v_resp = pxp.f_agrega_clave(v_resp,'id_funcionario',v_campos.id_funcionario::varchar);
+			v_resp = pxp.f_agrega_clave(v_resp,'nombre_completo1',v_campos.desc_funcionario1::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'nombre_cargo',v_campos.nombre_cargo);
+
+            return v_resp;
+
+		end;
+    /*********************************
+ 	#TRANSACCION:  'MAT_GET_ORG'
+ 	#DESCRIPCION:	control de numero de doc. origin solicitud
+ 	#AUTOR:		MMV
+ 	#FECHA:		10-01-2017 13:13:01
+	***********************************/
+
+	elsif(p_transaccion='MAT_GET_ORG')then
+
+		begin
+         FOR v_nro_no_rutina in (select nro_no_rutina
+          						 from mat.tsolicitud )LOOP
+			v_cont= v_cont+1;
+            v_numero_doc[v_cont] = v_nro_no_rutina.nro_no_rutina;
+		END LOOP;
+        --raise exception 'llega: %',v_numero_doc;
+        v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+        v_resp = pxp.f_agrega_clave(v_resp,'nro_no_rutina', v_numero_doc::varchar );
+        return v_resp;
+
+		end;
 
     else
 
