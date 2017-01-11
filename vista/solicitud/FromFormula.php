@@ -50,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         name: 'nro_parte_alterno',
                         msgTarget: 'title',
                         fieldLabel: 'Nro. Parte alterno',
-                        allowBlank: true,
+                        allowBlank: false,
                         anchor: '90%',
                         maxLength:50
                     }),
@@ -159,9 +159,11 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_reporte);
                     this.mostrarComponente(this.Cmp.tipo_falla);
                 }
-
-
             },this);
+
+            this.ocultarComponente(this.Cmp.mel);
+            this.ocultarComponente(this.Cmp.tipo_reporte);
+            this.ocultarComponente(this.Cmp.tipo_falla);
 
         },
         evaluaRequistos: function(){
@@ -238,6 +240,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout:this.timeout,
                 scope:this
             });
+
 
 
             //this.Cmp.id_funcionario_sol.setValue(this.Cmp.desc_funcionario1);
@@ -948,54 +951,61 @@ header("content-type: text/javascript; charset=UTF-8");
 
         ],
         title: 'Frm Materiales',
+
         onSubmit: function(o) {
+
             //  validar formularios
-            var arra = [], i, me = this;
-            for (i = 0; i < me.megrid.store.getCount(); i++) {
-                record = me.megrid.store.getAt(i);
-                arra[i] = record.data;
+            var arra = [], k, me = this;
+            for (k = 0; k < me.megrid.store.getCount(); k++) {
+                record = me.megrid.store.getAt(k);
+                arra[k] = record.data;
+                arra[k].precio_ga = record.data.precio_total;
+                arra[k].precio_sg = 0.0;
             }
-            me.argumentExtraSubmit = {
-                'json_new_records': JSON.stringify(arra, function replacer(key, value) {
-                    if (typeof value === 'string') {
-                        return String(value).replace(/&/g, "%26")
-                    }
-                    return value;
-                })
-            };
-            if (i > 0 && !this.editorDetail.isVisible()) {
-                Phx.vista.FromFormula.superclass.onSubmit.call(this, o);
+            me.argumentExtraSubmit = { 'json_new_records': JSON.stringify(arra, function replacer(key, value) {
+
+                if (typeof value === 'string') {
+                    //return Ext.util.Format.htmlEncode(value);
+                    return String(value).replace(/&/g, "%26")
+                }
+                return value;
+            }) };
+            if(this.evaluaRequistos()){
+
+                if( k > 0 &&  !this.editorDetail.isVisible()){
+                    Ext.Ajax.request({
+                        url:'../../sis_gestion_materiales/control/Solicitud/compararNroOrigen',
+                        params:{id_usuario: 0},
+                        success:function(resp){
+                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                            //console.log('esta llegando de la base',reg.ROOT.datos.nro_no_rutina);
+                            var cadena =reg.ROOT.datos.nro_no_rutina,
+                                patron1 = "{",
+                                patron2 = "}",
+                                nuevoValor    = "",
+                                nuevaCadena = cadena.replace(patron1, nuevoValor),
+                                nuevaCadena = nuevaCadena.replace(patron2, nuevoValor);
+                            var arra = nuevaCadena.split(',');
+                            for(i=0; i < arra.length; i++){
+                                if(this.Cmp.nro_no_rutina.getValue()==arra[i]){
+                                    Ext.Msg.alert('Alerta','Número '+arra[i]+' de Documento Origen Solicitud ya fue registrado');
+                                }
+                            }
+                            Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                        },
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+                    });
+                }
+                else{
+                    alert("No tiene datos en el detalle")
+                }
             }
-            else {
-                alert('no tiene ningun elemento en la formula')
-            }
 
-            Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/compararNroOrigen',
-                params:{id_usuario: 0},
-                success:function(resp){
-                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                    console.log('numero de no rutina',reg.nro_no_rutina);
-                    var x;
-                    /*for (x in reg){
-
-                         reg[x];
-                        console.log('Llega',this.Cmp.nro_no_rutina);
-
-                    }*/
-
-                },
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
 
 
         }
-
-
-
-
     })
 </script>
 

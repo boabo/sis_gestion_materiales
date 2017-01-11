@@ -272,7 +272,6 @@ BEGIN
 
 		end;
 
-
 else
 
 		raise exception 'Transaccion inexistente';
