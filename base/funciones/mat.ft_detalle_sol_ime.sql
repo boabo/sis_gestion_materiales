@@ -46,12 +46,13 @@ BEGIN
 	if(p_transaccion='MAT_DET_INS')then
 
         begin
+        --RAISE EXCEPTION 'parametros %',v_parametros;
         	--Sentencia de la insercion
         	insert into mat.tdetalle_sol(
 			id_solicitud,
 			descripcion,
 			estado_reg,
-			unidad_medida,
+			id_unidad_medida,
 			nro_parte,
 			referencia,
 			nro_parte_alterno,
@@ -68,7 +69,7 @@ BEGIN
 			v_parametros.id_solicitud,
 			v_parametros.descripcion,
 			'activo',
-			v_parametros.unidad_medida,
+			v_parametros.id_unidad_medida,
 			v_parametros.nro_parte,
 			v_parametros.referencia,
 			v_parametros.nro_parte_alterno,
@@ -104,7 +105,7 @@ BEGIN
 			update mat.tdetalle_sol set
 			id_solicitud = v_parametros.id_solicitud,
 			descripcion = v_parametros.descripcion,
-			unidad_medida = v_parametros.unidad_medida,
+			id_unidad_medida = v_parametros.id_unidad_medida,
 			nro_parte = v_parametros.nro_parte,
 			referencia = v_parametros.referencia,
 			nro_parte_alterno = v_parametros.nro_parte_alterno,

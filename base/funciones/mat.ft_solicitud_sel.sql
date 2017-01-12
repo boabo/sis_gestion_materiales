@@ -245,8 +245,8 @@ BEGIN
                                 ot.motivo_orden,
                                 left(ot.desc_orden,20) as matricula ,
                                 sol.nro_tramite,
-                                de.nro_parte,
-                                de.referencia,
+                                de.nro_parte::text,
+                                de.referencia::text,
                                 de.descripcion,
                                 de.cantidad_sol,
                                 sol.justificacion,
@@ -258,14 +258,16 @@ BEGIN
                                 sol.tipo_falla,
         						sol.tipo_reporte,
         						sol.mel,
-                                de.unidad_medida,
-                                ti.codigo as estado
+                                de.id_unidad_medida,
+                                ti.codigo as estado,
+                                un.codigo as unidad_medida
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                                 inner join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf wof on wof.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = wof.id_tipo_estado
+                                inner join mat.tunidad_medida un on un.id_unidad_medida = de.id_unidad_medida
                     			where sol.id_proceso_wf='||v_parametros.id_proceso_wf;
 			--Devuelve la respuesta
 			return v_consulta;

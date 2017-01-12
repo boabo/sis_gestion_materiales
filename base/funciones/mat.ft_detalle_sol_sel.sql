@@ -49,7 +49,7 @@ BEGIN
 						det.id_solicitud,
 						det.descripcion,
 						det.estado_reg,
-						det.unidad_medida,
+						det.id_unidad_medida,
 						det.nro_parte,
 						det.referencia,
 						det.nro_parte_alterno,
@@ -63,11 +63,13 @@ BEGIN
 						det.id_usuario_mod,
 						det.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod
+						usu2.cuenta as usr_mod,
+                        un.codigo
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
-				        where  ';
+                        inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
+				     	where  ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -93,7 +95,8 @@ BEGIN
 					    from mat.tdetalle_sol det
 					    inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
-					    where ';
+					    inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
+                        where ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -102,10 +105,35 @@ BEGIN
 			return v_consulta;
 
 		end;
-  else
+    /*********************************
+ 	#TRANSACCION:  'MAT_UM_SEL'
+ 	#DESCRIPCION:	Consulta de datos
+ 	#AUTOR:		admin
+ 	#FECHA:		23-12-2016 13:13:01
+	***********************************/
 
+	elsif(p_transaccion='MAT_UM_SEL')then
+
+    	begin
+    		--Sentencia de la consulta
+			v_consulta:='select
+                                un.id_unidad_medida,
+                                un.codigo,
+                                un.descripcion,
+                                un.tipo_unidad_medida
+                                from mat.tunidad_medida un
+                                where  ';
+            --Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+  	else
 		raise exception 'Transaccion inexistente';
-
 	end if;
 
 EXCEPTION
@@ -116,7 +144,7 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
-END;
+	END;
 $body$
 LANGUAGE 'plpgsql'
 VOLATILE

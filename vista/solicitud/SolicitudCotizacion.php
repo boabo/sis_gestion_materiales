@@ -9,16 +9,16 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-    Phx.vista.SolicitudVistoBueno = {
+    Phx.vista.SolicitudCotizacion = {
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
-        nombreVista: 'Visto Bueno Solicitud',
+        nombreVista: 'Proceso Compra',
         constructor: function (config) {
-            Phx.vista.SolicitudVistoBueno.superclass.constructor.call(this, config);
+            Phx.vista.SolicitudCotizacion.superclass.constructor.call(this, config);
             //this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'visto_bueno';
+            this.store.baseParams.pes_estado = 'compra';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
         },
@@ -44,15 +44,15 @@ header("content-type: text/javascript; charset=UTF-8");
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
-            Phx.vista.SolicitudVistoBueno.superclass.preparaMenu.call(this,n);
+            Phx.vista.SolicitudCotizacion.superclass.preparaMenu.call(this,n);
 
-            if(data['estado'] ==  'vobo_area'){
+            if(data['estado'] ==  'revision'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').disable();
                 this. enableTabDetalle();
 
 
-            }else if(data['estado'] !=  'revision'){
+            }else if(data['estado'] !=  'despachado'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 this.disableTabDetalle();
@@ -65,13 +65,13 @@ header("content-type: text/javascript; charset=UTF-8");
             return tb;
         },
         liberaMenu:function(){
-            var tb = Phx.vista.SolicitudVistoBueno.superclass.liberaMenu.call(this);
+            var tb = Phx.vista.SolicitudCotizacion.superclass.liberaMenu.call(this);
             if(tb){
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(false);
-               // this.getBoton('del').disable();
+                // this.getBoton('del').disable();
             }
             return tb;
         },

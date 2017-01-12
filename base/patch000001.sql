@@ -68,7 +68,7 @@ CREATE TABLE mat.tdetalle_sol (
   referencia VARCHAR(100),
   descripcion VARCHAR(100),
   cantidad_sol NUMERIC(19,0),
-  unidad_medida VARCHAR(10),
+  id_unidad_medida INTEGER,
   precio NUMERIC(18,2),
   id_moneda INTEGER,
   CONSTRAINT tdetalle_pkey PRIMARY KEY(id_detalle),
@@ -301,3 +301,16 @@ GROUP BY sol.id_solicitud, sol.fecha_solicitud, ot.motivo_orden, ot.desc_orden,
     sol.nro_tramite, de.nro_parte, de.referencia, de.descripcion, de.cantidad_sol, de.unidad_medida, sol.justificacion, sol.tipo_solicitud, sol.fecha_requerida, sol.motivo_solicitud, sol.observaciones_sol, f.desc_funcionario1, sol.tipo_falla, sol.tipo_reporte, sol.mel, ti.codigo;
 
 /***********************************F-SCP-MAM-MAT-1-09/01/2017****************************************/
+
+/***********************************I-SCP-MAM-MAT-1-12/01/2017****************************************/
+CREATE TABLE mat.tunidad_medida (
+  id_unidad_medida INTEGER DEFAULT nextval('mat.tunidad_medida_id_unidad_medida_seq'::regclass) NOT NULL,
+  codigo VARCHAR(100),
+  descripcion VARCHAR(100),
+  tipo_unidad_medida VARCHAR(100),
+  CONSTRAINT tunidad_medida_pkey PRIMARY KEY(id_unidad_medida)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+/***********************************F-SCP-MAM-MAT-0-12/01/2017****************************************/

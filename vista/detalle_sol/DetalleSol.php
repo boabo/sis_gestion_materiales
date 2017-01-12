@@ -114,19 +114,50 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             form:true
         },
         {
-            config:{
-                name: 'unidad_medida',
-                fieldLabel: 'Unidad Medida',
+            config: {
+                name: 'id_unidad_medida',
+                fieldLabel: 'Unidad de medida',
                 allowBlank: true,
-                anchor: '80%',
-                gwidth: 50,
-                maxLength:10
+                emptyText: 'U/M..',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_gestion_materiales/control/DetalleSol/unidadMedia',
+                    id: 'id_unidad_medida',
+                    root: 'datos',
+                    sortInfo: {
+                        field: 'codigo',
+                        direction: 'ASC'
+                    },
+
+                    totalProperty: 'total',
+                    fields: ['id_unidad_medida','codigo','descripcion','tipo_unidad_medida'],
+                    remoteSort: true,
+                    baseParams: {par_filtro: ' un.codigo# un.descripcion'}
+                }),
+                valueField: 'id_unidad_medida',
+                displayField: 'codigo',
+                gdisplayField: 'codigo',
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p style="color: blue">{descripcion}</p></div></tpl>',
+                hiddenName: 'id_unidad_medida',
+                forceSelection: true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'remote',
+                pageSize: 100,
+                queryDelay: 100,
+                anchor: '40%',
+                gwidth: 60,
+                minChars: 2,
+                renderer : function(value, p, record) {
+                    return String.format('{0}', record.data['codigo']);
+                }
             },
-            type:'TextField',
-            filters:{pfiltro:'det.unidad_medida',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:true
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {pfiltro:' u.codigo', type:'string'},
+            grid: true,
+            form: true
+
         },
         /*{
             config:{
@@ -306,7 +337,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_solicitud', type: 'numeric'},
 		{name:'descripcion', type: 'string'},
 		{name:'estado_reg', type: 'string'},
-		{name:'unidad_medida', type: 'string'},
+		{name:'id_unidad_medida', type: 'numeric'},
 		{name:'nro_parte', type: 'string'},
 		{name:'referencia', type: 'string'},
 		{name:'nro_parte_alterno', type: 'string'},
@@ -321,7 +352,9 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		
+        {name:'codigo', type: 'string'},
+
+
 	],
 	sortInfo:{
 		field: 'id_detalle',

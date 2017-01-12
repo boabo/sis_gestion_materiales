@@ -251,7 +251,8 @@ class MODSolicitud extends MODbase{
             //decodifica JSON  de detalles
             $json_detalle = $this->aParam->_json_decode($this->aParam->getParametro('json_new_records'));
 
-            //var_dump($json_detalle)	;
+            //var_dump($json_detalle);
+
             foreach($json_detalle as $f){
 
                 $this->resetParametros();
@@ -261,27 +262,23 @@ class MODSolicitud extends MODbase{
                 $this->tipo_procedimiento='IME';
 
                 //modifica los valores de las variables que mandaremos
-                $this->arreglo['precio'] = $f['precio'];
-                $this->arreglo['cantidad_sol'] = $f['cantidad_sol'];
-                $this->arreglo['unidad_medida'] = $f['unidad_medida'];
                 $this->arreglo['id_solicitud'] = $id_solicitud;
                 $this->arreglo['descripcion'] = $f['descripcion'];
                 $this->arreglo['estado_reg'] = $f['estado_reg'];
-                $this->arreglo['nro_parte_alterno'] = $f['nro_parte_alterno'];
-                $this->arreglo['moneda'] = $f['moneda'];
-                $this->arreglo['referencia'] = $f['referencia'];
+                $this->arreglo['id_unidad_medida'] = $f['id_unidad_medida'];
                 $this->arreglo['nro_parte'] = $f['nro_parte'];
+                $this->arreglo['referencia'] = $f['referencia'];
+                $this->arreglo['nro_parte_alterno'] = $f['nro_parte_alterno'];
+                $this->arreglo['cantidad_sol'] = $f['cantidad_sol'];
 
                 //Define los parametros para la funcion
                 $this->setParametro('id_solicitud','id_solicitud','int4');
                 $this->setParametro('descripcion','descripcion','varchar');
                 $this->setParametro('estado_reg','estado_reg','varchar');
-                $this->setParametro('unidad_medida','unidad_medida','varchar');
+                $this->setParametro('id_unidad_medida','id_unidad_medida','int4');
                 $this->setParametro('nro_parte','nro_parte','varchar');
                 $this->setParametro('referencia','referencia','varchar');
                 $this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
-                $this->setParametro('id_moneda','id_moneda','int4');
-                $this->setParametro('precio','precio','numeric');
                 $this->setParametro('cantidad_sol','cantidad_sol','numeric');
 
                 //Ejecuta la instruccion
@@ -313,6 +310,7 @@ class MODSolicitud extends MODbase{
                 throw new Exception($e->getMessage(), 2);
             }
         }
+        //var_dump($this->respuesta); exit;
         return $this->respuesta;
     }
     function listarMatricula(){
@@ -401,8 +399,8 @@ class MODSolicitud extends MODbase{
         $this->captura('motivo_orden','varchar');
         $this->captura('matricula','text');
         $this->captura('nro_tramite','varchar');
-        $this->captura('nro_parte','varchar');
-        $this->captura('referencia','varchar');
+        $this->captura('nro_parte','text');
+        $this->captura('referencia','text');
         $this->captura('descripcion','varchar');
         $this->captura('cantidad_sol','numeric');
         $this->captura('justificacion','varchar');
@@ -414,8 +412,9 @@ class MODSolicitud extends MODbase{
         $this->captura('tipo_falla','varchar');
         $this->captura('tipo_reporte','varchar');
         $this->captura('mel','varchar');
-        $this->captura('unidad_medida','varchar');
+        $this->captura('id_unidad_medida','int4');
         $this->captura('estado','varchar');
+        $this->captura('unidad_medida','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

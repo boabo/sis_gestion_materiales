@@ -12,9 +12,11 @@ header("content-type: text/javascript; charset=UTF-8");
     Phx.vista.FromFormula=Ext.extend(Phx.frmInterfaz,{
 
         ActSave:'../../sis_gestion_materiales/control/Solicitud/insertarSolicitudCompleta',
-
         tam_pag: 10,
         layout: 'fit',
+        fields: [
+            {name:'codigo', type: 'string'},
+        ],
         autoScroll: false,
         breset: false,
         constructor:function(config)
@@ -63,7 +65,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         maxLength:50
                     }),
 
-                    'descripcion': new Ext.form.TextArea({
+                    'descripcion': new Ext.form.TextField({
                         name: 'descripcion',
                         msgTarget: 'title',
                         fieldLabel: 'Descripcion',
@@ -82,14 +84,47 @@ header("content-type: text/javascript; charset=UTF-8");
                         allowNegative:false,
                         decimalPrecision:2
                     }),
-                    'unidad_medida': new Ext.form.TextField({
-                        name: 'unidad_medida',
+                    'id_unidad_medida': new Ext.form.ComboBox({
+                        name: 'id_unidad_medida',
                         msgTarget: 'title',
-                        fieldLabel: 'Unidad Medida',
+                        fieldLabel: 'Unidad de medida',
                         allowBlank: false,
-                        anchor: '80%',
-                        maxLength:50
+                        emptyText: 'U/M..',
+                        store: new Ext.data.JsonStore({
+                            url: '../../sis_gestion_materiales/control/DetalleSol/unidadMedia',
+                            id: 'id_unidad_medida',
+                            root: 'datos',
+                            sortInfo: {
+                                field: 'codigo',
+                                direction: 'ASC'
+                            },
+                            totalProperty: 'total',
+                            fields: ['id_unidad_medida','codigo','descripcion','tipo_unidad_medida'],
+                            remoteSort: true,
+                            baseParams: {par_filtro: ' un.codigo# un.descripcion'}
+                        }),
+                        valueField: 'codigo',
+                        displayField: 'id_unidad_medida',
+                        gdisplayField: 'codigo',
+                        hiddenName: 'id_unidad_medida',
+                        forceSelection: true,
+                        typeAhead: false,
+                        triggerAction: 'all',
+                        listWidth:95,
+                        lazyRender: true,
+                        resizable:true,
+                        mode: 'remote',
+                        pageSize: 100,
+                        queryDelay: 100,
+                        anchor: '40%',
+                        gwidth: 10,
+                        minChars: 2,
+                        tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p style="color: blue">{descripcion}</p></div></tpl>',
+                        renderer : function(value, p, record) {
+                            return String.format('{0}', record.data['codigo']);
+                        }
                     })
+
                     /*'precio': new Ext.form.NumberField({
                      name: 'precio',
                      msgTarget: 'title',
@@ -183,12 +218,15 @@ header("content-type: text/javascript; charset=UTF-8");
         bloqueaRequisitos: function(sw){
 
             this.Cmp.id_funcionario_sol.setDisabled(sw);
+            this.Cmp.origen_pedido.setDisabled(sw);
+
         },
         evaluaGrilla: function(){
             //al eliminar si no quedan registros en la grilla desbloquea los requisitos en el maestro
             var  count = this.mestore.getCount();
             if(count == 0){
                 this.bloqueaRequisitos(false);
+
             }
         },
         obtenerGestion:function(x){
@@ -242,19 +280,16 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
 
-
-            //this.Cmp.id_funcionario_sol.setValue(this.Cmp.desc_funcionario1);
         },
 
-        onInitAdd: function(){
 
+        onInitAdd: function(){
 
         },
         onCancelAdd: function(re,save){
             if(this.sw_init_add){
                 this.mestore.remove(this.mestore.getAt(0));
             }
-
             this.sw_init_add = false;
            this.evaluaGrilla();
 
@@ -280,8 +315,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 root: 'datos',
                 totalProperty: 'total',
                 fields: ['id_detalle','id_solicitud','precio', 'cantidad_sol',
-                    'unidad_medida','descripcion','nro_parte_alterno','moneda','referencia',
-                    'nro_parte'
+                    'id_unidad_medida','descripcion','nro_parte_alterno','moneda','referencia',
+                    'nro_parte','codigo'
                 ],remoteSort: true,
                 baseParams: {dir:'ASC',sort:'id_detalle',limit:'100',start:'0'}
             });
@@ -291,6 +326,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 name: 'btn_editor'
 
             });
+
             // al iniciar la edicion
             this.editorDetail.on('beforeedit', this.onInitAdd , this);
 
@@ -309,7 +345,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 split: true,
                 border: false,
                 plain: true,
-                plugins: [ this.editorDetail ],
+                plugins: [ this.editorDetail],
                 stripeRows: true,
                 tbar: [{
                     text: '<i class="fa fa-plus-circle fa-lg"></i> Agregar ',
@@ -326,8 +362,11 @@ header("content-type: text/javascript; charset=UTF-8");
                             this.megrid.getSelectionModel().selectRow(0);
                             this.editorDetail.startEditing(0);
                             this.sw_init_add = true;
-                            //this.bloqueaRequisitos(true);
+                            this.bloqueaRequisitos(true);
                         }
+                      else{
+                          //alert('Verifique los requisitos');
+                      }
                     }
                 },{
                     ref: '../removeBtn',
@@ -380,12 +419,12 @@ header("content-type: text/javascript; charset=UTF-8");
                         width: 50,
                         editor: this.detCmp.cantidad_sol
                     },
-                    {
+                   {
                         header: 'U/M',
-                        dataIndex: 'unidad_medida',
-                        align: 'center',
-                        width: 50,
-                        editor: this.detCmp.unidad_medida
+                        dataIndex: 'id_unidad_medida',
+                        width: 95,
+                        sortable: false,
+                        editor: this.detCmp.id_unidad_medida
                     }
                     /*{
                      header: 'Presio',
@@ -959,15 +998,11 @@ header("content-type: text/javascript; charset=UTF-8");
             for (k = 0; k < me.megrid.store.getCount(); k++) {
                 record = me.megrid.store.getAt(k);
                 arra[k] = record.data;
-                arra[k].precio_ga = record.data.precio_total;
-                arra[k].precio_sg = 0.0;
+
             }
             me.argumentExtraSubmit = { 'json_new_records': JSON.stringify(arra, function replacer(key, value) {
 
-                if (typeof value === 'string') {
-                    //return Ext.util.Format.htmlEncode(value);
-                    return String(value).replace(/&/g, "%26")
-                }
+
                 return value;
             }) };
             if(this.evaluaRequistos()){

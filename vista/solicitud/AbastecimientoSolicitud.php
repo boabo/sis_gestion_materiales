@@ -46,7 +46,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb =this.tbar;
             Phx.vista.AbastecimientoSolicitud.superclass.preparaMenu.call(this,n);
 
-            if(data['estado'] ==  'cotizacion'){
+            if(data['estado'] ==  'despachado'){
                 this.getBoton('sig_estado').enable();
                 this. enableTabDetalle();
 

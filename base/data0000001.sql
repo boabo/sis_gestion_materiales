@@ -86,3 +86,36 @@ select pxp.f_insert_trol ('GM - Visto Bueno Solicitud', 'GM - Visto Bueno Solici
 select pxp.f_insert_trol ('GM - Abastecimientos', 'GM - Abastecimientos', 'MAT');
 select pxp.f_insert_trol ('GM - Auxiliar Abastecimientos', 'GM - Auxiliar Abastecimientos', 'MAT');
 /***********************************F-DAT-MAM-MAT-0-07/01/2017****************************************/
+
+/***********************************I-DAT-MAM-MAT-0-12/01/2017****************************************/
+/* Data for the 'mat.tunidad_medida' table  (Records 1 - 25) */
+
+INSERT INTO mat.tunidad_medida ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "id_unidad_medida", "codigo", "descripcion", "tipo_unidad_medida")
+VALUES
+  (NULL, NULL, E'2017-01-12 11:56:11.160', E'2017-01-12 11:56:11.160', E'activo', NULL, NULL, 1, E'EA', E'Each', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:17:51.192', E'2017-01-12 12:17:51.192', E'activo', NULL, NULL, 2, E'MT', E'Meter', E'Longitud'),
+  (NULL, NULL, E'2017-01-12 12:18:48.363', E'2017-01-12 12:18:48.363', E'activo', NULL, NULL, 3, E'Kg', E'Kilogram', E'Weight'),
+  (NULL, NULL, E'2017-01-12 12:19:00.963', E'2017-01-12 12:19:00.963', E'activo', NULL, NULL, 4, E'Lb', E'Pound', E'Weight'),
+  (NULL, NULL, E'2017-01-12 12:19:12.523', E'2017-01-12 12:19:12.523', E'activo', NULL, NULL, 5, E'Lt', E'Liter', E'Volume'),
+  (NULL, NULL, E'2017-01-12 12:19:48.808', E'2017-01-12 12:19:48.808', E'activo', NULL, NULL, 6, E'Kg/Lt', E'Kg/L', E'Density'),
+  (NULL, NULL, E'2017-01-12 12:20:00.935', E'2017-01-12 12:20:00.935', E'activo', NULL, NULL, 7, E'Lb/UsG', E'Lb/UsG', E'Density'),
+  (NULL, NULL, E'2017-01-12 12:20:18.903', E'2017-01-12 12:20:18.903', E'activo', NULL, NULL, 8, E'ºC', E'Degree Celsius', E'Temperature'),
+  (NULL, NULL, E'2017-01-12 12:20:30.979', E'2017-01-12 12:20:30.979', E'activo', NULL, NULL, 9, E'ºF', E'Degree Fahrenheit', E'Temperature'),
+  (NULL, NULL, E'2017-01-12 12:21:00.969', E'2017-01-12 12:21:00.969', E'activo', NULL, NULL, 10, E'USG', E'US Gallon', E'Volume'),
+  (NULL, NULL, E'2017-01-12 12:23:30.135', E'2017-01-12 12:23:30.135', E'activo', NULL, NULL, 11, E'UKG', E'UK Gallon', E'Weight'),
+  (NULL, NULL, E'2017-01-12 12:23:40.100', E'2017-01-12 12:23:40.100', E'activo', NULL, NULL, 12, E'FT', E'Feets', E'Longitud'),
+  (NULL, NULL, E'2017-01-12 12:23:46.708', E'2017-01-12 12:23:46.708', E'activo', NULL, NULL, 13, E'IN', E'Inches', E'Longitud'),
+  (NULL, NULL, E'2017-01-12 12:23:53.725', E'2017-01-12 12:23:53.725', E'activo', NULL, NULL, 14, E'DR', E'DR', E'Longitud'),
+  (NULL, NULL, E'2017-01-12 12:23:59.965', E'2017-01-12 12:23:59.965', E'activo', NULL, NULL, 15, E'QT', E'Quarter', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:06.252', E'2017-01-12 12:24:06.252', E'activo', NULL, NULL, 16, E'KT', E'KIT', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:13.828', E'2017-01-12 12:24:13.828', E'activo', NULL, NULL, 17, E'TB', E'Tube', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:19.972', E'2017-01-12 12:24:19.972', E'activo', NULL, NULL, 18, E'YD', E'Yards', E'Longitud'),
+  (NULL, NULL, E'2017-01-12 12:24:25.642', E'2017-01-12 12:24:25.642', E'activo', NULL, NULL, 19, E'BL', E'Block', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:31.418', E'2017-01-12 12:24:31.418', E'activo', NULL, NULL, 20, E'PL', E'Pail', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:37.418', E'2017-01-12 12:24:37.418', E'activo', NULL, NULL, 21, E'GL', E'Gallon', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:43.410', E'2017-01-12 12:24:43.410', E'activo', NULL, NULL, 22, E'RL', E'Roll', E'Cantidad'),
+  (NULL, NULL, E'2017-01-12 12:24:49.185', E'2017-01-12 12:24:49.185', E'activo', NULL, NULL, 23, E'YDS', E'Square', E'Yards\tLongitud'),
+  (NULL, NULL, E'2017-01-12 12:24:56.977', E'2017-01-12 12:24:56.977', E'activo', NULL, NULL, 24, E'SI', E'Square', E'Longitud'),
+  (NULL, NULL, E'2017-01-12 12:25:00.713', E'2017-01-12 12:25:00.713', E'activo', NULL, NULL, 25, E'CJ', E'Cajas', E'Cantidad');
+
+/***********************************F-DAT-MAM-MAT-0-12/01/2017****************************************/

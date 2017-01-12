@@ -965,10 +965,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             console.log(rec.data);
 
-            if(rec.data.estado=='cotizacion' && rec.data.nro_po=='' || rec.data.estado=='compra' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
-                this.onButtonEdit();
-            } else {
-                var rec = this.sm.getSelected();
+            var rec = this.sm.getSelected();
                 this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
                     'Estado de Wf',
                     {
@@ -990,8 +987,11 @@ header("content-type: text/javascript; charset=UTF-8");
                         scope: this
                     }
                 );
-            }
+            if(rec.data.estado=='compra' && rec.data.nro_po==''|| rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
+                // Ext.Msg.alert('Alerta','Para pasar al estado de compras tiene que registras los campos Nro. PO y Provedor ');
+                this.onButtonEdit();
 
+            }
         },
         onSaveWizard:function(wizard,resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));

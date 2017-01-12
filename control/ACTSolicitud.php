@@ -19,23 +19,27 @@ class ACTSolicitud extends ACTbase{
         if ($this->objParam->getParametro('pes_estado') == 'borrador') {
             $this->objParam->addFiltro("sol.estado  in (''borrador'')");
         }
-        else if ($this->objParam->getParametro('pes_estado') == 'vobo_area') {
+         if ($this->objParam->getParametro('pes_estado') == 'vobo_area') {
             $this->objParam->addFiltro("sol.estado  in (''vobo_area'')");
         }
-       else if ($this->objParam->getParametro('pes_estado') == 'revision') {
+        if ($this->objParam->getParametro('pes_estado') == 'revision') {
             $this->objParam->addFiltro("sol.estado  in (''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }
-      else  if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
+       if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
             $this->objParam->addFiltro("sol.estado  in (''finalizado'',''anulado'')");
         }
-        else if ($this->objParam->getParametro('pes_estado') == 'consulta') {
+         if ($this->objParam->getParametro('pes_estado') == 'consulta') {
             $this->objParam->addFiltro("sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'')");
         }
-       else  if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
-            $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'',''revision'')");
-        }else  if ($this->objParam->getParametro('pes_estado') == 'abastecimiento') {
-           $this->objParam->addFiltro("sol.estado  in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
-       }
+         if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
+            $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'compra') {
+           $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'')");
+
+        }if ($this->objParam->getParametro('pes_estado') == 'abastecimiento') {
+           $this->objParam->addFiltro("sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }
 
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
@@ -61,6 +65,7 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         if($this->objParam->insertar('id_solicitud')){
             $this->res=$this->objFunc->insertarSolicitudCompleta($this->objParam);
+            var_dump($this->res); exit;
         } else{
             //$this->res=$this->objFunc->modificarSolicitud($this->objParam);
             //trabajar en la modificacion compelta de solicitud ....

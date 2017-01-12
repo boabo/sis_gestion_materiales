@@ -24,7 +24,7 @@ class MODDetalleSol extends MODbase{
 		$this->captura('id_solicitud','int4');
 		$this->captura('descripcion','varchar');
 		$this->captura('estado_reg','varchar');
-		$this->captura('unidad_medida','varchar');
+		$this->captura('id_unidad_medida','int4');
 		$this->captura('nro_parte','varchar');
 		$this->captura('referencia','varchar');
 		$this->captura('nro_parte_alterno','varchar');
@@ -39,6 +39,7 @@ class MODDetalleSol extends MODbase{
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+        $this->captura('codigo','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -58,7 +59,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('id_solicitud','id_solicitud','int4');
 		$this->setParametro('descripcion','descripcion','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('unidad_medida','unidad_medida','varchar');
+		$this->setParametro('id_unidad_medida','id_unidad_medida','int4');
 		$this->setParametro('nro_parte','nro_parte','varchar');
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
@@ -85,7 +86,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('id_solicitud','id_solicitud','int4');
 		$this->setParametro('descripcion','descripcion','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('unidad_medida','unidad_medida','varchar');
+		$this->setParametro('id_unidad_medida','id_unidad_medida','int4');
 		$this->setParametro('nro_parte','nro_parte','varchar');
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
@@ -117,5 +118,25 @@ class MODDetalleSol extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	function listarUnidadMedida(){
+
+        $this->procedimiento ='mat.ft_detalle_sol_sel';
+        $this->transaccion='MAT_UM_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->captura('id_unidad_medida','int4');
+        $this->captura('codigo','varchar');
+        $this->captura('descripcion','varchar');
+        $this->captura('tipo_unidad_medida','varchar');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+    }
+
 }
 ?>

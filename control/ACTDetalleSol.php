@@ -42,6 +42,19 @@ class ACTDetalleSol extends ACTbase{
 		$this->res=$this->objFunc->eliminarDetalleSol($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function unidadMedia(){
+        $this->objParam->defecto('ordenacion','id_unidad_medida');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('id_unidad_medida') != '') {
+            $this->objParam->addFiltro(" un.id_unidad_medida = " . $this->objParam->getParametro('id_unidad_medida'));
+        }
+
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->listarUnidadMedida($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 			
 }
 

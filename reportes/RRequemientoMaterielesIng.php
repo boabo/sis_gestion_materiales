@@ -103,6 +103,32 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->Cell(0, 7,  ' Fecha:', 1, 0, 'L', 0, '', 0);
         $this->ln();
 
+        $fun = $this->datos[0]['desc_funcionario1'];
+        $num = $this->datos[0]['nro_tramite'];
+        $tipo= $this->datos[0]['tipo_solicitud'];
+        $esta = $this->datos[0]['estado'];
+        $fecha =$this->datos[0]['fecha_solicitud'];
+
+        $html = 'Funcionario Solicitante: '.$fun."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$esta."\n".'Fecha de de la Solicitud: '.$fecha."\n";
+        // set style for barcode
+        $style = array(
+            'border' => 2,
+            'vpadding' => 'auto',
+            'hpadding' => 'auto',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false, //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+
+        $this->write2DBarcode($html, 'QRCODE,L',45, 135, 25, 25, $style, 'N');
+
+        if($this->datos[0]['estado'] == 'vobo_area'){
+
+            $this->write2DBarcode($html, 'QRCODE,L',135, 135, 25, 25, $style, 'N');
+        }
+
+
 
     }
 
