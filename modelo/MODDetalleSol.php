@@ -40,11 +40,12 @@ class MODDetalleSol extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
         $this->captura('codigo','varchar');
+        $this->captura('desc_descripcion','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+		//var_dump($this->respuesta); exit;
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

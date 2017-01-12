@@ -86,7 +86,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     }),
                     'id_unidad_medida': new Ext.form.ComboBox({
                         name: 'id_unidad_medida',
-                        msgTarget: 'title',
                         fieldLabel: 'Unidad de medida',
                         allowBlank: false,
                         emptyText: 'U/M..',
@@ -103,8 +102,8 @@ header("content-type: text/javascript; charset=UTF-8");
                             remoteSort: true,
                             baseParams: {par_filtro: ' un.codigo# un.descripcion'}
                         }),
-                        valueField: 'codigo',
-                        displayField: 'id_unidad_medida',
+                        valueField: 'id_unidad_medida',
+                        displayField: 'codigo',
                         gdisplayField: 'codigo',
                         hiddenName: 'id_unidad_medida',
                         forceSelection: true,
@@ -119,10 +118,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         anchor: '40%',
                         gwidth: 10,
                         minChars: 2,
-                        tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p style="color: blue">{descripcion}</p></div></tpl>',
-                        renderer : function(value, p, record) {
-                            return String.format('{0}', record.data['codigo']);
-                        }
+                        tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p style="color: blue">{descripcion}</p></div></tpl>'
+
                     })
 
                     /*'precio': new Ext.form.NumberField({
@@ -298,11 +295,16 @@ header("content-type: text/javascript; charset=UTF-8");
             this.sw_init_add = false;
         },
 
-        onAfterEdit:function(){
+        onAfterEdit:function(re, o, rec, num){
+            //set descriptins values ...  in combos boxs
+
+            var cmb_rec = this.detCmp['id_unidad_medida'].store.getById(rec.get('id_unidad_medida'));
+            if(cmb_rec) {
+
+                rec.set('codigo', cmb_rec.get('codigo'));
+            }
 
         },
-
-
         buildDetailGrid:function () {
             var Items = Ext.data.Record.create([{
                 name: 'cantidad_sol',
@@ -316,7 +318,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 totalProperty: 'total',
                 fields: ['id_detalle','id_solicitud','precio', 'cantidad_sol',
                     'id_unidad_medida','descripcion','nro_parte_alterno','moneda','referencia',
-                    'nro_parte','codigo'
+                    'nro_parte','codigo','desc_descripcion'
                 ],remoteSort: true,
                 baseParams: {dir:'ASC',sort:'id_detalle',limit:'100',start:'0'}
             });
@@ -422,8 +424,9 @@ header("content-type: text/javascript; charset=UTF-8");
                    {
                         header: 'U/M',
                         dataIndex: 'id_unidad_medida',
+                       align: 'center',
                         width: 95,
-                        sortable: false,
+                       renderer:function(value, p, record){return String.format('{0}', record.data['codigo']);},
                         editor: this.detCmp.id_unidad_medida
                     }
                     /*{

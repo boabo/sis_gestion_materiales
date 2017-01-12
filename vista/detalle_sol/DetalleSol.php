@@ -353,6 +353,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
         {name:'codigo', type: 'string'},
+        {name:'desc_descripcion', type: 'string'},
 
 
 	],
