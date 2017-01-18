@@ -103,9 +103,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 this. enableTabDetalle();
 
 
-            }else if(data['estado'] ==  'vobo_area'){
-                this.getBoton('sig_estado').disable();
-                this.getBoton('ant_estado').disable();
+            }else if(data['estado'] !=  'vobo_aeronavegabilidad'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').enable();
               
 
                 this.disableTabDetalle();
