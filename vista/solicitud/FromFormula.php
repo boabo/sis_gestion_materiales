@@ -1065,7 +1065,11 @@ header("content-type: text/javascript; charset=UTF-8");
 
                             }
                         },this);
+                    }else if(this.Cmp.nro_justificacion.getValue() != numero ){
+                        Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                     }
+
+
                 },
                 failure: this.conexionFailure,
                 timeout:this.timeout,
