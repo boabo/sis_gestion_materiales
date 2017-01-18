@@ -23,9 +23,9 @@ class RRequemientoMaterielesIng extends  ReportePDF {
 
         $this->ln(5);
         $this->SetFont('times', 'B', 11);
-        $this->Cell(100, 7, ' Datos Generales', 1, 0, 'L', 0, '', 0);
+        $this->Cell(60, 7, ' Datos Generales', 1, 0, 'L', 0, '', 0);
         $this->SetFont('times', '', 11);
-        $this->Cell(50, 7, ' Nro: '.$this->datos[0]['justificacion'], 1, 0, 'L', 0, '', 0);
+        $this->Cell(85, 7, ' Nro: '.$this->datos[0]['justificacion'], 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 7, $this->datos[0]['nro_justificacion'], 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
