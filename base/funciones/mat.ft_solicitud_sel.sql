@@ -29,6 +29,11 @@ DECLARE
 	v_resp				varchar;
 
     v_campos 			record;
+    v_firmas			record;
+    v_id_solicitud		INTEGER;
+    p_id_proceso_wf integer;
+    v_id_proceso_wf_prev integer;
+    v_orden				varchar;
 
 BEGIN
 
@@ -89,7 +94,8 @@ BEGIN
                         sol.mel,
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
-                     	pxp.list (de.nro_parte) as nro_partes
+                     	pxp.list (de.nro_parte) as nro_partes,
+                        sol.nro_justificacion
                         from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
@@ -142,7 +148,8 @@ BEGIN
                         sol.tipo_reporte,
                         sol.mel,
                         sol.nro_no_rutina,
-                        pro.desc_proveedor order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+                        pro.desc_proveedor,
+                        sol.nro_justificacion order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -260,10 +267,11 @@ BEGIN
         						sol.mel,
                                 de.id_unidad_medida,
                                 ti.codigo as estado,
-                                un.codigo as unidad_medida
+                                un.codigo as unidad_medida,
+                                sol.nro_justificacion
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
-                                inner join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
+                                left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf wof on wof.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = wof.id_tipo_estado
@@ -271,6 +279,61 @@ BEGIN
                     			where sol.id_proceso_wf='||v_parametros.id_proceso_wf;
 			--Devuelve la respuesta
 			return v_consulta;
+
+		end;
+     /*********************************
+ 	#TRANSACCION:  'MAT_FRI_SEL'
+ 	#DESCRIPCION:	Control de firmas qr
+ 	#AUTOR:	 Ale MV
+ 	#FECHA:		23-12-2016 13:13:01
+	***********************************/
+    elsif(p_transaccion='MAT_FRI_SEL')then
+
+		begin
+
+   create temp table firma_funcionarios(
+            nombre_estado varchar,
+            desc_funcionario2 text,
+            fecha_ini text,
+            nro_tramite varchar,
+            tipo_solicitud varchar,
+            fecha_solicitud text
+           )on commit drop;
+  			FOR v_firmas IN (   select s.id_estado_wf
+								from mat.tsolicitud s
+                                where s.id_proceso_wf= v_parametros.id_proceso_wf)
+                                LOOP
+                                raise  notice 'estasd %', v_firmas.id_estado_wf;
+                                INSERT INTO firma_funcionarios(
+                                WITH RECURSIVE estado( id_proceso_wf,id_estado_wf,id_funcionario,id_estado_anterior,id_tipo_estado)as(
+								select et.id_proceso_wf, et.id_estado_wf, et.id_funcionario,et.id_estado_anterior, et.id_tipo_estado
+								from wf.testado_wf et
+								where et.id_proceso_wf= v_parametros.id_proceso_wf
+								UNION
+								select et.id_proceso_wf, et.id_estado_wf, et.id_funcionario,et.id_estado_anterior, et.id_tipo_estado
+                                from wf.testado_wf et, estado
+                                WHERE et.id_estado_wf =estado.id_estado_anterior
+								)select  te.nombre_estado,
+                                         initcap(fu.desc_funcionario1) as funcionario_bv ,
+                                         to_char( pwf.fecha_ini,'DD/MM/YYYY')as fecha_ini,
+                                         sol.nro_tramite,
+                                         sol.tipo_solicitud,
+                                         to_char(  sol.fecha_solicitud,'DD/MM/YYYY')as fecha_solicitud
+                                         from estado es
+                                         INNER JOIN wf.ttipo_estado te on te.id_tipo_estado= es.id_tipo_estado
+                                         INNER JOIN wf.tproceso_wf pwf on pwf.id_proceso_wf=es.id_proceso_wf
+                                         INNER JOIN wf.ttipo_proceso tp on tp.id_tipo_proceso=pwf.id_tipo_proceso
+                                         INNER JOIN mat.tsolicitud sol on sol.id_proceso_wf=pwf.id_proceso_wf
+                                         INNER JOIN orga.vfuncionario fu on fu.id_funcionario = es.id_funcionario
+     									 ORDER BY es.id_estado_wf ASC);
+                                         END LOOP;
+
+            v_consulta:='select *
+            			from firma_funcionarios';
+
+            --Devuelve la respuesta
+            return v_consulta;
+
 
 		end;
 

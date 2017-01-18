@@ -21,7 +21,6 @@ header("content-type: text/javascript; charset=UTF-8");
         breset: false,
         constructor:function(config)
         {
-
             this.addEvents('beforesave');
             this.addEvents('successsave');
             this.buildComponentesDetalle();
@@ -31,9 +30,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.init();
             this.onNew();
             this.iniciarEventos();
-            //console(setValue);
-            //this.Cmp.origen_pedido.store.loadData(this.arrayStore['Gerencia de Operaciones'].concat(this.arrayStore['Gerencia de Mantenimiento']));
-
         },
         buildComponentesDetalle: function () {
 
@@ -113,7 +109,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         lazyRender: true,
                         resizable:true,
                         mode: 'remote',
-                        pageSize: 100,
+                        pageSize: 50,
                         queryDelay: 100,
                         anchor: '40%',
                         gwidth: 10,
@@ -181,6 +177,7 @@ header("content-type: text/javascript; charset=UTF-8");
                      this.ocultarComponente(this.Cmp.mel);
                      this.ocultarComponente(this.Cmp.tipo_reporte);
                      this.ocultarComponente(this.Cmp.tipo_falla);
+                     this.ocultarComponente(this.Cmp.nro_justificacion);
                  }
 
                  if(this.isInArray(rec.json, this.arrayStore['Gerencia de Mantenimiento'])){
@@ -190,12 +187,31 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.mel);
                     this.mostrarComponente(this.Cmp.tipo_reporte);
                     this.mostrarComponente(this.Cmp.tipo_falla);
+                    this.ocultarComponente(this.Cmp.nro_justificacion);
+
                 }
             },this);
 
             this.ocultarComponente(this.Cmp.mel);
             this.ocultarComponente(this.Cmp.tipo_reporte);
             this.ocultarComponente(this.Cmp.tipo_falla);
+            this.ocultarComponente(this.Cmp.nro_justificacion);
+
+            this.Cmp.justificacion.on('select',function(cmp,rec){
+                if(this.Cmp.justificacion.getValue() == 'Task Card'){
+                    this.mostrarComponente(this.Cmp.nro_justificacion);
+                }
+               else if(this.Cmp.justificacion.getValue() == 'Directriz de Aeronavegabilidad'){
+                    this.mostrarComponente(this.Cmp.nro_justificacion);
+                }
+               else if(this.Cmp.justificacion.getValue() == 'Boletín de Servicio'){
+                    this.mostrarComponente(this.Cmp.nro_justificacion);
+                }
+                else{
+                    this.ocultarComponente(this.Cmp.nro_justificacion);
+                }
+            },this);
+
 
         },
         evaluaRequistos: function(){
@@ -757,15 +773,31 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros'],
-                    enableMultiSelect: true
+                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros']
+
                 },
-                type:'AwesomeCombo',
+                type:'ComboBox',
                 id_grupo:1,
                 grid:true,
                 form:true
 
             },
+            {
+                config:{
+                    name: 'nro_justificacion',
+                    fieldLabel: 'Nro. Justicaion',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:100
+                },
+                type:'TextField',
+                filters:{pfiltro:'sol.estado',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:true
+            },
+
             {
                 config:{
                     name:'tipo_solicitud',
@@ -869,7 +901,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_no_rutina',
-                    fieldLabel: 'Nro. Doc. Origen de Solicitud',
+                    fieldLabel: 'Nro. No Rutina',
                     allowBlank: true,
                     anchor: '100%',
                     gwidth: 200,
@@ -881,7 +913,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:true
             },
-
             {
                 config:{
                     name: 'estado_reg',
@@ -1001,46 +1032,55 @@ header("content-type: text/javascript; charset=UTF-8");
             for (k = 0; k < me.megrid.store.getCount(); k++) {
                 record = me.megrid.store.getAt(k);
                 arra[k] = record.data;
-
             }
             me.argumentExtraSubmit = { 'json_new_records': JSON.stringify(arra, function replacer(key, value) {
-
-
                 return value;
             }) };
+
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
+                params:{id_usuario: 0},
+                success:function(resp){
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    var nro_justificacion =reg.ROOT.datos.justificacion,
+                        patron1 = "{",
+                        patron2 = "}",
+                        nuevoValor    = "",
+                        nuevaCadena = nro_justificacion.replace(patron1, nuevoValor),
+                        nuevaCadena = nuevaCadena.replace(patron2, nuevoValor);
+                    var arra2 = nuevaCadena.split(',');
+                    var numero;
+                    for(i=0; i < arra2.length; i++) {
+                        if (this.Cmp.nro_justificacion.getValue() == arra2[i]) {
+                            numero = arra2[i];
+                        }
+                    }
+                    //console.log('llega',numero);
+                    if(this.Cmp.nro_justificacion.getValue() == numero ){
+
+                        Ext.Msg.confirm('Confirmación', 'Número de Justificacion ' + arra2[i] + ' - ' + this.Cmp.justificacion.getValue() + ' fue registrado en otra solicitud', function (btn) {
+                            if (btn === 'yes') {
+                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                            } else {
+
+                            }
+                        },this);
+                    }
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+
+            });
             if(this.evaluaRequistos()){
 
                 if( k > 0 &&  !this.editorDetail.isVisible()){
-                    Ext.Ajax.request({
-                        url:'../../sis_gestion_materiales/control/Solicitud/compararNroOrigen',
-                        params:{id_usuario: 0},
-                        success:function(resp){
-                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                            //console.log('esta llegando de la base',reg.ROOT.datos.nro_no_rutina);
-                            var cadena =reg.ROOT.datos.nro_no_rutina,
-                                patron1 = "{",
-                                patron2 = "}",
-                                nuevoValor    = "",
-                                nuevaCadena = cadena.replace(patron1, nuevoValor),
-                                nuevaCadena = nuevaCadena.replace(patron2, nuevoValor);
-                            var arra = nuevaCadena.split(',');
-                            for(i=0; i < arra.length; i++){
-                                if(this.Cmp.nro_no_rutina.getValue()==arra[i]){
-                                    Ext.Msg.alert('Alerta','Número '+arra[i]+' de Documento Origen Solicitud ya fue registrado');
-                                }
-                            }
-                            Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                        },
-                        failure: this.conexionFailure,
-                        timeout:this.timeout,
-                        scope:this
-                    });
+
                 }
                 else{
                     alert("No tiene datos en el detalle")
                 }
             }
-
 
 
         }

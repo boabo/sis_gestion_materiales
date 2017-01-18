@@ -70,7 +70,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
-                this.getBoton('edit').setVisible(false);
+                this.getBoton('edit').setVisible(true);
                 // this.getBoton('del').disable();
             }
             return tb;
@@ -78,7 +78,12 @@ header("content-type: text/javascript; charset=UTF-8");
 
         bdel:false,
         bsave:false,
-        bnew:false
+        bnew:false,
+        sortInfo:{
+            field: 'id_solicitud',
+            direction: 'DESC'
+        }
+
     }
 
 </script>

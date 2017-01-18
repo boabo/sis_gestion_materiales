@@ -65,6 +65,9 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_no_rutina','varchar');
         $this->captura('desc_proveedor','varchar');
         $this->captura('nro_partes','text');
+        $this->captura('nro_justificacion','varchar');
+
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -112,6 +115,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_reporte','tipo_reporte','varchar');
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
+        $this->setParametro('nro_justificacion','nro_justificacion','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -231,6 +235,7 @@ class MODSolicitud extends MODbase{
             $this->setParametro('tipo_reporte','tipo_reporte','varchar');
             $this->setParametro('mel','mel','varchar');
             $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
+            $this->setParametro('nro_justificacion','nro_justificacion','varchar');
 
             //Ejecuta la instruccion
             $this->armarConsulta();
@@ -415,6 +420,30 @@ class MODSolicitud extends MODbase{
         $this->captura('id_unidad_medida','int4');
         $this->captura('estado','varchar');
         $this->captura('unidad_medida','varchar');
+        $this->captura('nro_justificacion','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listasFrimas(){
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_FRI_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+       // $this->setParametro('orden','id_procordeneso_wf','varchar');
+
+        $this->captura('nombre_estado','varchar');
+        $this->captura('funcionario_bv','text');
+        $this->captura('fecha_ini','text');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('tipo_solicitud','varchar');
+        $this->captura('fecha_solicitud','text');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -465,6 +494,24 @@ class MODSolicitud extends MODbase{
         $this->transaccion='MAT_GET_ORG';
         $this->tipo_procedimiento='IME';
         $this->captura('nro_no_rutina','varchar');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
+    function listaNroJustificacion(){
+
+        $this->procedimiento ='mat.ft_solicitud_ime';
+        $this->transaccion='MAT_GET_JUS';
+        $this->tipo_procedimiento='IME';
+        $this->captura('justificacion','varchar');
+        $this->captura('nro','varchar');
+        //$this->captura('nro_justificacion','varchar');
+       // $this->captura('desc_funcionario1','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

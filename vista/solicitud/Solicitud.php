@@ -121,14 +121,53 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Estado',
                     allowBlank: true,
                     anchor: '80%',
-                    gwidth: 100,
-                    maxLength:100
+                    gwidth: 200,
+                    maxLength:100,
+                    renderer: function(value, p, record){
+                        if(value == 'borrador'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="red">{0}</font></b></div>', value );
+                        }
+                        if(value == 'vobo_area'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
+                        }
+                        if(value == 'revision'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' abastecimientos');
+                        }
+                        if(value == 'cotizacion'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' abastecimientos');
+                        }
+                        if(value == 'compra'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' abastecimientos');
+                        }
+                        if(value == 'despachado'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' MIAMI');
+                        }
+                        if(value == 'arribo'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' Bolivia');
+                        }
+                        if(value == 'desaduanizado'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
+                        }
+                        if(value == 'almacen'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' BoA');
+                        }
+                        if(value == 'finalizado'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="#006400">{0}</font></b></div>', value);
+                        }if(value == 'anulado'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
+                        }if(value == 'vobo_aeronavegabilidad'){
+                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
+                        }
+                    }
                 },
                 type:'TextField',
                 filters:{pfiltro:'sol.estado',type:'string'},
                 id_grupo:1,
                 grid:true,
-                form:false
+                form:false,
+                bottom_filter:true,
+
+
             },
             {
                 config:{
@@ -312,6 +351,21 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
+                    name: 'nro_justificacion',
+                    fieldLabel: 'Nro. Justicaion',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:100
+                },
+                type:'TextField',
+                filters:{pfiltro:'sol.estado',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
                     name:'tipo_solicitud',
                     fieldLabel:'Tipo Solicitud',
                     allowBlank:false,
@@ -468,7 +522,7 @@ header("content-type: text/javascript; charset=UTF-8");
              type:'TextField',
              filters:{pfiltro:'sol.nro_po',type:'string'},
              id_grupo:2,
-             grid:true,
+             grid:false,
              form:true
              },
             {
@@ -488,7 +542,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboRec',
                 filters:{pfiltro:'pro.desc_proveedor',type:'string'},
                 id_grupo:2,
-                grid: true,
+                grid: false,
                 form: true
             },
             /*{
@@ -547,7 +601,7 @@ header("content-type: text/javascript; charset=UTF-8");
              type:'DateField',
              filters:{pfiltro:'sol.fecha_despacho_miami',type:'date'},
              id_grupo:2,
-             grid:true,
+             grid:false,
              form:true
              },
             {
@@ -563,7 +617,7 @@ header("content-type: text/javascript; charset=UTF-8");
              type:'DateField',
              filters:{pfiltro:'sol.fecha_arribo_bolivia',type:'date'},
              id_grupo:2,
-             grid:true,
+             grid:false,
              form:true
              },
             {
@@ -579,7 +633,7 @@ header("content-type: text/javascript; charset=UTF-8");
              type:'DateField',
              filters:{pfiltro:'sol.fecha_desaduanizacion',type:'date'},
              id_grupo:2,
-             grid:true,
+             grid:false,
              form:true
              },
             {
@@ -588,14 +642,14 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Fecha en Almacen',
                     allowBlank: true,
                     anchor: '100%',
-                    gwidth: 100,
+                    gwidth: 150,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
                 },
                 type:'DateField',
                 filters:{pfiltro:'sol.fecha_en_almacen',type:'date'},
                 id_grupo:2,
-                grid:true,
+                grid:false,
                 form:true
             },
             {
@@ -609,7 +663,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 },
                 type:'TextField',
-                filters:{pfiltro:'nro_partes',type:'string'},
+                filters:{pfiltro:'de.nro_parte',type:'string'},
                 id_grupo:1,
                 grid:true,
                 form:false
@@ -824,10 +878,12 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'nro_no_rutina', type: 'string'},
             {name:'desc_proveedor', type: 'string'},
             {name:'nro_partes', type: 'string'},
+            {name:'nro_justificacion', type: 'string'},
+
 
         ],
         sortInfo:{
-            field: 'id_solicitud',
+            field: 'sol.fecha_reg',
             direction: 'DESC'
         },
         bdel:true,
@@ -987,8 +1043,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         scope: this
                     }
                 );
-            if(rec.data.estado=='cotizacion' && rec.data.nro_po==''|| rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
-                // Ext.Msg.alert('Alerta','Para pasar al estado de compras tiene que registras los campos Nro. PO y Provedor ');
+            if(rec.data.estado=='cotizacion' && rec.data.nro_po=='' &&  rec.data.id_proveedor == null|| rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
                 this.onButtonEdit();
 
             }

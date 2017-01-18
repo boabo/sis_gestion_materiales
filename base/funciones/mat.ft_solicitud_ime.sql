@@ -73,6 +73,10 @@ DECLARE
 
      v_cont integer =0;
 
+     v_nro_justificacion record;
+     v_justificacion varchar[];
+     v_nro VARCHAR[];
+
 
 
 BEGIN
@@ -194,6 +198,7 @@ END IF;
             tipo_reporte,
             mel,
             nro_no_rutina,
+            nro_justificacion,
 			estado,
 			id_usuario_reg,
 			usuario_ai,
@@ -231,6 +236,7 @@ END IF;
             v_parametros.tipo_reporte,
             v_parametros.mel,
             v_parametros.nro_no_rutina,
+            v_parametros.nro_justificacion,
 			v_codigo_estado,
 			p_id_usuario,
 			v_parametros._nombre_usuario_ai,
@@ -329,11 +335,11 @@ END IF;
                 v_codigo
         from mat.tsolicitud ma
         where ma.id_solicitud = v_parametros.id_solicitud;
-        IF v_codigo_estado!='borrador'  THEN
+        /*IF v_codigo_estado!='borrador'  THEN
 
                    raise exception 'Solo se pueden anular Solicitud en estado borrador';
 
-                END IF;
+                END IF;*/
          -- obtenemos el tipo del estado anulado
 
         select
@@ -685,6 +691,31 @@ END IF;
         --raise exception 'llega: %',v_numero_doc;
         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
         v_resp = pxp.f_agrega_clave(v_resp,'nro_no_rutina', v_numero_doc::varchar );
+        return v_resp;
+
+		end;
+     /*********************************
+ 	#TRANSACCION:  'MAT_GET_JUS'
+ 	#DESCRIPCION:	control de numero de justificacion
+ 	#AUTOR:		MMV
+ 	#FECHA:		10-01-2017 13:13:01
+	***********************************/
+
+	elsif(p_transaccion='MAT_GET_JUS')then
+
+		begin
+         FOR v_nro_justificacion in (SELECT s.nro_justificacion
+     													FROM mat.tsolicitud s
+
+     	)LOOP
+			v_cont= v_cont+1;
+            v_justificacion[v_cont] = v_nro_justificacion.nro_justificacion;
+            --v_nro[v_cont] = v_nro_justificacion.nro;
+        END LOOP;
+
+        v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+        v_resp = pxp.f_agrega_clave(v_resp,'justificacion', v_justificacion::varchar );
+        v_resp = pxp.f_agrega_clave(v_resp,'nro', v_nro::varchar );
         return v_resp;
 
 		end;

@@ -64,7 +64,8 @@ BEGIN
 						det.fecha_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        un.codigo
+                        un.codigo,
+                        un.descripcion as desc_descripcion
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod

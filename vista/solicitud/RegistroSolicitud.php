@@ -12,10 +12,6 @@ header("content-type: text/javascript; charset=UTF-8");
     Phx.vista.RegistroSolicitud = {
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
-       /* sortInfo:{
-            field: 'id_solicitud',
-            direction: 'DESC'
-        },*/
 
         title: 'Solicitud',
         nombreVista: 'RegistroSolicitud',
