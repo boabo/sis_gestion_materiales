@@ -178,6 +178,7 @@ header("content-type: text/javascript; charset=UTF-8");
                      this.ocultarComponente(this.Cmp.tipo_reporte);
                      this.ocultarComponente(this.Cmp.tipo_falla);
                      this.ocultarComponente(this.Cmp.nro_justificacion);
+                    this.Cmp.nro_justificacion.reset();
                  }
 
                  if(this.isInArray(rec.json, this.arrayStore['Gerencia de Mantenimiento'])){
@@ -188,8 +189,22 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_reporte);
                     this.mostrarComponente(this.Cmp.tipo_falla);
                     this.ocultarComponente(this.Cmp.nro_justificacion);
+                    this.mostrarComponente(this.Cmp.justificacion);
+                    this.Cmp.nro_justificacion.reset();
 
                 }
+                if(this.isInArray(rec.json, this.arrayStore['Almacenes Consumibles o Rotables'])){
+                    this.Cmp.origen_pedido.setValue('Almacenes Consumibles o Rotables');
+                }
+                if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
+                    this.ocultarComponente(this.Cmp.mel);
+                    this.ocultarComponente(this.Cmp.tipo_reporte);
+                    this.ocultarComponente(this.Cmp.tipo_falla);
+                    this.ocultarComponente(this.Cmp.nro_justificacion);
+                    this.ocultarComponente(this.Cmp.justificacion);
+                    this.ocultarComponente(this.Cmp.id_matricula);
+                }
+                this.Cmp.nro_justificacion.reset();
             },this);
 
             this.ocultarComponente(this.Cmp.mel);
@@ -1058,9 +1073,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     //console.log('llega',numero);
                     if(this.Cmp.nro_justificacion.getValue() == numero ){
 
-                        Ext.Msg.confirm('Confirmación', 'Número de Justificacion ' + arra2[i] + ' - ' + this.Cmp.justificacion.getValue() + ' fue registrado en otra solicitud', function (btn) {
+                        Ext.Msg.confirm('Confirmación', 'Número de Justificacion ' + numero + ' - ' + this.Cmp.justificacion.getValue() + ' fue registrado en un anterior solicitud desea continuar el registro ', function (btn) {
                             if (btn === 'yes') {
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+
                             } else {
 
                             }

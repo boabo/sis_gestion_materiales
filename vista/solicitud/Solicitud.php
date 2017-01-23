@@ -339,11 +339,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    gwidth: 200,
-                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros'],
-                    enableMultiSelect: true
+                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros']
+
                 },
-                type:'AwesomeCombo',
+                type:'ComboBox',
                 id_grupo:1,
                 grid:true,
                 form:true
@@ -359,10 +358,11 @@ header("content-type: text/javascript; charset=UTF-8");
                     maxLength:100
                 },
                 type:'TextField',
-                filters:{pfiltro:'sol.estado',type:'string'},
+                filters:{pfiltro:'sol.nro_justificacion',type:'string'},
                 id_grupo:1,
                 grid:true,
-                form:true
+                form:true,
+                bottom_filter:true
             },
             {
                 config:{
@@ -382,7 +382,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'ComboBox',
                 id_grupo:1,
                 grid:true,
-                form:true
+                form:true,
+                bottom_filter:true
 
             },
             {
