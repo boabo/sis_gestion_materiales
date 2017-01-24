@@ -18,6 +18,9 @@ class MODSolicitud extends MODbase{
         $this->procedimiento='mat.ft_solicitud_sel';
         $this->transaccion='MAT_SOL_SEL';
         $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setParametro('pes_estado','pes_estado','varchar');
+
+
 
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');
@@ -434,6 +437,7 @@ class MODSolicitud extends MODbase{
         $this->transaccion='MAT_FRI_SEL';
         $this->tipo_procedimiento='SEL';
         $this->setCount(false);
+
 
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
        // $this->setParametro('orden','id_procordeneso_wf','varchar');
