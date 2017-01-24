@@ -178,6 +178,7 @@ header("content-type: text/javascript; charset=UTF-8");
                      this.ocultarComponente(this.Cmp.tipo_reporte);
                      this.ocultarComponente(this.Cmp.tipo_falla);
                      this.ocultarComponente(this.Cmp.nro_justificacion);
+                    this.mostrarComponente(this.Cmp.id_matricula);
                     this.Cmp.nro_justificacion.reset();
                  }
 
@@ -190,6 +191,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_falla);
                     this.ocultarComponente(this.Cmp.nro_justificacion);
                     this.mostrarComponente(this.Cmp.justificacion);
+                    this.mostrarComponente(this.Cmp.id_matricula);
                     this.Cmp.nro_justificacion.reset();
 
                 }
