@@ -51,6 +51,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler: this.loadCheckDocumentosRecWf,
                 tooltip: '<b>Documentos del Reclamo</b><br/>Subir los documetos requeridos en el Reclamo seleccionado.'
             });
+            this.addButton('btnObs',{
+                grupo:[0,1,2,3,4,5],
+                text :'Obs Wf.',
+                iconCls : 'bchecklist',
+                disabled: true,
+                handler : this.onOpenObs,
+                tooltip : '<b>Observaciones</b><br/><b>Observaciones del WF</b>'
+            });
             this.addButton('diagrama_gantt',{
                 grupo:[0,1,2,3,4,5],
                 text:'Gant',
@@ -989,6 +997,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('btnChequeoDocumentosWf').setDisabled(false);
             Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);
             this.getBoton('diagrama_gantt').enable();
+            this.getBoton('btnObs').enable();
         },
 
         liberaMenu:function(){
@@ -998,6 +1007,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
                 this.getBoton('diagrama_gantt').disable();
+                this.getBoton('btnObs').disable();
 
             }
             return tb
@@ -1014,6 +1024,24 @@ header("content-type: text/javascript; charset=UTF-8");
                 rec.data,
                 this.idContenedor,
                 'DocumentoWf'
+            )
+        },
+        onOpenObs:function() {
+            var rec=this.sm.getSelected();
+            var data = {
+                id_proceso_wf: rec.data.id_proceso_wf,
+                id_estado_wf: rec.data.id_estado_wf,
+                num_tramite: rec.data.nro_tramite
+            }
+            Phx.CP.loadWindows('../../../sis_workflow/vista/obs/Obs.php',
+                'Observaciones del WF',
+                {
+                    width:'80%',
+                    height:'70%'
+                },
+                data,
+                this.idContenedor,
+                'Obs'
             )
         },
 
