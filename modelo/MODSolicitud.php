@@ -20,8 +20,6 @@ class MODSolicitud extends MODbase{
         $this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setParametro('pes_estado','pes_estado','varchar');
 
-
-
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');
         $this->captura('id_funcionario_sol','int4');

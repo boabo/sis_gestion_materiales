@@ -154,7 +154,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
 
 
 
-        $html = 'Funcionario Solicitante: '.$fun."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tip."\n".'Estado: '.$esta3."\n".'Fecha de de la Solicitud: '.$fecha3."\n";
+        $html = 'Funcionario Solicitante: '.$fun."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$esta."\n".'Fecha de de la Solicitud: '.$fecha."\n";
         // set style for barcode
         $style = array(
             'border' => 2,
