@@ -422,6 +422,7 @@ class MODSolicitud extends MODbase{
         $this->captura('estado','varchar');
         $this->captura('unidad_medida','varchar');
         $this->captura('nro_justificacion','varchar');
+        $this->captura('nro_parte_alterno','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

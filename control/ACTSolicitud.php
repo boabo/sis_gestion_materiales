@@ -185,18 +185,21 @@ class ACTSolicitud extends ACTbase{
     function reporteRequerimientoAlm (){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res2=$this->objFunc->listasFrimas($this->objParam);
+
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
         //Genera el nombre del archivo (aleatorio + titulo)
         $nombreArchivo=uniqid(md5(session_id()).$titulo);
         $nombreArchivo.='.pdf';
-        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('orientacion','L');
         $this->objParam->addParametro('tamano','LETTER');
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RRequemientoMaterielesAlm($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 

@@ -197,8 +197,6 @@ class RRequemientoMaterielesIng extends  ReportePDF {
     function setDatos($datos,$datos2) {
         $this->datos = $datos;
         $this->datos2 = $datos2;
-        //var_dump($this->$datos2);exit;
-
     }
     function generarReporte() {
         $this->setFontSubsetting(false);
