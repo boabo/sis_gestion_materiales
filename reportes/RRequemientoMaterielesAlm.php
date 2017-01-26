@@ -46,6 +46,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->MultiCell(0, 10, ' Motivo: '. $this->datos[0]['motivo_solicitud']."\n", 1, 'J', 0, '', '');
         $this->ln();
         $this->SetFont('times', '', 11);
+
         $this->MultiCell(0, 10, ' Observaciones: '. $this->datos[0]['observaciones_sol']."\n", 1, 'J', 0, '', '');
         $this->ln(13);
         $this->SetFont('times', 'B', 11);
@@ -100,7 +101,11 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->ln(48);
         $this->Cell(70, 30, ' ', 0, 0, 'C', 0, '', 0);
         $this->Cell(50, 10, ' Solicitado Por: ' . $this->datos[0]['desc_funcionario1'], 0, 0, 'L', 0, '', 0);
-        $this->Cell(50, 10, 'Revisado Por: '.$usr, 0, 0, 'C', 0, '', 0);
+        if($this->datos[0]['estado'] == 'cotizacion') {
+            $this->Cell(50, 10, 'Revisado Por: ' . $usr, 0, 0, 'C', 0, '', 0);
+        }else{
+            $this->Cell(50, 10, 'Revisado Por: ', 0, 0, 'C', 0, '', 0);
+        }
         $this->Cell(0, 30,  ' ', 0, 0, 'C', 0, '', 0);
 
 
@@ -108,8 +113,8 @@ class RRequemientoMaterielesAlm extends  ReportePDF
 
         $this->ln(1);
         $this->Cell(70, 30, ' ', 0, 0, 'C', 0, '', 0);
-        $this->Cell(55, 40, ' ', 1, 0, 'C', 0, '', 0);
-        $this->Cell(55, 40, ' ', 1, 0, 'C', 0, '', 0);
+        $this->Cell(60, 40, ' ', 1, 0, 'C', 0, '', 0);
+        $this->Cell(60, 40, ' ', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 30,  ' ', 0, 0, 'C', 0, '', 0);
         $this->ln();
 
@@ -135,7 +140,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
 
             $this->write2DBarcode($html, 'QRCODE,L', 100, 165, 25, 25, $style, 'N');
         }
-        
+
     }
     function setDatos($datos,$datos2) {
         $this->datos = $datos;
