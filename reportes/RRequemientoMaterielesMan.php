@@ -91,12 +91,12 @@ class RRequemientoMaterielesMan extends  ReportePDF
             $fecha3 =$Row['fecha_solicitud'];
         }
         $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
-        if($this->datos[0]['estado'] == 'vobo_area'or $this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'vobo_area'or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion') {
             $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
         }else{
             $this->MultiCell(65, 0, 'Unidad C & S/Control Producción', 0, 'C', 0, '', '');
         }
-        if($this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion') {
             $this->MultiCell(65, 0, 'Gerencia de Mantenimiento'. "\n".$this->datos2[0]['funcionario_bv'],  0, 'C', 0, '', '');
         }else{
             $this->MultiCell(65, 0, 'Gerencia de Mantenimiento',  0, 'C', 0, '', '');
