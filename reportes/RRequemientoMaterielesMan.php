@@ -145,14 +145,14 @@ class RRequemientoMaterielesMan extends  ReportePDF
             'module_height' => 1 // height of a single module in points
         );
 
-        if($this->datos[0]['estado'] == 'vobo_area'  or $this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'vobo_area'  or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion') {
 
             $this->write2DBarcode($html, 'QRCODE,L', 60, 148, 25, 25, $style, 'N');
         }
         $html3 = 'Funcionario Solicitante: '.$usr."\n".'Nro. Pedido: '.$tra."\n".'Tipo Solicitud: '.$tip."\n".'Estado: '.$esta3."\n".'Fecha de de la Solicitud: '.$fecha3."\n";
 
 
-        if($this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion') {
 
             $this->write2DBarcode($html3, 'QRCODE,L', 125, 148, 25, 25, $style, 'N');
         }
