@@ -10,7 +10,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(40, $height, '', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $this->SetFontSize(16);
         $this->SetFont('', 'B');
-        $this->MultiCell(105, $height,"\n".'COMITÉ DE EVALUACIÓN TÉNICA'."\n".'REPUESTOS AERONÁUTICOS' , 0, 'C', 0, '', '');
+        $this->MultiCell(105, $height,"\n".'COMITÉ DE EVALUACIÓN TÉCNICA'."\n".'REPUESTOS AERONÁUTICOS' , 0, 'C', 0, '', '');
         $y = $this->getY();
         $this->Image(dirname(__FILE__) . '/../../pxp/lib' . $_SESSION['_DIR_LOGO'], 10, $y, 36);
         $this->ln(25);
@@ -64,13 +64,15 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(40, 7, 'Tipo de Falla', 1, 0, 'C', 0, '', 0);
         $this->Cell(45, 7,  'Tipo de Reporte', 1, 0, 'C', 0, '', 0);
         $this->Cell(45, 7,  'tipo de Solicitud', 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 7,  ' MEL Due Date '. $this->datos[0]['fecha_requerida'], 1, 0, 'L', 0, '', 0);
+        $this->Cell(25, 7,  'MEL', 1, 0, 'C', 0, '', 0);
+        $this->Cell(0, 7,  'Due Date ', 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
         $this->Cell(40, 15,$this->datos[0]['tipo_falla'] , 1, 0, 'C', 0, '', 0);
         $this->Cell(45, 15, $this->datos[0]['tipo_reporte'] , 1, 0, 'C', 0, '', 0);
         $this->Cell(45, 15, $this->datos[0]['tipo_solicitud'] , 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 15, $this->datos[0]['mel'] , 1, 0, 'C', 0, '', 0);
+        $this->Cell(25, 15, $this->datos[0]['mel'] , 1, 0, 'C', 0, '', 0);
+        $this->Cell(0, 15, $this->datos[0]['fecha_requerida'] , 1, 0, 'C', 0, '', 0);
 
         $this->ln();
         $this->SetFont('times', '', 11);
@@ -80,25 +82,33 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(0, 7, ' Evaluado y Analizado Por: ', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', 'B', 11);
-        $this->MultiCell(65, 0, 'Unidad C & S/Control Producción'. "\n".$this->datos[0]['desc_funcionario1'],  0, 'C', 0, '', '');
-        $this->Cell(65, 0,  'Unidad Linea / Hagar / Taller', 0, 0, 'C', 0, '', 0);
-        $this->Cell(0, 0,  'Unidad Control Calidad ', 0, 0, 'C', 0, '', 0);
+        foreach ( $this->datos2 as $Row){
+            $usr = $Row['funcionario_bv'];
+            $fec = $Row['fecha_ini'];
+            $tra = $Row['nro_tramite'];
+            $tip= $Row['tipo_solicitud'];
+            $esta3 = $Row['nombre_estado'];
+            $fecha3 =$Row['fecha_solicitud'];
+        }
+        $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
+        if($this->datos[0]['estado'] == 'vobo_area'or $this->datos[0]['estado'] == 'revision') {
+            $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
+        }else{
+            $this->MultiCell(65, 0, 'Unidad C & S/Control Producción', 0, 'C', 0, '', '');
+        }
+        if($this->datos[0]['estado'] == 'revision') {
+            $this->MultiCell(65, 0, 'Gerencia de Mantenimiento'. "\n".$usr,  0, 'C', 0, '', '');
+        }else{
+            $this->MultiCell(65, 0, 'Gerencia de Mantenimiento',  0, 'C', 0, '', '');
+        }
+
+        $this->Cell(0, 0,  '', 0, 0, 'C', 0, '', 0);
         $this->ln(0.10);
+        $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
         $this->Cell(65, 40, '', 1, 0, 'C', 0, '', 0);
         $this->Cell(65, 40,  '', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 40,  '', 1, 0, 'C', 0, '', 0);
         $this->ln();
-        $this->SetFont('times', 'BU', 11);
-        $this->Cell(30, 0, '', 0, 0, 'C', 0, '', 0);
-        $this->Cell(60, 0, 'Depto. de Mantenimiento', 0, 0, 'C', 0, '', 0);
-        $this->Cell(60, 0,  'Gerencia de Mantenimiento', 0, 0, 'C', 0, '', 0);
-        $this->Cell(0, 0, '', 0, 0, 'C', 0, '', 0);
-        $this->ln(0.10);
-        $this->Cell(30, 40, '', 1, 0, 'C', 0, '', 0);
-        $this->Cell(60, 40, '', 1, 0, 'C', 0, '', 0);
-        $this->Cell(60, 40,  '', 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 40, '', 1, 1, 'C', 0, '', 0);
-        $this->ln(2);
         $this->SetFont('times', '', 11);
         $this->Cell(0, 7, ' Evaluado y Analizado por OAC - 121', 1, 0, 'L', 0, '', 0);
         $this->ln();
@@ -135,17 +145,25 @@ class RRequemientoMaterielesMan extends  ReportePDF
             'module_height' => 1 // height of a single module in points
         );
 
-        if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'vobo_area'  or $this->datos[0]['estado'] == 'revision') {
 
-            $this->write2DBarcode($html, 'QRCODE,L', 35, 148, 25, 25, $style, 'N');
+            $this->write2DBarcode($html, 'QRCODE,L', 60, 148, 25, 25, $style, 'N');
         }
+        $html3 = 'Funcionario Solicitante: '.$usr."\n".'Nro. Pedido: '.$tra."\n".'Tipo Solicitud: '.$tip."\n".'Estado: '.$esta3."\n".'Fecha de de la Solicitud: '.$fecha3."\n";
+
+
+        if($this->datos[0]['estado'] == 'revision') {
+
+            $this->write2DBarcode($html3, 'QRCODE,L', 125, 148, 25, 25, $style, 'N');
+        }
+
+
+
     }
 
-    function setDatos($datos) {
+    function setDatos($datos,$datos2) {
         $this->datos = $datos;
-
-        //var_dump($this->datos);exit;
-
+        $this->datos2 = $datos2;
     }
     function generarReporte() {
         $this->setFontSubsetting(false);

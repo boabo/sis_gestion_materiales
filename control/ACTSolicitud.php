@@ -159,6 +159,8 @@ class ACTSolicitud extends ACTbase{
     function reporteRequerimientoMan (){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res2=$this->objFunc->listasFrimas($this->objParam);
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
         //Genera el nombre del archivo (aleatorio + titulo)
@@ -170,7 +172,7 @@ class ACTSolicitud extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RRequemientoMaterielesMan($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 
