@@ -116,10 +116,17 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.SolicitudCotizacion.superclass.constructor.call(this, config);
             //this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'compra';
+            this.store.baseParams.pes_estado = 'origen_ing';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
         },
+        gruposBarraTareas:[
+            {name:'origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
+            {name:'origen_man',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
+            {name:'origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150}
+
+        ],
+        tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
@@ -147,17 +154,20 @@ header("content-type: text/javascript; charset=UTF-8");
             if(data['estado'] ==  'revision'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this. enableTabDetalle();
 
 
             }else if(data['estado'] !=  'despachado'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this.disableTabDetalle();
             }
             else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this.disableTabDetalle();
             }
             return tb;
@@ -169,6 +179,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(true);
+                this.getBoton('ini_estado').disable();
                 // this.getBoton('del').disable();
             }
             return tb;

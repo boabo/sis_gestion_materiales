@@ -26,7 +26,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->SetFont('times', '', 11);
         $this->Cell(15, 7, ' Fecha', 1, 0, 'C', 0, '', 0);
         $this->Cell(60, 7,  $this->datos[0]['fecha_solicitud'], 1, 0, 'C', 0, '', 0);
-        $this->Cell(60, 7, ' Matrícula', 1, 0, 'L', 0, '', 0);
+        $this->Cell(60, 7, ' Matrícula: '.$this->datos[0]['matri'], 1, 0, 'L', 0, '', 0);
         $this->Cell(0, 7,  $this->datos[0]['matricula'], 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);

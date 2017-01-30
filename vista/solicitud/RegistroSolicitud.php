@@ -36,10 +36,15 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
+        /*beditGroups: [0],
+        bactGroups:  [0,1,2],
+        bexcelGroups: [0,1,2,3],*/
         beditGroups: [0],
         bdelGroups:  [0],
         bactGroups:  [0,1,2],
+        btestGroups: [0],
         bexcelGroups: [0,1,2],
+
 
 
         onButtonNew:function(){
@@ -103,15 +108,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 this. enableTabDetalle();
 
 
-            }else if(data['estado'] !=  'vobo_area'){
+            }else if(data['estado'] !=  'vobo_area') {
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
-              
+
 
                 this.disableTabDetalle();
 
-            }
-            else {
+            } else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').disable();
                 this.disableTabDetalle();

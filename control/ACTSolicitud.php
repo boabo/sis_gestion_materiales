@@ -34,13 +34,15 @@ class ACTSolicitud extends ACTbase{
          if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
             $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'compra') {
-           $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'')");
-
-        }if ($this->objParam->getParametro('pes_estado') == 'abastecimiento') {
+        if ($this->objParam->getParametro('pes_estado') == 'abastecimiento') {
            $this->objParam->addFiltro("sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'origen_ing') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''revision'',''cotizacion'',''compra'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'origen_man') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and  sol.estado  in (''revision'',''cotizacion'',''compra'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'origen_alm') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and  sol.estado  in (''revision'',''cotizacion'',''compra'')");
         }
-
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
             $this->res = $this->objReporte->generarReporteListado('MODSolicitud','listarSolicitud');
@@ -123,6 +125,13 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
         $this->res=$this->objFunc->anteriorEstadoSolicitud($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function inicioEstadoSolicitud(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+        $this->res=$this->objFunc->inicioEstadoSolicitud($this->objParam);
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }

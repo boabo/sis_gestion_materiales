@@ -49,17 +49,20 @@ header("content-type: text/javascript; charset=UTF-8");
             if(data['estado'] ==  'vobo_area'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this. enableTabDetalle();
 
 
             }else if(data['estado'] !=  'revision'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this.disableTabDetalle();
             }
             else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this.disableTabDetalle();
             }
             return tb;
@@ -71,6 +74,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(false);
+                this.getBoton('ini_estado').disable();
                // this.getBoton('del').disable();
             }
             return tb;

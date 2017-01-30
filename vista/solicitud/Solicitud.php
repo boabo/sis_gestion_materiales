@@ -24,24 +24,33 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
 
             this.addButton('ant_estado',{
-                grupo: [0,1,2,3,4,5],
+                grupo: [0],
                 argument: {estado: 'anterior'},
                 text: 'Anterior',
                 iconCls: 'batras',
                 disabled: true,
-                /*hidden:true,*/
                 handler: this.antEstado,
                 tooltip: '<b>Volver al Anterior Estado</b>'
             });
 
             this.addButton('sig_estado',{
-                grupo:[0,1,2,3,4,5],
+                grupo: [0],
                 text:'Siguiente',
                 iconCls: 'badelante',
                 disabled:true,
                 handler:this.sigEstado,
                 tooltip: '<b>Pasar al Siguiente Estado</b>'
             });
+            this.addButton('ini_estado',{
+                grupo:[0],
+                argument: {estado: 'inicio'},
+                text:'Dev. a borrador',
+                iconCls: 'batras',
+                disabled:true,
+                handler:this.iniEstado,
+                tooltip: '<b>Retorna a requerimiento de materiales estado borrador</b>'
+            });
+
 
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
@@ -1116,7 +1125,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     modal:true,
                     width:450,
                     height:250
-                }, { data:rec.data}, this.idContenedor,'AntFormEstadoWf',
+                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
                 {
                     config:[{
                         event:'beforesave',
@@ -1147,6 +1156,51 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.CP.loadingHide();
             resp.argument.wizard.panel.destroy()
             this.reload();
+        },
+
+
+
+
+        iniEstado:function(res){
+            var rec=this.sm.getSelected();
+            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+                'Estado de Wf',
+                {
+                    modal:true,
+                    width:450,
+                    height:250
+                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+                {
+                    config:[{
+                        event:'beforesave',
+                        delegate: this.inAntEstado,
+                    }
+                    ],
+                    scope:this
+                })
+        },
+        inAntEstado: function(wizard,resp){
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitud',
+                params:{
+                    id_proceso_wf: resp.id_proceso_wf,
+                    id_estado_wf:  resp.id_estado_wf,
+                    obs: resp.obs,
+                    estado_destino: resp.estado_destino
+                },
+                argument:{wizard:wizard},
+                success:this.succeEstadoSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+        succeEstadoSinc:function(resp){
+            Phx.CP.loadingHide();
+            resp.argument.wizard.panel.destroy()
+            this.reload();
         }
+
     })
 </script>
