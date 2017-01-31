@@ -190,6 +190,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('del').setVisible(false);
             this.getBoton('edit').setVisible(false);
             this.getBoton('btnObs').setVisible(false);
+            this.getBoton('ini_estado').setVisible(false);
 
         },
         tam_pag:50,

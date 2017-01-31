@@ -2,6 +2,7 @@
 
 class RRequemientoMaterielesIng extends  ReportePDF {
     private  $fun = array();
+
     function Header() {
         $this->ln(15);
         $height = 25;
@@ -49,6 +50,8 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->ln();
 
         $numero = 1;
+        $y= 130;
+        $y2 = 180;
         foreach ($this->datos as $Row) {
             $this->SetFont('times', '', 9);
             $this->Cell(15, 0, $numero, 1, 0, 'C', 0, '', 0);
@@ -59,6 +62,12 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $this->Cell(0, 0, $Row['unidad_medida'], 1, 0, 'C', 0, '', 0);
             $this->ln();
             $numero++;
+            if ($Row > 2){
+                $y = $y + 4;
+            }
+            if ($Row > 2) {
+                $y2 = $y2 + 6;
+            }
         }
         $this->SetFont('times', 'B', 11);
         $this->Cell(0, 7, ' Motivo de la Solicitud', 1, 0, 'L', 0, '', 0);
@@ -92,8 +101,8 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         }
 
         $this->ln();
-        $this->Cell(90, 30, ' ', 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 30,  ' ', 1, 0, 'C', 0, '', 0);
+        $this->Cell(90, 40, ' ', 1, 0, 'C', 0, '', 0);
+        $this->Cell(0, 40,  ' ', 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
         if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision') {
@@ -131,9 +140,9 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->Cell(65, 0,  ' V.B. Gerencia de Operaciones', 0, 0, 'L', 0, '', 0);
         $this->Cell(0, 0,  ' Recibido GAF', 0, 0, 'L', 0, '', 0);
         $this->ln(0.10);
-        $this->Cell(65, 35, ' ', 1, 0, 'L', 0, '', 0);
-        $this->Cell(65, 35,  ' ', 1, 0, 'L', 0, '', 0);
-        $this->Cell(0, 35,  ' ', 1, 0, 'L', 0, '', 0);
+        $this->Cell(65, 40, ' ', 1, 0, 'L', 0, '', 0);
+        $this->Cell(65, 40,  ' ', 1, 0, 'L', 0, '', 0);
+        $this->Cell(0, 40,  ' ', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
         if($this->datos[0]['estado'] == 'revision') {
@@ -171,9 +180,12 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $esta2 = $this->datos2[0]['nombre_estado'];
         $fecha2 =$this->datos2[0]['fecha_solicitud'];
 
+        $x=$this->getX();
+
+
         if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision') {
 
-            $this->write2DBarcode($html, 'QRCODE,L', 45, 135, 25, 25, $style, 'N');
+            $this->write2DBarcode($html, 'QRCODE,L', 45, $y, 30, 30, $style, 'N');
         }
 
 
@@ -181,13 +193,13 @@ class RRequemientoMaterielesIng extends  ReportePDF {
 
         if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision'){
 
-            $this->write2DBarcode($html2, 'QRCODE,L',135, 135, 25, 25, $style, 'N');
+           $this->write2DBarcode($html2, 'QRCODE,L',135, $y, 30, 30, $style, 'N');
         }
         $html3 = 'Funcionario Solicitante: '.$usr."\n".'Nro. Pedido: '.$tra."\n".'Tipo Solicitud: '.$tipo2."\n".'Estado: '.$esta2."\n".'Fecha de de la Solicitud: '.$fecha2."\n";
 
         if($this->datos[0]['estado'] == 'revision'){
 
-            $this->write2DBarcode($html3, 'QRCODE,L',35, 185, 25, 25, $style, 'N');
+            $this->write2DBarcode($html3, 'QRCODE,L',35, $y2, 30, 30, $style, 'N');
         }
 
 
