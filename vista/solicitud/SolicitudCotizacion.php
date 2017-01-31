@@ -16,40 +16,7 @@ header("content-type: text/javascript; charset=UTF-8");
         nombreVista: 'Proceso Compra',
         constructor: function (config) {
             this.Atributos.splice(24,25);
-            this.Atributos.push({
-                    config:{
-                        name: 'nro_po',
-                        fieldLabel: 'Nro. PO',
-                        allowBlank: true,
-                        anchor: '80%',
-                        gwidth: 100
-                    },
-                    type:'TextField',
-                    filters:{pfiltro:'rec.nro_po',type:'string'},
-                    id_grupo:2,
-                    grid:true,
-                    form:false
-                },
-                {
-                    config: {
-                        name: 'id_proveedor',
-                        fieldLabel: 'Proveedor',
-                        anchor: '80%',
-                        tinit: false,
-                        allowBlank: true,
-                        origen: 'PROVEEDOR',
-                        gdisplayField: 'desc_proveedor',
-                        anchor: '100%',
-                        gwidth: 280,
-                        listWidth: '280',
-                        resizable: true
-                    },
-                    type: 'ComboRec',
-                    filters:{pfiltro:'pro.desc_proveedor',type:'string'},
-                    id_grupo:2,
-                    grid: true,
-                    form: false
-                },
+            this.Atributos.push(
                 {
                     config:{
                         name: 'usr_reg',
@@ -118,7 +85,10 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'origen_ing';
             this.load({params:{start:0, limit:this.tam_pag}});
+
             this.finCons = true;
+
+
         },
         gruposBarraTareas:[
             {name:'origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
@@ -178,9 +148,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
-                this.getBoton('edit').setVisible(true);
                 this.getBoton('ini_estado').disable();
-                // this.getBoton('del').disable();
+                this.getBoton('edit').setVisible(false);
             }
             return tb;
         },

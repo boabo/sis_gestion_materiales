@@ -16,7 +16,24 @@ header("content-type: text/javascript; charset=UTF-8");
         nombreVista: 'Consulta Requerimientos',
         constructor: function (config) {
             this.Atributos.splice(24,25);
-            this.Atributos.push({
+            this.Atributos.push(
+                {
+                    config:{
+                        name: 'fecha_cotizacion',
+                        fieldLabel: 'Fecha Cotizacion',
+                        allowBlank: true,
+                        anchor: '100%',
+                        gwidth: 100,
+                        format: 'd/m/Y',
+                        renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                    },
+                    type:'DateField',
+                    filters:{pfiltro:'sol.fecha_cotizacion',type:'date'},
+                    id_grupo:2,
+                    grid:true,
+                    form:false
+                },
+                {
                 config:{
                     name: 'nro_po',
                     fieldLabel: 'Nro. PO',
@@ -48,24 +65,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     filters:{pfiltro:'pro.desc_proveedor',type:'string'},
                     id_grupo:2,
                     grid: true,
-                    form: false
+                    form: true
                 },
-                {
-                config:{
-                    name: 'fecha_despacho_miami',
-                        fieldLabel: 'Fecha Despacho Miami',
-                        allowBlank: true,
-                        anchor: '100%',
-                        gwidth: 100,
-                        format: 'd/m/Y',
-                        renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-                },
-                type:'DateField',
-                    filters:{pfiltro:'sol.fecha_despacho_miami',type:'date'},
-                    id_grupo:2,
-                    grid:true,
-                    form:false
-              },
                 {
                     config:{
                         name: 'fecha_arribado_bolivia',

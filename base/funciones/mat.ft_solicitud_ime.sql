@@ -133,15 +133,6 @@ BEGIN
            inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
            where pm.codigo='GA-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
 END IF;
-            --obtener numero de solicitud
-
-           /* SELECT 	tp.codigo, pr.id_proceso_macro
-                INTO v_codigo_tipo_proceso, v_id_proceso_macro
-                FROM wf.ttipo_proceso tp
-                inner join wf.tproceso_macro pr on pr.id_proceso_macro = tp.id_proceso_macro
-        		WHERE tp.codigo = 'AC-RM' AND tp.estado_reg = 'activo';
-                v_codigo = (v_codigo_tipo_proceso||'-'||lpad((v_count_sol+1)::varchar,6,'0')||'-'||anho);*/
-
 
 
 
@@ -286,7 +277,8 @@ END IF;
 			fecha_solicitud = v_parametros.fecha_solicitud,
 			observaciones_sol = v_parametros.observaciones_sol,
 			--fecha_tentativa_llegada = v_parametros.fecha_tentativa_llegada,
-			fecha_despacho_miami = v_parametros.fecha_despacho_miami,
+			--fecha_despacho_miami = v_parametros.fecha_despacho_miami,
+            fecha_cotizacion = v_parametros.fecha_cotizacion,
 			justificacion = v_parametros.justificacion,
 			fecha_arribado_bolivia = v_parametros.fecha_arribado_bolivia,
 			fecha_desaduanizacion = v_parametros.fecha_desaduanizacion,
@@ -337,12 +329,6 @@ END IF;
                 v_codigo
         from mat.tsolicitud ma
         where ma.id_solicitud = v_parametros.id_solicitud;
-        /*IF v_codigo_estado!='borrador'  THEN
-
-                   raise exception 'Solo se pueden anular Solicitud en estado borrador';
-
-                END IF;*/
-         -- obtenemos el tipo del estado anulado
 
         select
         	te.id_tipo_estado

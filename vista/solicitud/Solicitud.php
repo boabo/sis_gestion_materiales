@@ -606,7 +606,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: false,
                 form: false
             },*/
-             {
+            /* {
              config:{
              name: 'fecha_despacho_miami',
              fieldLabel: 'Fecha Despacho Miami',
@@ -621,7 +621,23 @@ header("content-type: text/javascript; charset=UTF-8");
              id_grupo:2,
              grid:false,
              form:true
-             },
+             },*/
+            {
+                config:{
+                    name: 'fecha_cotizacion',
+                    fieldLabel: 'Fecha Cotizacion',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_cotizacion',type:'date'},
+                id_grupo:2,
+                grid:false,
+                form:true
+            },
             {
              config:{
              name: 'fecha_arribado_bolivia',
@@ -898,6 +914,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'nro_partes', type: 'string'},
             {name:'nro_justificacion', type: 'string'},
 
+            {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'}
+
 
         ],
         sortInfo:{
@@ -1081,7 +1099,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         scope: this
                     }
                 );
-            if(rec.data.estado=='cotizacion' && rec.data.nro_po=='' &&  rec.data.id_proveedor == null|| rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
+            if(  rec.data.estado=='revision' && rec.data.fecha_cotizacion == null ||rec.data.estado=='cotizacion' && rec.data.nro_po=='' &&  rec.data.id_proveedor == null || rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
                 this.onButtonEdit();
 
             }

@@ -16,13 +16,13 @@ header("content-type: text/javascript; charset=UTF-8");
         nombreVista: 'Consulta Requerimientos',
         direction: 'DESC',
         constructor: function (config) {
+
             this.Atributos.splice(24,25);
             this.Atributos.push(
-                
                 {
                     config:{
-                        name: 'fecha_despacho_miami',
-                        fieldLabel: 'Fecha Despacho Miami',
+                        name: 'fecha_cotizacion',
+                        fieldLabel: 'Fecha Cotizacion',
                         allowBlank: true,
                         anchor: '100%',
                         gwidth: 100,
@@ -30,10 +30,44 @@ header("content-type: text/javascript; charset=UTF-8");
                         renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
                     },
                     type:'DateField',
-                    filters:{pfiltro:'sol.fecha_despacho_miami',type:'date'},
+                    filters:{pfiltro:'sol.fecha_cotizacion',type:'date'},
                     id_grupo:2,
                     grid:true,
                     form:false
+                },
+                {
+                    config:{
+                        name: 'nro_po',
+                        fieldLabel: 'Nro. PO',
+                        allowBlank: true,
+                        anchor: '80%',
+                        gwidth: 100
+                    },
+                    type:'TextField',
+                    filters:{pfiltro:'rec.nro_po',type:'string'},
+                    id_grupo:2,
+                    grid:true,
+                    form:false
+                },
+                {
+                    config: {
+                        name: 'id_proveedor',
+                        fieldLabel: 'Proveedor',
+                        anchor: '80%',
+                        tinit: false,
+                        allowBlank: true,
+                        origen: 'PROVEEDOR',
+                        gdisplayField: 'desc_proveedor',
+                        anchor: '100%',
+                        gwidth: 280,
+                        listWidth: '280',
+                        resizable: true
+                    },
+                    type: 'ComboRec',
+                    filters:{pfiltro:'pro.desc_proveedor',type:'string'},
+                    id_grupo:2,
+                    grid: true,
+                    form: false
                 },
                 {
                     config:{
@@ -146,12 +180,24 @@ header("content-type: text/javascript; charset=UTF-8");
                     form:false
                 }
             );
+
             Phx.vista.AbastecimientoSolicitud.superclass.constructor.call(this, config);
+
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'abastecimiento';
+            this.store.baseParams.pes_estado = 'ab_origen_ing';
             this.load({params:{start:0, limit:this.tam_pag}});
+            this.getBoton('ini_estado').setVisible(false);
+            this.getBoton('del').setVisible(false);
+
         },
+        gruposBarraTareas:[
+            {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
+            {name:'ab_origen_man',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
+            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150}
+
+        ],
+        tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
@@ -200,7 +246,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(true);
-                // this.getBoton('del').disable();
+                this.getBoton('del').setVisible(false);
+                this.getBoton('ini_estado').setVisible(false);
             }
             return tb;
         },

@@ -129,8 +129,9 @@ BEGIN
                         sol.mel,
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
-                     	pxp.list (de.nro_parte) as nro_partes,
-                        sol.nro_justificacion
+                        pxp.list (de.nro_parte) as nro_partes,
+                        sol.nro_justificacion,
+                        sol.fecha_cotizacion
                         from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
@@ -187,7 +188,8 @@ BEGIN
                         sol.mel,
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
-                        sol.nro_justificacion order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+                        sol.nro_justificacion,
+                        sol.fecha_cotizacion order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 

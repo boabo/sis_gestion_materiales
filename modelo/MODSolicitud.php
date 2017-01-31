@@ -67,6 +67,7 @@ class MODSolicitud extends MODbase{
         $this->captura('desc_proveedor','varchar');
         $this->captura('nro_partes','text');
         $this->captura('nro_justificacion','varchar');
+        $this->captura('fecha_cotizacion','date');
 
 
 
@@ -148,7 +149,8 @@ class MODSolicitud extends MODbase{
         $this->setParametro('estado_reg','estado_reg','varchar');
         $this->setParametro('observaciones_sol','observaciones_sol','text');
         $this->setParametro('fecha_tentativa_llegada','fecha_tentativa_llegada','date');
-        $this->setParametro('fecha_despacho_miami','fecha_despacho_miami','date');
+        //$this->setParametro('fecha_despacho_miami','fecha_despacho_miami','date');
+        $this->setParametro('fecha_cotizacion','fecha_cotizacion','date');
         $this->setParametro('justificacion','justificacion','varchar');
         $this->setParametro('fecha_arribado_bolivia','fecha_arribado_bolivia','date');
         $this->setParametro('fecha_desaduanizacion','fecha_desaduanizacion','date');
