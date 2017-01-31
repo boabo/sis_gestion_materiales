@@ -63,7 +63,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $this->ln();
             $numero++;
             if ($Row > 1){
-                $y = $y + 4;
+                $y = $y + 4.5;
             }
             if ($Row > 1) {
                 $y2 = $y2 + 4.5;
