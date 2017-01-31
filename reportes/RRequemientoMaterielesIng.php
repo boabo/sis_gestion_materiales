@@ -39,23 +39,23 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->SetFont('times', 'B', 11);
         $this->Cell(0, 7, ' Material a Solicitar', 1, 0, 'L', 0, '', 0);
         $this->ln();
-        $this->SetFont('times', '', 11);
+        $this->SetFont('times', '', 9);
         $this->Cell(15, 0, 'N°', 1, 0, 'C', 0, '', 0);
         $this->Cell(35, 0,  'Número de Parte', 1, 0, 'C', 0, '', 0);
         $this->Cell(35, 0,  'Referencia', 1, 0, 'C', 0, '', 0);
-        $this->Cell(35, 0,  'Descripcion', 1, 0, 'C', 0, '', 0);
-        $this->Cell(35, 0,  'Cantidad', 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 0,  'Descripcion', 1, 0, 'C', 0, '', 0);
+        $this->Cell(20, 0,  'Cantidad', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 0,  'Unidad de Medida', 1, 0, 'C', 0, '', 0);
         $this->ln();
 
         $numero = 1;
         foreach ($this->datos as $Row) {
-            $this->SetFont('times', '', 11);
+            $this->SetFont('times', '', 9);
             $this->Cell(15, 0, $numero, 1, 0, 'C', 0, '', 0);
             $this->Cell(35, 0, $Row['nro_parte'], 1, 0, 'C', 0, '', 0);
             $this->Cell(35, 0, $Row['referencia'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(35, 0, $Row['descripcion'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(35, 0, $Row['cantidad_sol'], 1, 0, 'C', 0, '', 0);
+            $this->Cell(45, 0, $Row['descripcion'], 1, 0, 'C', 0, '', 0);
+            $this->Cell(20, 0, $Row['cantidad_sol'], 1, 0, 'C', 0, '', 0);
             $this->Cell(0, 0, $Row['unidad_medida'], 1, 0, 'C', 0, '', 0);
             $this->ln();
             $numero++;
