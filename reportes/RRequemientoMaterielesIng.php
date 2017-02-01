@@ -132,9 +132,9 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $fecha3 =$Row['fecha_solicitud'];
 
         }
-        foreach ( $Row as $Row2)
+        foreach ( $Row as $Row2 => $value)
         {
-            $usr2 = $Row2['funcionario_bv'];
+            $usr2 = $value['funcionario_bv'];
         }
 
         if($this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion' ) {
