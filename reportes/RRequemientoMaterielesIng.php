@@ -90,12 +90,12 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->ln();
         $this->ln(3);
         $this->SetFont('times', '', 9);
-        if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion') {
             $this->Cell(90, 7, ' Solicitado Por: ' . $this->datos[0]['desc_funcionario1'], 1, 0, 'C', 0, '', 0);
         }else{
             $this->Cell(90, 7, ' Solicitado Por: ', 1, 0, 'L', 0, '', 0);
         }
-        if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad'or $this->datos[0]['estado'] == 'revision') {
+        if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad'or $this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion') {
         $this->Cell(0, 7, ' V.B. Encargado Mantenimiento: '.$this->datos2[0]['funcionario_bv'], 1, 0, 'C', 0, '', 0);
         }else{
             $this->Cell(0, 7, ' V.B. Encargado Mantenimiento: ', 1, 0, 'L', 0, '', 0);
@@ -132,8 +132,13 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $fecha3 =$Row['fecha_solicitud'];
 
         }
-        if($this->datos[0]['estado'] == 'revision' ) {
-            $this->Cell(65, 0, ' V.B. DAC: '.  $this->datos2[0]['funcionario_bv'], 0, 0, 'L', 0, '', 0); ///nombre
+        foreach ( $Row as $Row2)
+        {
+            $usr2 = $Row2['funcionario_bv'];
+        }
+
+        if($this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion' ) {
+            $this->Cell(65, 0, ' V.B. DAC: '.$usr2, 0, 0, 'L', 0, '', 0); ///nombre
         }else{
             $this->Cell(65, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
         }
