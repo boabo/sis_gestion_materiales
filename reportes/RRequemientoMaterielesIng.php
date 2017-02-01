@@ -122,8 +122,9 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->ln();
         $this->SetFont('times', '', 9);
 
-        $this->fun = $Row['funcionario_bv'];
-        foreach ( $this->datos2 as $Row){
+        
+        foreach ( $this->fun  as $Row ){
+
             $usr = $Row['funcionario_bv'];
             $fec = $Row['fecha_ini'];
             $tra = $Row['nro_tramite'];
@@ -132,8 +133,9 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $fecha3 =$Row['fecha_solicitud'];
 
         }
+
         if($this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion' ) {
-            $this->Cell(65, 0, ' V.B. DAC: '.$usr, 0, 0, 'L', 0, '', 0); ///nombre
+            $this->Cell(65, 0, ' V.B. DAC: '.$this->datos2[1]['funcionario_bv'], 0, 0, 'L', 0, '', 0); ///nombre
         }else{
             $this->Cell(65, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
         }
