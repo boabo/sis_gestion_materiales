@@ -82,14 +82,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(0, 7, ' Evaluado y Analizado Por: ', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', 'B', 11);
-        foreach ( $this->datos2 as $Row){
-            $usr = $Row['funcionario_bv'];
-            $fec = $Row['fecha_ini'];
-            $tra = $Row['nro_tramite'];
-            $tip= $Row['tipo_solicitud'];
-            $esta3 = $Row['nombre_estado'];
-            $fecha3 =$Row['fecha_solicitud'];
-        }
+
         $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
         if($this->datos[0]['estado'] == 'vobo_area'or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
@@ -145,11 +138,14 @@ class RRequemientoMaterielesMan extends  ReportePDF
             'module_height' => 1 // height of a single module in points
         );
 
+
+
+
         if($this->datos[0]['estado'] == 'vobo_area'  or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado' ) {
 
             $this->write2DBarcode($html, 'QRCODE,L', 60, 148, 25, 25, $style, 'N');
         }
-        $html3 = 'Encargado: '.$usr."\n".'Nro. Pedido: '.$tra."\n".'Tipo Solicitud: '.$tip."\n".'Estado: '.$esta3."\n".'Fecha de de la Solicitud: '.$fecha3."\n";
+        $html3 = 'Encargado: '.$this->datos2[0]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[0]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
 
 
         if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
