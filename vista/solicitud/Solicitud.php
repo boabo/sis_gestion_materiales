@@ -24,7 +24,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
 
             this.addButton('ant_estado',{
-                grupo: [0],
+                grupo: [0,1],
                 argument: {estado: 'anterior'},
                 text: 'Anterior',
                 iconCls: 'batras',
@@ -34,7 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
             this.addButton('sig_estado',{
-                grupo: [0],
+                grupo: [0,1],
                 text:'Siguiente',
                 iconCls: 'badelante',
                 disabled:true,
@@ -61,7 +61,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Documentos del Reclamo</b><br/>Subir los documetos requeridos en el Reclamo seleccionado.'
             });
             this.addButton('btnObs',{
-                grupo:[0,1,2,3,4,5],
+                grupo:[0,1,3,4,5],
                 text :'Obs Wf.',
                 iconCls : 'bchecklist',
                 disabled: true,

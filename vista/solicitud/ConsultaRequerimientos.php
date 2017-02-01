@@ -182,7 +182,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.ConsultaRequerimientos.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'consulta';
+            this.store.baseParams.pes_estado = 'consulta_op';
             this.load({params:{start:0, limit:this.tam_pag}});
 
             this.getBoton('sig_estado').setVisible(false);
@@ -194,13 +194,23 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ini_estado').setVisible(false);
 
         },
+        gruposBarraTareas:[
+            {name:'consulta_op',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:2,height:0, width: 100},
+            {name:'consulta_mal',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:2,height:0, width: 100},
+            {name:'consulta_ab',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:2,height:0},
+
+        ],
         tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
-        }
+        },
+        beditGroups: [0],
+        bdelGroups:  [0],
+        bactGroups:  [0,1,2],
+        bexcelGroups: [0,1,2]
 
 
     }

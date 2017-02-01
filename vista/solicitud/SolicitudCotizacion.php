@@ -103,6 +103,12 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
+        beditGroups: [0],
+        bdelGroups:  [0],
+        bactGroups:  [0,1,2],
+        btestGroups: [0],
+        bexcelGroups: [0,1,2],
+
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
@@ -149,7 +155,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ini_estado').disable();
-                this.getBoton('edit').setVisible(false);
+               // this.getBoton('edit').setVisible(false);
             }
             return tb;
         },

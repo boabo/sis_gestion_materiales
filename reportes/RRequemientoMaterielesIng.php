@@ -33,7 +33,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->Cell(15, 0, 'Fecha:', 1, 0, 'C', 0, '', 0);
         $this->Cell(25, 0,  $this->datos[0]['fecha_solicitud'], 1, 0, 'C', 0, '', 0);
         $this->Cell(25, 0, 'Matrícula:', 1, 0, 'C', 0, '', 0);
-        $this->Cell(45, 0,  $this->datos[0]['matricula'], 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 0,  $this->datos[0]['matri'], 1, 0, 'C', 0, '', 0);
         $this->Cell(25, 0, 'Pedido N°', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 0,  $this->datos[0]['nro_tramite'], 1, 0, 'C', 0, '', 0);
         $this->ln();

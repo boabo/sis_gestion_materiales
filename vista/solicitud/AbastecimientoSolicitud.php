@@ -192,9 +192,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         gruposBarraTareas:[
-            {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
-            {name:'ab_origen_man',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
-            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150}
+            {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:1,height:0, width: 100},
+            {name:'ab_origen_man',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:1,height:0, width: 100},
+            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:1,height:0, width: 150}
 
         ],
         tam_pag:50,
@@ -204,6 +204,10 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
+        beditGroups: [1],
+        bdelGroups:  [0],
+        bactGroups:  [0,1,2],
+        bexcelGroups: [0,1,2],
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
