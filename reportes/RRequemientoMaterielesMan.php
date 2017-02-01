@@ -130,7 +130,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $fun = $this->datos[0]['desc_funcionario1'];
         $num = $this->datos[0]['nro_tramite'];
         $tipo= $this->datos[0]['tipo_solicitud'];
-        $esta = $this->datos[0]['estado'];
+        $esta = 'borrador';//$this->datos[0]['estado'];
         $fecha =$this->datos[0]['fecha_solicitud'];
 
         $html = 'Funcionario Solicitante: '.$fun."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$esta."\n".'Fecha de de la Solicitud: '.$fecha."\n";
@@ -149,7 +149,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
 
             $this->write2DBarcode($html, 'QRCODE,L', 60, 148, 25, 25, $style, 'N');
         }
-        $html3 = 'Funcionario Solicitante: '.$usr."\n".'Nro. Pedido: '.$tra."\n".'Tipo Solicitud: '.$tip."\n".'Estado: '.$esta3."\n".'Fecha de de la Solicitud: '.$fecha3."\n";
+        $html3 = 'Encargado: '.$usr."\n".'Nro. Pedido: '.$tra."\n".'Tipo Solicitud: '.$tip."\n".'Estado: '.$esta3."\n".'Fecha de de la Solicitud: '.$fecha3."\n";
 
 
         if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
