@@ -133,7 +133,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
 
         }
         if($this->datos[0]['estado'] == 'revision' ) {
-            $this->Cell(65, 0, ' V.B. DAC: '.  $usr, 0, 0, 'L', 0, '', 0);
+            $this->Cell(65, 0, ' V.B. DAC: '.  $this->datos2[0]['funcionario_bv'], 0, 0, 'L', 0, '', 0); ///nombre
         }else{
             $this->Cell(65, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
         }
