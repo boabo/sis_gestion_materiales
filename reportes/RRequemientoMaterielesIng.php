@@ -132,13 +132,8 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $fecha3 =$Row['fecha_solicitud'];
 
         }
-        foreach ( $Row as $Row2 => $value)
-        {
-            $usr2 = $value['funcionario_bv'];
-        }
-
         if($this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion' ) {
-            $this->Cell(65, 0, ' V.B. DAC: '.$usr2, 0, 0, 'L', 0, '', 0); ///nombre
+            $this->Cell(65, 0, ' V.B. DAC: '.$usr, 0, 0, 'L', 0, '', 0); ///nombre
         }else{
             $this->Cell(65, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
         }
