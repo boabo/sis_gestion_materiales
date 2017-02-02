@@ -68,6 +68,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_partes','text');
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
+        $this->captura('contador_estados','bigint');
 
 
 

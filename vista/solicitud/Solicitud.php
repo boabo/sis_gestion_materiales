@@ -141,40 +141,69 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 200,
                     maxLength:100,
                     renderer: function(value, p, record){
-                        if(value == 'borrador'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="red">{0}</font></b></div>', value );
+
+                        if(record.data.contador_estados > 1 || value == 'borrador' && record.data.contador_estados > 0 ) {
+
+                            if(value == 'borrador' ){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados );
+                             }
+                             if(value == 'vobo_area'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value);
+                             }
+                             if(value == 'revision'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
+                             }
+                             if(value == 'cotizacion'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
+                             }
+                             if(value == 'compra'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
+                             }
+                             if(value == 'despachado'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' MIAMI', record.data.contador_estados);
+                             }
+                             if(value == 'arribo'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' Bolivia', record.data.contador_estados);
+                             }
+                             if(value == 'desaduanizado'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
+                             }
+                             if(value == 'almacen'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' BoA', record.data.contador_estados);
+                             }
+                             if(value == 'finalizado'){
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
+                             }if(value == 'anulado'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
+                             }if(value == 'vobo_aeronavegabilidad'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
+                             }
+                        }else{
+
+                            if(value == 'revision'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value+' abastecimientos', record.data.contador_estados);
+                            }if(value == 'cotizacion'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value+' abastecimientos', record.data.contador_estados);
+                            }
+                            if(value == 'compra'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value+' abastecimientos', record.data.contador_estados);
+                            }
+                            if(value == 'despachado'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value+' MIAMI', record.data.contador_estados);
+                            }
+                            if(value == 'arribo'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value+' Bolivia', record.data.contador_estados);
+                            }
+                            if(value == 'desaduanizado'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value, record.data.contador_estados);
+                            }
+                            if(value == 'almacen'){
+                                return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value+' BoA', record.data.contador_estados);
+                            }
+
+                            return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value, record.data.contador_estados);
                         }
-                        if(value == 'vobo_area'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
-                        }
-                        if(value == 'revision'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' abastecimientos');
-                        }
-                        if(value == 'cotizacion'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' abastecimientos');
-                        }
-                        if(value == 'compra'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' abastecimientos');
-                        }
-                        if(value == 'despachado'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' MIAMI');
-                        }
-                        if(value == 'arribo'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' Bolivia');
-                        }
-                        if(value == 'desaduanizado'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
-                        }
-                        if(value == 'almacen'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value+' BoA');
-                        }
-                        if(value == 'finalizado'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="#006400">{0}</font></b></div>', value);
-                        }if(value == 'anulado'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
-                        }if(value == 'vobo_aeronavegabilidad'){
-                            return String.format('<div ext:qtip=" estado  "><b><font color="black">{0}</font></b></div>', value);
-                        }
+
                     }
                 },
                 type:'TextField',
@@ -914,7 +943,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'nro_partes', type: 'string'},
             {name:'nro_justificacion', type: 'string'},
 
-            {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'}
+            {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'},
+            'contador_estados'
 
 
         ],
