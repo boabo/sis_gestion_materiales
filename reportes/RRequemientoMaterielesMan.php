@@ -123,9 +123,9 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->SetFont('times', '', 11);
        /* if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->Cell(90, 7, ' Fecha: ' . $this->datos2[1]['fecha_ini'], 1, 0, 'L', 0, '', 0);
-        }else{
+        }*///else{
             $this->Cell(90, 7, ' Fecha: ', 1, 0, 'L', 0, '', 0);
-        }*/
+       // }
         if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->Cell(0, 7, ' Fecha:' . $this->datos2[2]['fecha_ini'], 1, 0, 'L', 0, '', 0);
         }else{
