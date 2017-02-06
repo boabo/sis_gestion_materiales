@@ -54,8 +54,12 @@ class ACTDetalleSol extends ACTbase{
         $this->res=$this->objFunc->listarUnidadMedida($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function cambiarRevision(){
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->cambiarRevision($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
 
-			
+    }
 }
 
 ?>

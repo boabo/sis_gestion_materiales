@@ -14,6 +14,7 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
         nombreVista: 'Proceso Compra',
+
         constructor: function (config) {
             this.Atributos.splice(24,25);
             this.Atributos.push(
@@ -89,11 +90,14 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
 
 
+
+
         },
         gruposBarraTareas:[
             {name:'origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
-            {name:'origen_man',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
-            {name:'origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150}
+            {name:'origen_man',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
+            {name:'origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150},
+            {name:'almacen',title:'<H1 align="center"><i class="fa fa-list-ul"></i> En Almacén</h1>',grupo:2,height:0, width: 150}
 
         ],
         tam_pag:50,
@@ -132,15 +136,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ant_estado').enable();
                 this.getBoton('ini_estado').enable();
                 this. enableTabDetalle();
-
-
-            }else if(data['estado'] !=  'despachado'){
-                this.getBoton('sig_estado').enable();
-                this.getBoton('ant_estado').enable();
-                this.getBoton('ini_estado').enable();
-                this.disableTabDetalle();
-            }
-            else {
+            } else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').enable();
                 this.getBoton('ini_estado').enable();

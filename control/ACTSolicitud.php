@@ -38,12 +38,16 @@ class ACTSolicitud extends ACTbase{
 
          if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
             $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'')");
+
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing') {
            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion'',''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion'',''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion'',''compra'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'almacen') {
+            $this->objParam->addFiltro(" sol.estado  in (''almacen'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'origen_ing') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''revision'')");

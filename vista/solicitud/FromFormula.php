@@ -248,8 +248,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bloqueaRequisitos: function(sw){
 
             this.Cmp.id_funcionario_sol.setDisabled(sw);
-            this.Cmp.origen_pedido.setDisabled(sw);
-
+            
         },
         evaluaGrilla: function(){
             //al eliminar si no quedan registros en la grilla desbloquea los requisitos en el maestro

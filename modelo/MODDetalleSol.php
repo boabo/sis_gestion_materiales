@@ -18,6 +18,7 @@ class MODDetalleSol extends MODbase{
 		$this->procedimiento='mat.ft_detalle_sol_sel';
 		$this->transaccion='MAT_DET_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
+       
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_detalle','int4');
@@ -41,6 +42,8 @@ class MODDetalleSol extends MODbase{
 		$this->captura('usr_mod','varchar');
         $this->captura('codigo','varchar');
         $this->captura('desc_descripcion','varchar');
+        $this->captura('revisado','varchar');
+
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -94,6 +97,7 @@ class MODDetalleSol extends MODbase{
 		//$this->setParametro('id_moneda','id_moneda','int4');
 		//$this->setParametro('precio','precio','numeric');
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
+        $this->setParametro('revisado','revisado','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -137,6 +141,22 @@ class MODDetalleSol extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
 
+    }
+    function cambiarRevision(){
+
+        $this->procedimiento='mat.ft_control_de_partes';
+        $this->transaccion='MAT_CONT_PAR';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_detalle','id_detalle','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
     }
 
 }

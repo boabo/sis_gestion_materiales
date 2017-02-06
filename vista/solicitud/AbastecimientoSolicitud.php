@@ -15,6 +15,14 @@ header("content-type: text/javascript; charset=UTF-8");
         title: 'Solicitud',
         nombreVista: 'Consulta Requerimientos',
         direction: 'DESC',
+        tabsouth :[
+            {
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/ControlDetalle.php',
+                title:'Detalle',
+                height:'50%',
+                cls:'ControlDetalle'
+            }
+        ],
         constructor: function (config) {
 
             this.Atributos.splice(24,25);
@@ -182,7 +190,6 @@ header("content-type: text/javascript; charset=UTF-8");
             );
 
             Phx.vista.AbastecimientoSolicitud.superclass.constructor.call(this, config);
-
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'ab_origen_ing';
@@ -243,6 +250,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             return tb;
         },
+
         liberaMenu:function(){
             var tb = Phx.vista.AbastecimientoSolicitud.superclass.liberaMenu.call(this);
             if(tb){

@@ -30,6 +30,7 @@ DECLARE
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
 	v_id_detalle	integer;
+    v_campos record;
 
 BEGIN
 
@@ -115,7 +116,8 @@ BEGIN
 			id_usuario_mod = p_id_usuario,
 			fecha_mod = now(),
 			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
+			usuario_ai = v_parametros._nombre_usuario_ai,
+            revisado = v_parametros.revisado
 			where id_detalle=v_parametros.id_detalle;
 
 			--Definicion de la respuesta
@@ -149,8 +151,7 @@ BEGIN
             return v_resp;
 
 		end;
-
-	else
+    else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;
 

@@ -957,6 +957,7 @@ header("content-type: text/javascript; charset=UTF-8");
         btest: false,
         fwidth: '68%',
         fheight : '68%',
+
         tabsouth :[
             {
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',

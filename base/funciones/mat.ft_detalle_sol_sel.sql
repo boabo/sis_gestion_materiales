@@ -27,6 +27,8 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_inner varchar;
+    v_revisado varchar;
 
 BEGIN
 
@@ -40,7 +42,10 @@ BEGIN
  	#FECHA:		23-12-2016 13:13:01
 	***********************************/
 
-	if(p_transaccion='MAT_DET_SEL')then
+
+    v_revisado = 'det.revisado';
+
+    if(p_transaccion='MAT_DET_SEL')then
 
     	begin
     		--Sentencia de la consulta
@@ -65,12 +70,14 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
                         un.codigo,
-                        un.descripcion as desc_descripcion
+                        un.descripcion as desc_descripcion,
+                        '||v_revisado||'
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
                         inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
-				     	where  ';
+
+                        where  ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -97,6 +104,7 @@ BEGIN
 					    inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
 					    inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
+
                         where ';
 
 			--Definicion de la respuesta

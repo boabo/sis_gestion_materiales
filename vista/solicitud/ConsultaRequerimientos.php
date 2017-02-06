@@ -14,6 +14,14 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
         nombreVista: 'Consulta Requerimientos',
+        tabsouth :[
+            {
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/ControlDetalle.php',
+                title:'Detalle',
+                height:'50%',
+                cls:'ControlDetalle'
+            }
+        ],
         constructor: function (config) {
             this.Atributos.splice(24,25);
             this.Atributos.push(

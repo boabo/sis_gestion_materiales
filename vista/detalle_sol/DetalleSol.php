@@ -16,6 +16,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
         Phx.vista.DetalleSol.superclass.constructor.call(this,config);
         this.init();
+        this.grid.addListener('cellclick', this.oncellclick,this);
+
     },
 			
 	Atributos:[
@@ -325,7 +327,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:false
         }
-	],
+
+    ],
 	tam_pag:50,	
 	title:'Detalle_sol',
 	ActSave:'../../sis_gestion_materiales/control/DetalleSol/insertarDetalleSol',
@@ -354,6 +357,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_mod', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'desc_descripcion', type: 'string'},
+        {name:'revisado', type: 'string'},
+        {name:'estado', type: 'string'}
 
 
 	],
@@ -367,13 +372,14 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
         onReloadPage: function (m) {
             this.maestro = m;
+
             this.store.baseParams = {id_solicitud: this.maestro.id_solicitud};
             this.load({params: {start: 0, limit: 50}});
             if(this.maestro.estado ==  'borrador'){
-
                 this.getBoton('new').enable();
 
             }
+
         },
 
         loadValoresIniciales: function () {
@@ -387,6 +393,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('edit').enable();
             this.getBoton('new').enable();
             this.getBoton('del').enable();
+
         }
         else{
 
@@ -395,6 +402,12 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('del').disable();
         }
     },
+    /*mostrar:function () {
+
+
+
+
+    },*/
     liberaMenu: function() {
         Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
         if(this.maestro&&(this.maestro.estado !=  'borrador')){
@@ -403,7 +416,34 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('new').disable();
             this.getBoton('del').disable();
         }
+    },
+    oncellclick : function(grid, rowIndex, columnIndex, e) {
+
+        var record = this.store.getAt(rowIndex),
+            fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
+
+        if(fieldName == 'revisado') {
+            this.cambiarRevision(record);
+        }
+    },
+    cambiarRevision: function(record){
+        Phx.CP.loadingShow();
+        var d = record.data
+        Ext.Ajax.request({
+            url:'../../sis_gestion_materiales/control/DetalleSol/cambiarRevision',
+            params:{ id_detalle: d.id_detalle,revisado:d.revisado},
+            success: this.successRevision,
+            failure: this.conexionFailure,
+            timeout: this.timeout,
+            scope: this
+        });
+        this.reload();
+    },
+    successRevision: function(resp){
+        Phx.CP.loadingHide();
+        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
     }
+
 })
 </script>
 		

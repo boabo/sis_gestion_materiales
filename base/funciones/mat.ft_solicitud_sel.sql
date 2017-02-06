@@ -34,11 +34,9 @@ DECLARE
     p_id_proceso_wf integer;
     v_id_proceso_wf_prev integer;
     v_orden				varchar;
-	v_filtro			varchar;
-    v_funcionario_wf    record;
-    v_record    		record;
-    v_id_usuario_rev	integer;
-    v_origen 			varchar;
+    v_filtro        varchar;
+    v_record record;
+    v_id_usuario_rev record;
 
 BEGIN
 
@@ -67,23 +65,37 @@ BEGIN
           v_filtro = ' 0=0 AND ';
         ELSIF v_parametros.pes_estado = 'borrador' THEN
 
-            v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
+        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
+                ' AND ';
+        ELSIF v_parametros.pes_estado = 'revision' THEN
+
+        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
+                ' AND ';
+        ELSIF v_parametros.pes_estado = 'finalizado' THEN
+
+        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
                 ' AND ';
 
-       ELSIF  (v_parametros.pes_estado = 'visto_bueno' )THEN
+        ELSIF  (v_parametros.pes_estado = 'visto_bueno' )THEN
 
-         select u.id_persona
+         select u.id_persona,
+                count(u.id_usuario)::varchar as cant_reg
          into v_id_usuario_rev
                     from wf.testado_wf es
                     inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
                     inner join segu.tusuario u on u.id_persona = fu.id_persona
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                    WHERE so.estado = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento' OR so.estado = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones' OR so.estado = 'vobo_aeronavegabilidad' and so.origen_pedido = 'Gerencia de Mantenimiento';
+                    WHERE so.estado = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento' OR so.estado = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones' OR so.estado = 'vobo_aeronavegabilidad' and so.origen_pedido = 'Gerencia de Mantenimiento'
+               		GROUP BY u.id_usuario;
+         IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+         ELSE
+         v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_persona||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
+         END IF;
 
-         v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
-
-
+         ELSE
+          v_filtro = '';
           END IF;
 
 			v_consulta:='select
@@ -129,9 +141,12 @@ BEGIN
                         sol.mel,
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
-                        pxp.list (de.nro_parte) as nro_partes,
+                     	pxp.list (de.nro_parte) as nro_partes,
                         sol.nro_justificacion,
-                        sol.fecha_cotizacion
+                        sol.fecha_cotizacion,
+                         (select count(*)
+                             from unnest(pwf.id_tipo_estado_wfs) elemento
+                             where elemento = ew.id_tipo_estado) as contador_estados
                         from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
@@ -142,6 +157,8 @@ BEGIN
                         left join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                         LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
                         LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
+                        inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
+                        inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = sol.id_proceso_wf
                         where  '||v_filtro;
 
 			--Definicion de la respuesta
@@ -189,7 +206,7 @@ BEGIN
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
                         sol.nro_justificacion,
-                        sol.fecha_cotizacion order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+                        contador_estados order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 
@@ -213,10 +230,11 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
                         inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
-                         left join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
+                        left join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                         LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
                         LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
-
+                        inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
+                        inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = sol.id_proceso_wf
                         where ';
 
 			--Definicion de la respuesta
@@ -294,7 +312,7 @@ BEGIN
                                 sol.id_solicitud,
                                 to_char( sol.fecha_solicitud,''DD/MM/YYYY'') as fecha_solicitud,
                                 ot.motivo_orden,
-                                left(ot.desc_orden,20) as matricula,
+                                left(ot.desc_orden,20) as matricula ,
                                 RIGHT (ot.desc_orden,18) as matri,
                                 sol.nro_tramite,
                                 de.nro_parte::text,
