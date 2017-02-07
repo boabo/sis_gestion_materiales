@@ -19,6 +19,8 @@ class MODSolicitud extends MODbase{
         $this->transaccion='MAT_SOL_SEL';
         $this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setParametro('pes_estado','pes_estado','varchar');
+        $this->setParametro('tipo_interfaz','tipo_interfaz','varchar');
+        $this->setParametro('id_usuario','id_usuario','int4');
 
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');

@@ -13,7 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
-        nombreVista: 'Proceso Compra',
+        nombreVista: 'ProcesoCompra',
 
         constructor: function (config) {
             this.Atributos.splice(24,25);

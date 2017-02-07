@@ -18,7 +18,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
             this.maestro = config.maestro;
             Phx.vista.RegistroSolicitud.superclass.constructor.call(this, config);
-            this.store.baseParams={tipo_interfaz:this.nombreVista};
+            this.store.baseParams = {tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'borrador';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;

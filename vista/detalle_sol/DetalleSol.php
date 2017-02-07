@@ -412,9 +412,9 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
         if(this.maestro&&(this.maestro.estado !=  'borrador')){
 
-            this.getBoton('edit').disable();
-            this.getBoton('new').disable();
-            this.getBoton('del').disable();
+            //this.getBoton('edit').disable();
+            //this.getBoton('new').disable();
+            //this.getBoton('del').disable();
         }
     },
     oncellclick : function(grid, rowIndex, columnIndex, e) {

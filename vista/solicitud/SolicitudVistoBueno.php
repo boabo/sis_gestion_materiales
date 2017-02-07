@@ -13,7 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
-        nombreVista: 'Visto Bueno Solicitud',
+        nombreVista: 'VistoBueno',
         constructor: function (config) {
             Phx.vista.SolicitudVistoBueno.superclass.constructor.call(this, config);
             //this.maestro = config.maestro;
