@@ -22,6 +22,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_interfaz','tipo_interfaz','varchar');
         $this->setParametro('id_usuario','id_usuario','int4');
 
+
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');
         $this->captura('id_funcionario_sol','int4');
@@ -67,10 +68,11 @@ class MODSolicitud extends MODbase{
         $this->captura('mel','varchar');
         $this->captura('nro_no_rutina','varchar');
         $this->captura('desc_proveedor','varchar');
-        $this->captura('nro_partes','text');
+        $this->captura('nro_parte','text');
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
+        
 
 
 
@@ -122,6 +124,8 @@ class MODSolicitud extends MODbase{
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
         $this->setParametro('nro_justificacion','nro_justificacion','varchar');
 
+
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -170,6 +174,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_reporte','tipo_reporte','varchar');
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
+        $this->setParametro('revisado','revisado','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -552,6 +557,23 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    /*function cambiarRevision(){
+
+        $this->procedimiento='mat.ft_control_de_partes';
+        $this->transaccion='MAT_CONT_PAR';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_detalle','id_detalle','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }*/
+    
 
 }
 ?>

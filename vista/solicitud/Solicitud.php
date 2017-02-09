@@ -23,6 +23,16 @@ header("content-type: text/javascript; charset=UTF-8");
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
+            this.addButton('ini_estado',{
+                grupo:[0],
+                argument: {estado: 'inicio'},
+                text:'Dev. a borrador',
+                iconCls: 'batras',
+                disabled:true,
+                handler:this.iniEstado,
+                tooltip: '<b>Retorna a estado borrador</b>'
+            });
+
             this.addButton('ant_estado',{
                 grupo: [0,1],
                 argument: {estado: 'anterior'},
@@ -41,17 +51,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler:this.sigEstado,
                 tooltip: '<b>Pasar al Siguiente Estado</b>'
             });
-            this.addButton('ini_estado',{
-                grupo:[0],
-                argument: {estado: 'inicio'},
-                text:'Dev. a borrador',
-                iconCls: 'batras',
-                disabled:true,
-                handler:this.iniEstado,
-                tooltip: '<b>Retorna a requerimiento de materiales estado borrador</b>'
-            });
-
-
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
                 grupo: [0,1,2,3,4,5],
@@ -211,7 +210,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo:1,
                 grid:true,
                 form:false,
-                bottom_filter:true,
+                bottom_filter:true
 
 
             },
@@ -558,19 +557,19 @@ header("content-type: text/javascript; charset=UTF-8");
              form:true
              },*/
             {
-             config:{
-             name: 'nro_po',
-             fieldLabel: 'Nro. PO',
-             allowBlank: true,
-             anchor: '100%',
-             gwidth: 100,
-             maxLength:50
-             },
-             type:'TextField',
-             filters:{pfiltro:'sol.nro_po',type:'string'},
-             id_grupo:2,
-             grid:false,
-             form:true
+                config:{
+                 name: 'nro_po',
+                 fieldLabel: 'Nro. PO',
+                 allowBlank: true,
+                 anchor: '100%',
+                 gwidth: 100, maxLength:50
+                 },
+                type:'TextField',
+                filters:{pfiltro:'sol.nro_po',type:'string'},
+                id_grupo:2,
+                grid:false,
+                form:true,
+                bottom_filter:true
              },
             {
                 config: {
@@ -590,7 +589,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 filters:{pfiltro:'pro.desc_proveedor',type:'string'},
                 id_grupo:2,
                 grid: false,
-                form: true
+                form: true,
+                bottom_filter:true
             },
             /*{
                 config: {
@@ -717,7 +717,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
-                    name: 'nro_partes',
+                    name: 'nro_parte',
                     fieldLabel: 'Nro. de Parte',
                     allowBlank: true,
                     anchor: '80%',
@@ -729,8 +729,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 filters:{pfiltro:'de.nro_parte',type:'string'},
                 id_grupo:1,
                 grid:true,
-                form:false
-                //bottom_filter:true
+                form:false,
+                bottom_filter:true
             },
            /* {
                 config:{
@@ -940,11 +940,12 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'mel', type: 'string'},
             {name:'nro_no_rutina', type: 'string'},
             {name:'desc_proveedor', type: 'string'},
-            {name:'nro_partes', type: 'string'},
+            {name:'nro_parte', type: 'string'},
             {name:'nro_justificacion', type: 'string'},
 
             {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'},
-            'contador_estados'
+            'contador_estados',
+            {name:'revisado', type: 'string'}
 
 
         ],
@@ -1066,6 +1067,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
                 this.getBoton('diagrama_gantt').disable();
                 this.getBoton('btnObs').disable();
+                this.getBoton('ini_estado').setVisible(false);
 
             }
             return tb

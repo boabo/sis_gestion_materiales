@@ -151,7 +151,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ini_estado').disable();
-               // this.getBoton('edit').setVisible(false);
+                this.getBoton('ini_estado').setVisible(true);
+
             }
             return tb;
         },

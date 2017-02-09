@@ -248,6 +248,12 @@ class ACTSolicitud extends ACTbase{
         //var_dump($this->res); exit;
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    /*function cambiarRevision(){
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->cambiarRevision($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+
+    }*/
 
 }
 

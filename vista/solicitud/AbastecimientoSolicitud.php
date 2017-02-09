@@ -23,10 +23,47 @@ header("content-type: text/javascript; charset=UTF-8");
                 cls:'ControlDetalle'
             }
         ],
-        constructor: function (config) {
 
+        gruposBarraTareas:[
+            {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
+            {name:'ab_origen_man',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
+            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150}
+
+        ],
+        actualizarSegunTab: function(name, indice){
+
+            if(this.finCons){
+                this.store.baseParams.pes_estado = name;
+                this.load({params:{start:0, limit:this.tam_pag}});
+            }
+        },
+        tam_pag:50,
+        beditGroups: [0],
+        bdelGroups:  [1],
+        bactGroups:  [0,1,2],
+        bexcelGroups: [0,1,2],
+
+        constructor: function (config) {
+            
             this.Atributos.splice(24,25);
             this.Atributos.push(
+                {
+                    config:{
+                        name: 'nro_parte',
+                        fieldLabel: 'Nro. de Parte',
+                        allowBlank: true,
+                        anchor: '80%',
+                        gwidth: 200,
+                        maxLength:100
+
+                    },
+                    type:'TextField',
+                    filters:{pfiltro:'de.nro_parte',type:'string'},
+                    id_grupo:1,
+                    grid:true,
+                    form:false,
+                    bottom_filter:true
+                },
                 {
                     config:{
                         name: 'fecha_cotizacion',
@@ -188,33 +225,19 @@ header("content-type: text/javascript; charset=UTF-8");
                     form:false
                 }
             );
-
+            this.maestro=config.maestro;
             Phx.vista.AbastecimientoSolicitud.superclass.constructor.call(this, config);
-            this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'ab_origen_ing';
             this.load({params:{start:0, limit:this.tam_pag}});
-            this.getBoton('ini_estado').setVisible(false);
+            this.finCons = true;
+            this.getBoton('ini_estado').setVisible(true);
             this.getBoton('del').setVisible(false);
 
         },
-        gruposBarraTareas:[
-            {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:1,height:0, width: 100},
-            {name:'ab_origen_man',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:1,height:0, width: 100},
-            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:1,height:0, width: 150}
 
-        ],
-        tam_pag:50,
-        actualizarSegunTab: function(name, indice){
-            if(this.finCons){
-                this.store.baseParams.pes_estado = name;
-                this.load({params:{start:0, limit:this.tam_pag}});
-            }
-        },
-        beditGroups: [1],
-        bdelGroups:  [0],
-        bactGroups:  [0,1,2],
-        bexcelGroups: [0,1,2],
+
+   
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
@@ -235,17 +258,21 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(data['estado'] ==  'despachado'){
                 this.getBoton('sig_estado').enable();
+                this.getBoton('ini_estado').enable();
                 this. enableTabDetalle();
 
 
             }else if(data['estado'] !=  'finalizado'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
+
                 this.disableTabDetalle();
             }
             else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').disable();
+                this.getBoton('ini_estado').enable();
                 this.disableTabDetalle();
             }
             return tb;
@@ -259,7 +286,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(true);
                 this.getBoton('del').setVisible(false);
-                this.getBoton('ini_estado').setVisible(false);
+                this.getBoton('ini_estado').disable();
+                this.getBoton('ini_estado').setVisible(true);
+
             }
             return tb;
         },
