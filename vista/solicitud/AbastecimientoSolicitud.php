@@ -40,10 +40,10 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         tam_pag:50,
         beditGroups: [0],
-        bdelGroups:  [1],
+        bdelGroups:  [0],
         bactGroups:  [0,1,2],
+        btestGroups: [0],
         bexcelGroups: [0,1,2],
-
         constructor: function (config) {
 
             this.Atributos.splice(24,25);
@@ -300,13 +300,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ini_estado').enable();
 
                 this.disableTabDetalle();
-            }
+            } 
             else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').disable();
-                this.getBoton('ini_estado').enable();
+                this.getBoton('ini_estado').disable();
                 this.disableTabDetalle();
             }
+
             return tb;
         },
 
