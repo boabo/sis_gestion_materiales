@@ -9,6 +9,7 @@
 require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesIng.php');
 require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesMan.php');
 require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesAlm.php');
+require_once(dirname(__FILE__).'/../reportes/RControlAlmacenXLS.php');
 class ACTSolicitud extends ACTbase{
 
     function listarSolicitud(){
@@ -248,12 +249,30 @@ class ACTSolicitud extends ACTbase{
         //var_dump($this->res); exit;
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-    /*function cambiarRevision(){
-        $this->objFunc=$this->create('MODDetalleSol');
-        $this->res=$this->objFunc->cambiarRevision($this->objParam);
-        $this->res->imprimirRespuesta($this->res->generarJson());
+    function ControlPartesAlmacen (){
 
-    }*/
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->ControlPartesAlmacen ($this->objParam);
+        //obtener titulo de reporte
+        $titulo ='ControlAlmacen';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+
+        $nombreArchivo.='.xls';
+            $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+            $this->objParam->addParametro('datos',$this->res->datos);
+            //Instancia la clase de excel
+            $this->objReporteFormato=new RControlAlmacenXLS($this->objParam);
+            $this->objReporteFormato->generarDatos();
+            $this->objReporteFormato->generarReporte();
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
+    }
 
 }
 

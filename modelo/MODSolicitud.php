@@ -557,22 +557,35 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-    /*function cambiarRevision(){
 
-        $this->procedimiento='mat.ft_control_de_partes';
-        $this->transaccion='MAT_CONT_PAR';
-        $this->tipo_procedimiento='IME';
+    function ControlPartesAlmacen(){
 
-        //Define los parametros para la funcion
-        $this->setParametro('id_detalle','id_detalle','int4');
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_CON_AL_SEL';
+        $this->tipo_procedimiento='SEL';
 
+        $this->setParametro('origen_pedido','origen_pedido','varchar');
+        $this->setParametro('fecha_ini','fecha_ini','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setCount(false);
+        $this->captura('id_solicitud','int4');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('origen_pedido','varchar');
+        $this->captura('estado','varchar');
+        $this->captura('desc_funcionario1','text');
+        $this->captura('fecha_solicitud','text');
+        $this->captura('nro_parte','text');
+        $this->captura('nro_parte_alterno','text');
+        $this->captura('descripcion','varchar');
+        $this->captura('cantidad_sol','numeric');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-
+        //var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
-    }*/
+    }
+
     
 
 }
