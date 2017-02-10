@@ -18,6 +18,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //llama al constructor de la clase padre
             Phx.vista.Solicitud.superclass.constructor.call(this,config);
             this.init();
+
             this.grid.addListener('cellclick', this.oncellclick,this);
             this.store.baseParams = {tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'borrador';

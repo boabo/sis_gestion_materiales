@@ -72,7 +72,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
-        //$this->captura('revisado_so','varchar');
+        $this->captura('revisado_so','varchar');
         
 
 
@@ -173,7 +173,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_reporte','tipo_reporte','varchar');
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
-        //$this->setParametro('revisado_so','revisado_so','varchar');
+        $this->setParametro('revisado_so','revisado_so','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

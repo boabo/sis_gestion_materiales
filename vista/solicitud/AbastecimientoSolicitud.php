@@ -226,7 +226,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     form:false
                 }
             );
-           /* this.Atributos.unshift({
+            this.Atributos.unshift({
                 config: {
                     name: 'revisado_so',
                     fieldLabel: 'Rev..',
@@ -252,7 +252,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: true,
                 form: false
 
-            });*/
+            });
             this.maestro=config.maestro;
             Phx.vista.AbastecimientoSolicitud.superclass.constructor.call(this, config);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
@@ -265,10 +265,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
 
-        oncellclick : function(grid, rowIndex, columnIndex, e) {
-
-            console.log('llega cell')
-        },
+       
 
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
