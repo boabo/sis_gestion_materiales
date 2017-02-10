@@ -27,7 +27,8 @@ header("content-type: text/javascript; charset=UTF-8");
         gruposBarraTareas:[
             {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:0,height:0, width: 100},
             {name:'ab_origen_man',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:0,height:0, width: 100},
-            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150}
+            {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:0,height:0, width: 150},
+            {name:'almacen',title:'<H1 align="center"><i class="fa fa-list-ul"></i> En Almacén</h1>',grupo:2,height:0, width: 150}
 
         ],
         actualizarSegunTab: function(name, indice){
@@ -44,7 +45,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bexcelGroups: [0,1,2],
 
         constructor: function (config) {
-            
+
             this.Atributos.splice(24,25);
             this.Atributos.push(
                 {
@@ -225,6 +226,33 @@ header("content-type: text/javascript; charset=UTF-8");
                     form:false
                 }
             );
+           /* this.Atributos.unshift({
+                config: {
+                    name: 'revisado_so',
+                    fieldLabel: 'Rev..',
+                    allowBlank: true,
+                    anchor: '50%',
+                    gwidth: 80,
+                    maxLength: 3,
+                    renderer: function (value, p, record, rowIndex, colIndex) {
+
+                        //check or un check row
+                        var checked = '',
+                            momento = 'no';
+                        if (value == 'si') {
+                            checked = 'checked';;
+                        }
+                        return String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:20px;width:20px;" type="checkbox"  {0}></div>', checked);
+
+                    }
+                },
+                type: 'TextField',
+                filters: {pfiltro: 'sol.revisado_so', type: 'string'},
+                id_grupo: 0,
+                grid: true,
+                form: false
+
+            });*/
             this.maestro=config.maestro;
             Phx.vista.AbastecimientoSolicitud.superclass.constructor.call(this, config);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
@@ -233,11 +261,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
             this.getBoton('ini_estado').setVisible(true);
             this.getBoton('del').setVisible(false);
-
         },
 
 
-   
+
+        oncellclick : function(grid, rowIndex, columnIndex, e) {
+
+            console.log('llega cell')
+        },
+
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
@@ -293,9 +325,6 @@ header("content-type: text/javascript; charset=UTF-8");
             return tb;
         },
         bnew: false
-
-
-
 
     }
 

@@ -357,8 +357,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_mod', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'desc_descripcion', type: 'string'},
-        {name:'revisado', type: 'string'},
-        {name:'estado', type: 'string'}
+        {name:'revisado', type: 'string'}
+
 
 
 	],
@@ -395,12 +395,12 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('del').enable();
 
         }
-        else{
+        /*else{
 
             this.getBoton('edit').disable();
             this.getBoton('new').disable();
             this.getBoton('del').disable();
-        }
+        }*/
     },
     /*mostrar:function () {
 

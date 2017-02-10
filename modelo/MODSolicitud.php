@@ -72,6 +72,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
+        //$this->captura('revisado_so','varchar');
         
 
 
@@ -124,8 +125,6 @@ class MODSolicitud extends MODbase{
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
         $this->setParametro('nro_justificacion','nro_justificacion','varchar');
 
-
-
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -174,7 +173,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_reporte','tipo_reporte','varchar');
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
-        $this->setParametro('revisado','revisado','varchar');
+        //$this->setParametro('revisado_so','revisado_so','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -548,8 +547,7 @@ class MODSolicitud extends MODbase{
         $this->tipo_procedimiento='IME';
         $this->captura('justificacion','varchar');
         $this->captura('nro','varchar');
-        //$this->captura('nro_justificacion','varchar');
-       // $this->captura('desc_funcionario1','varchar');
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -578,6 +576,22 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_parte_alterno','text');
         $this->captura('descripcion','text');
         $this->captura('cantidad_sol','numeric');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listarRevision(){
+
+        $this->procedimiento='mat.ft_control_de_partes';
+        $this->transaccion='MAT_CONT_COT';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud','id_solicitud','int4');
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

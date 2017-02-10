@@ -123,26 +123,24 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->SetFont('times', '', 9);
 
         if($this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra' or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->Cell(65, 0, ' V.B. DAC: '.$this->datos2[1]['funcionario_bv'], 0, 0, 'L', 0, '', 0); ///nombre
+            $this->Cell(95, 0, ' V.B. DAC: '.$this->datos2[1]['funcionario_bv'], 0, 0, 'L', 0, '', 0); ///nombre
         }else{
-            $this->Cell(65, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
+            $this->Cell(95, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
         }
 
-        $this->Cell(65, 0,  ' V.B. Gerencia de Operaciones', 0, 0, 'L', 0, '', 0);
+
         $this->Cell(0, 0,  ' Recibido GAF', 0, 0, 'L', 0, '', 0);
         $this->ln(0.10);
-        $this->Cell(65, 35, ' ', 1, 0, 'L', 0, '', 0);
-        $this->Cell(65, 35,  ' ', 1, 0, 'L', 0, '', 0);
+        $this->Cell(90, 35, ' ', 1, 0, 'L', 0, '', 0);
+
         $this->Cell(0, 35,  ' ', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
         if($this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->Cell(65, 7, ' Fecha: ' . $this->datos2[1]['fecha_ini'], 1, 0, 'L', 0, '', 0);
+            $this->Cell(90, 7, ' Fecha: ' . $this->datos2[1]['fecha_ini'], 1, 0, 'L', 0, '', 0);
         }else{
-            $this->Cell(65, 7, ' Fecha: ', 1, 0, 'L', 0, '', 0);
+            $this->Cell(90, 7, ' Fecha: ', 1, 0, 'L', 0, '', 0);
         }
-
-        $this->Cell(65, 7,  ' Fecha:', 1, 0, 'L', 0, '', 0);
         $this->Cell(0, 7,  ' Fecha:', 1, 1, 'L', 0, '', 0);
         $this->ln();
 

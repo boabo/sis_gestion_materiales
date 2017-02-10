@@ -273,6 +273,12 @@ class ACTSolicitud extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
     }
+    function cambiarRevision(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarRevision($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+
+    }
 
 }
 

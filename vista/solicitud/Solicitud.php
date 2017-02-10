@@ -18,10 +18,12 @@ header("content-type: text/javascript; charset=UTF-8");
             //llama al constructor de la clase padre
             Phx.vista.Solicitud.superclass.constructor.call(this,config);
             this.init();
+            this.grid.addListener('cellclick', this.oncellclick,this);
             this.store.baseParams = {tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'borrador';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
+
 
             this.addButton('ini_estado',{
                 grupo:[0],
@@ -945,7 +947,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
             {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'},
             'contador_estados',
-            {name:'revisado', type: 'string'}
+            {name:'revisado_so', type: 'string'}
+            
 
 
         ],
@@ -1251,6 +1254,35 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.CP.loadingHide();
             resp.argument.wizard.panel.destroy()
             this.reload();
+        },
+
+
+        oncellclick : function(grid, rowIndex, columnIndex, e) {
+
+            console.log('llega cellclick')
+            var record = this.store.getAt(rowIndex),
+                fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
+
+            if(fieldName == 'revisado_so') {
+                this.cambiarRevision(record);
+            }
+        },
+        cambiarRevision: function(record){
+            Phx.CP.loadingShow();
+            var d = record.data
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/cambiarRevision',
+                params:{ id_solicitud: d.id_solicitud, revisado_so: d.revisado_so},
+                success: this.successRevision,
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+            this.reload();
+        },
+        successRevision: function(resp){
+            Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
         }
 
     })
