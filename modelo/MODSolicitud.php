@@ -576,7 +576,7 @@ class MODSolicitud extends MODbase{
         $this->captura('fecha_solicitud','text');
         $this->captura('nro_parte','text');
         $this->captura('nro_parte_alterno','text');
-        $this->captura('descripcion','varchar');
+        $this->captura('descripcion','text');
         $this->captura('cantidad_sol','numeric');
         //Ejecuta la instruccion
         $this->armarConsulta();
