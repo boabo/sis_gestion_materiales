@@ -300,7 +300,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ini_estado').enable();
 
                 this.disableTabDetalle();
-            } 
+            }
             else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').disable();
