@@ -288,6 +288,7 @@ header("content-type: text/javascript; charset=UTF-8");
             if(data['estado'] ==  'despachado'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ini_estado').enable();
+                //this.ocultarComponente(this.Atributos[1]);
                 this. enableTabDetalle();
 
 

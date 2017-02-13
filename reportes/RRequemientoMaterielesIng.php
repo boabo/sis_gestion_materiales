@@ -128,9 +128,12 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $this->Cell(95, 0, 'V.B. DAC', 0, 0, 'L', 0, '', 0);
         }
 
-
-        $this->Cell(0, 0,  ' Recibido GAF', 0, 0, 'L', 0, '', 0);
-        $this->ln(0.10);
+        if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
+            $this->Cell(0, 0, ' Recibido Abastecimiento: ' . $this->datos2[2]['funcionario_bv'], 0, 0, 'L', 0, '', 0);
+        }else{
+            $this->Cell(0, 0, ' Recibido Abastecimiento:' , 0, 0, 'L', 0, '', 0);
+        }
+            $this->ln(0.10);
         $this->Cell(90, 35, ' ', 1, 0, 'L', 0, '', 0);
 
         $this->Cell(0, 35,  ' ', 1, 0, 'L', 0, '', 0);
@@ -141,7 +144,11 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         }else{
             $this->Cell(90, 7, ' Fecha: ', 1, 0, 'L', 0, '', 0);
         }
-        $this->Cell(0, 7,  ' Fecha:', 1, 1, 'L', 0, '', 0);
+        if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
+            $this->Cell(0, 7, ' Fecha: ' . $this->datos2[2]['fecha_ini'], 1, 1, 'L', 0, '', 0);
+        }else{
+            $this->Cell(00, 7, ' Fecha: ', 1, 1, 'L', 0, '', 0);
+        }
         $this->ln();
 
         $fun = $this->datos[0]['desc_funcionario1'];
@@ -187,6 +194,11 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $this->write2DBarcode($html3, 'QRCODE,L',35,$y2, 30, 30, $style, 'N');
         }
 
+        $html4 = 'Encargado: '.$this->datos2[2]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[2]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
+        if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
+
+            $this->write2DBarcode($html4, 'QRCODE,L', 135, $y2, 30, 30, $style, 'N');
+        }
     }
 
     function setDatos($datos,$datos2) {

@@ -10,6 +10,7 @@ require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesIng.php');
 require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesMan.php');
 require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesAlm.php');
 require_once(dirname(__FILE__).'/../reportes/RControlAlmacenXLS.php');
+require_once(dirname(__FILE__).'/../reportes/RSalidaAlmacen.php');
 class ACTSolicitud extends ACTbase{
 
     function listarSolicitud(){
@@ -48,7 +49,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion'',''compra'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'almacen') {
-            $this->objParam->addFiltro(" sol.estado  in (''almacen'')");
+            $this->objParam->addFiltro(" sol.estado  in (''vobo_almacen'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'origen_ing') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''revision'')");
@@ -278,6 +279,34 @@ class ACTSolicitud extends ACTbase{
         $this->res=$this->objFunc->listarRevision($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
 
+    }
+    function reporteSalidaAlmacen (){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarRequerimiento($this->objParam);
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res2=$this->objFunc->listasFrimas($this->objParam);
+
+        //obtener titulo del reporte
+        $titulo = 'Requerimiento de Materiales';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
+        $this->objParam->addParametro('orientacion','L');
+        $this->objParam->addParametro('tamano','A5');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+
+        $this->objReporteFormato=new RSalidaAlmacen($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
 
 }
