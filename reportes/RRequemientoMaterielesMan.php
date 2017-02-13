@@ -106,13 +106,13 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(0, 7, ' Evaluado y Analizado por OAC - 121', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', 'B', 11);
-        /*if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
+        if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->MultiCell(90, 0, 'V.B. DAC' . "\n" . $this->datos2[1]['funcionario_bv'], 0, 'C', 0, '', '');
-        }else{*/
+        }else{
             $this->MultiCell(90, 0, 'V.B. DAC', 0, 'C', 0, '', '');
-       // }
+       }
         if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . $this->datos2[1]['funcionario_bv'], 0, 'C', 0, '', '');
+            $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . $this->datos2[2]['funcionario_bv'], 0, 'C', 0, '', '');
         }else{
             $this->MultiCell(0, 0, 'Recibido Abastecimiento', 0, 'C', 0, '', '');
         }
@@ -166,10 +166,10 @@ class RRequemientoMaterielesMan extends  ReportePDF
             $this->write2DBarcode($html3, 'QRCODE,L', 125, 148, 25, 25, $style, 'N');
         }
 
-        /*$html4 = 'Encargado: '.$this->datos2[1]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[1]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
+        $html4 = 'Encargado: '.$this->datos2[2]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[2]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
         if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->write2DBarcode($html4, 'QRCODE,L', 50, 195, 25, 25, $style, 'N');
-        }*/
+        }
         $html5 = 'Encargado: '.$this->datos2[1]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[1]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
         if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->write2DBarcode($html5, 'QRCODE,L', 140, 195, 25, 25, $style, 'N');
