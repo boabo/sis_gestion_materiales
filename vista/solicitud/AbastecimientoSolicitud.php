@@ -229,11 +229,11 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos.unshift({
                 config: {
                     name: 'revisado_so',
-                    fieldLabel: 'Rev..',
+                    fieldLabel: 'Cotizado',
                     allowBlank: true,
                     anchor: '50%',
-                    gwidth: 80,
-                    maxLength: 3,
+                    gwidth: 50,
+                    maxLength:3,
                     renderer: function (value, p, record, rowIndex, colIndex) {
 
                         //check or un check row
@@ -242,7 +242,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         if (value == 'si') {
                             checked = 'checked';;
                         }
-                        return String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:20px;width:20px;" type="checkbox"  {0}></div>', checked);
+                        return String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:15px;width:15px;" type="checkbox"  {0}></div>', checked);
 
                     }
                 },
