@@ -69,6 +69,22 @@ header("content-type: text/javascript; charset=UTF-8");
                         anchor: '80%',
                         maxLength:5000
                     }),
+                    /*'tipo': new Ext.form.ComboBox({
+
+                        name:'justificacion',
+                        fieldLabel:'Justificación ',
+                        allowBlank:false,
+                        emptyText:'Elija una opción...',
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        lazyRender: true,
+                        lazyRender:true,
+                        mode: 'local',
+                        anchor: '100%',
+                        store:['Consumible','Rotable']
+
+                    }),*/
+
                     'cantidad_sol': new Ext.form.TextField({
                         name: 'cantidad_sol',
                         msgTarget: 'title',
@@ -117,29 +133,6 @@ header("content-type: text/javascript; charset=UTF-8");
                         tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p style="color: blue">{descripcion}</p></div></tpl>'
 
                     })
-
-                    /*'precio': new Ext.form.NumberField({
-                     name: 'precio',
-                     msgTarget: 'title',
-                     fieldLabel: 'Precio',
-                     allowBlank: false,
-                     anchor: '80%',
-                     maxLength:5000
-                     //allowBlank: false,
-                     // allowDecimals: true,
-                     // maxLength:10,
-                     // readOnly :true
-                     }),
-                     'moneda': new Ext.form.TextField({
-                     name: 'moneda',
-                     msgTarget: 'title',
-                     currencyChar:' ',
-                     fieldLabel: 'Moneda',
-                     allowBlank: false,
-                     anchor: '80%',
-                     maxLength:5000
-                     })*/
-
                 }
         },
         arrayStore :{
@@ -789,7 +782,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros']
+                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existencia en Almacén','Otros']
 
                 },
                 type:'ComboBox',
@@ -826,7 +819,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['AOG','Critico','Normal','No Aplicada']
+                    store:['AOG','Critico','Normal','No Aplica']
 
                 },
                 type:'ComboBox',
@@ -847,7 +840,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['Falla Confirmada','T/S en Progreso ','No Aplicada']
+                    store:['Falla Confirmada','T/S en Progreso ','No Aplica']
                 },
                 type:'ComboBox',
                 id_grupo:1,
@@ -867,7 +860,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['PIREPS','MAREPS','No Aplicada']
+                    store:['PIREPS','MAREPS','No Aplica']
 
                 },
                 type:'ComboBox',
@@ -888,7 +881,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['A','B','C','No Aplicada']
+                    store:['A','B','C','No Aplica']
 
                 },
                 type:'ComboBox',

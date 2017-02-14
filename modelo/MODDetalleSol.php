@@ -43,6 +43,7 @@ class MODDetalleSol extends MODbase{
         $this->captura('codigo','varchar');
         $this->captura('desc_descripcion','varchar');
         $this->captura('revisado','varchar');
+        //$this->captura('tipo','varchar');
 
 		
 		//Ejecuta la instruccion
@@ -67,9 +68,8 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('nro_parte','nro_parte','varchar');
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
-		//$this->setParametro('id_moneda','id_moneda','int4');
-		//$this->setParametro('precio','precio','numeric');
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
+		//$this->setParametro('tipo','tipo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -94,10 +94,9 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('nro_parte','nro_parte','varchar');
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
-		//$this->setParametro('id_moneda','id_moneda','int4');
-		//$this->setParametro('precio','precio','numeric');
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
         $this->setParametro('revisado','revisado','varchar');
+        //$this->setParametro('tipo','tipo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

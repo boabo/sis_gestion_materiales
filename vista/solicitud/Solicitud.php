@@ -387,7 +387,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existemcia en Almacén','Otros']
+                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existencia en Almacén','Otros']
 
                 },
                 type:'ComboBox',
@@ -424,7 +424,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['AOG','Critico','Normal','No Aplicada']
+                    store:['AOG','Critico','Normal','No Aplica']
 
                 },
                 type:'ComboBox',
@@ -446,7 +446,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '101%',
-                    store:['Falla Confirmada','T/S en Progreso','No Aplicada'],
+                    store:['Falla Confirmada','T/S en Progreso','No Aplica'],
 
                 },
                 type:'ComboBox',
@@ -467,7 +467,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['PIREPS','MAREPS','No Aplicada']
+                    store:['PIREPS','MAREPS','No Aplica']
 
                 },
                 type:'ComboBox',
@@ -488,7 +488,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['A','B','C','No Aplicada']
+                    store:['A','B','C','No Aplica']
 
                 },
                 type:'ComboBox',

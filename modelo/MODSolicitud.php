@@ -285,6 +285,7 @@ class MODSolicitud extends MODbase{
                 $this->arreglo['referencia'] = $f['referencia'];
                 $this->arreglo['nro_parte_alterno'] = $f['nro_parte_alterno'];
                 $this->arreglo['cantidad_sol'] = $f['cantidad_sol'];
+                //$this->arreglo['tipo'] = $f['tipo'];
 
                 //Define los parametros para la funcion
                 $this->setParametro('id_solicitud','id_solicitud','int4');
@@ -295,6 +296,7 @@ class MODSolicitud extends MODbase{
                 $this->setParametro('referencia','referencia','varchar');
                 $this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
                 $this->setParametro('cantidad_sol','cantidad_sol','numeric');
+                //$this->setParametro('tipo','tipo','varchar');
 
                 //Ejecuta la instruccion
                 $this->armarConsulta();
