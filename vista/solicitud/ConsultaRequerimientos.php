@@ -27,6 +27,23 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos.push(
                 {
                     config:{
+                        name: 'nro_parte',
+                        fieldLabel: 'Nro. de Parte',
+                        allowBlank: true,
+                        anchor: '80%',
+                        gwidth: 200,
+                        maxLength:100
+
+                    },
+                    type:'TextField',
+                    filters:{pfiltro:'de.nro_parte',type:'string'},
+                    id_grupo:1,
+                    grid:true,
+                    form:false,
+                    bottom_filter:true
+                },
+                {
+                    config:{
                         name: 'fecha_cotizacion',
                         fieldLabel: 'Fecha Cotizacion',
                         allowBlank: true,

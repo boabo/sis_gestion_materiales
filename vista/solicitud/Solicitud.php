@@ -424,7 +424,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['AOG','Critico','Normal']
+                    store:['AOG','Critico','Normal','No Aplicada']
 
                 },
                 type:'ComboBox',
@@ -446,10 +446,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '101%',
-                    store:['Falla Confirmada','T/S en Progreso '],
-                    enableMultiSelect: true
+                    store:['Falla Confirmada','T/S en Progreso','No Aplicada'],
+
                 },
-                type:'AwesomeCombo',
+                type:'ComboBox',
                 id_grupo:1,
                 grid:true,
                 form:true
@@ -467,7 +467,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['PIREPS','MAREPS']
+                    store:['PIREPS','MAREPS','No Aplicada']
 
                 },
                 type:'ComboBox',
@@ -488,7 +488,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['A','B','C']
+                    store:['A','B','C','No Aplicada']
 
                 },
                 type:'ComboBox',

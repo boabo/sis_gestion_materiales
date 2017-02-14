@@ -438,6 +438,7 @@ class MODSolicitud extends MODbase{
         $this->captura('motivo_orden','varchar');
         $this->captura('matricula','text');
         $this->captura('matri','text');
+        $this->captura('flota','text');
         $this->captura('nro_tramite','varchar');
         $this->captura('nro_parte','text');
         $this->captura('referencia','text');

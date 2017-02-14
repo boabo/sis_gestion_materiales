@@ -26,8 +26,16 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->SetFont('times', '', 11);
         $this->Cell(15, 7, ' Fecha', 1, 0, 'C', 0, '', 0);
         $this->Cell(60, 7,  $this->datos[0]['fecha_solicitud'], 1, 0, 'C', 0, '', 0);
-        $this->Cell(60, 7, ' Matrícula: '.$this->datos[0]['matri'], 1, 0, 'L', 0, '', 0);
-        $this->Cell(0, 7,  $this->datos[0]['matricula'], 1, 0, 'C', 0, '', 0);
+        if($this->datos[0]['flota'] == 'FLOTA') {
+            $this->Cell(60, 7,  '  '.$this->datos[0]['matricula'], 1, 0, 'L', 0, '', 0);
+        }else{
+            $this->Cell(60, 7, ' Matrícula: ' . $this->datos[0]['matri'], 1, 0, 'L', 0, '', 0);
+        }
+        if($this->datos[0]['flota'] == 'FLOTA') {
+            $this->Cell(0, 7, '', 1, 0, 'C', 0, '', 0);
+        }else{
+            $this->Cell(0, 7, $this->datos[0]['matricula'], 1, 0, 'C', 0, '', 0);
+        }
         $this->ln();
         $this->SetFont('times', '', 11);
         $this->Cell(0, 7, ' Repuesto a Solicitar', 1, 0, 'L', 0, '', 0);
@@ -45,10 +53,17 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->SetFont('times', '', 11);
         $this->Cell(36, 7, ' Número de Parte', 1, 0, 'L', 0, '', 0);
         foreach ($this->datos as $Row) {
-            $this->Cell(35, 7, ' ' .$Row['nro_parte'], 0, 0, 'L', 0, '', 0);
+            $this->Cell(0, 7, ' ' .$Row['nro_parte'], 1, 0, 'L', 0, '', 0);
+        }
+        $this->ln();
+        $this->SetFont('times', '', 11);
+        $this->Cell(36, 7, ' Cantidad', 1, 0, 'L', 0, '', 0);
+        foreach ($this->datos as $Row) {
+            $this->Cell(35, 7, ' ' .$Row['cantidad_sol'], 0, 0, 'L', 0, '', 0);
         }
         $this->ln(0.10);
         $this->Cell(36, 7, '', 0, 0, 'L', 0, '', 0);
+
         $this->Cell(0, 7, '', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', 'B', 11);
@@ -63,7 +78,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->SetFont('times', '', 11);
         $this->Cell(40, 7, 'Tipo de Falla', 1, 0, 'C', 0, '', 0);
         $this->Cell(45, 7,  'Tipo de Reporte', 1, 0, 'C', 0, '', 0);
-        $this->Cell(45, 7,  'tipo de Solicitud', 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 7,  'Tipo de Solicitud', 1, 0, 'C', 0, '', 0);
         $this->Cell(25, 7,  'MEL', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 7,  'Due Date ', 1, 0, 'C', 0, '', 0);
         $this->ln();
