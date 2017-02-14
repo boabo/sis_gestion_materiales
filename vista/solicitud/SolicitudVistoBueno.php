@@ -14,6 +14,14 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
         nombreVista: 'VistoBueno',
+        tabsouth :[
+            {
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',
+                title:'Detalle',
+                height:'50%',
+                cls:'DetalleNoEdit'
+            }
+        ],
         constructor: function (config) {
             Phx.vista.SolicitudVistoBueno.superclass.constructor.call(this, config);
             //this.maestro = config.maestro;

@@ -14,6 +14,15 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
         nombreVista: 'Almacen',
+        tabsouth :[
+            {
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',
+                title:'Detalle',
+                height:'50%',
+                cls:'DetalleNoEdit'
+            }
+        ],
+
         constructor: function (config) {
 
 

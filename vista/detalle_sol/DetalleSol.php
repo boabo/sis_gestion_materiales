@@ -341,11 +341,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
             this.store.baseParams = {id_solicitud: this.maestro.id_solicitud};
             this.load({params: {start: 0, limit: 50}});
-            if(this.maestro.estado ==  'borrador'){
-                this.getBoton('new').enable();
-
-            }
-
         },
 
         loadValoresIniciales: function () {
@@ -361,27 +356,11 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('del').enable();
 
         }
-        /*else{
 
-            this.getBoton('edit').disable();
-            this.getBoton('new').disable();
-            this.getBoton('del').disable();
-        }*/
     },
-    /*mostrar:function () {
 
-
-
-
-    },*/
     liberaMenu: function() {
         Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
-        if(this.maestro&&(this.maestro.estado !=  'borrador')){
-
-            //this.getBoton('edit').disable();
-            //this.getBoton('new').disable();
-            //this.getBoton('del').disable();
-        }
     },
     oncellclick : function(grid, rowIndex, columnIndex, e) {
 
