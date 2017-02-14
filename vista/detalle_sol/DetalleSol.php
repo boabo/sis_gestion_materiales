@@ -102,6 +102,28 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
+                name:'tipo',
+                fieldLabel:'Tipo',
+                allowBlank:false,
+                emptyText:'Elija una opción...',
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode: 'local',
+                anchor: '50%',
+                gwidth: 80,
+                store:['Consumible','Rotable']
+
+            },
+            type:'ComboBox',
+            id_grupo:0,
+            grid:true,
+            form:true,
+            bottom_filter:true
+
+        },
+        {
+            config:{
                 name: 'cantidad_sol',
                 fieldLabel: 'Cantidad',
                 allowBlank: true,
@@ -161,64 +183,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             form: true
 
         },
-        /*{
-            config:{
-                name: 'precio',
-                fieldLabel: 'Precio',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 50,
-                maxLength:1245186
-            },
-            type:'NumberField',
-            filters:{pfiltro:'det.precio',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-        {
-            config: {
-                name: 'id_moneda',
-                fieldLabel: 'Moneda',
-                allowBlank: true,
-                emptyText: 'Elija una opción...',
-                store: new Ext.data.JsonStore({
-                    url: '../../sis_/control/Clase/Metodo',
-                    id: 'id_',
-                    root: 'datos',
-                    sortInfo: {
-                        field: 'nombre',
-                        direction: 'ASC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_', 'nombre', 'codigo'],
-                    remoteSort: true,
-                    baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-                }),
-                valueField: 'id_',
-                displayField: 'nombre',
-                gdisplayField: 'desc_',
-                hiddenName: 'id_moneda',
-                forceSelection: true,
-                typeAhead: false,
-                triggerAction: 'all',
-                lazyRender: true,
-                mode: 'remote',
-                pageSize: 15,
-                queryDelay: 1000,
-                anchor: '100%',
-                gwidth: 150,
-                minChars: 2,
-                renderer : function(value, p, record) {
-                    return String.format('{0}', record.data['desc_']);
-                }
-            },
-            type: 'ComboBox',
-            id_grupo: 0,
-            filters: {pfiltro: 'movtip.nombre',type: 'string'},
-            grid: true,
-            form: true
-        },*/
+
         {
             config:{
                 name: 'estado_reg',
@@ -357,7 +322,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_mod', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'desc_descripcion', type: 'string'},
-        {name:'revisado', type: 'string'}
+        {name:'revisado', type: 'string'},
+        {name:'tipo', type: 'string'}
 
 
 

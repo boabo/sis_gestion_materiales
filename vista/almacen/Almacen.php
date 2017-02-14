@@ -50,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(data['estado'] ==  'almacen'){
                 this.getBoton('sig_estado').enable();
-                this.getBoton('ant_estado').enable();
+                //this.getBoton('ant_estado').enable();
                 this.getBoton('ini_estado').enable();
                 this. enableTabDetalle();
 

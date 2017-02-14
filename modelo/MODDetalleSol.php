@@ -43,7 +43,7 @@ class MODDetalleSol extends MODbase{
         $this->captura('codigo','varchar');
         $this->captura('desc_descripcion','varchar');
         $this->captura('revisado','varchar');
-        //$this->captura('tipo','varchar');
+        $this->captura('tipo','varchar');
 
 		
 		//Ejecuta la instruccion
@@ -69,7 +69,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
-		//$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('tipo','tipo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -96,7 +96,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
         $this->setParametro('revisado','revisado','varchar');
-        //$this->setParametro('tipo','tipo','varchar');
+        $this->setParametro('tipo','tipo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

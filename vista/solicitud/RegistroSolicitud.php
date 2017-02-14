@@ -54,7 +54,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 'Formulario Requerimiento de Materiales',
                 {
                     modal:true,
-                    width:'70%',
+                    width:'78%',
                     height:'90%'
                 }, {data:{objPadre: me}
                 },

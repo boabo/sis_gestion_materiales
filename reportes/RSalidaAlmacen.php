@@ -45,7 +45,7 @@ class RSalidaAlmacen extends  ReportePDF {
             $this->SetFont('times', '', 9);
             $this->Cell(20, 7, $Row['cantidad_sol'], 1, 0, 'C', 0, '', 0);
             $this->Cell(20, 7, $Row['unidad_medida'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(20, 7, '', 1, 0, 'C', 0, '', 0);
+            $this->Cell(20, 7, $Row['tipo'], 1, 0, 'C', 0, '', 0);
             $this->Cell(50, 7, ' '.$Row['nro_parte'], 1, 0, 'L', 0, '', 0);
             $this->Cell(0, 7, ' '.$Row['descripcion'], 1, 0, 'L', 0, '', 0);
             $this->ln();

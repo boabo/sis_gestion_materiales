@@ -69,10 +69,11 @@ header("content-type: text/javascript; charset=UTF-8");
                         anchor: '80%',
                         maxLength:5000
                     }),
-                    /*'tipo': new Ext.form.ComboBox({
 
-                        name:'justificacion',
-                        fieldLabel:'Justificación ',
+                    'tipo': new Ext.form.ComboBox({
+
+                        name:'tipo',
+                        fieldLabel:'Tipo ',
                         allowBlank:false,
                         emptyText:'Elija una opción...',
                         typeAhead: true,
@@ -80,10 +81,10 @@ header("content-type: text/javascript; charset=UTF-8");
                         lazyRender: true,
                         lazyRender:true,
                         mode: 'local',
-                        anchor: '100%',
-                        store:['Consumible','Rotable']
-
-                    }),*/
+                        anchor: '50%',
+                        store:['Consumible','Rotable'],
+                        maxLength: 100
+                    }),
 
                     'cantidad_sol': new Ext.form.TextField({
                         name: 'cantidad_sol',
@@ -343,7 +344,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 totalProperty: 'total',
                 fields: ['id_detalle','id_solicitud','precio', 'cantidad_sol',
                     'id_unidad_medida','descripcion','nro_parte_alterno','moneda','referencia',
-                    'nro_parte','codigo','desc_descripcion'
+                    'nro_parte','codigo','desc_descripcion','tipo'
                 ],remoteSort: true,
                 baseParams: {dir:'ASC',sort:'id_detalle',limit:'100',start:'0'}
             });
@@ -438,6 +439,13 @@ header("content-type: text/javascript; charset=UTF-8");
                         align: 'center',
                         width: 180,
                         editor: this.detCmp.descripcion
+                    },
+                    {
+                        header: 'Tipo',
+                        dataIndex: 'tipo',
+                        align: 'center',
+                        width: 95,
+                        editor: this.detCmp.tipo
                     },
                     {
                         header: 'Cantidad',

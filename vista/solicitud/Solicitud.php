@@ -595,65 +595,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 form: true,
                 bottom_filter:true
             },
-            /*{
-                config: {
-                    name: 'id_proveedor',
-                    fieldLabel: 'id_proveedor',
-                    allowBlank: true,
-                    emptyText: 'Elija una opción...',
-                    store: new Ext.data.JsonStore({
-                        url: '../../sis_parametros/control/Proveedor/listarProveedor',
-                        id: 'id_proveedor',
-                        root: 'datos',
-                        sortInfo: {
-                            field: 'nombre',
-                            direction: 'ASC'
-                        },
-                        totalProperty: 'total',
-                        fields: ['id_proveedor', 'nombre', 'codigo'],
-                        remoteSort: true,
-                        baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-                    }),
-                    valueField: 'id_',
-                    displayField: 'nombre',
-                    gdisplayField: 'desc_',
-                    hiddenName: 'id_proveedor',
-                    forceSelection: true,
-                    typeAhead: false,
-                    triggerAction: 'all',
-                    lazyRender: true,
-                    mode: 'remote',
-                    pageSize: 15,
-                    queryDelay: 1000,
-                    anchor: '100%',
-                    gwidth: 150,
-                    minChars: 2,
-                    renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['desc_']);
-                    }
-                },
-                type: 'ComboBox',
-                id_grupo: 0,
-                filters: {pfiltro: 'movtip.nombre',type: 'string'},
-                grid: false,
-                form: false
-            },*/
-            /* {
-             config:{
-             name: 'fecha_despacho_miami',
-             fieldLabel: 'Fecha Despacho Miami',
-             allowBlank: true,
-             anchor: '100%',
-             gwidth: 100,
-             format: 'd/m/Y',
-             renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-             },
-             type:'DateField',
-             filters:{pfiltro:'sol.fecha_despacho_miami',type:'date'},
-             id_grupo:2,
-             grid:false,
-             form:true
-             },*/
             {
                 config:{
                     name: 'fecha_cotizacion',
@@ -735,54 +676,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:false,
                 bottom_filter:true
             },
-           /* {
-                config:{
-                    name: 'fecha_entrega_miami',
-                    fieldLabel: 'Fecha Entrega Miami',
-                    allowBlank: false,
-                    anchor: '80%',
-                    gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-                },
-                type:'DateField',
-                filters:{pfiltro:'sol.fecha_entrega_miami',type:'date'},
-                id_grupo:2,
-                grid:true,
-                form:true
-            },*/
-            /*{
-             config:{
-             name: 'fecha_tentativa_llegada',
-             fieldLabel: 'fecha_tentativa_llegada',
-             allowBlank: true,
-             anchor: '80%',
-             gwidth: 100,
-             format: 'd/m/Y',
-             renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-             },
-             type:'DateField',
-             filters:{pfiltro:'sol.fecha_tentativa_llegada',type:'date'},
-             id_grupo:1,
-             grid:true,
-             form:true
-             },
-             {
-             config:{
-             name: 'fecha_entrega_almacen',
-             fieldLabel: 'fecha_entrega_almacen',
-             allowBlank: true,
-             anchor: '80%',
-             gwidth: 100,
-             format: 'd/m/Y',
-             renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-             },
-             type:'DateField',
-             filters:{pfiltro:'sol.fecha_entrega_almacen',type:'date'},
-             id_grupo:1,
-             grid:true,
-             form:true
-             },*/
             {
                 config:{
                     name: 'estado_reg',
