@@ -250,7 +250,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 filters: {pfiltro: 'sol.revisado_so', type: 'string'},
                 id_grupo: 0,
                 grid: true,
-                form: false
+                form: true
 
             });
             this.maestro=config.maestro;

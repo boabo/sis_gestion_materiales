@@ -49,7 +49,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion'',''compra'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'almacen') {
-            $this->objParam->addFiltro(" sol.estado  in (''vobo_almacen'')");
+            $this->objParam->addFiltro(" sol.estado  in (''vobo_almacen'',''almacen'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'origen_ing') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''revision'')");
