@@ -367,7 +367,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: false,
                     anchor: '100%',
                     gwidth: 200,
-                    maxLength:100
+                    maxLength:1000
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.observaciones_sol',type:'string'},
