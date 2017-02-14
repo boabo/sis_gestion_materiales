@@ -37,7 +37,7 @@ class MODSolicitud extends MODbase{
         $this->captura('observacion_nota','text');
         $this->captura('fecha_solicitud','date');
         $this->captura('estado_reg','varchar');
-        $this->captura('observaciones_sol','text');
+        $this->captura('observaciones_sol','varchar');
         $this->captura('fecha_tentativa_llegada','date');
         $this->captura('fecha_despacho_miami','date');
         $this->captura('justificacion','varchar');
@@ -104,7 +104,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('observacion_nota','observacion_nota','text');
         $this->setParametro('fecha_solicitud','fecha_solicitud','date');
         $this->setParametro('estado_reg','estado_reg','varchar');
-        $this->setParametro('observaciones_sol','observaciones_sol','text');
+        $this->setParametro('observaciones_sol','observaciones_sol','varchar');
         $this->setParametro('fecha_tentativa_llegada','fecha_tentativa_llegada','date');
         $this->setParametro('fecha_despacho_miami','fecha_despacho_miami','date');
         $this->setParametro('justificacion','justificacion','varchar');
@@ -153,7 +153,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('observacion_nota','observacion_nota','text');
         $this->setParametro('fecha_solicitud','fecha_solicitud','date');
         $this->setParametro('estado_reg','estado_reg','varchar');
-        $this->setParametro('observaciones_sol','observaciones_sol','text');
+        $this->setParametro('observaciones_sol','observaciones_sol','varchar');
         $this->setParametro('fecha_tentativa_llegada','fecha_tentativa_llegada','date');
         //$this->setParametro('fecha_despacho_miami','fecha_despacho_miami','date');
         $this->setParametro('fecha_cotizacion','fecha_cotizacion','date');
@@ -227,7 +227,7 @@ class MODSolicitud extends MODbase{
             $this->setParametro('observacion_nota','observacion_nota','text');
             $this->setParametro('fecha_solicitud','fecha_solicitud','date');
             $this->setParametro('estado_reg','estado_reg','varchar');
-            $this->setParametro('observaciones_sol','observaciones_sol','text');
+            $this->setParametro('observaciones_sol','observaciones_sol','varchar');
             $this->setParametro('fecha_tentativa_llegada','fecha_tentativa_llegada','date');
             $this->setParametro('fecha_despacho_miami','fecha_despacho_miami','date');
             $this->setParametro('justificacion','justificacion','varchar');
@@ -447,7 +447,7 @@ class MODSolicitud extends MODbase{
         $this->captura('tipo_solicitud','varchar');
         $this->captura('fecha_requerida','text');
         $this->captura('motivo_solicitud','varchar');
-        $this->captura('observaciones_sol','text');
+        $this->captura('observaciones_sol','varchar');
         $this->captura('desc_funcionario1','text');
         $this->captura('tipo_falla','varchar');
         $this->captura('tipo_reporte','varchar');
