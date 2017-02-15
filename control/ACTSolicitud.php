@@ -22,10 +22,10 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.estado  in (''borrador'')");
         }
          if ($this->objParam->getParametro('pes_estado') == 'vobo_area') {
-            $this->objParam->addFiltro("sol.estado  in (''vobo_area'')");
+            $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_almacen'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'revision') {
-            $this->objParam->addFiltro("sol.estado  in (''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+            $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }
        if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
             $this->objParam->addFiltro("sol.estado  in (''finalizado'',''anulado'')");
