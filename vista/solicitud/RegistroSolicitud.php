@@ -25,7 +25,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         gruposBarraTareas:[
             {name:'borrador',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borrador</h1>',grupo:0,height:0, width: 100},
-            {name:'vobo_area',title:'<H1 "center"><i class="fa fa-eye"></i>Visto Bueno</h1>',grupo:1,height:0, width: 100},
+            {name:'vobo_area',title:'<H1 "center"><i class="fa fa-eye"></i>Visto Bueno</h1>',grupo:2,height:0, width: 100},
             {name:'revision',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Proceso</h1>',grupo:2,height:0},
             {name:'finalizado',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Finalizado</h1>',grupo:2,height:0}
         ],
