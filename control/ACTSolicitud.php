@@ -31,11 +31,11 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.estado  in (''finalizado'',''anulado'')");
         }
          if ($this->objParam->getParametro('pes_estado') == 'consulta_op') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''vobo_almacen'')");
         }if ($this->objParam->getParametro('pes_estado') == 'consulta_mal') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''vobo_almacen'')");
         }if ($this->objParam->getParametro('pes_estado') == 'consulta_ab') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''borrador'',''vobo_area'',''vobo_aeronavegabilidad'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''vobo_almacen'')");
         }
 
          if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
@@ -292,7 +292,7 @@ class ACTSolicitud extends ACTbase{
         $nombreArchivo=uniqid(md5(session_id()).$titulo);
         $nombreArchivo.='.pdf';
         $this->objParam->addParametro('orientacion','L');
-        $this->objParam->addParametro('tamano','A5');
+        $this->objParam->addParametro('tamano','A4');
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
         //Instancia la clase de pdf
 

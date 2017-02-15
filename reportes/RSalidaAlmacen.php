@@ -50,7 +50,7 @@ class RSalidaAlmacen extends  ReportePDF {
             $this->Cell(0, 7, ' '.$Row['descripcion'], 1, 0, 'L', 0, '', 0);
             $this->ln();
         }
-        $this->Cell(0, 20, '', 1, 0, 'L', 0, '', 0);
+        $this->Cell(0, 30, '', 1, 0, 'L', 0, '', 0);
         $this->Ln(2);
         $this->SetFont('times', '', 10);
         $this->Cell(85, 7, ' Recibido Por: ', 0, 0, 'L', 0, '', 0);
