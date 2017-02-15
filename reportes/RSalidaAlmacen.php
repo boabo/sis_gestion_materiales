@@ -42,7 +42,7 @@ class RSalidaAlmacen extends  ReportePDF {
         $this->Cell(0, 7, 'Descripcion de Material', 1, 0, 'C', 0, '', 0);
         $this->ln();
         foreach ($this->datos as $Row) {
-            $this->SetFont('times', '', 9);
+            $this->SetFont('times', '', 8);
             $this->Cell(20, 7, $Row['cantidad_sol'], 1, 0, 'C', 0, '', 0);
             $this->Cell(20, 7, $Row['unidad_medida'], 1, 0, 'C', 0, '', 0);
             $this->Cell(20, 7, $Row['tipo'], 1, 0, 'C', 0, '', 0);
@@ -57,7 +57,8 @@ class RSalidaAlmacen extends  ReportePDF {
         $this->Cell(0, 7, ' Despachado Por: ', 0, 0, 'L', 0, '', 0);
         $this->Ln();
         $this->Cell(85, 7, ' Autorizada Por: ', 0, 0, 'L', 0, '', 0);
-        $this->Cell(0, 7, ' Observaciones: '.$this->datos[0]['observaciones_sol'], 0, 0, 'L', 0, '', 0);
+        $this->MultiCell(0, 10, 'Observaciones: '. $this->datos[0]['observaciones_sol']."\n", 0, 'J', 0, '', '');
+        //$this->Cell(0, 7, ' Observaciones: '.$this->datos[0]['observaciones_sol'], 0, 0, 'L', 0, '', 0);
         $this->Ln(0.5);
         // output some RTL HTML content
         $html = '<p><span style="background-color: rgb(245,245,255); color: rgb(255,3,0);">Dpto. Abastecimientos y Logística</span> <br/> <span style="background-color: rgb(245,245,255); color: rgb(255,3,0);">Almacén Consumible</span><br/> <span style="background-color: rgb(245,245,255); color: rgb(255,3,0);">Cero de Existencia</span></p>';
