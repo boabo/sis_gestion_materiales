@@ -38,6 +38,29 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
+                    name:'estado',
+                    fieldLabel:'Estado ',
+                    allowBlank:true,
+                    emptyText:'Elija una opción...',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    lazyRender:true,
+                    mode: 'local',
+                    anchor: '33%',
+                    gwidth: 230,
+                    enableMultiSelect : true,
+                    store:['borrador','vobo_area','vobo_aeronavegabilidad','vobo_almacen','revision','cotizacion','compra','despachado','arribo','desaduanizado','almacen','finalizado','anulado']
+
+                },
+                type:'AwesomeCombo',
+                id_grupo:0,
+                grid:true,
+                form:true,
+                bottom_filter:true
+
+            },
+            {
+                config:{
                     name: 'fecha_ini',
                     fieldLabel: 'Fecha Inicio',
                     allowBlank: false,
@@ -91,6 +114,7 @@ header("content-type: text/javascript; charset=UTF-8");
         agregarArgsExtraSubmit: function() {
 
             this.argumentExtraSubmit.origen = this.Cmp.origen_pedido.getRawValue();
+            this.argumentExtraSubmit.est = this.Cmp.estado.getRawValue();
         }
 
     })

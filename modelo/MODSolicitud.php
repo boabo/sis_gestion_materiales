@@ -567,6 +567,7 @@ class MODSolicitud extends MODbase{
         $this->tipo_procedimiento='SEL';
 
         $this->setParametro('origen_pedido','origen_pedido','varchar');
+        $this->setParametro('estado','estado','varchar');
         $this->setParametro('fecha_ini','fecha_ini','date');
         $this->setParametro('fecha_fin','fecha_fin','date');
         $this->setCount(false);
@@ -578,7 +579,7 @@ class MODSolicitud extends MODbase{
         $this->captura('fecha_solicitud','text');
         $this->captura('nro_parte','text');
         $this->captura('nro_parte_alterno','text');
-        $this->captura('descripcion','text');
+        $this->captura('descripcion','varchar');
         $this->captura('cantidad_sol','numeric');
         //Ejecuta la instruccion
         $this->armarConsulta();
