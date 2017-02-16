@@ -308,6 +308,36 @@ class ACTSolicitud extends ACTbase{
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
+    function listarEstado(){
+        $this->objParam->defecto('ordenacion','id_tipo_estado');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('id_tipo_estado') != '') {
+            $this->objParam->addFiltro(" t.id_tipo_estado = " . $this->objParam->getParametro('id_tipo_estado'));
+        }
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarEstado($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function listarEstadoOp(){
+        $this->objParam->defecto('ordenacion','id_tipo_estado');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('id_tipo_estado') != '') {
+            $this->objParam->addFiltro(" t.id_tipo_estado = " . $this->objParam->getParametro('id_tipo_estado'));
+        }
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarEstadoOp($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function listarEstadoRo(){
+        $this->objParam->defecto('ordenacion','id_tipo_estado');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('id_tipo_estado') != '') {
+            $this->objParam->addFiltro(" t.id_tipo_estado = " . $this->objParam->getParametro('id_tipo_estado'));
+        }
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarEstadoRo($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 }
 

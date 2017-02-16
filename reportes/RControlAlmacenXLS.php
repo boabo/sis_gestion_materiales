@@ -152,6 +152,7 @@ class RControlAlmacenXLS
         $fila = 6;
         $datos = $this->objParam->getParametro('datos');
         $this->imprimeCabecera(0);
+        //var_dump($datos);exit;
        foreach ($datos as $value)
         {
 

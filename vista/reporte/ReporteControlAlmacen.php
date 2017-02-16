@@ -24,7 +24,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     triggerAction: 'all',
                     lazyRender:true,
                     mode: 'local',
-                    anchor: '33%',
+                    anchor: '35%',
                     gwidth: 230,
                     store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables']
 
@@ -37,26 +37,132 @@ header("content-type: text/javascript; charset=UTF-8");
 
             },
             {
-                config:{
-                    name:'estado',
-                    fieldLabel:'Estado ',
-                    allowBlank:true,
-                    emptyText:'Elija una opción...',
-                    typeAhead: true,
+                config: {
+                    name: 'estado',
+                    fieldLabel: 'Estado',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_gestion_materiales/control/Solicitud/listarEstado',
+                        id: 'id_tipo_estado',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'codigo',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_tipo_estado', 'codigo'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 't.codigo'}
+                    }),
+                    valueField: 'id_tipo_estado',
+                    displayField: 'codigo',
+                    gdisplayField: 'codigo',
+                    hiddenName: 'estado',
+                    forceSelection: true,
+                    typeAhead: false,
                     triggerAction: 'all',
-                    lazyRender:true,
-                    mode: 'local',
-                    anchor: '33%',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 100,
+                    queryDelay: 1000,
+                    anchor: '35%',
                     gwidth: 230,
-                    enableMultiSelect : true,
-                    store:['borrador','vobo_area','vobo_aeronavegabilidad','vobo_almacen','revision','cotizacion','compra','despachado','arribo','desaduanizado','almacen','finalizado','anulado']
-
+                    minChars: 2,
+                    renderer: function (value, p, record) {
+                        return String.format('{0}', record.data['codigo']);
+                    },
+                    enableMultiSelect : true
                 },
-                type:'AwesomeCombo',
-                id_grupo:0,
-                grid:true,
-                form:true,
-                bottom_filter:true
+                type: 'AwesomeCombo',
+                filters: {pfiltro: 't.codigo',type: 'string'},
+                form: true
+
+            },
+           {
+                config: {
+                    name: 'estado_op',
+                    fieldLabel: 'Estado',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_gestion_materiales/control/Solicitud/listarEstadoOp',
+                        id: 'id_tipo_estado',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'codigo',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_tipo_estado', 'codigo'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 't.codigo'}
+                    }),
+                    valueField: 'id_tipo_estado',
+                    displayField: 'codigo',
+                    gdisplayField: 'codigo',
+                    hiddenName: 'estado',
+                    forceSelection: true,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 100,
+                    queryDelay: 1000,
+                    anchor: '35%',
+                    gwidth: 230,
+                    minChars: 2,
+                    renderer: function (value, p, record) {
+                        return String.format('{0}', record.data['codigo']);
+                    },
+                    enableMultiSelect : true
+                },
+                type: 'AwesomeCombo',
+                filters: {pfiltro: 't.codigo',type: 'string'},
+                form: true
+
+            },
+            {
+                config: {
+                    name: 'estado_ro',
+                    fieldLabel: 'Estado',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_gestion_materiales/control/Solicitud/listarEstadoRo',
+                        id: 'id_tipo_estado',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'codigo',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_tipo_estado', 'codigo'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 't.codigo'}
+                    }),
+                    valueField: 'id_tipo_estado',
+                    displayField: 'codigo',
+                    gdisplayField: 'codigo',
+                    hiddenName: 'estado',
+                    forceSelection: true,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 100,
+                    queryDelay: 1000,
+                    anchor: '35%',
+                    gwidth: 230,
+                    minChars: 2,
+                    renderer: function (value, p, record) {
+                        return String.format('{0}', record.data['codigo']);
+                    },
+                    enableMultiSelect : true
+                },
+                type: 'AwesomeCombo',
+                filters: {pfiltro: 't.codigo',type: 'string'},
+                form: true
 
             },
             {
@@ -101,12 +207,34 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor : function(config) {
             Phx.vista.ReporteControlAlmacen.superclass.constructor.call(this, config);
             this.init();
+            this.ocultarComponente(this.Cmp.estado);
+            this.ocultarComponente(this.Cmp.estado_op);
+            this.ocultarComponente(this.Cmp.estado_ro);
+            this.Cmp.origen_pedido.on('select',function(c,r,i) {
+                if (this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento') {
+                    this.ocultarComponente(this.Cmp.estado_op);
+                    this.ocultarComponente(this.Cmp.estado_ro);
+                    this.mostrarComponente(this.Cmp.estado);
+                }
+                if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
+                    this.mostrarComponente(this.Cmp.estado_op);
+                    this.ocultarComponente(this.Cmp.estado_ro);
+                    this.ocultarComponente(this.Cmp.estado);
+                }
+                if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
+                    this.ocultarComponente(this.Cmp.estado_op);
+                    this.mostrarComponente(this.Cmp.estado_ro);
+                    this.ocultarComponente(this.Cmp.estado);
+                }
+            },this);
+
         },
 
 
         iniciarEventos:function(){
             this.cmpFechaIni = this.getComponente('fecha_ini');
             this.cmpFechaFin = this.getComponente('fecha_fin');
+
         },
         tipo : 'reporte',
         clsSubmit : 'bprint',
@@ -114,7 +242,7 @@ header("content-type: text/javascript; charset=UTF-8");
         agregarArgsExtraSubmit: function() {
 
             this.argumentExtraSubmit.origen = this.Cmp.origen_pedido.getRawValue();
-            this.argumentExtraSubmit.est = this.Cmp.estado.getRawValue();
+            this.argumentExtraSubmit.estados = this.Cmp.estado.getRawValue();
         }
 
     })

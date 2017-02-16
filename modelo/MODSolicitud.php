@@ -568,6 +568,8 @@ class MODSolicitud extends MODbase{
 
         $this->setParametro('origen_pedido','origen_pedido','varchar');
         $this->setParametro('estado','estado','varchar');
+        $this->setParametro('estado_op','estado_op','varchar');
+        $this->setParametro('estado_ro','estado_ro','varchar');
         $this->setParametro('fecha_ini','fecha_ini','date');
         $this->setParametro('fecha_fin','fecha_fin','date');
         $this->setCount(false);
@@ -581,6 +583,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_parte_alterno','text');
         $this->captura('descripcion','varchar');
         $this->captura('cantidad_sol','numeric');
+        $this->captura('id_tipo_estado','int4');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -596,6 +599,57 @@ class MODSolicitud extends MODbase{
 
         //Define los parametros para la funcion
         $this->setParametro('id_solicitud','id_solicitud','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listarEstado(){
+
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_ESTADO_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->captura('id_tipo_estado','int4');
+        $this->captura('codigo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listarEstadoOp(){
+
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_ES_OP_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->captura('id_tipo_estado','int4');
+        $this->captura('codigo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listarEstadoRo(){
+
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_ES_RO_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->captura('id_tipo_estado','int4');
+        $this->captura('codigo','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
