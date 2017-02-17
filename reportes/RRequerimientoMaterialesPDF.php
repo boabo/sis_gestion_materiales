@@ -102,12 +102,12 @@ class RRequerimientoMaterialesPDF extends  ReportePDF {
         $this->SetFont('times', 'B', 11);
         $this->SetFillColor(0, 0, 185);
         $this->SetTextColor(0, 0, 185);
-        $this->Cell(40, 7, ' Motivo de la Solicitud;', 0, 0, 'L', 0, '', 0);
+        $this->MultiCell(40, 7, ' Motivo de la Solicitud:', 0, 'L', 0, '', '');
         $this->SetFont('times', '', 11);
         $this->SetFillColor(0, 0, 0, 100);
         $this->SetTextColor(0, 0, 0, 100);
-        $this->Cell(0, 7, ' ' . $this->datos[0]['motivo_solicitud'], 0, 1, 'L', 0, '', 0);
-        $this->ln(5);
+        $this->MultiCell(0, 7, $this->datos[0]['motivo_solicitud']. "\n", 0, 'L', 0, '', '');
+        $this->ln(10);
         $this->SetFont('times', 'B', 11);
         $this->SetFillColor(0, 0, 185);
         $this->SetTextColor(0, 0, 185);
@@ -139,11 +139,11 @@ class RRequerimientoMaterialesPDF extends  ReportePDF {
         $this->SetFont('times', 'B', 11);
         $this->SetFillColor(0, 0, 185);
         $this->SetTextColor(0, 0, 185);
-        $this->Cell(30, 7, ' Observaciones:', 0, 0, 'L', 0, '', 0);
+        $this->MultiCell(30, 7, ' Observaciones:', 0, 'L', 0, '', '');
         $this->SetFont('times', '', 11);
         $this->SetFillColor(0, 0, 0, 100);
         $this->SetTextColor(0, 0, 0, 100);
-        $this->Cell(0, 7, ' ' . $this->datos[0]['observaciones_sol'], 0, 1, 'L', 0, '', 0);
+        $this->MultiCell(0, 7, $this->datos[0]['observaciones_sol']. "\n", 0, 'L', 0, '', '');
         $this->ln(20);
 
         $this->SetFont('times', 'B', 11);
