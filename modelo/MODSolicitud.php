@@ -73,6 +73,7 @@ class MODSolicitud extends MODbase{
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
         $this->captura('revisado_so','varchar');
+        $this->captura('control_fecha','varchar');
         
 
 

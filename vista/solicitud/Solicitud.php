@@ -505,7 +505,22 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '95%',
                     gwidth: 100,
                     format: 'd/m/Y',
-                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                    renderer:function (value,p,record){
+
+                        var fecha_actual = new Date();
+                        var dias = record.data.control_fecha;
+
+
+                            if (dias >= 7 && dias <= 10) {
+                                return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
+                            }
+                            else if(dias >=3  && dias <= 6){
+                                return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
+                            }else if(dias = -1){
+                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
+                            }
+
+                    }
                 },
                 type:'DateField',
                 filters:{pfiltro:'sol.fecha_requerida',type:'date'},
@@ -528,37 +543,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:true
             },
-
-            /*{
-             config:{
-             name: 'observacion_nota',
-             fieldLabel: 'observacion_nota',
-             allowBlank: true,
-             anchor: '80%',
-             gwidth: 100,
-             maxLength:-5
-             },
-             type:'TextField',
-             filters:{pfiltro:'sol.observacion_nota',type:'string'},
-             id_grupo:1,
-             grid:true,
-             form:true
-             },*/
-            /* {
-             config:{
-             name: 'cotizacion',
-             fieldLabel: 'cotizacion',
-             allowBlank: true,
-             anchor: '80%',
-             gwidth: 100,
-             maxLength:1179650
-             },
-             type:'NumberField',
-             filters:{pfiltro:'sol.cotizacion',type:'numeric'},
-             id_grupo:1,
-             grid:true,
-             form:true
-             },*/
             {
                 config:{
                  name: 'nro_po',
@@ -841,7 +825,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
             {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'},
             'contador_estados',
-            {name:'revisado_so', type: 'string'}
+            {name:'revisado_so', type: 'string'},
+            {name:'control_fecha', type: 'string'}
             
 
 
