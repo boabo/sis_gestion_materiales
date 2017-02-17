@@ -78,6 +78,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler:diagramGantt,
                 tooltip: '<b>Diagrama Gantt de proceso macro</b>'
             });
+            //modi
             this.addButton('Report',{
                 grupo:[0,1,3,4,5],
                 text :'Reporte',
