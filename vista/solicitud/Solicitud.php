@@ -78,6 +78,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler:diagramGantt,
                 tooltip: '<b>Diagrama Gantt de proceso macro</b>'
             });
+            this.addButton('Report',{
+                grupo:[0,1,3,4,5],
+                text :'Reporte',
+                iconCls : 'bpdf32',
+                disabled: true,
+                handler : this.onButtonReporte,
+                tooltip : '<b>Reporte Requerimiento de Materiale</b>'
+            });
 
             function diagramGantt(){
                 var data=this.sm.getSelected().data.id_proceso_wf;
@@ -283,6 +291,37 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: true,
                 form: true,
                 bottom_filter:true
+            },
+            {
+                config:{
+                    name: 'fecha_requerida',
+                    fieldLabel: 'Fecha Requerida',
+                    allowBlank: true,
+                    anchor: '95%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){
+
+                        var fecha_actual = new Date();
+                        var dias = record.data.control_fecha;
+
+
+                        if (dias >= 2 && dias <= 10) {
+                            return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
+                        }
+                        else if(dias >=1  && dias <= 6){
+                            return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
+                        }else if(dias = -1){
+                            return String.format('<div ext:qtip="malo"><b><font color="red">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
+                        }
+
+                    }
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_requerida',type:'date'},
+                id_grupo:1,
+                grid:true,
+                form:true
             },
             {
                 config:{
@@ -497,37 +536,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:true
 
             },
-            {
-                config:{
-                    name: 'fecha_requerida',
-                    fieldLabel: 'Fecha Requerida',
-                    allowBlank: true,
-                    anchor: '95%',
-                    gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value,p,record){
 
-                        var fecha_actual = new Date();
-                        var dias = record.data.control_fecha;
-
-
-                            if (dias >= 7 && dias <= 10) {
-                                return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
-                            }
-                            else if(dias >=3  && dias <= 6){
-                                return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
-                            }else if(dias = -1){
-                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
-                            }
-
-                    }
-                },
-                type:'DateField',
-                filters:{pfiltro:'sol.fecha_requerida',type:'date'},
-                id_grupo:1,
-                grid:true,
-                form:true
-            },
             {
                 config:{
                     name: 'nro_no_rutina',
@@ -939,6 +948,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);
             this.getBoton('diagrama_gantt').enable();
             this.getBoton('btnObs').enable();
+            this.getBoton('Report').enable();
         },
 
         liberaMenu:function(){
@@ -950,6 +960,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('diagrama_gantt').disable();
                 this.getBoton('btnObs').disable();
                 this.getBoton('ini_estado').setVisible(false);
+                this.getBoton('Report').disable();
 
             }
             return tb
@@ -1162,6 +1173,18 @@ header("content-type: text/javascript; charset=UTF-8");
         successRevision: function(resp){
             Phx.CP.loadingHide();
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+        },
+        onButtonReporte:function(){
+            var rec=this.sm.getSelected();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/reporteRequerimientoMateriales',
+                params:{'id_proceso_wf':rec.data.id_proceso_wf},
+                //params:{'id_solicitud': rec.data.id_solicitud},
+                success: this.successExport,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
         }
 
     })

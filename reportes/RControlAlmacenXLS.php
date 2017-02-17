@@ -139,7 +139,7 @@ class RControlAlmacenXLS
 
 
     }
-   function generarDatos()
+    function generarDatos()
     {
         $styleTitulos3 = array(
             'alignment' => array(
@@ -153,7 +153,7 @@ class RControlAlmacenXLS
         $datos = $this->objParam->getParametro('datos');
         $this->imprimeCabecera(0);
         //var_dump($datos);exit;
-       foreach ($datos as $value)
+        foreach ($datos as $value)
         {
 
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $this->numero);

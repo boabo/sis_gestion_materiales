@@ -11,6 +11,7 @@ require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesMan.php');
 require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesAlm.php');
 require_once(dirname(__FILE__).'/../reportes/RControlAlmacenXLS.php');
 require_once(dirname(__FILE__).'/../reportes/RSalidaAlmacen.php');
+require_once(dirname(__FILE__).'/../reportes/RRequerimientoMaterialesPDF.php');
 class ACTSolicitud extends ACTbase{
 
     function listarSolicitud(){
@@ -255,7 +256,7 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->ControlPartesAlmacen ($this->objParam);
         //obtener titulo de reporte
-        $titulo ='ControlAlmacen';
+        $titulo ='Control Almacen';
         //Genera el nombre del archivo (aleatorio + titulo)
         $nombreArchivo=uniqid(md5(session_id()).$titulo);
 
@@ -338,6 +339,37 @@ class ACTSolicitud extends ACTbase{
         $this->res=$this->objFunc->listarEstadoRo($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function reporteRequerimientoMateriales (){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarRequerimiento($this->objParam);
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res2=$this->objFunc->listasFrimas($this->objParam);
+
+        //obtener titulo del reporte
+        $titulo = 'Requerimiento de Materiales';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+
+        $this->objReporteFormato=new RRequerimientoMaterialesPDF($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+
+
 
 }
 
