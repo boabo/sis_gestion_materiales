@@ -95,7 +95,7 @@ class RControlAlmacenXLS
 
         );
 
-        //titulos
+        //modificacionw
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,2,'CONTROL ALMACÉN PART NUMBER' );
         $this->docexcel->getActiveSheet()->getStyle('A2:I2')->applyFromArray($styleTitulos1);
