@@ -445,7 +445,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_tramite','varchar');
         $this->captura('nro_parte','text');
         $this->captura('referencia','text');
-        $this->captura('descripcion','varchar');
+        $this->captura('descripcion','text');
         $this->captura('cantidad_sol','numeric');
         $this->captura('justificacion','varchar');
         $this->captura('tipo_solicitud','varchar');
