@@ -80,7 +80,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             //modi
             this.addButton('Report',{
-                grupo:[0,1,3,4,5],
+                grupo:[0,1,2],
                 text :'Reporte',
                 iconCls : 'bpdf32',
                 disabled: true,
