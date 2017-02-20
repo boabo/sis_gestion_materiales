@@ -87,16 +87,16 @@ class RRequerimientoMaterialesPDF extends  ReportePDF {
             $this->SetFillColor(0, 0, 0, 100);
             $this->SetTextColor(0, 0, 0, 100);
 
-            $this->MultiCell(15, 0, $numero. "\n", 1, 'C', 0, '', '');
-            $this->MultiCell(35, 0, $Row['nro_parte']. "\n", 1, 'C', 0, '', '');
-            $this->MultiCell(35, 0, $Row['referencia']. "\n", 1, 'C', 0, '', '');
-            $this->MultiCell(45, 0, $Row['descripcion']. "\n", 1, 'C', 0, '', '');
-            $this->MultiCell(20, 0, $Row['cantidad_sol']. "\n", 1, 'C', 0, '', '');
-            $this->MultiCell(0, 0, $Row['unidad_medida']. "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(15, 8, $numero. "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(35, 8, $Row['nro_parte']. "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(35, 8, $Row['referencia']. "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(45, 8, $Row['descripcion']. "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(20, 8, $Row['cantidad_sol']. "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(0, 8, $Row['unidad_medida']. "\n", 1, 'C', 0, '', '');
             $this->ln();
             $numero++;
         }
-        $this->ln(5);
+        $this->ln(10);
         $this->Cell(0, 15, '', 1, 0, 'L', 0, '', 0);
         $this->ln(0.10);
         $this->SetFont('times', 'B', 11);
