@@ -100,16 +100,18 @@ class RRequemientoMaterielesMan extends  ReportePDF
 
         $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
         if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad'  or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            if($this->datos[0]['fecha_solicitud'] < '13/02/2017' ){
+
                 $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
-            }else{
-                $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[1]['desc_funcionario1'], 0, 'C', 0, '', '');
-            }
         }else{
             $this->MultiCell(65, 0, 'Unidad C & S/Control Producción', 0, 'C', 0, '', '');
         }
         if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->MultiCell(65, 0, 'Gerencia de Mantenimiento'. "\n".$this->datos2[0]['funcionario_bv'],  0, 'C', 0, '', '');
+            if($this->datos[0]['fecha_solicitud'] < '13/02/2017' ) {
+                $this->MultiCell(65, 0, 'Gerencia de Mantenimiento' . "\n" . $this->datos2[0]['funcionario_bv'], 0, 'C', 0, '', '');
+            }else{
+                $this->MultiCell(65, 0, 'Gerencia de Mantenimiento' . "\n" . $this->datos2[1]['funcionario_bv'], 0, 'C', 0, '', '');
+
+            }
         }else{
             $this->MultiCell(65, 0, 'Gerencia de Mantenimiento',  0, 'C', 0, '', '');
         }
