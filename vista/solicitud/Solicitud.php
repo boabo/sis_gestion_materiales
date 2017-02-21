@@ -137,7 +137,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         if(record.data.estado == 'almacen'){
                             return String.format('<div ext:qtip="Optimo"><b><font color="#8a2be2">{0}</font></b><br></div>', value);
                         }else{
-                            return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+                            return String.format('<div ext:qtip="Optimo"><b>{0}</font></b><br></div>', value);
                         }
 
                     }
@@ -330,7 +330,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     renderer:function (value,p,record){
 
                         var dias = record.data.control_fecha;
-                        if (dias >= 6 && dias <= 10) {
+                        if (dias >= 7 && dias <= 10) {
                             return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
                         }
                         else if(dias >= 2 && dias <= 4){
