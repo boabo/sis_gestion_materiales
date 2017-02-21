@@ -135,9 +135,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     maxLength:100,
                     renderer: function(value, p, record) {
                         if(record.data.estado == 'almacen'){
-                            return String.format('<div ext:qtip="Optimo"><b><font color="#8a2be2">{0}</font></b><br></div>', value);
+                            return String.format('<div ext:qtip="Optimo"><b><font color="blue">{0}</font></b><br></div>', value);
                         }else{
-                            return String.format('<div ext:qtip="Optimo"><b>{0}</font></b><br></div>', value);
+                            return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
                         }
 
                     }
@@ -190,7 +190,7 @@ header("content-type: text/javascript; charset=UTF-8");
                              if(value == 'almacen'){
 
 
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="#8a2be2">{0} - ({1})</font></b></div>', value+' BoA', record.data.contador_estados);
+                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' BoA', record.data.contador_estados);
                              }
                              if(value == 'finalizado'){
                                  return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
@@ -220,7 +220,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             }
                             if(value == 'almacen'){
 
-                                return String.format('<div title="Número de revisiones: {1}"><b><font color="#8a2be2">{0} - ({1})</div>', value+' BoA', record.data.contador_estados);
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="blue">{0} - ({1})</div>', value+' BoA', record.data.contador_estados);
                             }
 
                             return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value, record.data.contador_estados);
@@ -252,7 +252,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables'],
                     renderer: function(value, p, record) {
                         if(record.data.estado == 'almacen'){
-                            return String.format('<div ext:qtip="Optimo"><b><font color="#8a2be2">{0}</font></b><br></div>', value);
+                            return String.format('<div ext:qtip="Optimo"><b><font color="blue">{0}</font></b><br></div>', value);
                         }else{
                             return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
                         }
@@ -305,7 +305,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     renderer : function(value, p, record) {
                         //return String.format('{0}', record.data['desc_funcionario1']);
                         if(record.data.estado == 'almacen'){
-                            return String.format('<div ext:qtip="Optimo"><b><font color="#8a2be2">{0}</font></b><br></div>', value);
+                            return String.format('<div ext:qtip="Optimo"><b><font color="blue">{0}</font></b><br></div>', value);
                         }else{
                             return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
                         }
