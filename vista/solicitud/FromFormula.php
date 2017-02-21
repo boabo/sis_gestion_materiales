@@ -802,7 +802,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_justificacion',
-                    fieldLabel: 'Nro. Justicaion',
+                    fieldLabel: 'Nro. Justificacion',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 100,

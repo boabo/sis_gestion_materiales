@@ -330,7 +330,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     renderer:function (value,p,record){
 
                         var dias = record.data.control_fecha;
-                        if (dias >= 5 && dias <= 10) {
+                        if (dias >= 5 && dias <= 20) {
                             return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
                         }
                         else if(dias >= 2 && dias <= 4){
