@@ -128,12 +128,20 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->ln();
         $this->SetFont('times', 'B', 11);
         if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->MultiCell(90, 0, 'V.B. DAC' . "\n" . $this->datos2[1]['funcionario_bv'], 0, 'C', 0, '', '');
+            if($this->datos[0]['fecha_solicitud'] < '13/02/2017' ) {
+                $this->MultiCell(90, 0, 'V.B. DAC' . "\n" . $this->datos2[1]['funcionario_bv'], 0, 'C', 0, '', '');
+            }else{
+                $this->MultiCell(90, 0, 'V.B. DAC' . "\n" . $this->datos2[2]['funcionario_bv'], 0, 'C', 0, '', '');
+            }
         }else{
             $this->MultiCell(90, 0, 'V.B. DAC', 0, 'C', 0, '', '');
        }
         if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . $this->datos2[2]['funcionario_bv'], 0, 'C', 0, '', '');
+            if($this->datos[0]['fecha_solicitud'] < '13/02/2017' ) {
+                $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . $this->datos2[2]['funcionario_bv'], 0, 'C', 0, '', '');
+            }else{
+                $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . $this->datos2[3]['funcionario_bv'], 0, 'C', 0, '', '');
+            }
         }else{
             $this->MultiCell(0, 0, 'Recibido Abastecimiento', 0, 'C', 0, '', '');
         }
