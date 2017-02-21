@@ -344,6 +344,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         },
 
         loadValoresIniciales: function () {
+            //console.log( 'lleha',this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud));
             this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
             Phx.vista.DetalleSol.superclass.loadValoresIniciales.call(this);
 

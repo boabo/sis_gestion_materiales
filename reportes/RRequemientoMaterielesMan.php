@@ -100,7 +100,11 @@ class RRequemientoMaterielesMan extends  ReportePDF
 
         $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
         if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad'  or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
+            if($this->datos[0]['fecha_solicitud'] < '13/02/2017' ){
+                $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
+            }else{
+                $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[1]['desc_funcionario1'], 0, 'C', 0, '', '');
+            }
         }else{
             $this->MultiCell(65, 0, 'Unidad C & S/Control Producción', 0, 'C', 0, '', '');
         }
@@ -171,23 +175,23 @@ class RRequemientoMaterielesMan extends  ReportePDF
 
         if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad'   or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado' ) {
 
-            $this->write2DBarcode($html, 'QRCODE,L', 60, 148, 25, 25, $style, 'N');
+            $this->write2DBarcode($html, 'QRCODE,L', 60, 155, 25, 25, $style, 'N');
         }
         $html3 = 'Encargado: '.$this->datos2[0]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[0]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
 
 
         if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad'  or  $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
 
-            $this->write2DBarcode($html3, 'QRCODE,L', 125, 148, 25, 25, $style, 'N');
+            $this->write2DBarcode($html3, 'QRCODE,L', 125, 155, 25, 25, $style, 'N');
         }
 
         $html4 = 'Encargado: '.$this->datos2[2]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[2]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
         if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->write2DBarcode($html4, 'QRCODE,L', 50, 195, 25, 25, $style, 'N');
+            $this->write2DBarcode($html4, 'QRCODE,L', 50, 200, 25, 25, $style, 'N');
         }
         $html5 = 'Encargado: '.$this->datos2[1]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[1]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
         if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->write2DBarcode($html5, 'QRCODE,L', 140, 195, 25, 25, $style, 'N');
+            $this->write2DBarcode($html5, 'QRCODE,L', 140, 200, 25, 25, $style, 'N');
         }
 
 
