@@ -580,8 +580,8 @@ class MODSolicitud extends MODbase{
         $this->captura('estado','varchar');
         $this->captura('desc_funcionario1','text');
         $this->captura('fecha_solicitud','text');
-        $this->captura('nro_parte','text');
-        $this->captura('nro_parte_alterno','text');
+        $this->captura('nro_parte','varchar');
+        $this->captura('nro_parte_alterno','varchar');
         $this->captura('descripcion','varchar');
         $this->captura('cantidad_sol','numeric');
         $this->captura('id_tipo_estado','int4');

@@ -6,6 +6,8 @@ class RControlAlmacenXLS
     private $numero;
     private $equivalencias=array();
     private $objParam;
+    private $NroTra= array();
+    private $Estado= array();
     public  $url_archivo;
     function __construct(CTParametro $objParam)
     {
@@ -152,12 +154,26 @@ class RControlAlmacenXLS
         $fila = 6;
         $datos = $this->objParam->getParametro('datos');
         $this->imprimeCabecera(0);
-        //var_dump($datos);exit;
-        foreach ($datos as $value)
-        {
+
+        foreach ($datos as $value) {
+            if (!array_key_exists($value['nro_tramite'], $this->NroTra)) {
+                $this->NroTra[$value['nro_tramite']] = 1;
+                $mas = $value['estado'];
+                $mas1 = $value['nro_tramite'];
+                $mas2 = $value['desc_funcionario1'];
+                $mas3 = $value['fecha_solicitud'];
+
+
+            } else {
+                $this->NroTra[$value['nro_tramite']]++;
+                $meme = $value['estado'] = '';
+                $meme1 = $value['nro_tramite'] = '';
+                $meme2 = $value['desc_funcionario1'] = '';
+                $meme3 = $value['fecha_solicitud'] = '';
+            }
 
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $this->numero);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $value['nro_tramite']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $value['nro_tramite'] );
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $value['estado']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $value['desc_funcionario1']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $value['fecha_solicitud']);
@@ -165,20 +181,22 @@ class RControlAlmacenXLS
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $value['nro_parte_alterno']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['descripcion']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, $fila, $value['cantidad_sol']);
-
             $this->docexcel->getActiveSheet()->getStyle("E$fila:E$fila")->applyFromArray($styleTitulos3);
             $this->docexcel->getActiveSheet()->getStyle("I$fila:I$fila")->applyFromArray($styleTitulos3);
-
-
+            
             $fila++;
             $this->numero++;
 
-
         }
+       /* $fila = 6;
+        foreach ($this->NroTra as $key=>$val){
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila,$key );
+            $fila++;
+        }*/
 
-
-
+        //var_dump($val); exit;
     }
+
     function generarReporte(){
 
         //$this->docexcel->setActiveSheetIndex(0);
