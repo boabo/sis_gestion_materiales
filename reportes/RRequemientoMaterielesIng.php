@@ -14,10 +14,10 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->MultiCell(105, $height,"\n".'REQUERIMIENTO DE MATERIALES'."\n".'INGENIERÍA' , 1, 'C', 0, '', '');
         $this->SetFont('times', '', 10);
         $this->MultiCell(0, $height,"\n".'R-OA-01'."\n".'Rev. Original'."\n". '03/11/16', 1, 'C', 0, '', '');
-        $this->Image(dirname(__FILE__).'/../../pxp/lib'.$_SESSION['_DIR_LOGO'], 17, 23, 36);
-        $this->ln(20);
+        $this->Image(dirname(__FILE__).'/../../pxp/lib'.$_SESSION['_DIR_LOGO'], 17, 15, 36);
+        $this->ln(50);
         $this->customy = $this->getY();
-        $this->reporteRequerimiento();
+        //$this->reporteRequerimiento();
 
     }
 
@@ -54,13 +54,14 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $y = 130;
         $y2 = 182;
         foreach ($this->datos as $Row) {
+
             $this->SetFont('times', '', 9);
-            $this->Cell(15, 0, $numero, 1, 0, 'C', 0, '', 0);
-            $this->Cell(35, 0, $Row['nro_parte'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(35, 0, $Row['referencia'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(55, 0, $Row['descripcion'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(20, 0, $Row['cantidad_sol'], 1, 0, 'C', 0, '', 0);
-            $this->Cell(0, 0, $Row['unidad_medida'], 1, 0, 'C', 0, '', 0);
+            $this->MultiCell(15, 8, $numero . "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(35, 8, $Row['nro_parte'] . "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(35, 8, $Row['referencia'] . "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(55, 8, ' ' . $Row['descripcion'] . "\n", 1, 'L', 0, '', '');
+            $this->MultiCell(20, 8, $Row['cantidad_sol'] . "\n", 1, 'C', 0, '', '');
+            $this->MultiCell(0, 8, $Row['unidad_medida'] . "\n", 1, 'C', 0, '', '');
             $this->ln();
             $numero++;
             if ($Row > 1) {
@@ -74,8 +75,9 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->Cell(0, 7, ' Motivo de la Solicitud', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
-        $this->Cell(0, 7, ' ' . $this->datos[0]['motivo_solicitud'], 1, 1, 'L', 0, '', 0);
-        $this->ln(1.5);
+        $this->MultiCell(0, 7, $this->datos[0]['motivo_solicitud'] . "\n", 1, 'J', 0, '', '');
+        //$this->Cell(0, 7, ' ' . $this->datos[0]['motivo_solicitud'], 1, 1, 'L', 0, '', 0);
+        $this->ln(10);
         $this->SetFont('times', '', 11);
         $this->Cell(65, 0, 'Justificación de Necesidad:', 1, 0, 'C', 0, '', 0);
         $this->Cell(65, 0, 'Tipo de Solicitud:', 1, 0, 'C', 0, '', 0);
@@ -87,9 +89,12 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->Cell(0, 20, $this->datos[0]['fecha_requerida'], 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
-        $this->MultiCell(0, 18, 'Observaciones: ' . $this->datos[0]['observaciones_sol'] . "\n", 1, 'J', 0, '', '');
+        $this->MultiCell(0, 10, 'Observaciones: ' . $this->datos[0]['observaciones_sol'] . "\n", 1, 'J', 0, '', '');
         $this->ln();
-        $this->ln(3);
+
+        $this->ln(5);
+        // }
+        //function firmas(){
         $this->SetFont('times', '', 9);
         if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
             $this->Cell(90, 7, ' Solicitado Por: ' . $this->datos[0]['desc_funcionario1'], 1, 0, 'C', 0, '', 0);
@@ -97,7 +102,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $this->Cell(90, 7, ' Solicitado Por: ', 1, 0, 'L', 0, '', 0);
         }
         if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad'or $this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-        $this->Cell(0, 7, ' V.B. Encargado Mantenimiento: '.$this->datos2[0]['funcionario_bv'], 1, 0, 'C', 0, '', 0);
+            $this->Cell(0, 7, ' V.B. Encargado Mantenimiento: '.$this->datos2[0]['funcionario_bv'], 1, 0, 'C', 0, '', 0);
         }else{
             $this->Cell(0, 7, ' V.B. Encargado Mantenimiento: ', 1, 0, 'L', 0, '', 0);
         }
@@ -133,7 +138,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         }else{
             $this->Cell(0, 0, ' Recibido Abastecimiento:' , 0, 0, 'L', 0, '', 0);
         }
-            $this->ln(0.10);
+        $this->ln(0.10);
         $this->Cell(90, 35, ' ', 1, 0, 'L', 0, '', 0);
 
         $this->Cell(0, 35,  ' ', 1, 0, 'L', 0, '', 0);
@@ -185,7 +190,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
 
         if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision' or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado'){
 
-           $this->write2DBarcode($html2, 'QRCODE,L',135, $y, 30, 30, $style, 'N');
+            $this->write2DBarcode($html2, 'QRCODE,L',135, $y, 30, 30, $style, 'N');
         }
         $html3 = 'Encargado: '.$this->datos2[1]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[1]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
 
@@ -206,8 +211,15 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->datos2 = $datos2;
     }
     function generarReporte() {
+
+        $this->SetMargins(15,30,15);
         $this->setFontSubsetting(false);
         $this->AddPage();
+        $this->SetMargins(15,45,15);
+        $this->Ln(5);
+        $this->reporteRequerimiento();
+
+
     }
 
 }

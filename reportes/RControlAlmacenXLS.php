@@ -149,11 +149,30 @@ class RControlAlmacenXLS
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
             ),
         );
+        $styleTitulos1 = array(
+
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array(
+                    'rgb' => '969696'
+                )
+            )
+        );
+        $styleTitulos2 = array(
+
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array(
+                    'rgb' => '3366FF'
+                )
+            )
+        );
 
         $this->numero = 1;
         $fila = 6;
         $datos = $this->objParam->getParametro('datos');
         $this->imprimeCabecera(0);
+        $par_impar = 1;
 
         foreach ($datos as $value) {
             if (!array_key_exists($value['nro_tramite'], $this->NroTra)) {
@@ -166,8 +185,9 @@ class RControlAlmacenXLS
                 $this->NroTra[$value['nro_tramite']]++;
                  $value['estado'] = '';
                  $value['nro_tramite'] = '';
-                $value['desc_funcionario1'] = '';
+                 $value['desc_funcionario1'] = '';
                  $value['fecha_solicitud'] = '';
+
             }
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $this->numero);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $value['nro_tramite']);
@@ -180,9 +200,22 @@ class RControlAlmacenXLS
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, $fila, $value['cantidad_sol']);
             $this->docexcel->getActiveSheet()->getStyle("E$fila:E$fila")->applyFromArray($styleTitulos3);
             $this->docexcel->getActiveSheet()->getStyle("I$fila:I$fila")->applyFromArray($styleTitulos3);
+            $par_impar = $par_impar * -1;
             $this->numero++;
             $fila++;
-        }
+
+            /*if ($par_impar == 1) {
+            if($value['id_solicitud'] != $value['id']){
+                $this->docexcel->getActiveSheet()->getStyle("F$fila:F$fila")->applyFromArray($styleTitulos1);
+            }
+            }else{
+                if($value['id_solicitud'] == $value['id']){
+                    $this->docexcel->getActiveSheet()->getStyle("F$fila:F$fila")->applyFromArray($styleTitulos2);
+                }
+            }*/
+            }
+
+
 
     }
 

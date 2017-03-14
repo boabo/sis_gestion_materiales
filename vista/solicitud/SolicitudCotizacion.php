@@ -25,6 +25,21 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function (config) {
             this.Atributos.splice(24,25);
+           /* this.Atributos.unshift(   {
+                config: {
+                    name: 'estado_ab',
+                        fieldLabel: 'Estado ab',
+                        allowBlank: true,
+                        anchor: '100%',
+                        gwidth: 200,
+                        maxLength: 100
+                },
+                type: 'TextField',
+                    filters: {pfiltro: 'rec.estado', type: 'string'},
+                id_grupo: 1,
+                grid: true,
+                    form: false
+            }),*/
             this.Atributos.push(
                 {
                     config:{
@@ -156,7 +171,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb =this.tbar;
             Phx.vista.SolicitudCotizacion.superclass.preparaMenu.call(this,n);
 
-            if(data['estado'] ==  'revision'){
+            if(data['estado_ab'] ==  'revision'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 this.getBoton('ini_estado').enable();

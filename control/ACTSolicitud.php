@@ -53,7 +53,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro(" sol.estado  in (''vobo_almacen'',''almacen'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'origen_ing') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''revision'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado_ab  in (''revision'')");
         }if ($this->objParam->getParametro('pes_estado') == 'origen_man') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and  sol.estado  in (''revision'')");
         }if ($this->objParam->getParametro('pes_estado') == 'origen_alm') {
@@ -367,9 +367,6 @@ class ACTSolicitud extends ACTbase{
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
-
-
-
 
 }
 

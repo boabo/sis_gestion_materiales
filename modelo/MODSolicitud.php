@@ -74,6 +74,7 @@ class MODSolicitud extends MODbase{
         $this->captura('contador_estados','bigint');
         $this->captura('revisado_so','varchar');
         $this->captura('control_fecha','varchar');
+        //$this->captura('estado_ab','varchar');
         
 
 
@@ -125,6 +126,9 @@ class MODSolicitud extends MODbase{
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
         $this->setParametro('nro_justificacion','nro_justificacion','varchar');
+        //$this->setParametro('estado_ab','estado_ab','varchar');
+
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -174,7 +178,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_reporte','tipo_reporte','varchar');
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
-        $this->setParametro('revisado_so','revisado_so','varchar');
+        //$this->setParametro('estado_ab','estado_ab','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -247,6 +251,9 @@ class MODSolicitud extends MODbase{
             $this->setParametro('mel','mel','varchar');
             $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
             $this->setParametro('nro_justificacion','nro_justificacion','varchar');
+            //$this->setParametro('estado_ab','estado_ab','varchar');
+
+
 
             //Ejecuta la instruccion
             $this->armarConsulta();
@@ -585,6 +592,7 @@ class MODSolicitud extends MODbase{
         $this->captura('descripcion','varchar');
         $this->captura('cantidad_sol','numeric');
         $this->captura('id_tipo_estado','int4');
+        $this->captura('id','int4');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -659,8 +667,6 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-
-    
 
 }
 ?>

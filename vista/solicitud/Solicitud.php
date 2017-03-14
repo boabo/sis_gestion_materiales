@@ -165,40 +165,40 @@ header("content-type: text/javascript; charset=UTF-8");
 
                             if(value == 'borrador' ){
                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados );
-                             }
-                             if(value == 'vobo_area'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value);
-                             }
-                             if(value == 'revision'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
-                             }
-                             if(value == 'cotizacion'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
-                             }
-                             if(value == 'compra'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
-                             }
-                             if(value == 'despachado'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' MIAMI', record.data.contador_estados);
-                             }
-                             if(value == 'arribo'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' Bolivia', record.data.contador_estados);
-                             }
-                             if(value == 'desaduanizado'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
-                             }
-                             if(value == 'almacen'){
+                            }
+                            if(value == 'vobo_area'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value);
+                            }
+                            if(value == 'revision'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
+                            }
+                            if(value == 'cotizacion'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
+                            }
+                            if(value == 'compra'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' abastecimientos', record.data.contador_estados);
+                            }
+                            if(value == 'despachado'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' MIAMI', record.data.contador_estados);
+                            }
+                            if(value == 'arribo'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' Bolivia', record.data.contador_estados);
+                            }
+                            if(value == 'desaduanizado'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
+                            }
+                            if(value == 'almacen'){
 
 
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' BoA', record.data.contador_estados);
-                             }
-                             if(value == 'finalizado'){
-                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
-                             }if(value == 'anulado'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value+' BoA', record.data.contador_estados);
+                            }
+                            if(value == 'finalizado'){
                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
-                             }if(value == 'vobo_aeronavegabilidad'){
+                            }if(value == 'anulado'){
                                 return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
-                             }
+                            }if(value == 'vobo_aeronavegabilidad'){
+                                return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados);
+                            }
                         }else{
 
                             if(value == 'revision'){
@@ -330,7 +330,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     renderer:function (value,p,record){
 
                         var dias = record.data.control_fecha;
-                        if (dias >= 5 && dias <= 10 || dias >= 20 && dias <= 30) {
+                        if (dias >= 5 && dias <= 10 || dias >= 20 && dias <= 30 || dias >= 40 && dias <= 80) {
                             return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
                         }
                         else if(dias >= 2 && dias <= 4){
@@ -578,19 +578,19 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
-                 name: 'nro_po',
-                 fieldLabel: 'Nro. PO',
-                 allowBlank: true,
-                 anchor: '100%',
-                 gwidth: 100, maxLength:50
-                 },
+                    name: 'nro_po',
+                    fieldLabel: 'Nro. PO',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100, maxLength:50
+                },
                 type:'TextField',
                 filters:{pfiltro:'sol.nro_po',type:'string'},
                 id_grupo:2,
                 grid:false,
                 form:true,
                 bottom_filter:true
-             },
+            },
             {
                 config: {
                     name: 'id_proveedor',
@@ -629,37 +629,37 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:true
             },
             {
-             config:{
-             name: 'fecha_arribado_bolivia',
-             fieldLabel: 'Fecha Arribo Bolivia',
-             allowBlank: true,
-             anchor: '100%',
-             gwidth: 100,
-             format: 'd/m/Y',
-             renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-             },
-             type:'DateField',
-             filters:{pfiltro:'sol.fecha_arribo_bolivia',type:'date'},
-             id_grupo:2,
-             grid:false,
-             form:true
-             },
+                config:{
+                    name: 'fecha_arribado_bolivia',
+                    fieldLabel: 'Fecha Arribo Bolivia',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_arribo_bolivia',type:'date'},
+                id_grupo:2,
+                grid:false,
+                form:true
+            },
             {
-             config:{
-             name: 'fecha_desaduanizacion',
-             fieldLabel: 'Fecha Desaduanizacion',
-             allowBlank: true,
-             anchor: '100%',
-             gwidth: 100,
-             format: 'd/m/Y',
-             renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-             },
-             type:'DateField',
-             filters:{pfiltro:'sol.fecha_desaduanizacion',type:'date'},
-             id_grupo:2,
-             grid:false,
-             form:true
-             },
+                config:{
+                    name: 'fecha_desaduanizacion',
+                    fieldLabel: 'Fecha Desaduanizacion',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_desaduanizacion',type:'date'},
+                id_grupo:2,
+                grid:false,
+                form:true
+            },
             {
                 config:{
                     name: 'fecha_en_almacen',
@@ -860,7 +860,7 @@ header("content-type: text/javascript; charset=UTF-8");
             'contador_estados',
             {name:'revisado_so', type: 'string'},
             {name:'control_fecha', type: 'string'}
-            
+
 
 
         ],
@@ -995,7 +995,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
                 'Chequear documento del WF',
                 {
-                    width:'90%',  
+                    width:'90%',
                     height:500
                 },
                 rec.data,
@@ -1028,27 +1028,27 @@ header("content-type: text/javascript; charset=UTF-8");
             console.log(rec.data);
 
             var rec = this.sm.getSelected();
-                this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
-                    'Estado de Wf',
-                    {
-                        modal: true,
-                        width: 700,
-                        height: 450
-                    },
-                    {
-                        data: {
-                            id_estado_wf: rec.data.id_estado_wf,
-                            id_proceso_wf: rec.data.id_proceso_wf
-                        }
-                    }, this.idContenedor, 'FormEstadoWf',
-                    {
-                        config: [{
-                            event: 'beforesave',
-                            delegate: this.onSaveWizard,
-                        }],
-                        scope: this
+            this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+                'Estado de Wf',
+                {
+                    modal: true,
+                    width: 700,
+                    height: 450
+                },
+                {
+                    data: {
+                        id_estado_wf: rec.data.id_estado_wf,
+                        id_proceso_wf: rec.data.id_proceso_wf
                     }
-                );
+                }, this.idContenedor, 'FormEstadoWf',
+                {
+                    config: [{
+                        event: 'beforesave',
+                        delegate: this.onSaveWizard,
+                    }],
+                    scope: this
+                }
+            );
             if(  rec.data.estado=='revision' && rec.data.fecha_cotizacion == null ||rec.data.estado=='cotizacion' && rec.data.nro_po=='' &&  rec.data.id_proveedor == null || rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
                 this.onButtonEdit();
 

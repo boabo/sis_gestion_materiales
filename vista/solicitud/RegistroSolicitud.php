@@ -47,7 +47,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
 
-        onButtonNew:function(){
+       onButtonNew:function(){
             //abrir formulario de solicitud
             var me = this;
             me.objSolForm = Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/FromFormula.php',
