@@ -17,7 +17,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         Phx.vista.DetalleSol.superclass.constructor.call(this,config);
         this.init();
         this.grid.addListener('cellclick', this.oncellclick,this);
-
     },
 			
 	Atributos:[
@@ -47,7 +46,17 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 150,
-                maxLength:50
+                maxLength:50,
+                renderer: function(value, p, record) {
+                    var b =this;
+                    if(record.data.revisado == 'no' && record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
             },
             type:'TextField',
             filters:{pfiltro:'det.nro_parte',type:'string'},
@@ -62,7 +71,16 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 150,
-                maxLength:50
+                maxLength:50,
+                renderer: function(value, p, record) {
+                    if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
             },
             type:'TextField',
             filters:{pfiltro:'det.nro_parte_alterno',type:'string'},
@@ -77,7 +95,16 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 200,
-                maxLength:100
+                maxLength:100,
+                renderer: function(value, p, record) {
+                    if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
             },
             type:'TextField',
             filters:{pfiltro:'det.referencia',type:'string'},
@@ -92,7 +119,16 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 200,
-                maxLength:100
+                maxLength:100,
+                renderer: function(value, p, record) {
+                    if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
             },
             type:'TextField',
             filters:{pfiltro:'det.descripcion',type:'string'},
@@ -112,14 +148,22 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 mode: 'local',
                 anchor: '50%',
                 gwidth: 80,
-                store:['Consumible','Rotable']
+                store:['Consumible','Rotable'],
+                renderer: function(value, p, record) {
+                    if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
 
             },
             type:'ComboBox',
             id_grupo:0,
             grid:true,
-            form:true,
-            bottom_filter:true
+            form:true
 
         },
         {
@@ -129,7 +173,16 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 50,
-                maxLength:4
+                maxLength:4,
+                renderer: function(value, p, record) {
+                    if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
             },
             type:'NumberField',
             filters:{pfiltro:'det.cantidad_sol',type:'numeric'},
@@ -323,7 +376,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         {name:'codigo', type: 'string'},
         {name:'desc_descripcion', type: 'string'},
         {name:'revisado', type: 'string'},
-        {name:'tipo', type: 'string'}
+        {name:'tipo', type: 'string'},
+        {name:'estado', type: 'string'}
 
 
 
@@ -374,7 +428,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
     },
     cambiarRevision: function(record){
         Phx.CP.loadingShow();
-        var d = record.data
+        var d = record.data;
         Ext.Ajax.request({
             url:'../../sis_gestion_materiales/control/DetalleSol/cambiarRevision',
             params:{ id_detalle: d.id_detalle,revisado:d.revisado},

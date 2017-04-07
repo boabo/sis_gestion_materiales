@@ -71,13 +71,15 @@ BEGIN
 						usu2.cuenta as usr_mod,
                         un.codigo,
                         un.descripcion as desc_descripcion,
-                        '||v_revisado||'
+                        '||v_revisado||',
+                        det.tipo,
+                        s.estado
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
                         inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
-
-                        where  ';
+                        inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
+				     	where  ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -104,6 +106,7 @@ BEGIN
 					    inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
 					    inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
+                        inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
 
                         where ';
 

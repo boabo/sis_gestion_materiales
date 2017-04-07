@@ -29,7 +29,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             var checked = '',
                                 momento = 'no';
                             if (value == 'si') {
-                                checked = 'checked';;
+                                checked = 'checked';
                             }
                             return String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:20px;width:20px;" type="checkbox"  {0}></div>', checked);
 
@@ -48,8 +48,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.pes_estado = 'Control';
             //this.load({params:{start:0, limit:this.tam_pag}});
         },
-        bnew: false,
-        bdel: false,
-        bedit: false
+        bnew: true,
+        bdel: true,
+        bedit: true
     }
 </script>

@@ -29,8 +29,16 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_detalle	integer;
-    v_campos record;
+	v_id_detalle				integer;
+    v_campos 					record;
+    v_revisado 					VARCHAR;
+    v_detalle 					record;
+
+    v_parte 					varchar;
+    v_msg_control				varchar;
+    v_control_duplicidad 		record;
+
+
 
 BEGIN
 
@@ -65,7 +73,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_ai,
 			id_usuario_mod,
-			fecha_mod
+			fecha_mod,
+            tipo
           	) values(
 			v_parametros.id_solicitud,
 			v_parametros.descripcion,
@@ -82,7 +91,8 @@ BEGIN
 			now(),
 			v_parametros._id_usuario_ai,
 			null,
-			null)RETURNING id_detalle into v_id_detalle;
+			null,
+            v_parametros.tipo)RETURNING id_detalle into v_id_detalle;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Detalle_sol almacenado(a) con exito (id_detalle'||v_id_detalle||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_detalle',v_id_detalle::varchar);
@@ -102,6 +112,18 @@ BEGIN
 	elsif(p_transaccion='MAT_DET_MOD')then
 
 		begin
+        select s.estado
+        into v_detalle
+        from mat.tsolicitud s
+        inner join mat.tdetalle_sol de on de.id_solicitud = s.id_solicitud
+        WHERE s.id_solicitud = v_parametros.id_solicitud;
+
+        if (v_detalle.estado = 'desaduanizado')THEN
+        v_revisado = v_parametros.revisado;
+        ELSE
+        v_revisado = 'no';
+        end IF;
+
 			--Sentencia de la modificacion
 			update mat.tdetalle_sol set
 			id_solicitud = v_parametros.id_solicitud,
@@ -117,7 +139,8 @@ BEGIN
 			fecha_mod = now(),
 			id_usuario_ai = v_parametros._id_usuario_ai,
 			usuario_ai = v_parametros._nombre_usuario_ai,
-            revisado = v_parametros.revisado
+            revisado = v_revisado,
+            tipo = v_parametros.tipo
 			where id_detalle=v_parametros.id_detalle;
 
 			--Definicion de la respuesta
@@ -151,6 +174,41 @@ BEGIN
             return v_resp;
 
 		end;
+
+    /*********************************
+ 	#TRANSACCION:  'MAT_GET_PAR'
+ 	#DESCRIPCION:	control de numero de justificacion
+ 	#AUTOR:		MMV
+ 	#FECHA:		10-01-2017 13:13:01
+	***********************************/
+
+	elsif(p_transaccion='MAT_GET_PAR')then
+		begin
+        FOR v_control_duplicidad in (select	d.nro_parte,
+											f.desc_funcionario1,
+                                            s.nro_justificacion,
+                                            s.nro_no_rutina,
+                                            s.justificacion,
+                                            s.nro_tramite,
+                                            s.fecha_solicitud
+                                            from mat.tdetalle_sol d
+                                            inner join mat.tsolicitud s on s.id_solicitud = d.id_solicitud
+                                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
+     	)LOOP
+        	if v_parametros.nro_parte = v_control_duplicidad.nro_parte then
+            	v_parte= v_control_duplicidad.nro_parte;
+                v_msg_control = v_control_duplicidad.nro_parte||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
+            end if;
+
+        END LOOP;
+
+        v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+        v_resp = pxp.f_agrega_clave(v_resp,'parte', v_parte::varchar );
+        v_resp = pxp.f_agrega_clave(v_resp,'mgs_control_duplicidad', v_msg_control::varchar );
+        return v_resp;
+
+		end;
+
     else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;

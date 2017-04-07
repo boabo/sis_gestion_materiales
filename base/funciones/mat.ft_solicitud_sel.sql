@@ -34,10 +34,14 @@ DECLARE
     p_id_proceso_wf integer;
     v_id_proceso_wf_prev integer;
     v_orden				varchar;
-    v_filtro        varchar;
-    v_record record;
-    v_id_usuario_rev record;
-
+	v_filtro			varchar;
+    v_funcionario_wf    record;
+    v_record    		record;
+    v_id_usuario_rev	integer;
+    v_origen 			varchar;
+    v_filtro_repo       VARCHAR;
+    v_origen_pedido     VARCHAR;
+    v_id_proceso_wf_firma integer;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_solicitud_sel';
@@ -63,11 +67,13 @@ BEGIN
         if p_administrador 	THEN
 
           v_filtro = ' 0=0 AND ';
+
+         -- RAISE EXCEPTION'%',v_parametros.tipo_interfaz;
         ELSIF v_parametros.pes_estado = 'borrador' THEN
 
-        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
+            v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
                 ' AND ';
-        ELSIF v_parametros.pes_estado = 'revision' THEN
+    	ELSIF v_parametros.pes_estado = 'revision' THEN
 
         v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
                 ' AND ';
@@ -76,28 +82,49 @@ BEGIN
         v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
                 ' AND ';
 
-        ELSIF  (v_parametros.pes_estado = 'visto_bueno' )THEN
+       ELSIF  (v_parametros.pes_estado = 'visto_bueno' )THEN
 
-         select u.id_persona,
-                count(u.id_usuario)::varchar as cant_reg
+         select u.id_persona
          into v_id_usuario_rev
                     from wf.testado_wf es
                     inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
                     inner join segu.tusuario u on u.id_persona = fu.id_persona
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                    WHERE so.estado = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento' OR so.estado = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones' OR so.estado = 'vobo_aeronavegabilidad' and so.origen_pedido = 'Gerencia de Mantenimiento'
-               		GROUP BY u.id_usuario;
-         IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+                    WHERE so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento' OR so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones' OR so.estado_firma = 'vobo_aeronavegabilidad';
+
+          IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
          ELSE
          v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_persona||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          END IF;
 
+
+
+         ELSIF  (v_parametros.tipo_interfaz = 'Abastecimientos')THEN
+
+
+                    select u.id_persona,
+                	count(u.id_usuario)::varchar as cant_reg
+         			into v_id_usuario_rev
+                    from wf.testado_wf es
+                    inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
+                    inner join segu.tusuario u on u.id_persona = fu.id_persona
+                    inner join orga.vfuncionario_cargo_lugar fc on fc.id_funcionario =es.id_funcionario
+                   	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
+                    LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
+                    WHERE so.estado in('compra','cotizacion') and fc.descripcion_cargo = 'Técnico  Apoyo Revisión' or so.estado in('despachado','arribo','desaduanizado','almacen') and fc.descripcion_cargo = 'Gestor Aduanero'
+               		GROUP BY u.id_usuario;
+
+         IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
          ELSE
-          v_filtro = '';
+         v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_persona||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
           END IF;
 
+        ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
+          v_filtro = '';
+        END IF;
 			v_consulta:='select
 						sol.id_solicitud,
 						sol.id_funcionario_sol,
@@ -141,24 +168,40 @@ BEGIN
                         sol.mel,
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
-                     	pxp.list (de.nro_parte) as nro_partes,
+                        pxp.list (de.nro_parte) as nro_parte,
                         sol.nro_justificacion,
                         sol.fecha_cotizacion,
                          (select count(*)
                              from unnest(pwf.id_tipo_estado_wfs) elemento
-                             where elemento = ew.id_tipo_estado) as contador_estados
+                             where elemento = ew.id_tipo_estado) as contador_estados,
+
+                             mat.control_fecha_requerida(now()::date, sol.fecha_requerida, ''CONTROL_FECHA'')::VARCHAR as control_fecha,
+                             sol.estado_firma,
+                             sol.id_proceso_wf_firma,
+                             sol.id_estado_wf_firma,
+                             (select count(*)
+                             from unnest(pwfb.id_tipo_estado_wfs) elemento
+                             where elemento = ewb.id_tipo_estado) as contador_estados_firma,
+                             ti.nombre_estado,
+                             tip.nombre_estado as nombre_estado_firma
+
                         from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
                         inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
 						left join param.vproveedor pro on pro.id_proveedor =sol.id_proveedor
-                        inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
+                        left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                         left join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                         LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
                         LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
                         inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
                         inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = sol.id_proceso_wf
+
+                        LEFT join wf.testado_wf ewb on ewb.id_estado_wf = sol.id_estado_wf_firma
+                        LEFT join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
+                        inner join wf.ttipo_estado ti on ti.id_tipo_estado = ew.id_tipo_estado
+                        LEFT join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
                         where  '||v_filtro;
 
 			--Definicion de la respuesta
@@ -206,7 +249,13 @@ BEGIN
                         sol.nro_no_rutina,
                         pro.desc_proveedor,
                         sol.nro_justificacion,
-                        contador_estados order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+                        sol.fecha_cotizacion,
+                        contador_estados,
+         		     	control_fecha,
+                        sol.estado_firma,
+                        contador_estados_firma,
+                        ti.nombre_estado,
+                        nombre_estado_firma order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 
@@ -224,17 +273,23 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_solicitud)
-					  	from mat.tsolicitud sol
+			v_consulta:='select count(sol.id_solicitud)
+						from mat.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
                         inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
+						left join param.vproveedor pro on pro.id_proveedor =sol.id_proveedor
+                        left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                         left join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                         LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
                         LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
                         inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
                         inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = sol.id_proceso_wf
+                        LEFT join wf.testado_wf ewb on ewb.id_estado_wf = sol.id_estado_wf_firma
+                        LEFT join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
+                        inner join wf.ttipo_estado ti on ti.id_tipo_estado = ew.id_tipo_estado
+                        LEFT join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
                         where ';
 
 			--Definicion de la respuesta
@@ -258,8 +313,8 @@ BEGIN
 			v_consulta:='select ord.id_orden_trabajo,
                           		split_part(ord.desc_orden ,'' '',2) ||'' ''||  split_part(ord.desc_orden :: text,'' '',3):: text as matricula,
        					 		ord.desc_orden
-        						from conta.torden_trabajo ord
-								inner join conta.tgrupo_ot_det gr on gr.id_orden_trabajo = ord.id_orden_trabajo and gr.id_grupo_ot = 1
+                                from conta.torden_trabajo ord
+								inner join conta.tgrupo_ot_det gr on gr.id_orden_trabajo = ord.id_orden_trabajo and gr.id_grupo_ot IN( 1,4)
 							    where ';
 
             --Definicion de la respuesta
@@ -279,12 +334,12 @@ BEGIN
 	elsif(p_transaccion='MAT_FUN_SEL')then
 
 		begin
-			--Sentencia de la consulta de conteo de registros
+    			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select  	f.id_funcionario,
         							p.nombre_completo1,
 									uo.nombre_cargo
  									from orga.tfuncionario f
-                                    inner join segu.vpersona p on p.id_persona= f.id_persona and f.id_funcionario IN(308,307,309,1483,304,306,1022,766,1482)
+                                    inner join segu.vpersona p on p.id_persona= f.id_persona
                                     inner JOIN orga.tuo_funcionario uof on uof.id_funcionario = f.id_funcionario
                                     inner JOIN orga.tuo uo on  uo.id_uo = uof.id_uo and uo.estado_reg = ''activo''
                                     inner  JOIN orga.tcargo car on car.id_cargo = uof.id_cargo
@@ -312,12 +367,13 @@ BEGIN
                                 sol.id_solicitud,
                                 to_char( sol.fecha_solicitud,''DD/MM/YYYY'') as fecha_solicitud,
                                 ot.motivo_orden,
-                                left(ot.desc_orden,20) as matricula ,
+                                left(ot.desc_orden,20) as matricula,
                                 RIGHT (ot.desc_orden,18) as matri,
+                                split_part(ot.desc_orden,'' '',1) as flota,
                                 sol.nro_tramite,
                                 de.nro_parte::text,
                                 de.referencia::text,
-                                de.descripcion,
+                                initcap (de.descripcion) as descripcion,
                                 de.cantidad_sol,
                                 sol.justificacion,
                                 sol.tipo_solicitud,
@@ -332,7 +388,9 @@ BEGIN
                                 ti.codigo as estado,
                                 un.codigo as unidad_medida,
                                 sol.nro_justificacion,
-                                de.nro_parte_alterno
+                                de.nro_parte_alterno,
+                                de.tipo,
+                                sol.estado_firma
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
@@ -345,7 +403,7 @@ BEGIN
 			return v_consulta;
 
 		end;
-     /*********************************
+    /*********************************
  	#TRANSACCION:  'MAT_FRI_SEL'
  	#DESCRIPCION:	Control de firmas qr
  	#AUTOR:	 Ale MV
@@ -354,40 +412,40 @@ BEGIN
     elsif(p_transaccion='MAT_FRI_SEL')then
 
 		begin
+        select sou.id_proceso_wf_firma
+        		into
+                v_id_proceso_wf_firma
+        from mat.tsolicitud sou
+        where sou.id_proceso_wf= v_parametros.id_proceso_wf;
 
    create temp table firma_funcionarios(
             nombre_estado varchar,
             desc_funcionario2 text,
-            fecha_ini text,
-            nro_tramite varchar,
-            tipo_solicitud varchar,
-            fecha_solicitud text
+            fecha_ini text
+
            )on commit drop;
-  			FOR v_firmas IN (   select s.id_estado_wf
+  			FOR v_firmas IN (   select s.id_estado_wf_firma
 								from mat.tsolicitud s
-                                where s.id_proceso_wf= v_parametros.id_proceso_wf)
+                                where s.id_proceso_wf_firma= v_id_proceso_wf_firma)
                                 LOOP
-                                raise  notice 'estasd %', v_firmas.id_estado_wf;
+                                raise  notice 'estasd %', v_firmas.id_estado_wf_firma;
                                 INSERT INTO firma_funcionarios(
                                 WITH RECURSIVE estado( id_proceso_wf,id_estado_wf,id_funcionario,id_estado_anterior,id_tipo_estado)as(
 								select et.id_proceso_wf, et.id_estado_wf, et.id_funcionario,et.id_estado_anterior, et.id_tipo_estado
 								from wf.testado_wf et
-								where et.id_proceso_wf= v_parametros.id_proceso_wf
+								where et.id_proceso_wf= v_id_proceso_wf_firma
 								UNION
 								select et.id_proceso_wf, et.id_estado_wf, et.id_funcionario,et.id_estado_anterior, et.id_tipo_estado
                                 from wf.testado_wf et, estado
                                 WHERE et.id_estado_wf =estado.id_estado_anterior
 								)select  te.nombre_estado,
                                          initcap(fu.desc_funcionario1) as funcionario_bv ,
-                                         to_char( pwf.fecha_ini,'DD/MM/YYYY')as fecha_ini,
-                                         sol.nro_tramite,
-                                         sol.tipo_solicitud,
-                                         to_char(  sol.fecha_solicitud,'DD/MM/YYYY')as fecha_solicitud
+                                         to_char( pwf.fecha_reg,'DD/MM/YYYY')as fecha_ini
                                          from estado es
                                          INNER JOIN wf.ttipo_estado te on te.id_tipo_estado= es.id_tipo_estado
                                          INNER JOIN wf.tproceso_wf pwf on pwf.id_proceso_wf=es.id_proceso_wf
                                          INNER JOIN wf.ttipo_proceso tp on tp.id_tipo_proceso=pwf.id_tipo_proceso
-                                         INNER JOIN mat.tsolicitud sol on sol.id_proceso_wf=pwf.id_proceso_wf
+                                         INNER JOIN mat.tsolicitud sol on sol.id_proceso_wf_firma=pwf.id_proceso_wf
                                          INNER JOIN orga.vfuncionario fu on fu.id_funcionario = es.id_funcionario
      									 ORDER BY es.id_estado_wf ASC);
                                          END LOOP;
@@ -397,9 +455,127 @@ BEGIN
 
             --Devuelve la respuesta
             return v_consulta;
+   end;
+    /*********************************
+ 	#TRANSACCION:  'MAT_CON_AL_SEL'
+ 	#DESCRIPCION:	Reporte para control de numoer de partes alamcen
+ 	#AUTOR:	 MMV
+ 	#FECHA:		10-02-2017 13:13:01
+	***********************************/
+     elsif(p_transaccion='MAT_CON_AL_SEL')then
 
+		begin
+        IF(v_parametros.origen_pedido  = 'Gerencia de Mantenimiento')THEN
+        IF (v_parametros.estado > 1::VARCHAR )THEN
+        v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.id_tipo_estado::integer in ('||v_parametros.estado||') and ';
+    	ELSE
+         v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and ';
+        END IF;
+
+      ELSIF(v_parametros.origen_pedido  = 'Gerencia de Operaciones')THEN
+
+          IF (v_parametros.estado_op > 1::VARCHAR )THEN
+
+        v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.id_tipo_estado::integer in ('||v_parametros.estado_op||') and ';
+    	ELSE
+         v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and ';
+        END IF;
+         ELSIF(v_parametros.origen_pedido  = 'Almacenes Consumibles o Rotables')THEN
+
+          IF (v_parametros.estado_ro > 1::VARCHAR )THEN
+
+        v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.id_tipo_estado::integer in ('||v_parametros.estado_ro||') and ';
+    	ELSE
+         v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and ';
+        END IF;
+        END IF;
+
+            v_consulta:=' select
+            					s.id_solicitud,
+                                s.nro_tramite,
+                                s.origen_pedido,
+                                s.estado,
+                                f.desc_funcionario1,
+                                to_char(s.fecha_solicitud,''DD/MM/YYYY'')as fecha_solicitud,
+                                d.nro_parte,
+  								d.nro_parte_alterno,
+                                d.descripcion,
+                                d.cantidad_sol,
+                                t.id_tipo_estado,
+                                d.id_solicitud as id
+                                from mat.tsolicitud s
+                                inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
+                                inner join mat.tdetalle_sol d on d.id_solicitud = s.id_solicitud
+                                inner join wf.testado_wf e on e.id_estado_wf = s.id_estado_wf
+                                inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
+                                where '||v_filtro_repo;
+
+			--Devuelve la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||'ORDER BY nro_tramite, s.nro_tramite';
+            --v_consulta:=v_consulta||' order by ';
+
+			return v_consulta;
 
 		end;
+        /*********************************
+ 	#TRANSACCION:  'MAT_ESTADO_SEL'
+ 	#DESCRIPCION:	Listar estadi
+ 	#AUTOR:	 MMV
+ 	#FECHA:		10-02-2017 13:13:01
+	***********************************/
+     elsif(p_transaccion='MAT_ESTADO_SEL')then
+
+		begin
+			v_consulta:='select
+            					t.id_tipo_estado,
+								t.codigo
+								from wf.ttipo_estado t
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Gerencia de Mantenimiento'' and t.estado_reg = ''activo''
+                                where';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--Devuelve la respuesta
+           return v_consulta;
+
+		end;
+          elsif(p_transaccion='MAT_ES_OP_SEL')then
+
+		begin
+			v_consulta:='select
+            					t.id_tipo_estado,
+								t.codigo
+								from wf.ttipo_estado t
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Gerencia de Operaciones'' and t.estado_reg = ''activo''
+                                where';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--Devuelve la respuesta
+           return v_consulta;
+
+		end;
+         elsif(p_transaccion='MAT_ES_RO_SEL')then
+
+		begin
+			v_consulta:='select
+            					t.id_tipo_estado,
+								t.codigo
+								from wf.ttipo_estado t
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Almacenes Consumibles o Rotables'' and t.estado_reg = ''activo''
+                                where';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--Devuelve la respuesta
+           return v_consulta;
+
+		end;
+
 
 else
 

@@ -4,18 +4,17 @@ class RRequemientoMaterielesMan extends  ReportePDF
 {
     function Header()
     {
+        $height = 25;
         $this->ln(5);
-        $height = 20;
-        //cabecera del reporte
-        $this->Cell(40, $height, '', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $this->SetFontSize(16);
+        $this->MultiCell(40, $height, '', 1, 'C', 0, '', '');
+        //$this->Cell(40, $height, '', 1, 0, 'L', false, '', 0, false, 'T', 'C');
+        $this->SetFontSize(15);
         $this->SetFont('', 'B');
-        $this->MultiCell(105, $height,"\n".'COMITÉ DE EVALUACIÓN TÉCNICA'."\n".'REPUESTOS AERONÁUTICOS' , 0, 'C', 0, '', '');
-        $y = $this->getY();
-        $this->Image(dirname(__FILE__) . '/../../pxp/lib' . $_SESSION['_DIR_LOGO'], 10, $y, 36);
-        $this->ln(25);
-        $this->customy = $this->getY();
-        $this->reporteRequerimiento();
+        $this->MultiCell(105, $height, "\n" .'COMITÉ DE EVALUACIÓN TÉCNICA'."\n".'REPUESTOS AERONÁUTICOS', 1, 'C', 0, '', '');
+        $this->SetFont('times', '', 10);
+        $this->MultiCell(0, $height, "\n" . '' . "\n" . '' . "\n" . '', 1, 'C', 0, '', '');
+        $this->Image(dirname(__FILE__) . '/../../pxp/lib' . $_SESSION['_DIR_LOGO'], 17, 15, 36);
+
     }
     function reporteRequerimiento(){
         $this->SetFont('times', 'B', 11);
@@ -40,32 +39,53 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->SetFont('times', '', 11);
         $this->Cell(0, 7, ' Repuesto a Solicitar', 1, 0, 'L', 0, '', 0);
         $this->ln();
+        $this->SetFont('', 'B', 10);
+        $this->Cell(15, 0,'Nro' , 1, 0, 'C', 0, '', 0);
+        $conf_det_tablewidths = array(35, 35, 55, 20,26);
+        $conf_det_tablealigns = array( 'C', 'C', 'C', 'C', 'C');
+        //$conf_det_tablenumbers = array(0,0,0,0,0,0);
 
-        $this->SetFont('times', '', 11);
-        $this->Cell(36, 7, ' Descripción', 1, 0, 'L', 0, '', 0);
-        foreach ($this->datos as $Row) {
-            $this->Cell(35, 7, ' '.$Row['descripcion'], 0, 0, 'L', 0, '', 0);
-        }
-        $this->ln(0.10);
-        $this->Cell(36, 7, '', 0, 0, 'L', 0, '', 0);
-        $this->Cell(0, 7, '', 1, 0, 'L', 0, '', 0);
-        $this->ln();
-        $this->SetFont('times', '', 11);
-        $this->Cell(36, 7, ' Número de Parte', 1, 0, 'L', 0, '', 0);
-        foreach ($this->datos as $Row) {
-            $this->Cell(0, 7, ' ' .$Row['nro_parte'], 1, 0, 'L', 0, '', 0);
-        }
-        $this->ln();
-        $this->SetFont('times', '', 11);
-        $this->Cell(36, 7, ' Cantidad', 1, 0, 'L', 0, '', 0);
-        foreach ($this->datos as $Row) {
-            $this->Cell(35, 7, ' ' .$Row['cantidad_sol'], 0, 0, 'L', 0, '', 0);
-        }
-        $this->ln(0.10);
-        $this->Cell(36, 7, '', 0, 0, 'L', 0, '', 0);
+        $this->tablewidths = $conf_det_tablewidths;
+        $this->tablealigns = $conf_det_tablealigns;
+        //$this->tablenumbers= $conf_det_tablenumbers;
 
-        $this->Cell(0, 7, '', 1, 0, 'L', 0, '', 0);
-        $this->ln();
+
+        $RowArray = array(
+
+            'Número de Parte',
+            'Referencia',
+            'Descripcion',
+            'Cantidad',
+            'Unidad Medida'
+        );
+        $numero = 1;
+        $this->MultiRow($RowArray, false, 1);
+
+        $this->SetFont('', '', 10);
+        $conf_det_tablewidths = array(35, 35, 55, 20,26);
+        $conf_det_tablealigns = array( 'C', 'C', 'C', 'C', 'C');
+        //$conf_det_tablenumbers = array(5,0,0,0,0,0);
+
+        $this->tablewidths = $conf_det_tablewidths;
+        $this->tablealigns = $conf_det_tablealigns;
+        //$this->tablenumbers= $conf_det_tablenumbers;
+
+        foreach ($this->datos as $Row) {
+            $this->Cell(15, 0,$numero , 1, 0, 'C', 0, '', 0);
+            $RowArray = array(
+
+                'Número de Parte' => $Row['nro_parte'],
+                'Referencia'=> $Row['referencia'],
+                'Descripcion'=> $Row['descripcion'],
+                'Cantidad'=> $Row['cantidad_sol'],
+                'Unidad Medida'=> $Row['unidad_medida']
+
+            );
+            $numero++;
+            $this->MultiRow($RowArray);
+
+        }
+
         $this->SetFont('times', 'B', 11);
         $this->Cell(0, 7, ' Motivo de la Solicitud', 1, 0, 'L', 0, '', 0);
         $this->ln();
@@ -76,138 +96,133 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(0, 7, ' Justificación de Necesidad', 1, 0, 'L', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
-        $this->Cell(40, 7, 'Tipo de Falla', 1, 0, 'C', 0, '', 0);
-        $this->Cell(45, 7,  'Tipo de Reporte', 1, 0, 'C', 0, '', 0);
-        $this->Cell(45, 7,  'Tipo de Solicitud', 1, 0, 'C', 0, '', 0);
-        $this->Cell(25, 7,  'MEL', 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 7,  'Due Date ', 1, 0, 'C', 0, '', 0);
+        $this->Cell(40, 0, 'Tipo de Falla', 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 0,  'Tipo de Reporte', 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 0,  'Tipo de Solicitud', 1, 0, 'C', 0, '', 0);
+        $this->Cell(25, 0,  'MEL', 1, 0, 'C', 0, '', 0);
+        $this->Cell(0, 0,  'Due Date ', 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
-        $this->Cell(40, 15,$this->datos[0]['tipo_falla'] , 1, 0, 'C', 0, '', 0);
-        $this->Cell(45, 15, $this->datos[0]['tipo_reporte'] , 1, 0, 'C', 0, '', 0);
-        $this->Cell(45, 15, $this->datos[0]['tipo_solicitud'] , 1, 0, 'C', 0, '', 0);
-        $this->Cell(25, 15, $this->datos[0]['mel'] , 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 15, $this->datos[0]['fecha_requerida'] , 1, 0, 'C', 0, '', 0);
-
+        $this->Cell(40, 7,$this->datos[0]['tipo_falla'] , 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 7, $this->datos[0]['tipo_reporte'] , 1, 0, 'C', 0, '', 0);
+        $this->Cell(45, 7, $this->datos[0]['tipo_solicitud'] , 1, 0, 'C', 0, '', 0);
+        $this->Cell(25, 7, $this->datos[0]['mel'] , 1, 0, 'C', 0, '', 0);
+        $this->Cell(0, 7, $this->datos[0]['fecha_requerida'] , 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 11);
         $this->MultiCell(0, 10, ' Observaciones: '. $this->datos[0]['observaciones_sol']."\n", 1, 'J', 0, '', '');
         $this->ln();
-        $this->SetFont('times', '', 11);
+        /*$this->SetFont('times', '', 11);
         $this->Cell(0, 7, ' Evaluado y Analizado Por: ', 1, 0, 'L', 0, '', 0);
-        $this->ln();
-        $this->SetFont('times', 'B', 11);
-
-        $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
-        if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad'  or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-
-            $this->MultiCell(65, 0, 'Unidad C & S/Control Producción' . "\n" . $this->datos[0]['desc_funcionario1'], 0, 'C', 0, '', '');
-        }else{
-            $this->MultiCell(65, 0, 'Unidad C & S/Control Producción', 0, 'C', 0, '', '');
-        }
-        if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad' or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            if($this->datos[0]['fecha_solicitud'] < '15/02/2017' ) {
-                $this->MultiCell(65, 0, 'Gerencia de Mantenimiento' . "\n" . $this->datos2[0]['funcionario_bv'], 0, 'C', 0, '', '');
-            }
-            else{
-                $this->MultiCell(65, 0, 'Gerencia de Mantenimiento' . "\n" . 'Roger Wilmer Balderrama Angulo', 0, 'C', 0, '', '');
-
-            }
-        }else{
-            $this->MultiCell(65, 0, 'Gerencia de Mantenimiento',  0, 'C', 0, '', '');
+        $this->ln();*/
+        $RT = 0;
+        if (count($this->datos) > 6) {
+            $RT= 50;
         }
 
-        $this->Cell(0, 0,  '', 0, 0, 'C', 0, '', 0);
-        $this->ln(0.10);
-        $this->Cell(25, 40, '', 1, 0, 'C', 0, '', 0);
-        $this->Cell(65, 40, '', 1, 0, 'C', 0, '', 0);
-        $this->Cell(65, 40,  '', 1, 0, 'C', 0, '', 0);
-        $this->Cell(0, 40,  '', 1, 0, 'C', 0, '', 0);
-        $this->ln();
-        $this->SetFont('times', '', 11);
-        $this->Cell(0, 7, ' Evaluado y Analizado por OAC - 121', 1, 0, 'L', 0, '', 0);
-        $this->ln();
-        $this->SetFont('times', 'B', 11);
-        if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            if($this->datos[0]['fecha_solicitud'] < '15/02/2017' ) {
-                $this->MultiCell(90, 0, 'V.B. DAC' . "\n" . 'Pedro Wilfredo Triveño Herrera', 0, 'C', 0, '', '');
-            }
-            else{
-                $this->MultiCell(90, 0, 'V.B. DAC' . "\n" . 'Pedro Wilfredo Triveño Herrera', 0, 'C', 0, '', '');
-            }
-        }else{
-            $this->MultiCell(90, 0, 'V.B. DAC', 0, 'C', 0, '', '');
+        $this->ln(0);
+
+        $esta = 'borrador';
+        $cadena_qr = 'Funcionario Solicitante: ' . $this->datos[0]['desc_funcionario1'] . "\n" . 'Nro. Pedido: ' . $this->datos[0]['nro_tramite'] . "\n" . 'Tipo Solicitud: ' . $this->datos[0]['tipo_solicitud'] . "\n" . 'Estado: ' . $esta . "\n" . 'Fecha de de la Solicitud: ' . $this->datos[0]['fecha_solicitud'] . "\n";
+
+        //$cadena_qr = 'Encargado: '.$Revisado_vb."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos2[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n";
+
+        $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
+        $nombre_archivo = $this->objParam->getParametro('nombre_archivo');
+        $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
+        $im = imagecreatefromstring($png);
+        if ($im !== false) {
+            header('Content-Type: image/png');
+            imagepng($im, $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png");
+            imagedestroy($im);
+
+        } else {
+            echo 'An error occurred.';
         }
-        if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            if($this->datos[0]['fecha_solicitud'] < '15/02/2017' ) {
-                $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . 'Pastor Jaime Lazarte Villagra', 0, 'C', 0, '', '');
-            }
-            else{
-                $this->MultiCell(0, 0, 'Recibido Abastecimiento' . "\n" . 'Pastor Jaime Lazarte Villagra', 0, 'C', 0, '', '');
-            }
-        }else{
-            $this->MultiCell(0, 0, 'Recibido Abastecimiento', 0, 'C', 0, '', '');
+        $ur = $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
+        $ur2 = $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
+        $ur3= $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
+        $funcionario_solicitante = $this->datos[0]['desc_funcionario1'];
+
+        $Revisado_vb= $this->datos2[0]['funcionario_bv'];
+        $VB_DAC= $this->datos2[1]['funcionario_bv'];
+        $Abastecimiento = $this->datos2[0]['funcionario_bv'];
+
+        if ($this->datos[0]['estado'] != 'borrador') {
+
+            $qr1 = $ur;
+            $fun =  $funcionario_solicitante;
         }
-        $this->ln(0.10);
-        $this->Cell(90, 40, '', 1, 0, 'L', 0, '', 0);
-        $this->Cell(0, 40,  '', 1, 0, 'L', 0, '', 0);
-        $this->ln();
-        $this->SetFont('times', '', 11);
-        /* if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-             $this->Cell(90, 7, ' Fecha: ' . $this->datos2[1]['fecha_ini'], 1, 0, 'L', 0, '', 0);
-         }*///else{
-        $this->Cell(90, 7, ' Fecha: ', 1, 0, 'L', 0, '', 0);
-        // }
-        if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->Cell(0, 7, ' Fecha:' . $this->datos2[2]['fecha_ini'], 1, 0, 'L', 0, '', 0);
-        }else{
-            $this->Cell(0, 7, ' Fecha:', 1, 0, 'L', 0, '', 0);
-        }
-        $this->ln();
+        if($this->datos[0]['estado_firma'] != 'vobo_area' and $this->datos[0]['estado'] != 'borrador' ) {
+            $qr2 = $ur2;
+            $frev =  $Revisado_vb;
 
-        $fun = $this->datos[0]['desc_funcionario1'];
-        $num = $this->datos[0]['nro_tramite'];
-        $tipo= $this->datos[0]['tipo_solicitud'];
-        $esta = 'borrador';//$this->datos[0]['estado'];
-        $fecha =$this->datos[0]['fecha_solicitud'];
-
-        $html = 'Funcionario Solicitante: '.$fun."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$esta."\n".'Fecha de de la Solicitud: '.$fecha."\n";
-        // set style for barcode
-        $style = array(
-            'border' => 2,
-            'vpadding' => 'auto',
-            'hpadding' => 'auto',
-            'fgcolor' => array(0,0,0),
-            'bgcolor' => false, //array(255,255,255)
-            'module_width' => 1, // width of a single module in points
-            'module_height' => 1 // height of a single module in points
-        );
-
-
-
-
-        if($this->datos[0]['estado'] == 'vobo_area' or $this->datos[0]['estado'] == 'vobo_aeronavegabilidad'   or $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado' ) {
-
-            $this->write2DBarcode($html, 'QRCODE,L', 60, 155, 25, 25, $style, 'N');
-        }
-        $html3 = 'Encargado: '.$this->datos2[0]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[0]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
-
-
-        if($this->datos[0]['estado'] == 'vobo_aeronavegabilidad'  or  $this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion' or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-
-            $this->write2DBarcode($html3, 'QRCODE,L', 125, 155, 25, 25, $style, 'N');
         }
 
-        $html4 = 'Encargado: '.$this->datos2[2]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[2]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
-        if($this->datos[0]['estado'] == 'revision'or $this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->write2DBarcode($html4, 'QRCODE,L', 50, 200, 25, 25, $style, 'N');
-        }
-        $html5 = 'Encargado: '.$this->datos2[1]['funcionario_bv']."\n".'Nro. Pedido: '.$num."\n".'Tipo Solicitud: '.$tipo."\n".'Estado: '.$this->datos2[1]['estado']."\n".'Fecha de de la Solicitud: '.$fecha."\n";
-        if($this->datos[0]['estado'] == 'cotizacion'or $this->datos[0]['estado'] == 'compra'or $this->datos[0]['estado'] == 'despachado'or $this->datos[0]['estado'] == 'arribo'or $this->datos[0]['estado'] == 'desaduanizado'or $this->datos[0]['estado'] == 'almacen'or $this->datos[0]['estado'] == 'finalizado') {
-            $this->write2DBarcode($html5, 'QRCODE,L', 140, 200, 25, 25, $style, 'N');
+        if( $this->datos[0]['estado_firma'] != 'vobo_aeronavegabilidad' and $this->datos[0]['estado_firma'] != 'vobo_area' and $this->datos[0]['estado'] != 'borrador' ) {
+            $qr3 = $ur3;
+            $dac =  $VB_DAC;
+
         }
 
-
+        if($this->datos[0]['estado'] != 'revision' and $this->datos[0]['estado'] != 'borrador') {
+            $qr4 = $ur;
+            $fab =  $Abastecimiento;
+        }
+        $tbl = <<<EOD
+        
+        <table cellspacing="0" cellpadding="1" border="1">
+        <tr>
+        <td align="center" > Unidad C & S/Control Producción</td>
+        <td align="center" > Gerencia de Mantenimiento </td>
+        </tr>
+        <tr>
+           <td align="center" > 
+           $fun
+            <br><br>
+            <img  style="width: 95px;" src="$qr1" alt="Logo">
+            <br><br>
+        </td>
+        <td align="center" >
+        $frev
+        <br><br>
+            <img  style="width: 95px;" src="$qr2" alt="Logo">
+            <br><br>
+         </td>
+         </tr>
+         <tr>
+            	<td align="justify"  colspan="2">Evaluado y Analizado por AOC - 121 
+            	<br></td>
+        </tr>
+      
+        </table>
+        
+EOD;
+        $tbl2 = <<<EOD
+        <table cellspacing="0" cellpadding="1" border="1">
+         <tr>
+        <td align="center" > V.B. DAC: $dac</td>
+        <td align="center" >  Recibido Abastecimiento:: $fab</td>
+        </tr>
+        <tr>
+        <td align="center" > 
+            <br><br>
+            <img  style="width: 95px;" src="$qr3" alt="Logo">
+            <br><br>
+            </td>
+        <td align="center" >
+        <br><br>
+            <img  style="width: 95px;" src="$qr4" alt="Logo">
+            <br><br>
+         </td>
+         </tr>
+        
+        </table>
+        
+EOD;
+        $this->writeHTML($tbl, true, false, false, false, '');
+        $this->ln($RT);//50
+        $this->writeHTML($tbl2, true, false, false, false, '');
     }
 
     function setDatos($datos,$datos2) {
@@ -215,7 +230,11 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->datos2 = $datos2;
     }
     function generarReporte() {
+        $this->SetMargins(15,40,15);
         $this->setFontSubsetting(false);
+        $this->AddPage();
+        $this->SetMargins(15,40,15);
+        $this->reporteRequerimiento();
 
     }
 

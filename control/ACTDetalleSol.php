@@ -60,6 +60,13 @@ class ACTDetalleSol extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
 
     }
+    function controlPartes(){
+
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->controlPartes($this->objParam);
+        //var_dump($this->res); exit;
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 
 ?>

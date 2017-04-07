@@ -44,6 +44,7 @@ class MODDetalleSol extends MODbase{
         $this->captura('desc_descripcion','varchar');
         $this->captura('revisado','varchar');
         $this->captura('tipo','varchar');
+        $this->captura('estado','varchar');
 
 		
 		//Ejecuta la instruccion
@@ -157,6 +158,21 @@ class MODDetalleSol extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function controlPartes(){
+        //var_dump('hent');exit;
+        $this->procedimiento ='mat.ft_detalle_sol_ime';
+        $this->transaccion='MAT_GET_PAR';
+        $this->tipo_procedimiento='IME';
+        $this->setParametro('nro_parte','nro_parte','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 
 }
 ?>

@@ -15,7 +15,7 @@ header("content-type: text/javascript; charset=UTF-8");
         tam_pag: 10,
         layout: 'fit',
         fields: [
-            {name:'codigo', type: 'string'},
+            {name:'codigo', type: 'string'}
         ],
         autoScroll: false,
         breset: false,
@@ -633,62 +633,53 @@ header("content-type: text/javascript; charset=UTF-8");
                 config: {
                     name: 'id_funcionario_sol',
                     fieldLabel: 'Funcionario Solicitante',
-                    allowBlank: true,
+                    allowBlank: false,
                     emptyText: 'Elija una opción...',
+                    qtip:'Funcionario que registra el Reclamo en el ERP, se rellena por Defecto.',
                     store: new Ext.data.JsonStore({
-                        url: '../../sis_gestion_materiales/control/Solicitud/listarFuncionarioRegistro',
+                        url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
                         id: 'id_funcionario',
                         root: 'datos',
                         sortInfo: {
-                            field: 'nombre_completo1',
+                            field: 'desc_funcionario1',
                             direction: 'ASC'
                         },
                         totalProperty: 'total',
-                        fields: ['id_funcionario','nombre_completo1','nombre_cargo'],
+                        fields: ['id_funcionario','desc_funcionario1','email_empresa','nombre_cargo','lugar_nombre','oficina_nombre'],
                         remoteSort: true,
-                        baseParams: {par_filtro: 'p.nombre_completo1#uo.nombre_cargo'}
+                        baseParams: {par_filtro: 'FUNCAR.desc_funcionario1'}//#FUNCAR.nombre_cargo
                     }),
                     valueField: 'id_funcionario',
-                    displayField: 'nombre_completo1',
-                    gdisplayField: 'nombre_completo1',
-                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p style="color: blue">{nombre_cargo}</p></div></tpl>',
-                    hiddenName: 'id_funcionario_sol',
+                    displayField: 'desc_funcionario1',
+                    gdisplayField: 'desc_nombre_funcionario',
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: green">{nombre_cargo}<br>{email_empresa}</p><p style="color:green">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
+                    hiddenName: 'id_funcionario_recepcion',
                     forceSelection: true,
                     typeAhead: false,
                     triggerAction: 'all',
                     lazyRender: true,
                     mode: 'remote',
-                    pageSize: 15,
+                    pageSize: 10,
                     queryDelay: 1000,
                     anchor: '105%',
                     gwidth: 230,
                     minChars: 2,
-                    renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['desc_funcionario1']);
+                    resizable:true,
+                    listWidth:'240',
+                    renderer: function (value, p, record) {
+                        return String.format('{0}', record.data['desc_nombre_funcionario']);
                     }
                 },
                 type: 'ComboBox',
-                id_grupo: 0,
-                filters: {pfiltro:' f.desc_funcionario1', type:'string'},
+                bottom_filter:true,
+                id_grupo: 4,
+                filters:{
+                    pfiltro:'fun.desc_funcionario1',//#fun.nombre_cargo
+                    type:'string'
+                },
                 grid: true,
-                form: true,
-                bottom_filter:true
+                form: true
             },
-            /*{
-                config:{
-                    name:'id_funcionario_sol',
-                    hiddenName: 'id_funcionario',
-                    origen:'FUNCIONARIOCAR',
-                    fieldLabel:'Funcionario',
-                    allowBlank:false,
-                    gwidth:200,
-                    valueField: 'id_funcionario',
-                    gdisplayField: 'desc_funcionario',
-                    baseParams: { es_combo_solicitud : 'si' } },
-                type: 'ComboRec',//ComboRec
-                id_grupo: 0,
-                form:true
-            },*/
             {
                 config:{
                     name: 'fecha_solicitud',
@@ -889,7 +880,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['A','B','C','No Aplica']
+                    store:['A','B','C','AOG','No Aplica']
 
                 },
                 type:'ComboBox',
@@ -1053,56 +1044,69 @@ header("content-type: text/javascript; charset=UTF-8");
                 return value;
             }) };
 
-            Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
-                params:{id_usuario: 0},
-                success:function(resp){
-                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                    var nro_justificacion =reg.ROOT.datos.justificacion,
-                        patron1 = "{",
-                        patron2 = "}",
-                        nuevoValor    = "",
-                        nuevaCadena = nro_justificacion.replace(patron1, nuevoValor),
-                        nuevaCadena = nuevaCadena.replace(patron2, nuevoValor);
-                    var arra2 = nuevaCadena.split(',');
-                    var numero;
-                    for(i=0; i < arra2.length; i++) {
-                        if (this.Cmp.nro_justificacion.getValue() == arra2[i]) {
-                            numero = arra2[i];
-                        }
-                    }
-                    //console.log('llega',numero);
-                    if(this.Cmp.nro_justificacion.getValue() == numero ){
 
-                        Ext.Msg.confirm('Confirmación', 'Número de Justificacion ' + numero + ' - ' + this.Cmp.justificacion.getValue() + ' fue registrado en un anterior solicitud desea continuar el registro ', function (btn) {
-                            if (btn === 'yes') {
-                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-
-                            } else {
-
-                            }
-                        },this);
-                    }else if(this.Cmp.nro_justificacion.getValue() != numero ){
-                        Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                    }
-
-
-                },
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-
-            });
             if(this.evaluaRequistos()){
 
                 if( k > 0 &&  !this.editorDetail.isVisible()){
+                    Ext.Ajax.request({
+                        url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
+
+                        params:{
+                            justificacion: this.Cmp.nro_justificacion.getValue()
+                        },
+                        success:function(resp){
+                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                            var nro_justificacion =reg.ROOT.datos.justificacion;
+                            var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
+                            var ma =this;
+                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion ){
+                                if(confirm('El número '+mgs_control) ){
+                                    Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                                    Ext.Msg.alert('Alerta','Se Duplico la solicitud por número '+mgs_control);
+                                }
+                            }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion ){
+                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                            }
+
+                        },
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+
+                    });
+
+                    Ext.Ajax.request({
+                        url:'../../sis_gestion_materiales/control/DetalleSol/controlPartes',
+
+                        params:{
+                            nro_parte: this.detCmp.nro_parte.getValue()
+                        },
+                        success:function(resp){
+                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                            var nro_parte =reg.ROOT.datos.parte;
+                            var mgs_control_par =reg.ROOT.datos.mgs_control_duplicidad;
+                            var ma =this;
+                            if(ma.detCmp.nro_parte.getValue() == nro_parte ){
+                                if(confirm('El Number part'+mgs_control_par) ){
+                                    Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                                    Ext.Msg.alert('Alerta','Se Duplico el Number part '+mgs_control_par);
+                                }
+                            }else if(ma.detCmp.nro_parte.getValue() != nro_parte ){
+                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                            }
+
+                        },
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+
+                    });
 
                 }
                 else{
                     alert("No tiene datos en el detalle")
                 }
             }
-
 
         }
     })

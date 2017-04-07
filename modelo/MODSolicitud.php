@@ -22,7 +22,6 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_interfaz','tipo_interfaz','varchar');
         $this->setParametro('id_usuario','id_usuario','int4');
 
-
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');
         $this->captura('id_funcionario_sol','int4');
@@ -72,10 +71,15 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
-        $this->captura('revisado_so','varchar');
+
         $this->captura('control_fecha','varchar');
-        //$this->captura('estado_ab','varchar');
-        
+        $this->captura('estado_firma','varchar');
+        $this->captura('id_proceso_wf_firma','int4');
+        $this->captura('id_estado_wf_firma','int4');
+        $this->captura('contador_estados_firma','bigint');
+        $this->captura('nombre_estado','varchar');
+        $this->captura('nombre_estado_firma','varchar');
+
 
 
 
@@ -126,7 +130,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
         $this->setParametro('nro_justificacion','nro_justificacion','varchar');
-        //$this->setParametro('estado_ab','estado_ab','varchar');
+
 
 
 
@@ -178,7 +182,8 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_reporte','tipo_reporte','varchar');
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
-        //$this->setParametro('estado_ab','estado_ab','varchar');
+
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -251,7 +256,7 @@ class MODSolicitud extends MODbase{
             $this->setParametro('mel','mel','varchar');
             $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
             $this->setParametro('nro_justificacion','nro_justificacion','varchar');
-            //$this->setParametro('estado_ab','estado_ab','varchar');
+
 
 
 
@@ -373,11 +378,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_depto_wf','id_depto_wf','int4');
         $this->setParametro('obs','obs','text');
         $this->setParametro('json_procesos','json_procesos','text');
-
-        //$this->setParametro('f_actual','f_actual','timestamp');
-        //$this->setParametro('nombreVista','nombreVista','varchar');
-
-
+        
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -469,6 +470,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_justificacion','varchar');
         $this->captura('nro_parte_alterno','varchar');
         $this->captura('tipo','varchar');
+        $this->captura('estado_firma','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -485,14 +487,12 @@ class MODSolicitud extends MODbase{
 
 
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
-       // $this->setParametro('orden','id_procordeneso_wf','varchar');
+
 
         $this->captura('nombre_estado','varchar');
         $this->captura('funcionario_bv','text');
         $this->captura('fecha_ini','text');
-        $this->captura('nro_tramite','varchar');
-        $this->captura('tipo_solicitud','varchar');
-        $this->captura('fecha_solicitud','text');
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -537,28 +537,13 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-    function listaNroOrigen(){
-
-        $this->procedimiento ='mat.ft_solicitud_ime';
-        $this->transaccion='MAT_GET_ORG';
-        $this->tipo_procedimiento='IME';
-        $this->captura('nro_no_rutina','varchar');
-        //Ejecuta la instruccion
-        $this->armarConsulta();
-        $this->ejecutarConsulta();
-        //var_dump($this->respuesta); exit;
-        //Devuelve la respuesta
-        return $this->respuesta;
-    }
-
 
     function listaNroJustificacion(){
-
+        //var_dump('hent');exit;
         $this->procedimiento ='mat.ft_solicitud_ime';
         $this->transaccion='MAT_GET_JUS';
         $this->tipo_procedimiento='IME';
-        $this->captura('justificacion','varchar');
-        $this->captura('nro','varchar');
+        $this->setParametro('justificacion','justificacion','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -600,22 +585,7 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-    function listarRevision(){
 
-        $this->procedimiento='mat.ft_control_de_partes';
-        $this->transaccion='MAT_CONT_COT';
-        $this->tipo_procedimiento='IME';
-
-        //Define los parametros para la funcion
-        $this->setParametro('id_solicitud','id_solicitud','int4');
-
-        //Ejecuta la instruccion
-        $this->armarConsulta();
-        $this->ejecutarConsulta();
-        //var_dump($this->respuesta); exit;
-        //Devuelve la respuesta
-        return $this->respuesta;
-    }
     function listarEstado(){
 
         $this->procedimiento ='mat.ft_solicitud_sel';
@@ -667,6 +637,68 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
+    function  iniciarDisparo(){
+        $this->procedimiento='mat.f_iniciar_disparo_ime';
+        $this->transaccion='MAT_SOL_DIS';
+        $this->tipo_procedimiento='IME';
+        $this->setParametro('id_solicitud','id_solicitud','int4');
+
+
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        
+        return $this->respuesta;
+    }
+    function siguienteDisparo(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.f_iniciar_disparo_ime';
+        $this->transaccion='MAT_SIG_DIS';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_proceso_wf_act','id_proceso_wf_act','int4');
+        $this->setParametro('id_estado_wf_act','id_estado_wf_act','int4');
+        $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+        $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
+        $this->setParametro('id_funcionario_wf','id_funcionario_wf','int4');
+        $this->setParametro('id_depto_wf','id_depto_wf','int4');
+        $this->setParametro('obs','obs','text');
+        $this->setParametro('json_procesos','json_procesos','text');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function anteriorEstadoDisparo(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.f_iniciar_disparo_ime';
+        $this->transaccion='MAT_ANT_DIS';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud','id_solicitud','int4');
+        $this->setParametro('id_proceso_wf_firma','id_proceso_wf_firma','int4');
+        $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+        $this->setParametro('operacion','operacion','varchar');
+        $this->setParametro('id_funcionario','id_funcionario','int4');
+        $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
+        $this->setParametro('id_estado_wf_firma','id_estado_wf_firma','int4');
+        $this->setParametro('obs','obs','text');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
 
 }
 ?>

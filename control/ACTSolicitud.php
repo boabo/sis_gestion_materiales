@@ -23,10 +23,10 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.estado  in (''borrador'')");
         }
          if ($this->objParam->getParametro('pes_estado') == 'vobo_area') {
-            $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_almacen'')");
+            $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')or sol.estado  in (''revision'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'revision') {
-            $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+            $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') or sol.estado in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') ");
         }
        if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
             $this->objParam->addFiltro("sol.estado  in (''finalizado'',''anulado'')");
@@ -40,22 +40,69 @@ class ACTSolicitud extends ACTbase{
         }
 
          if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
-            $this->objParam->addFiltro("sol.estado  in (''vobo_area'',''vobo_aeronavegabilidad'')");
+             $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')");
+         }
 
-        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing') {
-           $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''cotizacion'',''compra'')");
+        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing') {
+           $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''cotizacion'',''compra'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''cotizacion'',''compra'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
         }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_solicitada'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_sin_resp') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_sin_respuesta'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_concluido') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''finalizado'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_solicitada'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_sin_resp') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_sin_respuesta'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''compra'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_concluido') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''finalizado'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_solicitada'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_sin_resp') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_sin_respuesta'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''compra'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_concluido') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''finalizado'')");
+        }
+
         if ($this->objParam->getParametro('pes_estado') == 'almacen') {
-            $this->objParam->addFiltro(" sol.estado  in (''vobo_almacen'',''almacen'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'origen_al_man') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and  sol.estado in (''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'origen_al_ab') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and  sol.estado  in (''almacen'')");
         }
+        if ($this->objParam->getParametro('pes_estado') == 'archivado_ing') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''finalizado'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'archivado_man') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and  sol.estado in (''finalizado'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'archivado_alm') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and  sol.estado  in (''finalizado'')");
+        }
+       
         if ($this->objParam->getParametro('pes_estado') == 'origen_ing') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado_ab  in (''revision'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''revision'')");
         }if ($this->objParam->getParametro('pes_estado') == 'origen_man') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and  sol.estado  in (''revision'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and  sol.estado in (''revision'')");
         }if ($this->objParam->getParametro('pes_estado') == 'origen_alm') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and  sol.estado  in (''revision'')");
         }
@@ -237,13 +284,6 @@ class ACTSolicitud extends ACTbase{
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
-
-    function compararNroOrigen(){
-
-        $this->objFunc=$this->create('MODSolicitud');
-        $this->res=$this->objFunc->listaNroOrigen($this->objParam);
-        $this->res->imprimirRespuesta($this->res->generarJson());
-    }
     function compararNroJustificacion(){
 
         $this->objFunc=$this->create('MODSolicitud');
@@ -275,12 +315,12 @@ class ACTSolicitud extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
     }
-    function cambiarRevision(){
+   /* function cambiarRevision(){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRevision($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
 
-    }
+    }*/
     function reporteSalidaAlmacen (){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
@@ -366,6 +406,28 @@ class ACTSolicitud extends ACTbase{
             'Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+    function iniciarDisparo(){
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->iniciarDisparo($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+
+    }
+    function siguienteDisparo(){
+        $this->objFunc=$this->create('MODSolicitud');
+
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
+
+        $this->res=$this->objFunc->siguienteDisparo($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function anteriorDisparo(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+        $this->res=$this->objFunc->anteriorEstadoDisparo($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
 }

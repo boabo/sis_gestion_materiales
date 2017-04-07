@@ -68,15 +68,30 @@ DECLARE
      anho		INTEGER;
      v_campos record;
 
-     v_nro_no_rutina record;
-     v_numero_doc varchar[] ;
 
-     v_cont integer =0;
+     v_control_duplicidad record;
+     v_justificacion varchar;
 
-     v_nro_justificacion record;
-     v_justificacion varchar[];
-     v_nro VARCHAR[];
+     v_est record;
+     v_rev varchar;
+     v_codigo_abastecimientos	varchar;
 
+
+ 	v_codigo_tipo_proceso_ab 	varchar;
+    v_id_proceso_macro_ab    	integer;
+    v_estado_wf_sol				INTEGER;
+
+	v_id_proceso_wf_ab			integer;
+    v_id_estado_wf_ab			integer;
+
+
+    va_id_tipo_estado_pro 			integer[];
+    va_codigo_estado_pro 			varchar[];
+    va_disparador_pro 				varchar[];
+    va_regla_pro 					varchar[];
+    va_prioridad_pro 				integer[];
+
+    v_msg_control				varchar;
 
 
 
@@ -117,7 +132,6 @@ BEGIN
            inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
            where pm.codigo='GO-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
 
-
             elsif v_parametros.origen_pedido ='Gerencia de Mantenimiento'then
 
            select    tp.codigo, pm.id_proceso_macro
@@ -149,24 +163,27 @@ END IF;
                  v_codigo_estado
 
             FROM wf.f_inicia_tramite(
-                p_id_usuario,
+                 p_id_usuario,
                  v_parametros._id_usuario_ai,
                  v_parametros._nombre_usuario_ai,
                  v_gestion,
                  v_codigo_tipo_proceso,
                  NULL,
                  NULL,
-                 'Solucitud',
+                 'Solicitud',
                  'SOL');
 
+            --iniciar el disparador
+
+
+		--Recuperara estado Abastecimientos
 
             --Sentencia de la insercion
         	insert into mat.tsolicitud(
 			id_funcionario_sol,
-			--id_proveedor,
 			id_proceso_wf,
 			id_estado_wf,
-			--nro_po,
+			nro_po,
 			tipo_solicitud,
 			--fecha_entrega_miami,
 			origen_pedido,
@@ -199,12 +216,12 @@ END IF;
 			id_usuario_ai,
 			fecha_mod,
 			id_usuario_mod
+           -- estado_ab
           	) values(
 			v_parametros.id_funcionario_sol,
-			--v_parametros.id_proveedor,
 			v_id_proceso_wf,
 			v_id_estado_wf,
-			--v_parametros.nro_po,
+			null,
 			v_parametros.tipo_solicitud,
 			--v_parametros.fecha_entrega_miami,
 			v_parametros.origen_pedido,
@@ -237,17 +254,18 @@ END IF;
 			v_parametros._id_usuario_ai,
 			null,
 			null
-
-
-
-			)RETURNING id_solicitud into v_id_solicitud;
+          --  null
+            )RETURNING id_solicitud into v_id_solicitud;
 
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud almacenado(a) con exito (id_solicitud'||v_id_solicitud||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_id_solicitud::varchar);
+            ---v_resp = mat.f_iniciar_disparo(p_administrador, p_id_usuario,hstore(v_parametros));
+
 
             --Devuelve la respuesta
             return v_resp;
+
 
 		end;
 
@@ -261,40 +279,38 @@ END IF;
 	elsif(p_transaccion='MAT_SOL_MOD')then
 
 		begin
+        select s.estado
+        into v_est
+        from mat.tsolicitud s
+        WHERE s.id_solicitud = v_parametros.id_solicitud;
+
 			--Sentencia de la modificacion
 			update mat.tsolicitud set
 			id_funcionario_sol = v_parametros.id_funcionario_sol,
             tipo_reporte = v_parametros.tipo_reporte,
             mel = v_parametros.mel,
             nro_no_rutina = v_parametros.nro_no_rutina,
-			id_proveedor = v_parametros.id_proveedor,
+            id_proveedor = v_parametros.id_proveedor,
 			nro_po = v_parametros.nro_po,
 			tipo_solicitud = v_parametros.tipo_solicitud,
-			--fecha_entrega_miami = v_parametros.fecha_entrega_miami,
 			origen_pedido = v_parametros.origen_pedido,
 			fecha_requerida = v_parametros.fecha_requerida,
-			--observacion_nota = v_parametros.observacion_nota,
 			fecha_solicitud = v_parametros.fecha_solicitud,
 			observaciones_sol = v_parametros.observaciones_sol,
-			--fecha_tentativa_llegada = v_parametros.fecha_tentativa_llegada,
-			--fecha_despacho_miami = v_parametros.fecha_despacho_miami,
             fecha_cotizacion = v_parametros.fecha_cotizacion,
 			justificacion = v_parametros.justificacion,
 			fecha_arribado_bolivia = v_parametros.fecha_arribado_bolivia,
 			fecha_desaduanizacion = v_parametros.fecha_desaduanizacion,
-			--fecha_entrega_almacen = v_parametros.fecha_entrega_almacen,
-			--cotizacion = v_parametros.cotizacion,
 			tipo_falla = v_parametros.tipo_falla,
 			id_matricula = v_parametros.id_matricula,
-			--nro_solicitud = v_parametros.nro_solicitud,
 			motivo_solicitud = v_parametros.motivo_solicitud,
 			fecha_en_almacen = v_parametros.fecha_en_almacen,
-			--estado = v_parametros.estado,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
 			id_usuario_ai = v_parametros._id_usuario_ai,
 			usuario_ai = v_parametros._nombre_usuario_ai
-			where id_solicitud=v_parametros.id_solicitud;
+
+        	 where id_solicitud=v_parametros.id_solicitud;
 
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud modificado(a)');
@@ -681,46 +697,6 @@ END IF;
           		END IF;
 
 
-          --------------------------------------
-          -- registra los procesos disparados
-          --------------------------------------
-
-          FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
-
-               --get cdigo tipo proceso
-               select
-                  tp.codigo,
-                  tp.codigo_llave
-               into
-                  v_codigo_tipo_pro,
-                  v_codigo_llave
-               from wf.ttipo_proceso tp
-                where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
-
-
-               -- disparar creacion de procesos seleccionados
-
-              SELECT
-                       ps_id_proceso_wf,
-                       ps_id_estado_wf,
-                       ps_codigo_estado
-                 into
-                       v_id_proceso_wf,
-                       v_id_estado_wf,
-                       v_codigo_estado
-              FROM wf.f_registra_proceso_disparado_wf(
-                       p_id_usuario,
-                       v_parametros._id_usuario_ai,
-                       v_parametros._nombre_usuario_ai,
-                       v_id_estado_actual,
-                       v_registros_proc.id_funcionario_wf_pro,
-                       v_registros_proc.id_depto_wf_pro,
-                       v_registros_proc.obs_pro,
-                       v_codigo_tipo_pro,
-                       v_codigo_tipo_pro);
-
-           END LOOP;
-
           -- si hay mas de un estado disponible  preguntamos al usuario
           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado de Solicitud)');
           v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
@@ -756,27 +732,6 @@ END IF;
 
 		end;
     /*********************************
- 	#TRANSACCION:  'MAT_GET_ORG'
- 	#DESCRIPCION:	control de numero de doc. origin solicitud
- 	#AUTOR:		MMV
- 	#FECHA:		10-01-2017 13:13:01
-	***********************************/
-
-	elsif(p_transaccion='MAT_GET_ORG')then
-
-		begin
-         FOR v_nro_no_rutina in (select nro_no_rutina
-          						 from mat.tsolicitud )LOOP
-			v_cont= v_cont+1;
-            v_numero_doc[v_cont] = v_nro_no_rutina.nro_no_rutina;
-		END LOOP;
-        --raise exception 'llega: %',v_numero_doc;
-        v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
-        v_resp = pxp.f_agrega_clave(v_resp,'nro_no_rutina', v_numero_doc::varchar );
-        return v_resp;
-
-		end;
-     /*********************************
  	#TRANSACCION:  'MAT_GET_JUS'
  	#DESCRIPCION:	control de numero de justificacion
  	#AUTOR:		MMV
@@ -784,29 +739,41 @@ END IF;
 	***********************************/
 
 	elsif(p_transaccion='MAT_GET_JUS')then
-
 		begin
-         FOR v_nro_justificacion in (SELECT s.nro_justificacion
-     													FROM mat.tsolicitud s
+        FOR v_control_duplicidad in (select	d.nro_parte,
+											f.desc_funcionario1,
+                                            s.nro_justificacion,
+                                            s.nro_no_rutina,
+                                            s.justificacion,
+                                            s.nro_tramite,
+                                            s.fecha_solicitud
+                                            from mat.tdetalle_sol d
+                                            inner join mat.tsolicitud s on s.id_solicitud = d.id_solicitud
+                                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
 
      	)LOOP
-			v_cont= v_cont+1;
-            v_justificacion[v_cont] = v_nro_justificacion.nro_justificacion;
-            --v_nro[v_cont] = v_nro_justificacion.nro;
+        if v_control_duplicidad.nro_justificacion !=''then
+        	if v_parametros.justificacion = v_control_duplicidad.nro_justificacion then
+            	v_justificacion= v_control_duplicidad.nro_justificacion;
+                v_msg_control = v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
+            end if;
+        end if;
         END LOOP;
 
         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
         v_resp = pxp.f_agrega_clave(v_resp,'justificacion', v_justificacion::varchar );
-        v_resp = pxp.f_agrega_clave(v_resp,'nro', v_nro::varchar );
+        v_resp = pxp.f_agrega_clave(v_resp,'mgs_control_duplicidad', v_msg_control::varchar );
         return v_resp;
 
 		end;
 
-    else
+
+
+else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;
 
-	end if;
+end if;
 
 EXCEPTION
 
