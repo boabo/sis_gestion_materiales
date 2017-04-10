@@ -226,7 +226,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     renderer:function (value,p,record){
 
                         var dias = record.data.control_fecha;
-                        if (dias >= 5 && dias <= 10 || dias >= 20 && dias <= 30 || dias >= 40 && dias <= 80) {
+                        if (dias >= 5 && dias <= 10 || dias >= 18 && dias <= 30 || dias >= 40 && dias <= 80) {
                             return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
                         }
                         else if(dias >= 2 && dias <= 4){

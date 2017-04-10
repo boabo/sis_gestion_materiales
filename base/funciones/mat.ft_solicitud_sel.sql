@@ -37,7 +37,7 @@ DECLARE
 	v_filtro			varchar;
     v_funcionario_wf    record;
     v_record    		record;
-    v_id_usuario_rev	integer;
+    v_id_usuario_rev	record;
     v_origen 			varchar;
     v_filtro_repo       VARCHAR;
     v_origen_pedido     VARCHAR;
@@ -101,7 +101,7 @@ BEGIN
 
 
 
-         ELSIF  (v_parametros.tipo_interfaz = 'Abastecimientos')THEN
+         ELSIF  (v_parametros.tipo_interfaz in ( 'PedidoOperacion','PedidoMantenimiento','PerdidoAlmacen'))THEN
 
 
                     select u.id_persona,
@@ -113,7 +113,7 @@ BEGIN
                     inner join orga.vfuncionario_cargo_lugar fc on fc.id_funcionario =es.id_funcionario
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                    WHERE so.estado in('compra','cotizacion') and fc.descripcion_cargo = 'Técnico  Apoyo Revisión' or so.estado in('despachado','arribo','desaduanizado','almacen') and fc.descripcion_cargo = 'Gestor Aduanero'
+                    WHERE so.estado in('compra','cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','finalizado') and fc.descripcion_cargo = 'Técnico  Apoyo Revisión' or so.estado in('despachado','arribo','desaduanizado','almacen') and fc.descripcion_cargo = 'Gestor Aduanero'
                		GROUP BY u.id_usuario;
 
          IF(v_id_usuario_rev.cant_reg IS NULL)THEN
@@ -121,6 +121,15 @@ BEGIN
          ELSE
          v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_persona||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
           END IF;
+         ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
+          v_filtro = '';
+           ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
+          v_filtro = '';
+           ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
+          v_filtro = '';
+          ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
+          v_filtro = '';
+
 
         ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
           v_filtro = '';

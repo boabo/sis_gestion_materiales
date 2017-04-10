@@ -13,7 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
-        nombreVista: 'Abastecimientos',
+        nombreVista: 'PedidoMantenimiento',
         tabsouth :[
             {
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',

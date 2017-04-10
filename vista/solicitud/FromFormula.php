@@ -1057,10 +1057,11 @@ header("content-type: text/javascript; charset=UTF-8");
                         var nro_justificacion =reg.ROOT.datos.justificacion;
                         var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
                         var ma =this;
-                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion ){
+                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue()!= '' ){
                             if(confirm('El número '+mgs_control) ){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                Ext.Msg.alert('Alerta','Se Duplico la solicitud por número '+mgs_control);
+                                this.mensaje_('DUPLICIDAD','Se Duplico la solicitud por número '+mgs_control, 'ERROR');
+
                             }
                         }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion ){
                             Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
@@ -1084,10 +1085,11 @@ header("content-type: text/javascript; charset=UTF-8");
                         var nro_parte =reg.ROOT.datos.parte;
                         var mgs_control_par =reg.ROOT.datos.mgs_control_duplicidad;
                         var ma =this;
-                        if(ma.detCmp.nro_parte.getValue() == nro_parte ){
+                        if(ma.detCmp.nro_parte.getValue() == nro_parte && ma.detCmp.nro_parte.getValue()!= ''){
                             if(confirm('El Number part'+mgs_control_par) ){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                Ext.Msg.alert('Alerta','Se Duplico el Number part '+mgs_control_par);
+                                this.mensaje_('DUPLICIDAD','Se Duplico el Number part '+mgs_control_par, 'ERROR');
+
                             }
                         }else if(ma.detCmp.nro_parte.getValue() != nro_parte ){
                             Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
@@ -1108,6 +1110,17 @@ header("content-type: text/javascript; charset=UTF-8");
                     alert("No tiene datos en el detalle")
                 }
             }
+
+        },
+        mensaje_: function (titulo, mensaje, icono) {
+
+            var tipo = 'ext-mb-warning';
+            Ext.MessageBox.show({
+                title: titulo,
+                msg: mensaje,
+                buttons: Ext.MessageBox.OK,
+                icon: tipo
+            })
 
         }
     })

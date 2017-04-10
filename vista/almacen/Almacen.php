@@ -36,7 +36,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Report').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
-            this.getBoton('Control_aLmacene').setVisible(false);
 
         },
         gruposBarraTareas:[

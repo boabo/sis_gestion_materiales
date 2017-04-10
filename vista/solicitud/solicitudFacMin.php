@@ -14,7 +14,7 @@ header("content-type: text/javascript; charset=UTF-8");
         require: '../../../sis_gestion_materiales/vista/solicitud/SolicitudFec.php',
         requireclase: 'Phx.vista.SolicitudFec',
         title: 'SolicitudFec',
-        nombreVista: 'solicitudFacMin',
+        nombreVista: 'SolicitudFec',
         ActList:'../../sis_gestion_materiales/control/Solicitud/listarSolicitud',
         tabsouth :[
             {
