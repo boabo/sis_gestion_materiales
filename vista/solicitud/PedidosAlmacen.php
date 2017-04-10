@@ -68,7 +68,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Report').setVisible(false);
             this.getBoton('ant_estado').setVisible(true);
-            this.getBoton('Control_aLmacene').setVisible(false);
+         
 
         },
         gruposBarraTareas:[

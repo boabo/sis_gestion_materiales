@@ -185,7 +185,18 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 200,
-                    maxLength:100
+                    maxLength:100,
+                    renderer: function(value, p, record){
+                        if(record.data.contador_estados > 1 || value == 'Borrador' && record.data.contador_estados > 0 ) {
+
+                            return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados );
+
+                        }else{
+
+                            return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value, record.data.contador_estados);
+
+                        }
+                    }
 
                 },
                 type:'TextField',
@@ -200,7 +211,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'nombre_estado_firma',
-                    //name: 'estado_ab',
+
                     fieldLabel: 'Estado VoBo',
                     allowBlank: true,
                     anchor: '95%',
@@ -209,7 +220,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 },
                 type: 'TextField',
-                filters: {pfiltro: 'nombre_estado_firma', type: 'string'},
+                filters: {pfiltro: 'tip.nombre_estado', type: 'string'},
                 id_grupo: 1,
                 grid: true,
                 form: false,
@@ -639,7 +650,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:false,
                 form:true
             },
-           {
+            {
                 config:{
                     name: 'fecha_en_almacen',
                     fieldLabel: 'Fecha en Almacen',
