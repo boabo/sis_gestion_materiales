@@ -349,22 +349,22 @@ header("content-type: text/javascript; charset=UTF-8");
                 baseParams: {dir:'ASC',sort:'id_detalle',limit:'100',start:'0'}
             });
 
-            this.editorDetail = new Ext.ux.grid.RowEditor({
+            this.editorDetaille = new Ext.ux.grid.RowEditor({
                 saveText: 'Aceptar',
                 name: 'btn_editor'
 
             });
 
             // al iniciar la edicion
-            this.editorDetail.on('beforeedit', this.onInitAdd , this);
+            this.editorDetaille.on('beforeedit', this.onInitAdd , this);
 
             //al cancelar la edicion
-            this.editorDetail.on('canceledit', this.onCancelAdd , this);
+            this.editorDetaille.on('canceledit', this.onCancelAdd , this);
 
             //al cancelar la edicion
-            this.editorDetail.on('validateedit', this.onUpdateRegister, this);
+            this.editorDetaille.on('validateedit', this.onUpdateRegister, this);
 
-            this.editorDetail.on('afteredit', this.onAfterEdit, this);
+            this.editorDetaille.on('afteredit', this.onAfterEdit, this);
 
             this.megrid = new Ext.grid.GridPanel({
                 layout: 'fit',
@@ -373,7 +373,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 split: true,
                 border: false,
                 plain: true,
-                plugins: [ this.editorDetail],
+                plugins: [ this.editorDetaille],
                 stripeRows: true,
                 tbar: [{
                     text: '<i class="fa fa-plus-circle fa-lg"></i> Agregar ',
@@ -384,11 +384,11 @@ header("content-type: text/javascript; charset=UTF-8");
                             var e = new Items({
                                 cantidad_sol: 1
                             });
-                            this.editorDetail.stopEditing();
+                            this.editorDetaille.stopEditing();
                             this.mestore.insert(0, e);
                             this.megrid.getView().refresh();
                             this.megrid.getSelectionModel().selectRow(0);
-                            this.editorDetail.startEditing(0);
+                            this.editorDetaille.startEditing(0);
                             this.sw_init_add = true;
                             this.bloqueaRequisitos(true);
                         }
@@ -401,7 +401,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     text: '<i class="fa fa-trash fa-lg"></i> Eliminar',
                     scope:this,
                     handler: function(){
-                        this.editorDetail.stopEditing();
+                        this.editorDetaille.stopEditing();
                         var s = this.megrid.getSelectionModel().getSelections();
                         for(var i = 0, r; r = s[i]; i++){
                             this.mestore.remove(r);
@@ -1046,61 +1046,62 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             if(this.evaluaRequistos()){
+                Ext.Ajax.request({
+                    url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
 
-                if( k > 0 &&  !this.editorDetail.isVisible()){
-                    Ext.Ajax.request({
-                        url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
-
-                        params:{
-                            justificacion: this.Cmp.nro_justificacion.getValue()
-                        },
-                        success:function(resp){
-                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                            var nro_justificacion =reg.ROOT.datos.justificacion;
-                            var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
-                            var ma =this;
-                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion ){
-                                if(confirm('El número '+mgs_control) ){
-                                    Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                    Ext.Msg.alert('Alerta','Se Duplico la solicitud por número '+mgs_control);
-                                }
-                            }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion ){
+                    params:{
+                        justificacion: this.Cmp.nro_justificacion.getValue()
+                    },
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        var nro_justificacion =reg.ROOT.datos.justificacion;
+                        var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
+                        var ma =this;
+                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion ){
+                            if(confirm('El número '+mgs_control) ){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                                Ext.Msg.alert('Alerta','Se Duplico la solicitud por número '+mgs_control);
                             }
+                        }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion ){
+                            Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                        }
 
-                        },
-                        failure: this.conexionFailure,
-                        timeout:this.timeout,
-                        scope:this
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
 
-                    });
+                });
 
-                    Ext.Ajax.request({
-                        url:'../../sis_gestion_materiales/control/DetalleSol/controlPartes',
+                Ext.Ajax.request({
+                    url:'../../sis_gestion_materiales/control/DetalleSol/controlPartes',
 
-                        params:{
-                            nro_parte: this.detCmp.nro_parte.getValue()
-                        },
-                        success:function(resp){
-                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                            var nro_parte =reg.ROOT.datos.parte;
-                            var mgs_control_par =reg.ROOT.datos.mgs_control_duplicidad;
-                            var ma =this;
-                            if(ma.detCmp.nro_parte.getValue() == nro_parte ){
-                                if(confirm('El Number part'+mgs_control_par) ){
-                                    Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                    Ext.Msg.alert('Alerta','Se Duplico el Number part '+mgs_control_par);
-                                }
-                            }else if(ma.detCmp.nro_parte.getValue() != nro_parte ){
+                    params:{
+                        nro_parte: this.detCmp.nro_parte.getValue()
+                    },
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        var nro_parte =reg.ROOT.datos.parte;
+                        var mgs_control_par =reg.ROOT.datos.mgs_control_duplicidad;
+                        var ma =this;
+                        if(ma.detCmp.nro_parte.getValue() == nro_parte ){
+                            if(confirm('El Number part'+mgs_control_par) ){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                                Ext.Msg.alert('Alerta','Se Duplico el Number part '+mgs_control_par);
                             }
+                        }else if(ma.detCmp.nro_parte.getValue() != nro_parte ){
+                            Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                        }
 
-                        },
-                        failure: this.conexionFailure,
-                        timeout:this.timeout,
-                        scope:this
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
 
-                    });
+                });
+
+
+                if( k > 0 &&  !this.editorDetaille.isVisible()){
 
                 }
                 else{
