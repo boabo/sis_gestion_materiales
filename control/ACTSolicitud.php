@@ -26,7 +26,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')or sol.estado  in (''revision'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'revision') {
-            $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') or sol.estado in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') ");
+            $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') or sol.estado in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'') ");
         }
        if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
             $this->objParam->addFiltro("sol.estado  in (''finalizado'',''anulado'')");

@@ -89,7 +89,8 @@ BEGIN
         	v_funcionario_wf
         from segu.tusuario u
         inner join orga.tfuncionario fu on fu.id_persona = u.id_persona
-        where u.id_usuario = p_id_usuario;
+        where fu.id_funcionario = p_id_usuario;
+
      	------------------------------
             --registra procesos disparados
             ------------------------------
@@ -108,9 +109,9 @@ BEGIN
                                v_registros.id_estado_wf,
                                v_funcionario_wf,
                                NULL,
-                               'FRI',
+                               'Flujo de Firmas',
                                v_codigo_tipo_proceso,
-                               'FRI');
+                               'Flujo de Firmas');
 
              --Sentencia de la insercion
 

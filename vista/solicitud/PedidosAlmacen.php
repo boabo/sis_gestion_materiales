@@ -91,7 +91,62 @@ header("content-type: text/javascript; charset=UTF-8");
         bdelGroups:  [0],
         bactGroups:  [0,1,2,3],
         btestGroups: [0],
-        bexcelGroups: [0,1,2,3]
+        bexcelGroups: [0,1,2,3],
+        enableTabDetalle:function(){
+            if(this.TabPanelSouth.get(0)){
+                this.TabPanelSouth.get(0).enable();
+                this.TabPanelSouth.setActiveTab(0);
+            }
+        },
+        disableTabDetalle:function(){
+            if(this.TabPanelSouth.get(0)){
+                //this.TabPanelSouth.get(0).disable();
+                this.TabPanelSouth.setActiveTab(0);
+                //this.TabPanelSouth.bdel.getVisible(false);
+            }
+        },
+        preparaMenu:function(n){
+            var data = this.getSelectedData();
+            var tb =this.tbar;
+            Phx.vista.PedidosAlmacen.superclass.preparaMenu.call(this,n);
+
+            if( data['estado'] ==  'cotizacion'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ini_estado').enable();
+                this.getBoton('ant_estado').enable();
+                this. enableTabDetalle();
+
+
+            }else if( data['estado'] !=  'finalizado'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').enable();
+                this.getBoton('ini_estado').enable();
+
+                this.disableTabDetalle();
+            }
+            else {
+                this.getBoton('sig_estado').disable();
+                this.getBoton('ant_estado').disable();
+                this.getBoton('ini_estado').disable();
+                this.disableTabDetalle();
+            }
+
+            return tb;
+        },
+
+        liberaMenu:function(){
+            var tb = Phx.vista.PedidosAlmacen.superclass.liberaMenu.call(this);
+            if(tb){
+
+                this.getBoton('sig_estado').disable();
+                this.getBoton('sig_estado').disable();
+                this.getBoton('edit').setVisible(true);
+                this.getBoton('Report').setVisible(false);
+
+            }
+            return tb;
+        }
+
     }
 
 </script>

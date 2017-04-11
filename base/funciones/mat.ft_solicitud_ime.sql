@@ -92,6 +92,7 @@ DECLARE
     va_prioridad_pro 				integer[];
 
     v_msg_control				varchar;
+    v_parte 					varchar;
 
 
 
@@ -755,13 +756,18 @@ END IF;
         if v_control_duplicidad.nro_justificacion !=''then
         	if v_parametros.justificacion = v_control_duplicidad.nro_justificacion then
             	v_justificacion= v_control_duplicidad.nro_justificacion;
-                v_msg_control = v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
+                v_msg_control = ' numero justificacion '||v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
             end if;
         end if;
+        if v_parametros.nro_parte = v_control_duplicidad.nro_parte then
+            	v_parte= v_control_duplicidad.nro_parte;
+                v_msg_control = ' number part '||v_control_duplicidad.nro_parte||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
+            end if;
         END LOOP;
 
         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
         v_resp = pxp.f_agrega_clave(v_resp,'justificacion', v_justificacion::varchar );
+        v_resp = pxp.f_agrega_clave(v_resp,'parte', v_parte::varchar );
         v_resp = pxp.f_agrega_clave(v_resp,'mgs_control_duplicidad', v_msg_control::varchar );
         return v_resp;
 

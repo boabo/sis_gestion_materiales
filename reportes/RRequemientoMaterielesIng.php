@@ -117,20 +117,21 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         //$cadena_qr = 'Encargado: '.$Revisado_vb."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos2[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n";
 
         $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
-        $nombre_archivo = $this->objParam->getParametro('nombre_archivo');
+        //$nombre_archivo = $this->objParam->getParametro('nombre_archivo');
         $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
         $im = imagecreatefromstring($png);
         if ($im !== false) {
             header('Content-Type: image/png');
-            imagepng($im, $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png");
+            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/".$this->objParam->getParametro('nombre_archivo').".png");
             imagedestroy($im);
 
         } else {
             echo 'An error occurred.';
         }
-        $ur = $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
-        $ur2 = $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
-        $ur3= $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
+        $ur =  dirname(__FILE__) . "/../../reportes_generados/". $this->objParam->getParametro('nombre_archivo') . ".png";
+        $ur2 =  dirname(__FILE__) . "/../../reportes_generados/". $this->objParam->getParametro('nombre_archivo') . ".png";
+        $ur3=  dirname(__FILE__) . "/../../reportes_generados/" . $this->objParam->getParametro('nombre_archivo') . ".png";
+
         $funcionario_solicitante = $this->datos[0]['desc_funcionario1'];
 
         $Revisado_vb= $this->datos2[0]['funcionario_bv'];

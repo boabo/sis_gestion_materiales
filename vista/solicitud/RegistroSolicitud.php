@@ -141,7 +141,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     params: {
                         id_solicitud: rec.data.id_solicitud
                     },
+                    success:this.successWizard,
                     failure: this.conexionFailure,
+                    argument:{wizard:wizard},
                     timeout: this.timeout,
                     scope: this
                 });

@@ -544,6 +544,7 @@ class MODSolicitud extends MODbase{
         $this->transaccion='MAT_GET_JUS';
         $this->tipo_procedimiento='IME';
         $this->setParametro('justificacion','justificacion','varchar');
+        $this->setParametro('nro_parte','nro_parte','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -643,6 +644,7 @@ class MODSolicitud extends MODbase{
         $this->transaccion='MAT_SOL_DIS';
         $this->tipo_procedimiento='IME';
         $this->setParametro('id_solicitud','id_solicitud','int4');
+       
 
 
         $this->armarConsulta();
