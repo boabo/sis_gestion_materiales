@@ -63,9 +63,9 @@ BEGIN
 
         begin
 
-        SELECT * into v_registros
-        FROM mat.tsolicitud
-        WHERE id_solicitud = v_parametros.id_solicitud;
+        SELECT s.* into v_registros
+        FROM mat.tsolicitud s
+        WHERE s.id_solicitud = v_parametros.id_solicitud or s.id_proceso_wf = v_parametros.id_solicitud;
 
          IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
 
@@ -84,12 +84,23 @@ BEGIN
            where pm.codigo='GM-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
 		END IF;
 
-        select fu.id_funcionario
+     IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
+        SELECT f.id_funcionario
         INTO
         	v_funcionario_wf
-        from segu.tusuario u
-        inner join orga.tfuncionario fu on fu.id_persona = u.id_persona
-        where fu.id_funcionario = p_id_usuario;
+		FROM orga.vfuncionario f
+		where f.desc_funcionario1 = 'JORGE OMAR GUZMAN FERNANDEZ';
+
+       elsif v_registros.origen_pedido ='Gerencia de Mantenimiento'then
+
+        SELECT f.id_funcionario
+        INTO
+        	v_funcionario_wf
+		FROM orga.vfuncionario f
+		where f.desc_funcionario1 = 'ROGER WILMER BALDERRAMA ANGULO';
+        END IF;
+
+
 
      	------------------------------
             --registra procesos disparados
