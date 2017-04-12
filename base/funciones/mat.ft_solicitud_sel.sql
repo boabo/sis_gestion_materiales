@@ -160,9 +160,9 @@ BEGIN
 
       IF p_administrador 	THEN
 		 v_filtro = ' 0=0 AND ';
-      ELSIF  (v_parametros.tipo_interfaz =  'PedidoOperacion' or
-          		v_parametros.tipo_interfaz = 'PedidoMantenimiento' or
-           		v_parametros.tipo_interfaz ='PerdidoAlmacen')THEN
+      ELSIF  (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
+          		v_parametros.tipo_interfaz = 'PedidoMantenimiento' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
+           		v_parametros.tipo_interfaz ='PerdidoAlmacen'and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos')THEN
 
                     select u.id_usuario,
                 	count(u.id_usuario)::varchar as cant_reg
@@ -173,7 +173,7 @@ BEGIN
                     inner join orga.vfuncionario_cargo_lugar fc on fc.id_funcionario =es.id_funcionario
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                    WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo ='Técnico Revision Procesos'
+                    WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo ='Auxiliar Apoyo Control Viáticos'
                		GROUP BY u.id_usuario;
 
          	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
