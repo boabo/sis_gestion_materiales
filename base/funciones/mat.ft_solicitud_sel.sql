@@ -85,7 +85,7 @@ BEGIN
         v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
                 ' AND ';
 
-       ELSIF  (v_record.nombre_cargo = 'Gerente Mantenimiento' and v_parametros.tipo_interfaz = 'VistoBueno')THEN
+       ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno'and v_record.nombre_cargo ='Gerente de Mantenimiento' )THEN
       	 			select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -97,23 +97,6 @@ BEGIN
                     WHERE   so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento'
                     GROUP BY fu.id_funcionario;
             IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         	v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         	ELSE
-         	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
-         	END IF;
-    	ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno' )THEN
-       				select fu.id_funcionario,
-                	count(fu.id_funcionario)::varchar as cant_reg
-         			into v_id_usuario_rev
-                    from wf.testado_wf es
-                    inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                    inner join segu.tusuario u on u.id_persona = fu.id_persona
-                   	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
-                    LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf_firma = es.id_estado_wf
-                    WHERE   so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones'
-                    GROUP BY fu.id_funcionario;
-
-        	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          	v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
@@ -130,10 +113,34 @@ BEGIN
       ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
           v_filtro = '';
       END IF;
+      IF p_administrador 	THEN
+
+          v_filtro = ' 0=0 AND ';
+
+
+     ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno' and v_record.nombre_cargo = 'Técnico Planificación de Servicios' )THEN
+       				select fu.id_funcionario,
+                	count(fu.id_funcionario)::varchar as cant_reg
+         			into v_id_usuario_rev
+                    from wf.testado_wf es
+                    inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
+                    inner join segu.tusuario u on u.id_persona = fu.id_persona
+                   	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
+                    LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf_firma = es.id_estado_wf
+                    WHERE   so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones'
+                    GROUP BY fu.id_funcionario;
+
+        	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         	v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+         	ELSE
+         	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
+         	END IF;
+            END IF;
+
 
       IF p_administrador 	THEN
           v_filtro = ' 0=0 AND ';
-      ELSIF  (v_parametros.tipo_interfaz =  'VistoBueno')THEN
+      ELSIF  (v_parametros.tipo_interfaz =  'VistoBueno' and v_record.nombre_cargo ='Jefe Departamento Ingenieria - Planeamiento' )THEN
         			select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -142,7 +149,7 @@ BEGIN
                     inner join segu.tusuario u on u.id_persona = fu.id_persona
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf_firma = es.id_estado_wf
-                    WHERE   so.estado_firma = 'vobo_aeronavegabilidad'
+                    WHERE  so.estado_firma = 'vobo_aeronavegabilidad'
                     GROUP BY fu.id_funcionario;
         	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          	v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
