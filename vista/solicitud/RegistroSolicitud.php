@@ -132,7 +132,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope:this
             });
             var rec = this.sm.getSelected();
-            if((rec.data.origen_pedido == 'Gerencia de Operaciones')||(rec.data.origen_pedido == 'Gerencia de Mantenimiento'))  {
+            if((rec.data.origen_pedido != 'Almacenes Consumibles o Rotables'))  {
                 Phx.CP.loadingShow();
                 Ext.Ajax.request({
                     url: '../../sis_gestion_materiales/control/Solicitud/iniciarDisparo',
