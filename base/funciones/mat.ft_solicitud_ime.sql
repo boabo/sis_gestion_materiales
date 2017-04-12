@@ -93,6 +93,7 @@ DECLARE
 
     v_msg_control				varchar;
     v_parte 					varchar;
+    v_matricula					varchar;
 
 
 
@@ -747,27 +748,37 @@ END IF;
                                             s.nro_no_rutina,
                                             s.justificacion,
                                             s.nro_tramite,
-                                            s.fecha_solicitud
+                                            s.fecha_solicitud,
+                                            s.estado,
+                                            s.id_matricula,
+                                            ot.desc_orden
                                             from mat.tdetalle_sol d
                                             inner join mat.tsolicitud s on s.id_solicitud = d.id_solicitud
                                             inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
+                                            left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                                            where s.estado != 'finalizado'
 
      	)LOOP
         if v_control_duplicidad.nro_justificacion !=''then
         	if v_parametros.justificacion = v_control_duplicidad.nro_justificacion then
             	v_justificacion= v_control_duplicidad.nro_justificacion;
-                v_msg_control = ' numero justificacion '||v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
+                v_msg_control = ' El numero justificacion '||v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' en la fecha ' ||v_control_duplicidad.fecha_solicitud;
             end if;
         end if;
-        if v_parametros.nro_parte = v_control_duplicidad.nro_parte then
+        if v_parametros.nro_parte = v_control_duplicidad.nro_parte   then
             	v_parte= v_control_duplicidad.nro_parte;
-                v_msg_control = ' number part '||v_control_duplicidad.nro_parte||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite;
+                v_msg_control = ' El number part '||v_control_duplicidad.nro_parte||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' en la fecha ' ||v_control_duplicidad.fecha_solicitud;
             end if;
+        if v_parametros.id_matricula = v_control_duplicidad.id_matricula   then
+            	v_matricula= v_control_duplicidad.id_matricula;
+                v_msg_control = ' La solicitud fue registrado en '||v_control_duplicidad.desc_orden||' por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' en la fecha ' ||v_control_duplicidad.fecha_solicitud;
+        end if;
         END LOOP;
 
         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
         v_resp = pxp.f_agrega_clave(v_resp,'justificacion', v_justificacion::varchar );
         v_resp = pxp.f_agrega_clave(v_resp,'parte', v_parte::varchar );
+        v_resp = pxp.f_agrega_clave(v_resp,'matricula', v_matricula::varchar );
         v_resp = pxp.f_agrega_clave(v_resp,'mgs_control_duplicidad', v_msg_control::varchar );
         return v_resp;
 

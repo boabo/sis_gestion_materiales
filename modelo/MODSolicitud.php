@@ -545,6 +545,7 @@ class MODSolicitud extends MODbase{
         $this->tipo_procedimiento='IME';
         $this->setParametro('justificacion','justificacion','varchar');
         $this->setParametro('nro_parte','nro_parte','varchar');
+        $this->setParametro('id_matricula','id_matricula','int4');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

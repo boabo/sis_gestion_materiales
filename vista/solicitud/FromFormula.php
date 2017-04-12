@@ -1051,21 +1051,33 @@ header("content-type: text/javascript; charset=UTF-8");
 
                     params:{
                         justificacion: this.Cmp.nro_justificacion.getValue(),
-                        nro_parte: this.detCmp.nro_parte.getValue()
+                        nro_parte: this.detCmp.nro_parte.getValue(),
+                        id_matricula: this.Cmp.id_matricula.getValue()
                     },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                         var nro_justificacion =reg.ROOT.datos.justificacion;
                         var nro_parte =reg.ROOT.datos.parte;
+                        var matricula=reg.ROOT.datos.matricula;
                         var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
                         var ma =this;
-                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue()!= '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.detCmp.nro_parte.getValue()!= ''){
-                            if(confirm('El '+mgs_control) ){
+                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue()!= '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.detCmp.nro_parte.getValue()!= ''||
+                            ma.Cmp.id_matricula.getValue() == matricula && ma.Cmp.id_matricula.getValue()!= ''){
+                           /* if(confirm('El '+mgs_control) ){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                                 this.mensaje_('DUPLICIDAD','Se Duplico el  '+mgs_control, 'ERROR');
 
-                            }
-                        }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte  ){
+                            }*/
+                            Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ' , function (btn) {
+                                if (btn === 'yes') {
+                                    Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+
+                                } else {
+
+                                }
+                            },this);
+
+                        }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte || ma.Cmp.id_matricula.getValue() != matricula  ){
                             Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                         }
 
@@ -1075,35 +1087,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope:this
 
                 });
-
-               /* Ext.Ajax.request({
-                    url:'../../sis_gestion_materiales/control/DetalleSol/controlPartes',
-
-                    params:{
-                        nro_parte: this.detCmp.nro_parte.getValue()
-                    },
-                    success:function(resp){
-                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                        var nro_parte =reg.ROOT.datos.parte;
-                        var mgs_control_par =reg.ROOT.datos.mgs_control_duplicidad;
-                        var ma =this;
-                        if(ma.detCmp.nro_parte.getValue() == nro_parte ){
-                            if(confirm('El Number part'+mgs_control_par) ){
-                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                this.mensaje_('DUPLICIDAD','Se Duplico el Number part '+mgs_control_par, 'ERROR');
-
-                            }
-                        }else if(ma.detCmp.nro_parte.getValue() != nro_parte ){
-                            Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                        }
-
-                    },
-                    failure: this.conexionFailure,
-                    timeout:this.timeout,
-                    scope:this
-
-                });*/
-
 
                 if( k > 0 &&  !this.editorDetaille.isVisible()){
 

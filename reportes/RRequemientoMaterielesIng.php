@@ -136,7 +136,7 @@ class RRequemientoMaterielesIng extends  ReportePDF {
 
         $Revisado_vb= $this->datos2[0]['funcionario_bv'];
         $VB_DAC= $this->datos2[1]['funcionario_bv'];
-        $Abastecimiento = $this->datos2[0]['funcionario_bv'];
+        $Abastecimiento = 'Abastecimiento';//$this->datos2[0]['funcionario_bv'];
 
         if ($this->datos[0]['estado'] != 'borrador') {
 
@@ -191,7 +191,7 @@ EOD;
         <table cellspacing="0" cellpadding="1" border="1">
          <tr>
         <td align="center" > V.B. DAC: $dac</td>
-        <td align="center" >  Recibido Abastecimiento:: $fab</td>
+        <td align="center" >  Recibido: $fab</td>
         </tr>
         <tr>
         <td align="center" > 

@@ -106,7 +106,7 @@ BEGIN
 
 
 
-         ELSIF  (v_parametros.tipo_interfaz in ( 'PedidoOperacion','PedidoMantenimiento','PerdidoAlmacen'))THEN
+         ELSIF  (v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen')THEN
 
 
                     select u.id_usuario,
@@ -545,7 +545,7 @@ BEGIN
             					t.id_tipo_estado,
 								t.codigo
 								from wf.ttipo_estado t
-								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Gerencia de Mantenimiento'' and t.estado_reg = ''activo''
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Gerencia de Mantenimiento'' and t.estado_reg = ''activo''
                                 where';
 
 			--Definicion de la respuesta
@@ -562,7 +562,7 @@ BEGIN
             					t.id_tipo_estado,
 								t.codigo
 								from wf.ttipo_estado t
-								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Gerencia de Operaciones'' and t.estado_reg = ''activo''
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Gerencia de Operaciones'' and t.estado_reg = ''activo''
                                 where';
 
 			--Definicion de la respuesta
@@ -579,7 +579,7 @@ BEGIN
             					t.id_tipo_estado,
 								t.codigo
 								from wf.ttipo_estado t
-								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Almacenes Consumibles o Rotables'' and t.estado_reg = ''activo''
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Almacenes Consumibles o Rotables'' and t.estado_reg = ''activo''
                                 where';
 
 			--Definicion de la respuesta

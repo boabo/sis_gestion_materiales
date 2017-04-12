@@ -37,43 +37,42 @@ class RRequemientoMaterielesMan extends  ReportePDF
         }
         $this->ln();
         $this->SetFont('times', '', 11);
+
         $this->Cell(0, 7, ' Repuesto a Solicitar', 1, 0, 'L', 0, '', 0);
         $this->ln();
-        $this->SetFont('', 'B', 10);
-        $this->Cell(15, 0,'Nro' , 1, 0, 'C', 0, '', 0);
-        $conf_det_tablewidths = array(35, 35, 55, 20,26);
-        $conf_det_tablealigns = array( 'C', 'C', 'C', 'C', 'C');
-        //$conf_det_tablenumbers = array(0,0,0,0,0,0);
+        $conf_det_tablewidths = array(15,35, 35, 55, 20,26);
+        $conf_det_tablealigns = array('C','C', 'C', 'C', 'C', 'C');
+
 
         $this->tablewidths = $conf_det_tablewidths;
         $this->tablealigns = $conf_det_tablealigns;
-        //$this->tablenumbers= $conf_det_tablenumbers;
+
 
 
         $RowArray = array(
-
+            'Nro',
             'Número de Parte',
             'Referencia',
             'Descripcion',
             'Cantidad',
             'Unidad Medida'
         );
-        $numero = 1;
+
         $this->MultiRow($RowArray, false, 1);
 
-        $this->SetFont('', '', 10);
-        $conf_det_tablewidths = array(35, 35, 55, 20,26);
-        $conf_det_tablealigns = array( 'C', 'C', 'C', 'C', 'C');
-        //$conf_det_tablenumbers = array(5,0,0,0,0,0);
+        $this->SetFont('', '', 11);
+        $numero = 1;
+        $conf_det_tablewidths = array(15,35, 35, 55, 20,26);
+        $conf_det_tablealigns = array( 'C','C', 'C', 'C', 'C', 'C');
+
 
         $this->tablewidths = $conf_det_tablewidths;
         $this->tablealigns = $conf_det_tablealigns;
-        //$this->tablenumbers= $conf_det_tablenumbers;
+
 
         foreach ($this->datos as $Row) {
-            $this->Cell(15, 0,$numero , 1, 0, 'C', 0, '', 0);
             $RowArray = array(
-
+                'Nro'=> $numero,
                 'Número de Parte' => $Row['nro_parte'],
                 'Referencia'=> $Row['referencia'],
                 'Descripcion'=> $Row['descripcion'],
@@ -82,7 +81,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
 
             );
             $numero++;
-            $this->MultiRow($RowArray);
+            $this->MultiRow($RowArray,false, 1,0);
 
         }
 
@@ -146,7 +145,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
 
         $Revisado_vb= $this->datos2[0]['funcionario_bv'];
         $VB_DAC= $this->datos2[1]['funcionario_bv'];
-        $Abastecimiento = $this->datos2[0]['funcionario_bv'];
+        $Abastecimiento = 'Abastecimiento';//$this->datos2[0]['funcionario_bv'];
 
         if ($this->datos[0]['estado'] != 'borrador') {
 
@@ -202,7 +201,7 @@ EOD;
         <table cellspacing="0" cellpadding="1" border="1">
          <tr>
         <td align="center" > V.B. DAC: $dac</td>
-        <td align="center" >  Recibido Abastecimiento:: $fab</td>
+        <td align="center" >  Recibido : $fab</td>
         </tr>
         <tr>
         <td align="center" > 

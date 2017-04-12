@@ -47,9 +47,6 @@ BEGIN
     	end;
     elsif(p_codigo_estado in ('cotizacion_solicitada')) then
     	begin
-        IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad')THEN
-        RAISE EXCEPTION'Aun no fue aprobado por %', v_solicitud.estado_firma;
-        END IF;
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
