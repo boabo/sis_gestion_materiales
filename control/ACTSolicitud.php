@@ -19,16 +19,16 @@ class ACTSolicitud extends ACTbase{
 
         $this->objParam->defecto('dir_ordenacion','asc');
 
-        if ($this->objParam->getParametro('pes_estado') == 'borrador') {
+        if ($this->objParam->getParametro('pes_estado') == 'borrador_reg') {
             $this->objParam->addFiltro("sol.estado  in (''borrador'')");
         }
-         if ($this->objParam->getParametro('pes_estado') == 'vobo_area') {
-            $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')or sol.estado  in (''revision'')");
+         if ($this->objParam->getParametro('pes_estado') == 'vobo_area_reg') {
+            $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'revision') {
-            $this->objParam->addFiltro("sol.estado  in (''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') or sol.estado in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'') ");
+        if ($this->objParam->getParametro('pes_estado') == 'revision_reg') {
+            $this->objParam->addFiltro("sol.estado in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''revision'') ");
         }
-       if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
+       if ($this->objParam->getParametro('pes_estado') == 'finalizado_reg') {
             $this->objParam->addFiltro("sol.estado  in (''finalizado'',''anulado'')");
         }
          if ($this->objParam->getParametro('pes_estado') == 'consulta_op') {
@@ -39,7 +39,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''borrador'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'')");
         }
 
-         if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
+        if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
              $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')");
          }
 

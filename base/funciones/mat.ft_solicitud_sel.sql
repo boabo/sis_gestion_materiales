@@ -42,6 +42,7 @@ DECLARE
     v_filtro_repo       VARCHAR;
     v_origen_pedido     VARCHAR;
     v_id_proceso_wf_firma integer;
+    v_usuario				integer;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_solicitud_sel';
@@ -64,26 +65,24 @@ BEGIN
             INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
             INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
             WHERE tu.id_usuario = p_id_usuario ;
-        if p_administrador 	THEN
+        IF p_administrador 	THEN
+				v_filtro = ' 0=0 AND ';
 
-          v_filtro = ' 0=0 AND ';
+      	ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
 
-         -- RAISE EXCEPTION'%',v_parametros.tipo_interfaz;
-        ELSIF v_parametros.pes_estado = 'borrador' THEN
-            v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
-                ' AND ';
+            	v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||
+                'OR tew.id_funcionario ='||p_id_usuario||
+                'OR ewb.id_funcionario ='||p_id_usuario||'and ';
 
-        ELSIF v_parametros.pes_estado = 'vobo_area' THEN
-        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
-                ' AND ';
+       ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
+         v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
 
-    	ELSIF v_parametros.pes_estado = 'revision' THEN
-        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
-                ' AND ';
+    	ELSIF v_parametros.pes_estado = 'revision_reg' THEN
+        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
 
-        ELSIF v_parametros.pes_estado = 'finalizado' THEN
-        v_filtro = ' sol.id_usuario_reg = '||p_id_usuario||
-                ' AND ';
+        ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
+        v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
+                ' AND';
 
        ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno'and v_record.nombre_cargo ='Gerente de Mantenimiento' )THEN
       	 			select fu.id_funcionario,
@@ -101,24 +100,7 @@ BEGIN
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          	END IF;
-
-      ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
-          v_filtro = '';
-      ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
-          v_filtro = '';
-      ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
-          v_filtro = '';
-      ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
-          v_filtro = '';
-      ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
-          v_filtro = '';
-      END IF;
-      IF p_administrador 	THEN
-
-          v_filtro = ' 0=0 AND ';
-
-
-     ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno' and v_record.nombre_cargo = 'Técnico Planificación de Servicios' )THEN
+       ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno' and v_record.nombre_cargo = 'Técnico Planificación de Servicios' )THEN
        				select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -135,12 +117,7 @@ BEGIN
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          	END IF;
-            END IF;
-
-
-      IF p_administrador 	THEN
-          v_filtro = ' 0=0 AND ';
-      ELSIF  (v_parametros.tipo_interfaz =  'VistoBueno' and v_record.nombre_cargo ='Jefe Departamento Ingenieria - Planeamiento' )THEN
+       ELSIF  (v_parametros.tipo_interfaz =  'VistoBueno' and v_record.nombre_cargo ='Jefe Departamento Ingenieria - Planeamiento' )THEN
         			select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -156,15 +133,10 @@ BEGIN
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          	END IF;
-       END IF;
-
-      IF p_administrador 	THEN
-		 v_filtro = ' 0=0 AND ';
-      ELSIF  (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
+       ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
           		v_parametros.tipo_interfaz = 'PedidoMantenimiento' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
            		v_parametros.tipo_interfaz ='PerdidoAlmacen'and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos')THEN
-
-                    select u.id_usuario,
+					select u.id_usuario,
                 	count(u.id_usuario)::varchar as cant_reg
          			into v_id_usuario_rev
                     from wf.testado_wf es
@@ -175,19 +147,14 @@ BEGIN
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
                     WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo ='Auxiliar Apoyo Control Viáticos'
                		GROUP BY u.id_usuario;
-
-         	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+			IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          		v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         		ELSE
+         	ELSE
          		v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-         		END IF;
-      END IF;
-      IF p_administrador 	THEN
-          v_filtro = ' 0=0 AND ';
-      ELSIF  (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Auxiliar Suministros' or v_parametros.tipo_interfaz = 'PedidoMantenimiento'
-         and v_record.nombre_cargo = 'Auxiliar Suministros' or v_parametros.tipo_interfaz ='PerdidoAlmacen' and v_record.nombre_cargo = 'Auxiliar Suministros' )THEN
-
-                    select u.id_usuario,
+         	END IF;
+       ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Auxiliar Suministros' or v_parametros.tipo_interfaz = 'PedidoMantenimiento'
+        		 and v_record.nombre_cargo = 'Auxiliar Suministros' or v_parametros.tipo_interfaz ='PerdidoAlmacen' and v_record.nombre_cargo = 'Auxiliar Suministros' )THEN
+					select u.id_usuario,
                 	count(u.id_usuario)::varchar as cant_reg
          			into v_id_usuario_rev
                     from wf.testado_wf es
@@ -201,10 +168,20 @@ BEGIN
 
       		IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-        	 ELSE
+        	ELSE
          	v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
          	END IF;
-       END IF;
+      ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
+          v_filtro = '';
+      ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
+          v_filtro = '';
+      ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
+          v_filtro = '';
+      ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
+          v_filtro = '';
+      ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
+          v_filtro = '';
+      END IF;
 			v_consulta:='select
 						sol.id_solicitud,
 						sol.id_funcionario_sol,
@@ -469,7 +446,9 @@ BEGIN
                                 sol.nro_justificacion,
                                 de.nro_parte_alterno,
                                 de.tipo,
-                                sol.estado_firma
+                                sol.estado_firma,
+                                to_char( sol.fecha_mod,''DD/MM/YYYY'') as fecha_fir
+
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
@@ -477,7 +456,7 @@ BEGIN
                                 inner join wf.testado_wf wof on wof.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = wof.id_tipo_estado
                                 inner join mat.tunidad_medida un on un.id_unidad_medida = de.id_unidad_medida
-                    			where sol.id_proceso_wf='||v_parametros.id_proceso_wf;
+                                where sol.id_proceso_wf='||v_parametros.id_proceso_wf;
 			--Devuelve la respuesta
 			return v_consulta;
 

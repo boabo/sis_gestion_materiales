@@ -471,6 +471,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_parte_alterno','varchar');
         $this->captura('tipo','varchar');
         $this->captura('estado_firma','varchar');
+        $this->captura('fecha_fir','text');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

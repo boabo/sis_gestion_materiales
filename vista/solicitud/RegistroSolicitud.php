@@ -21,7 +21,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config.maestro;
             Phx.vista.RegistroSolicitud.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'borrador';
+            this.store.baseParams.pes_estado = 'borrador_reg';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
             this.getBoton('ant_estado').setVisible(false);
@@ -32,10 +32,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         gruposBarraTareas:[
-            {name:'borrador',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borrador</h1>',grupo:0,height:0},
-            {name:'vobo_area',title:'<H1 "center"><i class="fa fa-eye"></i>Visto Bueno</h1>',grupo:1,height:0},
-            {name:'revision',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Proceso</h1>',grupo:1,height:0},
-            {name:'finalizado',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Finalizado</h1>',grupo:1,height:0}
+            {name:'borrador_reg',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borrador</h1>',grupo:0,height:0},
+            {name:'vobo_area_reg',title:'<H1 "center"><i class="fa fa-eye"></i>Visto Bueno</h1>',grupo:1,height:0},
+            {name:'revision_reg',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Proceso</h1>',grupo:1,height:0},
+            {name:'finalizado_reg',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Finalizado</h1>',grupo:1,height:0}
         ],
 
         tam_pag:50,
