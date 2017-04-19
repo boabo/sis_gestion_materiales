@@ -215,7 +215,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Estado VoBo',
                     allowBlank: true,
                     anchor: '95%',
-                    gwidth: 250,
+                    gwidth: 150,
                     maxLength: 100
 
                 },

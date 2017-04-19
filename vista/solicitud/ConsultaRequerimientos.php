@@ -23,6 +23,16 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         ],
         constructor: function (config) {
+
+            this.Atributos[this.getIndAtributo('nro_po')].grid=true;
+            this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_arribado_bolivia')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_desaduanizacion')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_en_almacen')].grid=true;
+
+
+
             Phx.vista.ConsultaRequerimientos.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};

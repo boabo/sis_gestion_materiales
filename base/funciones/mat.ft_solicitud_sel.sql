@@ -31,7 +31,7 @@ DECLARE
     v_campos 			record;
     v_firmas			record;
     v_id_solicitud		INTEGER;
-    p_id_proceso_wf integer;
+    p_id_proceso_wf 	integer;
     v_id_proceso_wf_prev integer;
     v_orden				varchar;
 	v_filtro			varchar;
@@ -41,7 +41,7 @@ DECLARE
     v_origen 			varchar;
     v_filtro_repo       VARCHAR;
     v_origen_pedido     VARCHAR;
-    v_id_proceso_wf_firma integer;
+    v_id_proceso_wf_firma 	integer;
     v_usuario				integer;
 BEGIN
 
@@ -67,22 +67,6 @@ BEGIN
             WHERE tu.id_usuario = p_id_usuario ;
         IF p_administrador 	THEN
 				v_filtro = ' 0=0 AND ';
-
-      	ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
-
-            	v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||
-                'OR tew.id_funcionario ='||p_id_usuario||
-                'OR ewb.id_funcionario ='||p_id_usuario||'and ';
-
-       ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
-         v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
-
-    	ELSIF v_parametros.pes_estado = 'revision_reg' THEN
-        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
-
-        ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
-        v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
-                ' AND';
 
        ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno'and v_record.nombre_cargo ='Gerente de Mantenimiento' )THEN
       	 			select fu.id_funcionario,
@@ -181,8 +165,24 @@ BEGIN
           v_filtro = '';
       ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
           v_filtro = '';
+
+      ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
+        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'and ';
+
+      ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
+         v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
+
+    	ELSIF v_parametros.pes_estado = 'revision_reg' THEN
+        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
+
+        ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
+        v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
+                ' AND';
+
+      ELSE
+      v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
       END IF;
-			v_consulta:='select
+   		v_consulta:='select
 						sol.id_solicitud,
 						sol.id_funcionario_sol,
 						sol.id_proveedor,
@@ -525,7 +525,7 @@ BEGIN
 		begin
         IF(v_parametros.origen_pedido  = 'Gerencia de Mantenimiento')THEN
         IF (v_parametros.estado > 1::VARCHAR )THEN
-        v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.id_tipo_estado::integer in ('||v_parametros.estado||') and ';
+        v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.id_tipo_estado in('||v_parametros.estado||') and ';
     	ELSE
          v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and ';
         END IF;
@@ -552,7 +552,7 @@ BEGIN
             					s.id_solicitud,
                                 s.nro_tramite,
                                 s.origen_pedido,
-                                s.estado,
+                                t.nombre_estado as estado,
                                 f.desc_funcionario1,
                                 to_char(s.fecha_solicitud,''DD/MM/YYYY'')as fecha_solicitud,
                                 d.nro_parte,
@@ -587,7 +587,7 @@ BEGIN
 		begin
 			v_consulta:='select
             					t.id_tipo_estado,
-								t.codigo
+								t.nombre_estado as codigo
 								from wf.ttipo_estado t
 								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Gerencia de Mantenimiento'' and t.estado_reg = ''activo''
                                 where';
@@ -604,7 +604,7 @@ BEGIN
 		begin
 			v_consulta:='select
             					t.id_tipo_estado,
-								t.codigo
+								t.nombre_estado as codigo
 								from wf.ttipo_estado t
 								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Gerencia de Operaciones'' and t.estado_reg = ''activo''
                                 where';
@@ -621,7 +621,7 @@ BEGIN
 		begin
 			v_consulta:='select
             					t.id_tipo_estado,
-								t.codigo
+								t.nombre_estado as codigo
 								from wf.ttipo_estado t
 								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Almacenes Consumibles o Rotables'' and t.estado_reg = ''activo''
                                 where';

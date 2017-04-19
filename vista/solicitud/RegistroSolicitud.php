@@ -112,11 +112,10 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         onSaveWizard:function(wizard,resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-             Phx.CP.loadingShow();
+            Phx.CP.loadingShow();
             Ext.Ajax.request({
                 url:'../../sis_gestion_materiales/control/Solicitud/siguienteEstadoSolicitud',
                 params:{
-
                     id_proceso_wf_act:  resp.id_proceso_wf_act,
                     id_estado_wf_act:   resp.id_estado_wf_act,
                     id_tipo_estado:     resp.id_tipo_estado,
@@ -132,7 +131,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope:this
             });
             var rec = this.sm.getSelected();
-            if((rec.data.origen_pedido != 'Almacenes Consumibles o Rotables'))  {
                 Phx.CP.loadingShow();
                 Ext.Ajax.request({
                     url: '../../sis_gestion_materiales/control/Solicitud/iniciarDisparo',
@@ -146,16 +144,13 @@ header("content-type: text/javascript; charset=UTF-8");
                     timeout: this.timeout,
                     scope: this
                 });
-            }
-            },
 
+        },
         successWizard:function(resp){
             Phx.CP.loadingHide();
             resp.argument.wizard.panel.destroy();
             this.reload();
         },
-
-
 
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
