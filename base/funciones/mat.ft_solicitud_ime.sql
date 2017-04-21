@@ -521,6 +521,7 @@ END IF;
            select 	sol.id_solicitud,
  					sol.id_proceso_wf,
         			sol.estado,
+                    sol.id_funcionario_sol,
         			pwf.id_tipo_proceso
                      into v_registros_mat
  					from mat.tsolicitud sol
@@ -569,7 +570,7 @@ END IF;
 
               v_id_estado_actual = wf.f_registra_estado_wf(
                   v_id_tipo_estado,                --  id_tipo_estado al que retrocede
-                  v_id_funcionario,                --  funcionario del estado anterior
+                  v_registros_mat.id_funcionario_sol,                --  funcionario del estado anterior
                   v_parametros.id_estado_wf,       --  estado actual ...
                   v_id_proceso_wf,                 --  id del proceso actual
                   p_id_usuario,                    -- usuario que registra
@@ -762,17 +763,14 @@ END IF;
         if v_control_duplicidad.nro_justificacion !=''then
         	if v_parametros.justificacion = v_control_duplicidad.nro_justificacion then
             	v_justificacion= v_control_duplicidad.nro_justificacion;
-                v_msg_control = ' El numero justificacion '||v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' en la fecha ' ||v_control_duplicidad.fecha_solicitud;
+                v_msg_control = ' El numero justificacion '||v_control_duplicidad.nro_justificacion||' de '||v_control_duplicidad.justificacion||' ya fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' con fecha ' ||v_control_duplicidad.fecha_solicitud;
             end if;
         end if;
-        if v_parametros.nro_parte = v_control_duplicidad.nro_parte   then
+        if v_parametros.nro_parte = v_control_duplicidad.nro_parte and v_parametros.id_matricula = v_control_duplicidad.id_matricula then
             	v_parte= v_control_duplicidad.nro_parte;
-                v_msg_control = ' El number part '||v_control_duplicidad.nro_parte||' fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' en la fecha ' ||v_control_duplicidad.fecha_solicitud;
+                v_matricula= v_control_duplicidad.id_matricula;
+                v_msg_control = ' El number parte: '||v_control_duplicidad.nro_parte||', para la matricula: '||v_control_duplicidad.desc_orden||'; ya fue registrado por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' con fecha ' ||v_control_duplicidad.fecha_solicitud;
             end if;
-        if v_parametros.id_matricula = v_control_duplicidad.id_matricula   then
-            	v_matricula= v_control_duplicidad.id_matricula;
-                v_msg_control = ' La solicitud fue registrado en '||v_control_duplicidad.desc_orden||' por '||v_control_duplicidad.desc_funcionario1||' en el tramite '||v_control_duplicidad.nro_tramite|| ' en la fecha ' ||v_control_duplicidad.fecha_solicitud;
-        end if;
         END LOOP;
 
         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');

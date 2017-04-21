@@ -66,7 +66,7 @@ BEGIN
         SELECT s.* into v_registros
         FROM mat.tsolicitud s
         WHERE s.id_solicitud = v_parametros.id_solicitud or s.id_proceso_wf = v_parametros.id_solicitud;
-	IF v_registros.origen_pedido IN('Gerencia de Operaciones','Gerencia de Mantenimiento')THEN
+      IF v_registros.origen_pedido IN('Gerencia de Operaciones','Gerencia de Mantenimiento')and v_registros.id_proceso_wf_firma is  null and v_registros.id_estado_wf_firma is  null THEN
          IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
 
      	   select    tp.codigo, pm.id_proceso_macro
@@ -100,6 +100,8 @@ BEGIN
 		where f.desc_funcionario1 = 'ROGER WILMER BALDERRAMA ANGULO';
         END IF;
 
+
+
      	------------------------------
             --registra procesos disparados
             ------------------------------
@@ -129,8 +131,7 @@ BEGIN
             id_proceso_wf_firma = v_id_proceso_ab_wf,
             id_estado_wf_firma = v_id_estado_ab_wf
             where id_solicitud=v_parametros.id_solicitud;
-		END IF ;
-
+END IF;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud almacenado(a) con exito (id_solicitud'||v_id_solicitud||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_id_solicitud::varchar);

@@ -28,7 +28,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             this.addButton('ini_estado',{
-                grupo:[8],
+                grupo:[8,3],
                 argument: {estado: 'inicio'},
                 text:'Dev. a borrador',
                 iconCls: 'batras',

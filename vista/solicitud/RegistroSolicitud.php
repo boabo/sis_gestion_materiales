@@ -67,9 +67,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 'FromFormula',
                 {
                     config:[{
-                        event:'successsave',
-                        delegate: this.onSaveForm,
-
+                        event:'successsave'
                     }],
 
                     scope:this

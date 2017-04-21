@@ -1,10 +1,9 @@
 <?php
 /**
  *@package pXP
- *@file    FormObligacion.php
- *@author  Rensi Arteaga Copari
- *@date    30-01-2014
- *@description permites subir archivos a la tabla de documento_sol
+ *@file    FormFrumla.php
+ *@author  MMV
+ *@date    21/12/2016
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -14,9 +13,6 @@ header("content-type: text/javascript; charset=UTF-8");
         ActSave:'../../sis_gestion_materiales/control/Solicitud/insertarSolicitudCompleta',
         tam_pag: 10,
         layout: 'fit',
-        fields: [
-            {name:'codigo', type: 'string'}
-        ],
         autoScroll: false,
         breset: false,
         constructor:function(config)
@@ -228,12 +224,11 @@ header("content-type: text/javascript; charset=UTF-8");
         evaluaRequistos: function(){
             //valida que todos los requistosprevios esten completos y habilita la adicion en el grid
             var i = 0;
-            sw = true
-            while( i < this.Cmp.length) {
-
-                if(!this.Cmp[i].isValid()){
+            sw = true;
+            while( i < this.Componentes.length) {
+                console.log('componetes '+this.Componentes[i].isValid());
+                if(!this.Componentes[i].isValid()){
                     sw = false;
-                    //i = this.Componentes.length;
                 }
                 i++;
             }
@@ -242,22 +237,18 @@ header("content-type: text/javascript; charset=UTF-8");
         bloqueaRequisitos: function(sw){
 
             this.Cmp.id_funcionario_sol.setDisabled(sw);
-            
         },
         evaluaGrilla: function(){
             //al eliminar si no quedan registros en la grilla desbloquea los requisitos en el maestro
             var  count = this.mestore.getCount();
             if(count == 0){
                 this.bloqueaRequisitos(false);
-
             }
         },
         obtenerGestion:function(x){
-
             var fecha = x.getValue().dateFormat(x.format);
             Phx.CP.loadingShow();
             Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
                 url:'../../sis_parametros/control/Gestion/obtenerGestionByFecha',
                 params:{fecha:fecha},
                 success:this.successGestion,
@@ -565,55 +556,10 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
-                    name: 'nro_solicitud',
-                    fieldLabel: 'Nro. solicitud',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 80,
-                    maxLength:50
-                },
-                type:'TextField',
-                filters:{pfiltro:'sol.nro_tramite',type:'string'},
-                id_grupo:1,
-                grid:false,
-                form:false
-            },
-            {
-                config:{
-                    name: 'nro_tramite',
-                    fieldLabel: 'Nro. Tramite',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 80,
-                    maxLength:50
-                },
-                type:'TextField',
-                filters:{pfiltro:'sol.nro_tramite',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-            {
-                config:{
-                    name: 'estado',
-                    fieldLabel: 'Estado',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    maxLength:100
-                },
-                type:'TextField',
-                filters:{pfiltro:'sol.estado',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-
-            {
-                config:{
                     name:'origen_pedido',
                     fieldLabel:'Origen Pedido',
                     allowBlank:false,
+                    editable: false,
                     emptyText:'Elija una opción...',
                     typeAhead: true,
                     triggerAction: 'all',
@@ -625,7 +571,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'ComboBox',
                 id_grupo:0,
-                grid:true,
                 form:true
 
             },
@@ -651,33 +596,23 @@ header("content-type: text/javascript; charset=UTF-8");
                     }),
                     valueField: 'id_funcionario',
                     displayField: 'desc_funcionario1',
-                    gdisplayField: 'desc_nombre_funcionario',
-                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: green">{nombre_cargo}<br>{email_empresa}</p><p style="color:green">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
                     hiddenName: 'id_funcionario_recepcion',
-                    forceSelection: true,
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: green">{nombre_cargo}<br>{email_empresa}</p><p style="color:green">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
+                    istWidth:'280',
+                    forceSelection:true,
                     typeAhead: false,
                     triggerAction: 'all',
-                    lazyRender: true,
-                    mode: 'remote',
-                    pageSize: 10,
-                    queryDelay: 1000,
+                    lazyRender:true,
+                    mode:'remote',
+                    pageSize:20,
+                    queryDelay:500,
+                    minChars:2,
                     anchor: '105%',
-                    gwidth: 230,
-                    minChars: 2,
-                    resizable:true,
-                    listWidth:'240',
-                    renderer: function (value, p, record) {
-                        return String.format('{0}', record.data['desc_nombre_funcionario']);
-                    }
+                    gwidth: 230
+
                 },
                 type: 'ComboBox',
-                bottom_filter:true,
                 id_grupo: 4,
-                filters:{
-                    pfiltro:'fun.desc_funcionario1',//#fun.nombre_cargo
-                    type:'string'
-                },
-                grid: true,
                 form: true
             },
             {
@@ -716,27 +651,22 @@ header("content-type: text/javascript; charset=UTF-8");
                     }),
                     valueField: 'id_orden_trabajo',
                     displayField: 'desc_orden',
-                    gdisplayField: 'desc_orden',
-                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_orden}</p><p style="color: blue">{matricula}</p></div></tpl>',
                     hiddenName: 'id_matricula',
-                    forceSelection: true,
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_orden}</p><p style="color: blue">{matricula}</p></div></tpl>',
+                    istWidth:'280',
+                    forceSelection:true,
                     typeAhead: false,
                     triggerAction: 'all',
-                    lazyRender: true,
-                    mode: 'remote',
-                    pageSize: 100,
-                    queryDelay: 1000,
+                    lazyRender:true,
+                    mode:'remote',
+                    pageSize:20,
+                    queryDelay:500,
+                    minChars:2,
                     anchor: '105%',
-                    gwidth: 150,
-                    minChars: 2,
-                    renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['matricula']);
-                    }
+                    gwidth: 230
                 },
                 type: 'ComboBox',
                 id_grupo: 0,
-                filters: {pfiltro: 'ord.matricula',type: 'string'},
-                grid: true,
                 form: true
             },
             {
@@ -745,13 +675,11 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Motivo Solicitud',
                     allowBlank: false,
                     anchor: '105%',
-                    gwidth: 100,
                     maxLength:100
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.motivo_solicitud',type:'string'},
                 id_grupo:0,
-                grid:true,
                 form:true
             },
             {
@@ -760,13 +688,11 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Observaciones',
                     allowBlank: false,
                     anchor: '105%',
-                    gwidth: 100,
                     maxLength:100
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.observaciones_sol',type:'string'},
                 id_grupo:0,
-                grid:true,
                 form:true
             },
             {
@@ -774,6 +700,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name:'justificacion',
                     fieldLabel:'Justificación ',
                     allowBlank:false,
+                    editable: false,
                     emptyText:'Elija una opción...',
                     typeAhead: true,
                     triggerAction: 'all',
@@ -786,7 +713,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'ComboBox',
                 id_grupo:1,
-                grid:true,
                 form:true
 
             },
@@ -802,7 +728,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'TextField',
                 filters:{pfiltro:'sol.estado',type:'string'},
                 id_grupo:1,
-                grid:true,
                 form:true
             },
 
@@ -811,6 +736,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name:'tipo_solicitud',
                     fieldLabel:'Tipo Solicitud',
                     allowBlank:false,
+                    editable: false,
                     emptyText:'Elija una opción...',
 
                     typeAhead: true,
@@ -823,7 +749,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'ComboBox',
                 id_grupo:1,
-                grid:true,
                 form:true
 
             },
@@ -834,6 +759,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank:true,
                     emptyText:'Elija una opción...',
                     typeAhead: true,
+                    editable: false,
                     triggerAction: 'all',
                     lazyRender: true,
                     lazyRender:true,
@@ -843,7 +769,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'ComboBox',
                 id_grupo:1,
-                grid:true,
                 form:true
 
             },
@@ -853,7 +778,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel:'Tipo de Reporte',
                     allowBlank:true,
                     emptyText:'Elija una opción...',
-
+                    editable: false,
                     typeAhead: true,
                     triggerAction: 'all',
                     lazyRender:true,
@@ -864,7 +789,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'ComboBox',
                 id_grupo:1,
-                grid:true,
                 form:true
 
             },
@@ -874,7 +798,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel:'MEL',
                     allowBlank:true,
                     emptyText:'Elija una opción...',
-
+                    editable: false,
                     typeAhead: true,
                     triggerAction: 'all',
                     lazyRender:true,
@@ -885,7 +809,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'ComboBox',
                 id_grupo:1,
-                grid:true,
                 form:true
 
             },
@@ -902,7 +825,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'DateField',
                 filters:{pfiltro:'sol.fecha_requerida',type:'date'},
                 id_grupo:1,
-                grid:true,
                 form:true
             },
             {
@@ -917,115 +839,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'TextField',
                 filters:{pfiltro:'sol.motivo_solicitud',type:'string'},
                 id_grupo:1,
-                grid:true,
                 form:true
-            },
-            {
-                config:{
-                    name: 'estado_reg',
-                    fieldLabel: 'Estado Reg.',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    maxLength:10
-                },
-                type:'TextField',
-                filters:{pfiltro:'sol.estado_reg',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-            {
-                config:{
-                    name: 'usr_reg',
-                    fieldLabel: 'Creado por',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    maxLength:4
-                },
-                type:'Field',
-                filters:{pfiltro:'usu1.cuenta',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-            {
-                config:{
-                    name: 'usuario_ai',
-                    fieldLabel: 'Funcionaro AI',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    maxLength:300
-                },
-                type:'TextField',
-                filters:{pfiltro:'sol.usuario_ai',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-            {
-                config:{
-                    name: 'fecha_reg',
-                    fieldLabel: 'Fecha creación',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-                },
-                type:'DateField',
-                filters:{pfiltro:'sol.fecha_reg',type:'date'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-            {
-                config:{
-                    name: 'id_usuario_ai',
-                    fieldLabel: 'Fecha creación',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    maxLength:4
-                },
-                type:'Field',
-                filters:{pfiltro:'sol.id_usuario_ai',type:'numeric'},
-                id_grupo:1,
-                grid:false,
-                form:false
-            },
-            {
-                config:{
-                    name: 'usr_mod',
-                    fieldLabel: 'Modificado por',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    maxLength:4
-                },
-                type:'Field',
-                filters:{pfiltro:'usu2.cuenta',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-            },
-            {
-                config:{
-                    name: 'fecha_mod',
-                    fieldLabel: 'Fecha Modif.',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-                },
-                type:'DateField',
-                filters:{pfiltro:'sol.fecha_mod',type:'date'},
-                id_grupo:1,
-                grid:true,
-                form:false
             }
 
 
@@ -1061,14 +875,9 @@ header("content-type: text/javascript; charset=UTF-8");
                         var matricula=reg.ROOT.datos.matricula;
                         var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
                         var ma =this;
-                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue()!= '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.detCmp.nro_parte.getValue()!= ''||
-                            ma.Cmp.id_matricula.getValue() == matricula && ma.Cmp.id_matricula.getValue()!= ''){
-                           /* if(confirm('El '+mgs_control) ){
-                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                this.mensaje_('DUPLICIDAD','Se Duplico el  '+mgs_control, 'ERROR');
+                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue() != '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
+                            Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ', function (btn) {
 
-                            }*/
-                            Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ' , function (btn) {
                                 if (btn === 'yes') {
                                     Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
 
@@ -1077,7 +886,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 }
                             },this);
 
-                        }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte || ma.Cmp.id_matricula.getValue() != matricula  ){
+                        }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()!=matricula){
                             Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                         }
 
@@ -1092,7 +901,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 }
                 else{
-                    alert("No tiene datos en el detalle")
+                    this.mensaje_('ALERTA', "No tiene datos en el detalle", 'ERROR');
+
+                    //alert("No tiene datos en el detalle")
                 }
             }
 

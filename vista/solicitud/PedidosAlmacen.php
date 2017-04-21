@@ -65,7 +65,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.pes_estado = 'pedido_al_pendiente';
             this.load({params: {start: 0, limit: this.tam_pag}});
             this.finCons = true;
-            this.getBoton('ini_estado').setVisible(false);
+            this.getBoton('ini_estado').setVisible(true);
             this.getBoton('Report').setVisible(false);
             this.getBoton('ant_estado').setVisible(true);
          
@@ -142,6 +142,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(true);
                 this.getBoton('Report').setVisible(false);
+                this.getBoton('ini_estado').setVisible(true);
 
             }
             return tb;
