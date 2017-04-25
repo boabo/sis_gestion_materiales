@@ -195,6 +195,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.nro_justificacion);
                     this.ocultarComponente(this.Cmp.justificacion);
                     this.ocultarComponente(this.Cmp.id_matricula);
+                    this.Cmp.id_matricula.setValue(null);
+
                 }
                 this.Cmp.nro_justificacion.reset();
             },this);
