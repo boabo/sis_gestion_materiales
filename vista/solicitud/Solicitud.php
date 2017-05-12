@@ -1235,8 +1235,8 @@ header("content-type: text/javascript; charset=UTF-8");
             me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/SolicitudArchivado.php',
                 'Solicitudes Archivados/Concluidos',
                 {
-                    width:'90%',
-                    height:800
+                    width:'80%',
+                    height:600
                 },
                 {data:{objPadre: me}
                 },
@@ -1249,8 +1249,8 @@ header("content-type: text/javascript; charset=UTF-8");
             me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/solicitudFacMin.php',
                 'Consulta Desaduanizacion',
                 {
-                    width:'90%',
-                    height:800
+                    width:'80%',
+                    height:600
                 },
                 {data:{objPadre: me}
                 },
@@ -1263,8 +1263,8 @@ header("content-type: text/javascript; charset=UTF-8");
             me.objSolForm = Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/almacen/Almacen.php',
                 'Control ALmacen',
                 {
-                    width:'90%',
-                    height:800
+                    width:'80%',
+                    height:600
                 },
                 {data:{objPadre: me}
                 },
