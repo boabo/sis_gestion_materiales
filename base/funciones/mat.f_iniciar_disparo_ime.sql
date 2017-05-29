@@ -47,6 +47,8 @@ DECLARE
     v_id_proceso_macro    	integer;
     v_funcionario_wf		integer;
 
+    v_id_estado_wf_dis integer;
+
 
 BEGIN
  v_nombre_funcion = 'mat.f_iniciar_disparo_ime';
@@ -65,7 +67,7 @@ BEGIN
 
         SELECT s.* into v_registros
         FROM mat.tsolicitud s
-        WHERE s.id_solicitud = v_parametros.id_solicitud or s.id_proceso_wf = v_parametros.id_solicitud;
+        WHERE s.id_solicitud = v_parametros.id_solicitud;
       IF v_registros.origen_pedido IN('Gerencia de Operaciones','Gerencia de Mantenimiento')and v_registros.id_proceso_wf_firma is  null and v_registros.id_estado_wf_firma is  null THEN
          IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
 
@@ -100,6 +102,12 @@ BEGIN
 		where f.desc_funcionario1 = 'ROGER WILMER BALDERRAMA ANGULO';
         END IF;
 
+         SELECT s.id_estado_wf
+         into
+         v_id_estado_wf_dis
+        FROM mat.tsolicitud s
+        WHERE s.id_solicitud = v_parametros.id_solicitud;
+
 
 
      	------------------------------
@@ -117,7 +125,7 @@ BEGIN
                                p_id_usuario,
                                v_parametros._id_usuario_ai,
                                v_parametros._nombre_usuario_ai,
-                               v_registros.id_estado_wf,
+                               v_id_estado_wf_dis,
                                v_funcionario_wf,
                                NULL,
                                'Flujo de Firmas',

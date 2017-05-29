@@ -110,6 +110,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         onSaveWizard:function(wizard,resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
             Phx.CP.loadingShow();
             Ext.Ajax.request({
                 url:'../../sis_gestion_materiales/control/Solicitud/siguienteEstadoSolicitud',
@@ -128,20 +129,22 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout:this.timeout,
                 scope:this
             });
+
             var rec = this.sm.getSelected();
-                Phx.CP.loadingShow();
-                Ext.Ajax.request({
-                    url: '../../sis_gestion_materiales/control/Solicitud/iniciarDisparo',
-                    params: {
-                        id_solicitud: rec.data.id_solicitud,
-                        id_proceso_wf: rec.data.id_proceso_wf
-                    },
-                    success:this.successWizard,
-                    failure: this.conexionFailure,
-                    argument:{wizard:wizard},
-                    timeout: this.timeout,
-                    scope: this
-                });
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/iniciarDisparo',
+                params: {
+
+                    id_solicitud: rec.data.id_solicitud
+                },
+                success:this.successWizard,
+                failure: this.conexionFailure,
+                argument:{wizard:wizard},
+                timeout: this.timeout,
+                scope: this
+            });
+
 
         },
         successWizard:function(resp){
@@ -248,7 +251,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ini_estado').setVisible(false);
             }
             return tb;
-        }
+        },
+
+
     };
 </script>
 

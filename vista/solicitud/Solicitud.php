@@ -405,7 +405,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: false,
                     anchor: '100%',
                     gwidth: 100,
-                    maxLength:100
+                    maxLength:10000
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.motivo_solicitud',type:'string'},
@@ -420,7 +420,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: false,
                     anchor: '100%',
                     gwidth: 200,
-                    maxLength:1000
+                    maxLength:10000
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.observaciones_sol',type:'string'},

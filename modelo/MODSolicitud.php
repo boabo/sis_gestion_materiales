@@ -645,8 +645,10 @@ class MODSolicitud extends MODbase{
         $this->procedimiento='mat.f_iniciar_disparo_ime';
         $this->transaccion='MAT_SOL_DIS';
         $this->tipo_procedimiento='IME';
+
         $this->setParametro('id_solicitud','id_solicitud','int4');
-        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+
        
 
 

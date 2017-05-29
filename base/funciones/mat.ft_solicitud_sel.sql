@@ -117,9 +117,10 @@ BEGIN
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          	END IF;
-       ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
-          		v_parametros.tipo_interfaz = 'PedidoMantenimiento' and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos' or
-           		v_parametros.tipo_interfaz ='PerdidoAlmacen'and v_record.nombre_cargo = 'Auxiliar Apoyo Control Viáticos')THEN
+
+       ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' and v_record.nombre_cargo = 'Técnico Revision Procesos' or
+          		v_parametros.tipo_interfaz = 'PedidoMantenimiento' and v_record.nombre_cargo = 'Técnico Revision Procesos' or
+           		v_parametros.tipo_interfaz ='PerdidoAlmacen'and v_record.nombre_cargo = 'Técnico Revision Procesos')THEN
 					select u.id_usuario,
                 	count(u.id_usuario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -148,16 +149,17 @@ BEGIN
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
                     WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and  fc.nombre_cargo ='Auxiliar Suministros'
-               		GROUP BY u.id_usuario;
+
+                    GROUP BY u.id_usuario;
 
       		IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
         	ELSE
          	v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
          	END IF;
-      ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
+     ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
           v_filtro = '';
-      ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
+    ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
           v_filtro = '';
       ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
           v_filtro = '';

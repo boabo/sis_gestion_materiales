@@ -677,7 +677,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Motivo Solicitud',
                     allowBlank: false,
                     anchor: '105%',
-                    maxLength:100
+                    maxLength:10000
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.motivo_solicitud',type:'string'},
@@ -690,7 +690,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Observaciones',
                     allowBlank: false,
                     anchor: '105%',
-                    maxLength:100
+                    maxLength:10000
                 },
                 type:'TextArea',
                 filters:{pfiltro:'sol.observaciones_sol',type:'string'},
@@ -847,9 +847,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         ],
         title: 'Frm Materiales',
-
         onSubmit: function(o) {
-
             //  validar formularios
             var arra = [], k, me = this;
             for (k = 0; k < me.megrid.store.getCount(); k++) {
@@ -859,12 +857,9 @@ header("content-type: text/javascript; charset=UTF-8");
             me.argumentExtraSubmit = { 'json_new_records': JSON.stringify(arra, function replacer(key, value) {
                 return value;
             }) };
-
-
             if(this.evaluaRequistos()){
                 Ext.Ajax.request({
                     url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
-
                     params:{
                         justificacion: this.Cmp.nro_justificacion.getValue(),
                         nro_parte: this.detCmp.nro_parte.getValue(),
@@ -879,36 +874,26 @@ header("content-type: text/javascript; charset=UTF-8");
                         var ma =this;
                         if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue() != '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
                             Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ', function (btn) {
-
                                 if (btn === 'yes') {
                                     Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-
                                 } else {
-
                                 }
                             },this);
-
                         }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()!=matricula){
                             Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                         }
-
                     },
                     failure: this.conexionFailure,
                     timeout:this.timeout,
                     scope:this
-
                 });
-
                 if( k > 0 &&  !this.editorDetaille.isVisible()){
-
                 }
                 else{
                     this.mensaje_('ALERTA', "No tiene datos en el detalle", 'ERROR');
-
                     //alert("No tiene datos en el detalle")
                 }
             }
-
         },
         mensaje_: function (titulo, mensaje, icono) {
 
