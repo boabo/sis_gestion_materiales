@@ -54,6 +54,18 @@ BEGIN
        			fecha_mod=now()
     		where id_proceso_wf_firma = p_id_proceso_wf;
     	end;
+
+         elsif(p_codigo_estado in ('rechazado ')) then
+    	begin
+       		update mat.tsolicitud s set
+       			id_estado_wf_firma =  p_id_estado_wf,
+      			estado_firma = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf_firma = p_id_proceso_wf;
+    	end;
      end if;
   return true;
 

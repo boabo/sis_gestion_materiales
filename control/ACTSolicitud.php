@@ -429,6 +429,13 @@ class ACTSolicitud extends ACTbase{
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function inicioEstadoSolicitudDisparo(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+        $this->res=$this->objFunc->inicioEstadoSolicitudDisparo($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 }
 

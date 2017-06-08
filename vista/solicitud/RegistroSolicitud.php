@@ -136,7 +136,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 url: '../../sis_gestion_materiales/control/Solicitud/iniciarDisparo',
                 params: {
 
-                    id_solicitud: rec.data.id_solicitud
+                    id_estado_wf: rec.data.id_estado_wf,
+                    id_proceso_wf: rec.data.id_proceso_wf
                 },
                 success:this.successWizard,
                 failure: this.conexionFailure,

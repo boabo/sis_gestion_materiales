@@ -661,7 +661,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     triggerAction: 'all',
                     lazyRender:true,
                     mode:'remote',
-                    pageSize:20,
+                    pageSize:1000,
                     queryDelay:500,
                     minChars:2,
                     anchor: '105%',

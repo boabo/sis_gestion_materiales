@@ -47,8 +47,11 @@ DECLARE
     v_id_proceso_macro    	integer;
     v_funcionario_wf		integer;
 
-    v_id_estado_wf_dis integer;
+    v_id_estado_wf_dis		integer;
 
+	v_codigo_estado 		varchar;
+
+    v_id_estado_wf_firma	integer;
 
 BEGIN
  v_nombre_funcion = 'mat.f_iniciar_disparo_ime';
@@ -65,26 +68,17 @@ BEGIN
 
         begin
 
-        SELECT s.* into v_registros
-        FROM mat.tsolicitud s
-        WHERE s.id_solicitud = v_parametros.id_solicitud;
-      IF v_registros.origen_pedido IN('Gerencia de Operaciones','Gerencia de Mantenimiento')and v_registros.id_proceso_wf_firma is  null and v_registros.id_estado_wf_firma is  null THEN
-         IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
+        IF v_parametros.id_proceso_wf IS NULL THEN
+        RAISE EXCEPTION 'Error';
+        END IF;
 
-     	   select    tp.codigo, pm.id_proceso_macro
-           into v_codigo_tipo_proceso, v_id_proceso_macro
-           from  wf.tproceso_macro pm
-           inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
-           where pm.codigo='GO-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
+        SELECT * into v_registros
+        FROM mat.tsolicitud
+        WHERE id_proceso_wf = v_parametros.id_proceso_wf;
 
-            elsif v_registros.origen_pedido ='Gerencia de Mantenimiento'then
 
-           select    tp.codigo, pm.id_proceso_macro
-           into v_codigo_tipo_proceso, v_id_proceso_macro
-           from  wf.tproceso_macro pm
-           inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
-           where pm.codigo='GM-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
-		END IF;
+    IF v_registros.origen_pedido IN('Gerencia de Operaciones','Gerencia de Mantenimiento')and
+    v_registros.id_proceso_wf_firma is  null and v_registros.id_estado_wf_firma is  null THEN
 
      IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
         SELECT f.id_funcionario
@@ -102,12 +96,11 @@ BEGIN
 		where f.desc_funcionario1 = 'ROGER WILMER BALDERRAMA ANGULO';
         END IF;
 
-         SELECT s.id_estado_wf
+        SELECT id_estado_wf
          into
          v_id_estado_wf_dis
-        FROM mat.tsolicitud s
-        WHERE s.id_solicitud = v_parametros.id_solicitud;
-
+        FROM mat.tsolicitud
+        WHERE id_proceso_wf = v_parametros.id_proceso_wf;
 
 
      	------------------------------
@@ -128,9 +121,9 @@ BEGIN
                                v_id_estado_wf_dis,
                                v_funcionario_wf,
                                NULL,
-                               'Flujo de Firmas',
-                               v_codigo_tipo_proceso,
-                               'Flujo de Firmas');
+                               'Firmas',
+                               null,
+                               'FDF');
 
              --Sentencia de la insercion
 
@@ -138,8 +131,107 @@ BEGIN
 			estado_firma = v_codigo_estado_ab,
             id_proceso_wf_firma = v_id_proceso_ab_wf,
             id_estado_wf_firma = v_id_estado_ab_wf
-            where id_solicitud=v_parametros.id_solicitud;
-END IF;
+            where id_proceso_wf = v_parametros.id_proceso_wf;
+          END IF;
+
+          IF  v_registros.estado_firma = 'rechazado' THEN
+
+          select
+            ew.id_tipo_estado,
+            te.pedir_obs,
+            ew.id_estado_wf
+           into
+            v_id_tipo_estado,
+            v_pedir_obs,
+            v_id_estado_wf
+
+          from wf.testado_wf ew
+          inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
+          where ew.id_estado_wf =  v_registros.id_estado_wf_firma;
+
+          select te.id_tipo_estado
+        into
+        	v_id_estado_wf_firma
+        from wf.tproceso_wf pw
+        inner join wf.ttipo_proceso tp on pw.id_tipo_proceso = tp.id_tipo_proceso
+        inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and te.codigo = 'vobo_area'
+        where pw.id_proceso_wf = v_registros.id_proceso_wf_firma;
+
+
+           -- obtener datos tipo estado siguiente //codigo=borrador
+           select te.codigo into
+             v_codigo_estado_siguiente
+           from wf.ttipo_estado te
+           where te.id_tipo_estado = v_id_estado_wf_firma;
+
+
+
+             --configurar acceso directo para la alarma
+             v_acceso_directo = '';
+             v_clase = '';
+             v_parametros_ad = '';
+             v_tipo_noti = 'notificacion';
+             v_titulo  = 'Visto Boa';
+
+
+             IF   v_codigo_estado_siguiente not in('vobo_area','revision','cotizacion')   THEN
+
+                  v_acceso_directo = '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php';
+                  v_clase = 'Solicitud';
+                  v_parametros_ad = '{filtro_directo:{campo:"mat.id_proceso_wf",valor:"'||
+                  v_parametros.id_proceso_wf_firma::varchar||'"}}';
+                  v_tipo_noti = 'notificacion';
+                  v_titulo  = 'Notificacion';
+             END IF;
+
+             IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
+        SELECT f.id_funcionario
+        INTO
+        	v_funcionario_wf
+		FROM orga.vfuncionario f
+		where f.desc_funcionario1 = 'JORGE OMAR GUZMAN FERNANDEZ';
+
+       elsif v_registros.origen_pedido ='Gerencia de Mantenimiento'then
+
+        SELECT f.id_funcionario
+        INTO
+        	v_funcionario_wf
+		FROM orga.vfuncionario f
+		where f.desc_funcionario1 = 'ROGER WILMER BALDERRAMA ANGULO';
+        END IF;
+
+             -- hay que recuperar el supervidor que seria el estado inmediato...
+            	v_id_estado_actual =  wf.f_registra_estado_wf(v_id_estado_wf_firma,
+                                                             v_funcionario_wf,
+                                                             v_registros.id_estado_wf_firma,
+                                                             v_registros.id_proceso_wf_firma,
+                                                             p_id_usuario,
+                                                             v_parametros._id_usuario_ai,
+                                                             v_parametros._nombre_usuario_ai,
+                                                             v_id_depto,
+                                                             ' Obs:',
+                                                             v_acceso_directo ,
+                                                             v_clase,
+                                                             v_parametros_ad,
+                                                             v_tipo_noti,
+                                                             v_titulo);
+
+
+         		IF mat.f_procesar_estados_firmas(p_id_usuario,
+           											v_parametros._id_usuario_ai,
+                                            		v_parametros._nombre_usuario_ai,
+                                            		v_id_estado_actual,
+                                            		v_registros.id_proceso_wf_firma,
+                                            		v_codigo_estado_siguiente) THEN
+
+         			RAISE NOTICE 'PASANDO DE ESTADO';
+
+          		END IF;
+
+
+
+
+          END IF;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud almacenado(a) con exito (id_solicitud'||v_id_solicitud||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_id_solicitud::varchar);
@@ -158,7 +250,7 @@ END IF;
 
     elseif(p_transaccion='MAT_SIG_DIS') then
     	begin
-
+		--RAISE EXCEPTION 'LLEGA %',v_parametros.id_tipo_estado;
         --recupera toda la tabla solicitud
           select *
           into v_solicitud
@@ -253,7 +345,7 @@ END IF;
           -- Devuelve la respuesta
           return v_resp;
         end;
- 	 /*********************************
+ 	/*********************************
  	#TRANSACCION:  'MAT_ANT_DIS'
  	#DESCRIPCION:	Estado Anterior
  	#AUTOR:		admin
@@ -366,7 +458,110 @@ END IF;
                 return v_resp;
 
         END;
+        /*********************************
+ 	#TRANSACCION:  'MAT_INI_DIS'
+ 	#DESCRIPCION:	Devolver al estado Borrador
+ 	#AUTOR:		admin
+ 	#FECHA:		07-06-2017
+	***********************************/
+    elsif(p_transaccion='MAT_INI_DIS')then
+		begin
 
+
+        		select 	sol.id_solicitud,
+                		sol.nro_tramite,
+                        sol.id_proceso_wf,
+                        pwf.id_tipo_proceso,
+                        es.id_estado_wf,
+                        sol.estado,
+                        sol.id_funcionario_sol,
+                        pwf.id_tipo_proceso,
+                        sol.id_estado_wf_firma,
+                        sol.id_proceso_wf_firma,
+                        sol.estado_firma
+                     	into v_registros_mat
+ 					from mat.tsolicitud sol
+ 					inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = sol.id_proceso_wf
+                    inner join wf.testado_wf es on es.id_estado_wf = sol.id_estado_wf
+ 					where sol.id_proceso_wf =  v_parametros.id_proceso_wf;
+
+
+
+        IF  v_parametros.operacion = 'inicio' THEN
+
+        -- recuperamos el estado inicial segun tipo_proceso
+             SELECT
+               ps_id_tipo_estado,
+               ps_codigo_estado
+             into
+               v_id_tipo_estado,
+               v_codigo_estado
+             FROM wf.f_obtener_tipo_estado_inicial_del_tipo_proceso(v_registros_mat.id_tipo_proceso);
+
+         --registra estado borrador
+          v_id_estado_actual =  mat.ft_registra_estado_wf(v_id_tipo_estado,
+                                                           v_registros_mat.id_funcionario_sol,
+                                                           v_registros_mat.id_estado_wf,
+                                                           v_registros_mat.id_proceso_wf,
+                                                           p_id_usuario,
+                                                           v_parametros._id_usuario_ai,
+                                                           v_parametros._nombre_usuario_ai,
+                                                           v_id_depto,
+                                                           'RETRO: #'|| COALESCE(v_registros_mat.nro_tramite,'S/N')||' - '||v_parametros.obs);
+
+               update mat.tsolicitud  set
+                 id_estado_wf =  v_id_estado_actual,
+                 estado = v_codigo_estado,
+                 id_usuario_mod=p_id_usuario,
+                 fecha_mod=now()
+                 where id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+
+       	select
+        te.id_tipo_estado
+        into
+        	v_id_estado_wf_firma
+        from wf.tproceso_wf pw
+        inner join wf.ttipo_proceso tp on pw.id_tipo_proceso = tp.id_tipo_proceso
+        inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and te.codigo = 'rechazado'
+        where pw.id_proceso_wf = v_registros_mat.id_proceso_wf_firma;
+
+
+           v_id_estado_actual =  wf.f_registra_estado_wf(	v_id_estado_wf_firma,
+           													v_registros_mat.id_funcionario_sol,
+                                                           	v_registros_mat.id_estado_wf_firma,
+                                                           	v_registros_mat.id_proceso_wf_firma,
+                                                           	p_id_usuario,
+                                                           	v_parametros._id_usuario_ai,
+            											   	v_parametros._nombre_usuario_ai,
+                                                           	v_id_depto,
+                                                           	'RECHAZADO');
+
+
+        -- actualiza estado en la solicitud
+        update mat.tsolicitud  set
+                 id_estado_wf_firma = v_id_estado_actual,
+            	 estado_firma = 'rechazado'
+               	 where id_proceso_wf_firma = v_registros_mat.id_proceso_wf_firma;
+
+
+
+
+ END IF;
+
+
+
+
+             -- si hay mas de un estado disponible  preguntamos al usuario
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado)');
+                v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
+
+              --Devuelve la respuesta
+                return v_resp;
+
+
+        end;
 END IF;
 EXCEPTION
 WHEN OTHERS THEN

@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
             this.getBoton('Report').setVisible(false);
             this.getBoton('edit').setVisible(false);
-            this.getBoton('ini_estado').setVisible(false);
+            this.getBoton('ini_estado').setVisible(true);
             this.getBoton('ant_estado').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
@@ -94,7 +94,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('edit').setVisible(false);
                 this.getBoton('Report').setVisible(false);
-                this.getBoton('ini_estado').setVisible(false);
+                this.getBoton('ini_estado').setVisible(true);
                // this.getBoton('del').disable();
             }
             return tb;
@@ -220,6 +220,48 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.idContenedor,
                 'Obs'
             )
+        },
+        iniEstado:function(res){
+            var rec=this.sm.getSelected();
+            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+                'Estado de Wf',
+                {
+                    modal:true,
+                    width:450,
+                    height:250
+                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+                {
+                    config:[{
+                        event:'beforesave',
+                        delegate: this.inAntEstado
+                    }
+                    ],
+                    scope:this
+                })
+        },
+        inAntEstado: function(wizard,resp){
+            Phx.CP.loadingShow();
+            var operacion = 'cambiar';
+            operacion =  resp.estado_destino == 'inicio'?'inicio':operacion;
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitudDisparo',
+                params:{
+                    id_proceso_wf: resp.id_proceso_wf,
+                    id_estado_wf:  resp.id_estado_wf,
+                    operacion: operacion,
+                    obs: resp.obs
+                },
+                argument:{wizard:wizard},
+                success:this.succeEstadoSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+        succeEstadoSinc:function(resp){
+            Phx.CP.loadingHide();
+            resp.argument.wizard.panel.destroy();
+            this.reload();
         },
 
 

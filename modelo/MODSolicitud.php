@@ -421,6 +421,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
         $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
         $this->setParametro('operacion','operacion','varchar');
+        $this->setParametro('estado_destino','estado_destino','varchar');
 
         $this->setParametro('id_funcionario','id_funcionario','int4');
         $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
@@ -645,13 +646,8 @@ class MODSolicitud extends MODbase{
         $this->procedimiento='mat.f_iniciar_disparo_ime';
         $this->transaccion='MAT_SOL_DIS';
         $this->tipo_procedimiento='IME';
-
-        $this->setParametro('id_solicitud','id_solicitud','int4');
-
-
-       
-
-
+        $this->setParametro('id_estado_wf','id_estado_wf','int4');
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
         $this->armarConsulta();
         $this->ejecutarConsulta();
         
@@ -696,6 +692,30 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
         $this->setParametro('id_estado_wf_firma','id_estado_wf_firma','int4');
         $this->setParametro('obs','obs','text');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function inicioEstadoSolicitudDisparo(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.f_iniciar_disparo_ime';
+        $this->transaccion='MAT_INI_DIS';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud','id_solicitud','int4');
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+        $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+        $this->setParametro('operacion','operacion','varchar');
+        $this->setParametro('id_funcionario','id_funcionario','int4');
+        $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
+        $this->setParametro('id_estado_wf','id_estado_wf','int4');
+        $this->setParametro('obs','obs','text');
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();
