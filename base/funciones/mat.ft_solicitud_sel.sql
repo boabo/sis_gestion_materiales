@@ -58,8 +58,7 @@ BEGIN
 	if(p_transaccion='MAT_SOL_SEL')then
 
     	begin
-    		--Sentencia de la consulta
-            SELECT vfcl.id_oficina, vfcl.nombre_cargo,  vfcl.oficina_nombre,
+    	    SELECT vfcl.id_oficina, vfcl.nombre_cargo,  vfcl.oficina_nombre,
             tf.id_funcionario, vfcl.desc_funcionario1 INTO v_record
             FROM segu.tusuario tu
             INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
@@ -68,7 +67,7 @@ BEGIN
         IF p_administrador 	THEN
 				v_filtro = ' 0=0 AND ';
 
-       ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno'and v_record.nombre_cargo ='Gerente de Mantenimiento' )THEN
+       ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno'and v_record.nombre_cargo ='Gerente Mantenimiento' )THEN
       	 			select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -77,14 +76,14 @@ BEGIN
                     inner join segu.tusuario u on u.id_persona = fu.id_persona
                    	LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     LEFT JOIN mat.tsolicitud  so ON so.id_estado_wf_firma = es.id_estado_wf
-                    WHERE   so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento'
+                     WHERE   so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento'
                     GROUP BY fu.id_funcionario;
             IF(v_id_usuario_rev.cant_reg IS NULL)THEN
          	v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          	END IF;
-       ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno' and v_record.nombre_cargo = 'Técnico Planificación de Servicios' )THEN
+       ELSIF  (v_parametros.tipo_interfaz = 'VistoBueno' and v_record.nombre_cargo = 'Especialista Planificación Servicios' )THEN
        				select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -101,7 +100,7 @@ BEGIN
          	ELSE
          	v_filtro = '(ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
          	END IF;
-       ELSIF  (v_parametros.tipo_interfaz =  'VistoBueno' and v_record.nombre_cargo ='Jefe Departamento Ingenieria - Planeamiento' )THEN
+       ELSIF  (v_parametros.tipo_interfaz =  'VistoBueno' and v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' )THEN
         			select fu.id_funcionario,
                 	count(fu.id_funcionario)::varchar as cant_reg
          			into v_id_usuario_rev
@@ -436,8 +435,8 @@ BEGIN
                                 sol.justificacion,
                                 sol.tipo_solicitud,
                                 to_char( sol.fecha_requerida,''DD/MM/YYYY'') as fecha_requerida,
-                                sol.motivo_solicitud,
-                                sol.observaciones_sol,
+                               LEFT(UPPER(sol.motivo_solicitud),1) || RIGHT(LOWER(sol.motivo_solicitud),CHAR_LENGTH(sol.motivo_solicitud)-1)::text as motivo_solicitud,
+                               	LEFT(UPPER(sol.observaciones_sol),1) || RIGHT(LOWER(sol.observaciones_sol),CHAR_LENGTH(sol.observaciones_sol)-1)::text as observaciones_sol,
         						initcap( f.desc_funcionario1)as desc_funcionario1,
                                 sol.tipo_falla,
         						sol.tipo_reporte,
@@ -465,7 +464,7 @@ BEGIN
 		end;
     /*********************************
  	#TRANSACCION:  'MAT_FRI_SEL'
- 	#DESCRIPCION:	Control de firmas qr
+ 	#DESCRIPCION:	Control de firmas  qr
  	#AUTOR:	 Ale MV
  	#FECHA:		23-12-2016 13:13:01
 	***********************************/
@@ -516,6 +515,62 @@ BEGIN
             --Devuelve la respuesta
             return v_consulta;
    end;
+
+      /*********************************
+ 	#TRANSACCION:  'MAT_MAF_SEL'
+ 	#DESCRIPCION:	Control de firmas  qr
+ 	#AUTOR:	  MVM
+ 	#FECHA:		23-12-2016 13:13:01
+	***********************************/
+    elsif(p_transaccion='MAT_MAF_SEL')then
+
+		begin
+        select sou.id_proceso_wf
+        		into
+                v_id_proceso_wf_firma
+        from mat.tsolicitud sou
+        where sou.id_proceso_wf= v_parametros.id_proceso_wf;
+
+   create temp table firma_funcionarios(
+            nombre_estado varchar,
+            desc_funcionario2 text,
+            fecha_ini text
+
+           )on commit drop;
+  			FOR v_firmas IN (   select s.id_estado_wf_firma
+								from mat.tsolicitud s
+                                where s.id_proceso_wf= v_id_proceso_wf_firma)
+                                LOOP
+                                raise  notice 'estasd %', v_firmas.id_estado_wf_firma;
+                                INSERT INTO firma_funcionarios(
+                                WITH RECURSIVE estado( id_proceso_wf,id_estado_wf,id_funcionario,id_estado_anterior,id_tipo_estado)as(
+								select et.id_proceso_wf, et.id_estado_wf, et.id_funcionario,et.id_estado_anterior, et.id_tipo_estado
+								from wf.testado_wf et
+								where et.id_proceso_wf= v_id_proceso_wf_firma
+								UNION
+								select et.id_proceso_wf, et.id_estado_wf, et.id_funcionario,et.id_estado_anterior, et.id_tipo_estado
+                                from wf.testado_wf et, estado
+                                WHERE et.id_estado_wf =estado.id_estado_anterior
+								)select  te.nombre_estado,
+                                         initcap(fu.desc_funcionario1) as funcionario_bv ,
+                                         to_char( pwf.fecha_reg,'DD/MM/YYYY')as fecha_ini
+                                         from estado es
+                                         INNER JOIN wf.ttipo_estado te on te.id_tipo_estado= es.id_tipo_estado
+                                         INNER JOIN wf.tproceso_wf pwf on pwf.id_proceso_wf=es.id_proceso_wf
+                                         INNER JOIN wf.ttipo_proceso tp on tp.id_tipo_proceso=pwf.id_tipo_proceso
+                                         INNER JOIN mat.tsolicitud sol on sol.id_proceso_wf=pwf.id_proceso_wf
+                                         INNER JOIN orga.vfuncionario fu on fu.id_funcionario = es.id_funcionario
+     									 ORDER BY es.id_estado_wf ASC);
+                                         END LOOP;
+
+            v_consulta:='select *
+            			from firma_funcionarios';
+
+            --Devuelve la respuesta
+            return v_consulta;
+   end;
+
+
     /*********************************
  	#TRANSACCION:  'MAT_CON_AL_SEL'
  	#DESCRIPCION:	Reporte para control de numoer de partes alamcen

@@ -204,6 +204,9 @@ class ACTSolicitud extends ACTbase{
 
         $this->objFunc=$this->create('MODSolicitud');
         $this->res2=$this->objFunc->listasFrimas($this->objParam);
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res3=$this->objFunc->listasFrimas2($this->objParam);
+
         //var_dump($this->res2);exit;
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
@@ -216,7 +219,7 @@ class ACTSolicitud extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RRequemientoMaterielesIng($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos, $this->res3->datos);
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 
@@ -233,6 +236,8 @@ class ACTSolicitud extends ACTbase{
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
         $this->objFunc=$this->create('MODSolicitud');
         $this->res2=$this->objFunc->listasFrimas($this->objParam);
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res3=$this->objFunc->listasFrimas2($this->objParam);
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
         //Genera el nombre del archivo (aleatorio + titulo)
@@ -244,7 +249,7 @@ class ACTSolicitud extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RRequemientoMaterielesMan($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos,$this->res3->datos );
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 
@@ -260,7 +265,8 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
         $this->objFunc=$this->create('MODSolicitud');
-        $this->res2=$this->objFunc->listasFrimas($this->objParam);
+        $this->res3=$this->objFunc->listasFrimas2($this->objParam);
+
 
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
@@ -273,7 +279,7 @@ class ACTSolicitud extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RRequemientoMaterielesAlm($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos );
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res3->datos);
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 

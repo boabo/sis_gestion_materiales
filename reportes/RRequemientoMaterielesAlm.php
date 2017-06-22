@@ -92,41 +92,17 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             $RT= 40;
         }
         $this->ln($RT);
-
         $esta = 'borrador';
-        $cadena_qr = 'Funcionario Solicitante: ' . $this->datos[0]['desc_funcionario1'] . "\n" . 'Nro. Pedido: ' . $this->datos[0]['nro_tramite'] . "\n" . 'Tipo Solicitud: ' . $this->datos[0]['tipo_solicitud'] . "\n" . 'Estado: ' . $esta . "\n" . 'Fecha de de la Solicitud: ' . $this->datos[0]['fecha_solicitud'] . "\n";
-
-        //$cadena_qr = 'Encargado: '.$Revisado_vb."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos2[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n";
-
-        $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
-        //$nombre_archivo = $this->objParam->getParametro('nombre_archivo');
-        $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
-        $im = imagecreatefromstring($png);
-        if ($im !== false) {
-            header('Content-Type: image/png');
-            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/". $this->objParam->getParametro('nombre_archivo'). ".png");
-            imagedestroy($im);
-
-        } else {
-            echo 'An error occurred.';
-        }
-        $ur = dirname(__FILE__) . "/../../reportes_generados/". $this->objParam->getParametro('nombre_archivo'). ".png";
-        $ur2 = dirname(__FILE__) . "/../../reportes_generados/". $this->objParam->getParametro('nombre_archivo') . ".png";
-        
         $funcionario_solicitante = $this->datos[0]['desc_funcionario1'];
-
-        $Revisado_vb= $this->datos[1]['desc_funcionario1'];// revizar
-
 
         if ($this->datos[0]['estado'] != 'borrador') {
 
-            $qr1 = $ur;
+            $qr1 = $this->codigoQr('Funcionario Solicitante: ' . $this->datos[0]['desc_funcionario1'] . "\n" . 'Nro. Pedido: ' . $this->datos[0]['nro_tramite'] . "\n" . 'Tipo Solicitud: ' . $this->datos[0]['tipo_solicitud'] . "\n" . 'Estado: ' . $esta . "\n" . 'Fecha de de la Solicitud: ' . $this->datos[0]['fecha_solicitud'] . "\n",'primera_firma');
             $fun =  $funcionario_solicitante;
         }
         if($this->datos[0]['estado'] != 'revision' and $this->datos[0]['estado'] != 'borrador' ) {
-            $qr2 = $ur2;
-            $frev =  'Pastor Jaime LazarteVillagra';
-
+            $qr2 = $this->codigoQr('Encargado: '.$this->datos3[0]['funcionario_bv']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos3[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'csegunda_firma');
+            $frev =  $this->datos3[0]['funcionario_bv'];
         }
         $tbl = <<<EOD
         
@@ -154,9 +130,23 @@ EOD;
         $this->ln();
 
     }
-    function setDatos($datos,$datos2) {
+    function setDatos($datos,$datos3) {
         $this->datos = $datos;
-        $this->datos2 = $datos2;
+        $this->datos3 = $datos3;
+    }
+    function  codigoQr ($cadena,$ruta){
+        $barcodeobj = new TCPDF2DBarcode($cadena, 'QRCODE,M');
+        $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
+        $im = imagecreatefromstring($png);
+        if ($im !== false) {
+            header('Content-Type: image/png');
+            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/".$ruta.".png");
+            imagedestroy($im);
+        } else {
+            echo 'An error occurred.';
+        }
+        $url =  dirname(__FILE__) . "/../../reportes_generados/".$ruta.".png";
+        return $url;
     }
     function generarReporte() {
         $this->SetMargins(15,40,15);

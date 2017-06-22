@@ -459,8 +459,8 @@ class MODSolicitud extends MODbase{
         $this->captura('justificacion','varchar');
         $this->captura('tipo_solicitud','varchar');
         $this->captura('fecha_requerida','text');
-        $this->captura('motivo_solicitud','varchar');
-        $this->captura('observaciones_sol','varchar');
+        $this->captura('motivo_solicitud','text');
+        $this->captura('observaciones_sol','text');
         $this->captura('desc_funcionario1','text');
         $this->captura('tipo_falla','varchar');
         $this->captura('tipo_reporte','varchar');
@@ -486,15 +486,27 @@ class MODSolicitud extends MODbase{
         $this->transaccion='MAT_FRI_SEL';
         $this->tipo_procedimiento='SEL';
         $this->setCount(false);
-
-
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
-
-
         $this->captura('nombre_estado','varchar');
         $this->captura('funcionario_bv','text');
         $this->captura('fecha_ini','text');
 
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listasFrimas2(){
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_MAF_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+        $this->captura('nombre_estado','varchar');
+        $this->captura('funcionario_bv','text');
+        $this->captura('fecha_ini','text');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
