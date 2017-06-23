@@ -135,7 +135,7 @@ EOD;
 
         if($this->datos[0]['estado'] != 'revision' and $this->datos[0]['estado'] != 'borrador') {
             $qr4 = $this->codigoQr('Encargado: '.$this->datos3[0]['funcionario_bv']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos3[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'cuarta_firma');
-            $fab =  $Abastecimiento;
+            $fab =  $this->datos3[0]['funcionario_bv'];
             $fe_ab = $fecha_ab;
         }
         $tbl = <<<EOD
