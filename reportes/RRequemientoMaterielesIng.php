@@ -104,8 +104,10 @@ EOD;
     function firmas(){*/
         $funcionario_solicitante = $this->datos[0]['desc_funcionario1'];
         $fecha_ab = 'Fecha: '.$this->datos[0]['fecha_fir'];
-        $Revisado_vb= $this->datos2[0]['funcionario_bv'];
-        $VB_DAC= $this->datos2[1]['funcionario_bv'];
+        //$Revisado_vb= $this->datos2[0]['funcionario_bv'];
+        // $VB_DAC= $this->datos2[1]['funcionario_bv'];
+        $Revisado_vb= 'Jorge Omar Guzman Fernandez';
+        $VB_DAC= 'Pedro Wilfredo Triveño Herrera';
         $Abastecimiento = 'Abastecimiento';
         $esta = 'borrador';
 
@@ -140,7 +142,7 @@ EOD;
         <table cellspacing="0" cellpadding="1" border="1">
         <tr>
         <td align="center" > <b>Solicitado Por:</b> $fun</td>
-        <td align="center" > <b>V.B. Encargado Mantenimiento:</b> $frev</td>
+        <td align="center" > <b>V.B. Encargado Materiales:</b> $frev</td>
         </tr>
         <tr>
            <td align="center" > 
