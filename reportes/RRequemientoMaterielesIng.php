@@ -14,6 +14,43 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->MultiCell(0, 25, "\n" . 'R-OA-01' . "\n" . 'Rev. Original' . "\n" . '03/11/16', 1, 'C', 0, '', '');
         $this->Image(dirname(__FILE__) . '/../../pxp/lib' . $_SESSION['_DIR_LOGO'], 17, 15, 36);
     }
+    function Footer() {
+        $this->setY(-15);
+        $ormargins = $this->getOriginalMargins();
+        $this->SetTextColor(0, 0, 0);
+        //set style for cell border
+        $line_width = 0.85 / $this->getScaleFactor();
+        $this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+        $ancho = round(($this->getPageWidth() - $ormargins['left'] - $ormargins['right']) / 3);
+        $this->Ln(2);
+        $cur_y = $this->GetY();
+        //$this->Cell($ancho, 0, 'Generado por XPHS', 'T', 0, 'L');
+        $this->Cell($ancho, 0, 'Usuario: '.$_SESSION['_LOGIN'], '', 0, 'L');
+        $pagenumtxt = 'Página'.' '.$this->getAliasNumPage().' de '.$this->getAliasNbPages();
+        $this->Cell($ancho, 0, $pagenumtxt, '', 0, 'C');
+        $this->Cell($ancho, 0, $_SESSION['_REP_NOMBRE_SISTEMA'], '', 0, 'R');
+        $this->Ln();
+        //   $fecha_rep = date("d-m-Y H:i:s");
+        //  $this->Cell($ancho, 0, "Fecha : ".$fecha_rep, '', 0, 'L');
+        $this->Ln($line_width);
+        $this->Ln();
+        $barcode = $this->getBarcode();
+        $style = array(
+            'position' => $this->rtl?'R':'L',
+            'align' => $this->rtl?'R':'L',
+            'stretch' => false,
+            'fitwidth' => true,
+            'cellfitalign' => '',
+            'border' => false,
+            'padding' => 0,
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false,
+            'text' => false,
+            'position' => 'R'
+        );
+        $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
+
+    }
     // Page footer
     function reporteRequerimiento()
     {
@@ -104,11 +141,8 @@ EOD;
     function firmas(){*/
         $funcionario_solicitante = $this->datos[0]['desc_funcionario1'];
         $fecha_ab = 'Fecha: '.$this->datos[0]['fecha_fir'];
-        //$Revisado_vb= $this->datos2[0]['funcionario_bv'];
-        // $VB_DAC= $this->datos2[1]['funcionario_bv'];
-        $Revisado_vb= 'Jorge Omar Guzman Fernandez';
-        $VB_DAC= 'Pedro Wilfredo Triveño Herrera';
-        $Abastecimiento = 'Abastecimiento';
+        $Revisado_vb= $this->datos2[0]['visto_bueno'];
+         $VB_DAC= $this->datos2[1]['funcionario_bv'];
         $esta = 'borrador';
 
         $fecha_sol ='Fecha: '.$this->datos[0]['fecha_solicitud'];
@@ -118,23 +152,23 @@ EOD;
         //var_dump($this->datos3[0]); exit;
 
         if ($this->datos[0]['estado'] != 'borrador') {
-            $qr1 = $this->codigoQr('Funcionario Solicitante: '.$this->datos[0]['desc_funcionario1']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']. "\n" .'Estado: '.$esta."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'primera_firma');
-            $fun =  $funcionario_solicitante;
+            $qr1 = $this->codigoQr('Funcionario Solicitante: '.$this->datos[0]['desc_funcionario1']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud'],'primera_firma');
+            $fun =  $this->datos[0]['desc_funcionario1'];
             $fe_so =$fecha_sol;
         }
         if($this->datos[0]['estado_firma'] != 'vobo_area' and $this->datos[0]['estado'] != 'borrador' ) {
-            $qr2 = $this->codigoQr('Encargado: '.$this->datos2[0]['funcionario_bv']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos2[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'segunda_firma');
-            $frev =  $Revisado_vb;
+            $qr2 = $this->codigoQr('Encargado: '.$this->datos2[0]['visto_bueno']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n",'segunda_firma');
+            $frev = $this->datos2[0]['visto_bueno'];
             $fe_vo=$fecha_vb;
         }
         if( $this->datos[0]['estado_firma'] != 'vobo_aeronavegabilidad' and $this->datos[0]['estado_firma'] != 'vobo_area' and $this->datos[0]['estado'] != 'borrador' ) {
-            $qr3 = $this->codigoQr('Encargado: '.$VB_DAC."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos2[1]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'tercera_firma');
-            $dac =  $VB_DAC;
+            $qr3 = $this->codigoQr('Encargado: '.$this->datos2[0]['aero']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n",'tercera_firma');
+            $dac =  $this->datos2[0]['aero'];
             $fe_dac=$fecha_dac;
         }
         if($this->datos[0]['estado'] != 'revision' and $this->datos[0]['estado'] != 'borrador') {
-            $qr4 = $this->codigoQr('Encargado: '.$this->datos3[0]['funcionario_bv']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos3[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'cuarta_firma');
-            $fab =  $this->datos3[0]['funcionario_bv'];
+            $qr4 = $this->codigoQr('Encargado: '.$this->datos2[0]['visto_ag']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n",'cuarta_firma');
+            $fab = $this->datos2[0]['visto_ag'];
             $fe_ab = $fecha_ab;
         }
         $tbl = <<<EOD
@@ -148,12 +182,12 @@ EOD;
            <td align="center" > 
             <br><br>
             <img  style="width: 100px;" src="$qr1" alt="Logo">
-            <br>  $fe_so <br>
+            <br>
         </td>
         <td align="center" >
         <br><br>
             <img  style="width: 100px;" src="$qr2" alt="Logo">
-            <br> $fe_vo <br>
+          
          </td>
          </tr>
          <tr>
@@ -174,12 +208,12 @@ EOD;
         <td align="center" > 
             <br><br>
             <img  style="width: 100px;" src="$qr3" alt="Logo">
-            <br> $fe_dac<br>
+            <br>
             </td>
         <td align="center" >
         <br><br>
             <img  style="width: 100px;" src="$qr4" alt="Logo">
-            <br>$fe_ab <br>
+          
          </td>
          </tr>
         
@@ -195,13 +229,6 @@ EOD;
         if ( $pagina >= 10 && $pagina <= 11){
             $this->setY($this->getY() + 30);
         }
-
-        /*if ($pagina >= 6 && $pagina <= 7 ){
-            $this->setY($this->getY() + 33);
-        }*/
-        /*if ($pagina >= 4 && $pagina <= 5 ){
-            $this->setY($this->getY() + 33);
-        }*/
         $this->writeHTML($tbl2, true, false, false, false, '');
 
     }

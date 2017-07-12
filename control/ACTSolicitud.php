@@ -12,6 +12,9 @@ require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesAlm.php');
 require_once(dirname(__FILE__).'/../reportes/RControlAlmacenXLS.php');
 require_once(dirname(__FILE__).'/../reportes/RSalidaAlmacen.php');
 require_once(dirname(__FILE__).'/../reportes/RRequerimientoMaterialesPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RComiteEvaluacion.php');
+require_once(dirname(__FILE__).'/../reportes/RDocContratacionExtPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RComparacionBySPDF.php');
 class ACTSolicitud extends ACTbase{
 
     function listarSolicitud(){
@@ -265,7 +268,7 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
         $this->objFunc=$this->create('MODSolicitud');
-        $this->res3=$this->objFunc->listasFrimas2($this->objParam);
+        $this->res2=$this->objFunc->listasFrimas($this->objParam);
 
 
         //obtener titulo del reporte
@@ -279,7 +282,7 @@ class ACTSolicitud extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RRequemientoMaterielesAlm($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos, $this->res3->datos);
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos);
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 
@@ -442,6 +445,111 @@ class ACTSolicitud extends ACTbase{
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+
+    function reporteDocContratacionExt(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $dataSource=$this->objFunc->reporteDocContratacionExt();
+        $this->dataSource=$dataSource->getDatos();
+
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-DocContratacionExt]').'.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+
+        $this->objReporte = new RDocContratacionExtPDF($this->objParam);
+        $this->objReporte->setDatos($this->dataSource);
+        $this->objReporte->generarReporte();
+        $this->objReporte->output($this->objReporte->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado', 'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function listarComiteEvaluacion (){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarComiteEvaluacion($this->objParam);
+
+        //obtener titulo del reporte
+        $titulo = 'Requerimiento de Materiales';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+
+        $this->objReporteFormato=new RComiteEvaluacion($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function listarProveedor(){
+        
+        $this->objParam->defecto('ordenacion','id_proveedor');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if ($this->objParam->getParametro('tipo') != '') {
+            $this->objParam->addFiltro("provee.tipo  = ''". $this->objParam->getParametro('tipo')."''");
+        }
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarProveedor();
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    //fea 04/07/2017
+    function setCorreosCotizacion(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->setCorreosCotizacion();
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    //fea 05/07/2017
+    function reporteComparacionByS(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $dataSource=$this->objFunc->reporteComparacionByS();
+        $this->dataSource=$dataSource->getDatos();
+
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-ComparacionBienesyServicios]').'.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+
+        $this->objReporte = new RComparacionBySPDF($this->objParam);
+        $this->objReporte->setDatos($this->dataSource);
+        $this->objReporte->generarReporte();
+        $this->objReporte->output($this->objReporte->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado', 'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+    //fea 06/07/2017
+    function verificarCorreosProveedor(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->verificarCorreosProveedor();
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+
+
+
 
 }
 

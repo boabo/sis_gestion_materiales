@@ -12,6 +12,43 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->MultiCell(105, $height,  'ALMACENES CONSUMIBLES O ROTABLES', 0, 'C', 0, '', '');
         $this->Image(dirname(__FILE__) . '/../../pxp/lib' . $_SESSION['_DIR_LOGO'], 17, 10, 36);
     }
+    function Footer() {
+        $this->setY(-15);
+        $ormargins = $this->getOriginalMargins();
+        $this->SetTextColor(0, 0, 0);
+        //set style for cell border
+        $line_width = 0.85 / $this->getScaleFactor();
+        $this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+        $ancho = round(($this->getPageWidth() - $ormargins['left'] - $ormargins['right']) / 3);
+        $this->Ln(2);
+        $cur_y = $this->GetY();
+        //$this->Cell($ancho, 0, 'Generado por XPHS', 'T', 0, 'L');
+        $this->Cell($ancho, 0, 'Usuario: '.$_SESSION['_LOGIN'], '', 0, 'L');
+        $pagenumtxt = 'Página'.' '.$this->getAliasNumPage().' de '.$this->getAliasNbPages();
+        $this->Cell($ancho, 0, $pagenumtxt, '', 0, 'C');
+        $this->Cell($ancho, 0, $_SESSION['_REP_NOMBRE_SISTEMA'], '', 0, 'R');
+        $this->Ln();
+        //   $fecha_rep = date("d-m-Y H:i:s");
+        //  $this->Cell($ancho, 0, "Fecha : ".$fecha_rep, '', 0, 'L');
+        $this->Ln($line_width);
+        $this->Ln();
+        $barcode = $this->getBarcode();
+        $style = array(
+            'position' => $this->rtl?'R':'L',
+            'align' => $this->rtl?'R':'L',
+            'stretch' => false,
+            'fitwidth' => true,
+            'cellfitalign' => '',
+            'border' => false,
+            'padding' => 0,
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false,
+            'text' => false,
+            'position' => 'R'
+        );
+        $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
+
+    }
     function reporteRequerimiento()
     {
         $this->SetFont('times', 'B', 11);
@@ -97,12 +134,12 @@ class RRequemientoMaterielesAlm extends  ReportePDF
 
         if ($this->datos[0]['estado'] != 'borrador') {
 
-            $qr1 = $this->codigoQr('Funcionario Solicitante: ' . $this->datos[0]['desc_funcionario1'] . "\n" . 'Nro. Pedido: ' . $this->datos[0]['nro_tramite'] . "\n" . 'Tipo Solicitud: ' . $this->datos[0]['tipo_solicitud'] . "\n" . 'Estado: ' . $esta . "\n" . 'Fecha de de la Solicitud: ' . $this->datos[0]['fecha_solicitud'] . "\n",'primera_firma');
+            $qr1 = $this->codigoQr('Funcionario Solicitante: ' . $this->datos[0]['desc_funcionario1'] . "\n" . 'Nro. Pedido: ' . $this->datos[0]['nro_tramite'] . "\n" . 'Tipo Solicitud: ' . $this->datos[0]['tipo_solicitud'] . "\n" ,'primera_firma');
             $fun =  $funcionario_solicitante;
         }
         if($this->datos[0]['estado'] != 'revision' and $this->datos[0]['estado'] != 'borrador' ) {
-            $qr2 = $this->codigoQr('Encargado: '.$this->datos3[0]['funcionario_bv']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n".'Estado: '.$this->datos3[0]['nombre_estado']."\n".'Fecha de de la Solicitud: '.$this->datos[0]['fecha_solicitud']."\n",'csegunda_firma');
-            $frev =  $this->datos3[0]['funcionario_bv'];
+            $qr2 = $this->codigoQr('Encargado: '.$this->datos2[0]['visto_ag']."\n".'Nro. Pedido: '.$this->datos[0]['nro_tramite']."\n".'Tipo Solicitud: '.$this->datos[0]['tipo_solicitud']."\n",'csegunda_firma');
+            $frev =  $this->datos2[0]['visto_ag'];
         }
         $tbl = <<<EOD
         
@@ -130,9 +167,9 @@ EOD;
         $this->ln();
 
     }
-    function setDatos($datos,$datos3) {
+    function setDatos($datos,$datos2) {
         $this->datos = $datos;
-        $this->datos3 = $datos3;
+        $this->datos2 = $datos2;
     }
     function  codigoQr ($cadena,$ruta){
         $barcodeobj = new TCPDF2DBarcode($cadena, 'QRCODE,M');
