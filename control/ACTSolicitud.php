@@ -12,9 +12,9 @@ require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesAlm.php');
 require_once(dirname(__FILE__).'/../reportes/RControlAlmacenXLS.php');
 require_once(dirname(__FILE__).'/../reportes/RSalidaAlmacen.php');
 require_once(dirname(__FILE__).'/../reportes/RRequerimientoMaterialesPDF.php');
-require_once(dirname(__FILE__).'/../reportes/RComiteEvaluacion.php');
-require_once(dirname(__FILE__).'/../reportes/RDocContratacionExtPDF.php');
-require_once(dirname(__FILE__).'/../reportes/RComparacionBySPDF.php');
+//require_once(dirname(__FILE__).'/../reportes/RComiteEvaluacion.php');
+//require_once(dirname(__FILE__).'/../reportes/RDocContratacionExtPDF.php');
+//require_once(dirname(__FILE__).'/../reportes/RComparacionBySPDF.php');
 class ACTSolicitud extends ACTbase{
 
     function listarSolicitud(){
