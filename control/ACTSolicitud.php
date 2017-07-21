@@ -12,9 +12,11 @@ require_once(dirname(__FILE__).'/../reportes/RRequemientoMaterielesAlm.php');
 require_once(dirname(__FILE__).'/../reportes/RControlAlmacenXLS.php');
 require_once(dirname(__FILE__).'/../reportes/RSalidaAlmacen.php');
 require_once(dirname(__FILE__).'/../reportes/RRequerimientoMaterialesPDF.php');
-//require_once(dirname(__FILE__).'/../reportes/RComiteEvaluacion.php');
-//require_once(dirname(__FILE__).'/../reportes/RDocContratacionExtPDF.php');
-//require_once(dirname(__FILE__).'/../reportes/RComparacionBySPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RComiteEvaluacion.php');
+require_once(dirname(__FILE__).'/../reportes/RDocContratacionExtPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RComparacionBySPDF.php');
+
+
 class ACTSolicitud extends ACTbase{
 
     function listarSolicitud(){
@@ -26,7 +28,7 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.estado  in (''borrador'')");
         }
          if ($this->objParam->getParametro('pes_estado') == 'vobo_area_reg') {
-            $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')");
+            $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_dpto_abastecimientos'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'revision_reg') {
             $this->objParam->addFiltro("sol.estado in (''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''revision'') ");
@@ -43,7 +45,7 @@ class ACTSolicitud extends ACTbase{
         }
 
         if ($this->objParam->getParametro('pes_estado') == 'visto_bueno') {
-             $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'')");
+             $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_dpto_abastecimientos'')");
          }
 
         if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing') {
@@ -461,12 +463,44 @@ class ACTSolicitud extends ACTbase{
         $this->objReporte->generarReporte();
         $this->objReporte->output($this->objReporte->url_archivo,'F');
 
-
-        $this->mensajeExito=new Mensaje();
-        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado', 'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito = new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO', 'Reporte.php', 'Reporte generado', 'Se generó con éxito el reporte: ' . $nombreArchivo, 'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
+
     }
+    /*function reporteDocContratacionExt( $create_file = false){
+        $dataSource = new DataSource();
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $resultadoSolicitud = $this->objFunc->reporteDocContratacionExt();
+        $datoSolicitud = $resultadoSolicitud->getDatos();
+        //var_dump($datoSolicitud);exit;
+        $dataSource->putParameter('solicitud', $datoSolicitud);
+
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-DocContratacionExt]') . '.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('titulo_archivo','SOLICITUD DE COTIZACION');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //build the report
+        $reporte = new RDocContratacionExtPDF($this->objParam);
+        $reporte->setDataSource($dataSource);
+        $datos= $reporte->generarReporte();
+        if(!$create_file){
+            $mensajeExito = new Mensaje();
+            $mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+            $mensajeExito->setArchivoGenerado($nombreArchivo);
+            $mensajeExito->setDatos($datos);
+            $this->res = $mensajeExito;
+            $this->res->imprimirRespuesta($this->res->generarJson());
+        }else{
+
+            return dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo;
+        }
+
+    }*/
 
     function listarComiteEvaluacion (){
         $this->objFunc=$this->create('MODSolicitud');
@@ -513,7 +547,6 @@ class ACTSolicitud extends ACTbase{
     function setCorreosCotizacion(){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->setCorreosCotizacion();
-
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 

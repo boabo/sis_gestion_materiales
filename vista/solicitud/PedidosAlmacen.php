@@ -24,16 +24,14 @@ header("content-type: text/javascript; charset=UTF-8");
         ],
 
         constructor: function (config) {
-            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=false;
-            this.Atributos[this.getIndAtributo('tipo_falla')].grid=false;
-            this.Atributos[this.getIndAtributo('tipo_reporte')].grid=false;
-            this.Atributos[this.getIndAtributo('mel')].grid=false;
-            this.Atributos[this.getIndAtributo('nro_no_rutina')].grid=false;
-            this.Atributos[this.getIndAtributo('id_matricula')].grid=false;
-            this.Atributos[this.getIndAtributo('nro_po')].grid=true;
-            this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
-            this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;
-            
+
+            this.font();
+            this.Atributos[this.getIndAtributo('condicion')].form = true;
+            this.Atributos[this.getIndAtributo('lugar_entrega')].form = true;
+            this.Atributos[this.getIndAtributo('mensaje_correo')].form = true;
+
+
+
             this.Grupos.push( {
                 layout: 'column',
                 border: false,
@@ -54,10 +52,41 @@ header("content-type: text/javascript; charset=UTF-8");
                                 id_grupo: 2
                             }
 
+                        ]
+                    },
+                    {
+                        bodyStyle: 'padding-left:10px;',
+                        items: [
+                            {
+                                xtype: 'fieldset',
+                                title: ' Datos Comité de Evaluación ',
+                                autoHeight: true,
+                                items: [],
+                                id_grupo: 5
+                            }
+
 
                         ]
-                    }
+                    }/*,
+                    {
+                        bodyStyle: 'padding-left:10px;',
+                        items: [
+                            {
+                                xtype: 'fieldset',
+                                title: ' Datos Correo',
+                                defaults: {
+                                    anchor: '30' // leave room for error icon
+                                },
+                                autoHeight: true,
+                                items: [],
+                                id_grupo: 6
+                            }
+
+
+                        ]
+                    }*/
                 ]
+
             });
 
             Phx.vista.PedidosAlmacen.superclass.constructor.call(this, config);
@@ -68,9 +97,10 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ini_estado').setVisible(true);
             this.getBoton('Report').setVisible(false);
             this.getBoton('ant_estado').setVisible(true);
-         
 
         },
+        
+
         gruposBarraTareas:[
             {name:'pedido_al_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
             {name:'pedido_al_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
@@ -83,6 +113,13 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
+                if(name == 'pedido_al_pendiente' || name == 'pedido_al_solicitada'){
+                    this.getBoton('btnproveedor').setVisible(true);
+                    this.getBoton('Cotizacion').setVisible(true);
+                }else{
+                    this.getBoton('btnproveedor').setVisible(false);
+                    this.getBoton('Cotizacion').setVisible(false);
+                }
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
@@ -109,6 +146,9 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             var tb =this.tbar;
             Phx.vista.PedidosAlmacen.superclass.preparaMenu.call(this,n);
+
+            this.getBoton('btnproveedor').enable();
+            this.getBoton('Cotizacion').enable();
 
             if( data['estado'] ==  'cotizacion'){
                 this.getBoton('sig_estado').enable();
@@ -143,9 +183,37 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('edit').setVisible(true);
                 this.getBoton('Report').setVisible(false);
                 this.getBoton('ini_estado').setVisible(true);
-
+                this.getBoton('Consulta_desaduanizacion').enable();
+                this.getBoton('Control_aLmacene').enable();
+                this.getBoton('Archivado_concluido').enable();
+                this.getBoton('btnproveedor').disable();
+                this.getBoton('Cotizacion').disable();
             }
+
             return tb;
+        },
+        font :function () {
+            this.Atributos[this.getIndAtributo('tipo_falla')].grid=false;
+            this.Atributos[this.getIndAtributo('tipo_reporte')].grid=false;
+            this.Atributos[this.getIndAtributo('mel')].grid=false;
+            this.Atributos[this.getIndAtributo('nro_no_rutina')].grid=false;
+            this.Atributos[this.getIndAtributo('id_matricula')].grid=false;
+            this.Atributos[this.getIndAtributo('nro_justificacion')].grid=false;
+            this.Atributos[this.getIndAtributo('justificacion')].grid=false;
+
+            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
+            this.Atributos[this.getIndAtributo('nro_po')].grid=true;
+            this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_po')].grid=true;
+            this.Atributos[this.getIndAtributo('mensaje_correo')].grid = true;
+            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=true;
+            this.Atributos[this.getIndAtributo('taller_asignado')].grid=true;
+            this.Atributos[this.getIndAtributo('observacion_nota')].grid=true;
+            this.Atributos[this.getIndAtributo('lugar_entrega')].grid=true;
+            this.Atributos[this.getIndAtributo('condicion')].grid=true;
+
+
         }
 
     }

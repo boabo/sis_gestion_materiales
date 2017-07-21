@@ -43,11 +43,12 @@ BEGIN
 	***********************************/
 
 
-    v_revisado = 'det.revisado';
+
 
     if(p_transaccion='MAT_DET_SEL')then
 
     	begin
+  --  raise exception 'llega %',v_parametros.parte;
     		--Sentencia de la consulta
 			v_consulta:='select
 						det.id_detalle,
@@ -71,9 +72,10 @@ BEGIN
 						usu2.cuenta as usr_mod,
                         un.codigo,
                         un.descripcion as desc_descripcion,
-                        '||v_revisado||',
+                        det.revisado,
                         det.tipo,
-                        s.estado
+                        s.estado,
+                        det.explicacion_detallada_part
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod

@@ -15,6 +15,9 @@ class ACTDetalleSol extends ACTbase{
        if($this->objParam->getParametro('id_solicitud') != '') {
             $this->objParam->addFiltro(" det.id_solicitud = " . $this->objParam->getParametro('id_solicitud'));
         }
+       /* if($this->objParam->getParametro('parte') != '') {
+           var_dump($this->objParam->addParametro('parte', 'parte')); exit;
+        }*/
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

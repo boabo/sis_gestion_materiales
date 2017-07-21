@@ -95,9 +95,14 @@ DECLARE
     v_parte 					varchar;
     v_matricula					varchar;
 
-
-
-
+    --correos proveedores
+    v_ids_prov					integer[];
+	v_tam						integer;
+	v_cont						integer;
+    v_ids_prov_act				integer[];
+    v_record					record;
+    v_sin_correo				varchar[];
+    v_bandera					boolean;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -172,12 +177,16 @@ END IF;
                  v_codigo_tipo_proceso,
                  NULL,
                  NULL,
-                 'Solicitud',
-                 'SOL');
+                 'Gestión de Materiales',
+                 v_codigo_tipo_proceso);
 
+			UPDATE wf.tproceso_wf SET
+            	descripcion = 'Gestión de Materiales ['||v_nro_tramite||']',
+          		codigo_proceso = v_nro_tramite
+            WHERE id_proceso_wf = v_id_proceso_wf;
             --iniciar el disparador
 
-
+		--raise exception 'llega %',v_parametros.id_matricula;
 		--Recuperara estado Abastecimientos
 
             --Sentencia de la insercion
@@ -187,26 +196,16 @@ END IF;
 			id_estado_wf,
 			nro_po,
 			tipo_solicitud,
-			--fecha_entrega_miami,
 			origen_pedido,
 			fecha_requerida,
-			--observacion_nota,
 			fecha_solicitud,
 			estado_reg,
 			observaciones_sol,
-			--fecha_tentativa_llegada,
-			--fecha_despacho_miami,
 			justificacion,
-			--fecha_arribado_bolivia,
-			--fecha_desaduanizacion,
-			--fecha_entrega_almacen,
-			--cotizacion,
 			tipo_falla,
 			nro_tramite,
 			id_matricula,
-			--nro_solicitud,
 			motivo_solicitud,
-			--fecha_en_almacen,
             tipo_reporte,
             mel,
             nro_no_rutina,
@@ -218,33 +217,22 @@ END IF;
 			id_usuario_ai,
 			fecha_mod,
 			id_usuario_mod
-           -- estado_ab
           	) values(
 			v_parametros.id_funcionario_sol,
 			v_id_proceso_wf,
 			v_id_estado_wf,
 			null,
 			v_parametros.tipo_solicitud,
-			--v_parametros.fecha_entrega_miami,
 			v_parametros.origen_pedido,
 			v_parametros.fecha_requerida,
-			--v_parametros.observacion_nota,
 			v_parametros.fecha_solicitud,
 			'activo',
 			v_parametros.observaciones_sol,
-			--v_parametros.fecha_tentativa_llegada,
-			--v_parametros.fecha_despacho_miami,
 			v_parametros.justificacion,
-			--v_parametros.fecha_arribado_bolivia,
-			--v_parametros.fecha_desaduanizacion,
-			--v_parametros.fecha_entrega_almacen,
-			--v_parametros.cotizacion,
 			v_parametros.tipo_falla,
 			v_nro_tramite,
 			v_parametros.id_matricula,
-			--v_parametros.nro_solicitud,
 			v_parametros.motivo_solicitud,
-			--v_parametros.fecha_en_almacen,
             v_parametros.tipo_reporte,
             v_parametros.mel,
             v_parametros.nro_no_rutina,
@@ -256,7 +244,6 @@ END IF;
 			v_parametros._id_usuario_ai,
 			null,
 			null
-          --  null
             )RETURNING id_solicitud into v_id_solicitud;
 
 			--Definicion de la respuesta
@@ -310,9 +297,14 @@ END IF;
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
 			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
-
-        	 where id_solicitud=v_parametros.id_solicitud;
+			usuario_ai = v_parametros._nombre_usuario_ai,
+			fecha_po = v_parametros.fecha_po,
+            condicion = v_parametros.condicion,
+            lugar_entrega = v_parametros.lugar_entrega,
+            tipo_evaluacion = v_parametros.tipo_evaluacion,
+            taller_asignado = v_parametros.taller_asignado,
+            mensaje_correo = v_parametros.mensaje_correo
+        	where id_solicitud=v_parametros.id_solicitud;
 
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud modificado(a)');
@@ -512,7 +504,6 @@ END IF;
 		begin
 
 			v_operacion = 'inicio';
-
             IF  pxp.f_existe_parametro(p_tabla , 'estado_destino')  THEN
                v_operacion = v_parametros.estado_destino;
             END IF;
@@ -539,9 +530,10 @@ END IF;
                v_codigo_estado
              FROM wf.f_obtener_tipo_estado_inicial_del_tipo_proceso(v_registros_mat.id_tipo_proceso);
              --busca en log e estado de wf que identificamos como el inicial
+
              SELECT
-               ps_id_funcionario,
-              ps_id_depto
+             ps_id_funcionario,
+             ps_id_depto
              into
              v_id_funcionario,
              v_id_depto
@@ -616,6 +608,7 @@ END IF;
 
     elseif(p_transaccion='MAT_SIG_IME') then
     	begin
+
         --recupera toda la tabla solicitud
           select sol.*
           into v_solicitud
@@ -698,7 +691,97 @@ END IF;
          			RAISE NOTICE 'PASANDO DE ESTADO';
 
           		END IF;
+               IF (v_codigo_estado_siguiente='revision')THEN
+    			FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
 
+                select 	tp.codigo,
+                		tp.codigo_llave
+                        into
+                        v_codigo_tipo_pro,
+                        v_codigo_llave
+                        from wf.ttipo_proceso tp
+                        where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
+
+
+                IF NOT mat.f_disparo_firma(	p_id_usuario,
+                                            v_parametros._id_usuario_ai,
+                                            v_parametros._nombre_usuario_ai,
+                                            v_solicitud.id_solicitud,
+                                            v_id_estado_actual::integer,
+                                            v_registros_proc.id_funcionario_wf_pro::integer,
+                                            v_registros_proc.obs_pro,
+                                            v_registros_proc.id_depto_wf_pro)then
+                        raise exception 'llega';
+                raise exception 'Error al generar disparo';
+                END IF;
+                END LOOP;
+			END IF;
+          IF (v_codigo_estado_siguiente='despachado')THEN
+          	--RAISE EXCEPTION 'ENTRA';
+              FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
+
+                         -- Obtenemos el codigo de tipo proceso
+                         select
+                            tp.codigo,
+                            tp.codigo_llave
+                         into
+                            v_codigo_tipo_pro,
+                            v_codigo_llave
+                         from wf.ttipo_proceso tp
+                          where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
+                        /* -- disparar creacion de procesos seleccionados
+                        SELECT
+                                 ps_id_proceso_wf,
+                                 ps_id_estado_wf,
+                                 ps_codigo_estado,
+                                 ps_nro_tramite
+                           into
+                                 v_id_proceso_wf,
+                                 v_id_estado_wf,
+                                 v_codigo_estado,
+                                 v_nro_tramite
+                        FROM wf.f_registra_proceso_disparado_wf(
+                                 p_id_usuario,
+                                 v_parametros._id_usuario_ai,
+                                 v_parametros._nombre_usuario_ai,
+                                 v_id_estado_actual::integer,
+                                 v_registros_proc.id_funcionario_wf_pro::integer,
+                                 v_registros_proc.id_depto_wf_pro::integer,
+                                 v_nro_tramite||v_registros_proc.obs_pro,
+                                 v_codigo_tipo_pro,
+                                 v_codigo_tipo_pro);*/
+
+
+                     IF v_codigo_llave = 'SOLICITUD' THEN
+                            /*raise exception 'v_id_proceso_wf: %, v_id_estado_wf %, v_codigo_estado %, v_nro_tramite %, v_codigo_tipo_pro: %',
+                    		v_id_proceso_wf, v_id_estado_wf, v_codigo_estado, v_nro_tramite, v_codigo_tipo_pro;*/
+                            IF NOT mat.f_disparar_adquisiciones(
+                                                          p_id_usuario,
+                                                          v_parametros._id_usuario_ai,
+                                                          v_parametros._nombre_usuario_ai,
+                                                          v_solicitud.id_solicitud,
+                                                          v_id_estado_actual::integer,
+                                                          v_registros_proc.id_funcionario_wf_pro::integer,
+                                                          v_registros_proc.obs_pro,
+                                                          v_codigo_llave,
+                                                          v_registros_proc.id_depto_wf_pro
+
+                                                         ) THEN
+
+                              raise exception 'Error al generar obligacion de pago';
+
+                            END IF;
+
+                     ELSE
+
+                        raise exception 'Codigo llave no reconocido  verifique el WF (%)', v_codigo_llave;
+
+
+                     END IF;
+
+
+              END LOOP;
+          END IF;
 
           -- si hay mas de un estado disponible  preguntamos al usuario
           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado de Solicitud)');
@@ -781,8 +864,101 @@ END IF;
         return v_resp;
 
 		end;
+    /*********************************
+ 	#TRANSACCION:  'MAT_EMAIL_COT_IME'
+ 	#DESCRIPCION:	Establecemos los correos de los proveedores a los que se enviara detalle de cotización.
+ 	#AUTOR:		Franklin Espinoza
+ 	#FECHA:		29-06-2017 16:50:07
+	***********************************/
+
+	elsif(p_transaccion='MAT_EMAIL_COT_IME')then
+
+		begin
+            v_ids_prov = string_to_array(v_parametros.lista_correos,',');
+            v_tam = array_length(v_ids_prov,1);
+
+            SELECT tgp.cotizacion_solicitadas
+            INTO v_ids_prov_act
+            FROM mat.tgestion_proveedores tgp
+            WHERE tgp.id_solicitud = v_parametros.id_solicitud;
+
+            IF (v_tam IS NOT NULL AND v_ids_prov_act IS NULL)THEN
+                    INSERT INTO mat.tgestion_proveedores(
+                      id_usuario_reg,
+                      id_usuario_mod,
+                      fecha_reg,
+                      fecha_mod,
+                      estado_reg,
+                      id_usuario_ai,
+                      usuario_ai,
+                      id_solicitud,
+                      cotizacion_solicitadas
+                    )VALUES(
+                      p_id_usuario,
+                      null,
+                      now(),
+                      null,
+                      'activo',
+                      v_parametros._id_usuario_ai,
+                      v_parametros._nombre_usuario_ai,
+                      v_parametros.id_solicitud,
+                      v_ids_prov
+                    );
+            	--Definicion de la respuesta
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Lista de correos fue definido Exitosamente');
+            ELSIF(v_ids_prov_act <> v_ids_prov)THEN
+            	UPDATE mat.tgestion_proveedores SET
+                cotizacion_solicitadas = v_ids_prov
+                WHERE id_solicitud = v_parametros.id_solicitud;
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Lista de correos fue modificado Exitosamente');
+
+            END IF;
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    /*********************************
+    #TRANSACCION:  'MAT_EMAIL_PROV_VAL'
+    #DESCRIPCION:	VERIFICA SI TODOS LOS PROVEEDORES TIENEN UN CORREO DE CONTACTO PARA ENVIAR CORREO DE COTIZACION
+    #AUTOR:		Franklin Espinoza
+    #FECHA:		06-07-2017 14:58:16
+    ***********************************/
+    elsif(p_transaccion='MAT_EMAIL_PROV_VAL')then
+
+          BEGIN
+          SELECT cotizacion_solicitadas
+          INTO v_ids_prov
+          FROM mat.tgestion_proveedores
+          WHERE  id_solicitud = v_parametros.id_solicitud;
 
 
+          IF(v_ids_prov IS NOT NULL)THEN
+		  	v_tam = array_length(v_ids_prov,1);
+
+            FOR v_cont IN 1..v_tam LOOP
+
+              SELECT vp.email,vp.rotulo_comercial
+              INTO v_record
+              FROM param.vproveedor vp
+              WHERE vp.id_proveedor = v_ids_prov[v_cont];
+
+              IF(v_record.email = '')THEN
+              	v_sin_correo[v_cont] = v_record.rotulo_comercial;
+                v_bandera = true;
+              END IF;
+
+            END LOOP;
+
+
+          END IF;
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Validación de correos Exitoso');
+            v_resp = pxp.f_agrega_clave(v_resp,'v_sin_correo',array_to_string(v_sin_correo,'#')::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_bandera',v_bandera::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
+         END;
 
 else
 

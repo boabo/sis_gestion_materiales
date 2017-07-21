@@ -24,15 +24,7 @@ header("content-type: text/javascript; charset=UTF-8");
         ],
         constructor: function (config) {
 
-            this.Atributos[this.getIndAtributo('nro_po')].grid=true;
-            this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
-            this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;
-            this.Atributos[this.getIndAtributo('fecha_arribado_bolivia')].grid=true;
-            this.Atributos[this.getIndAtributo('fecha_desaduanizacion')].grid=true;
-            this.Atributos[this.getIndAtributo('fecha_en_almacen')].grid=true;
-
-
-
+            this.font();
             Phx.vista.ConsultaRequerimientos.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
@@ -50,6 +42,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
             this.getBoton('Control_aLmacene').setVisible(false);
+            this.getBoton('btnproveedor').setVisible(false);
+            this.getBoton('Cotizacion').setVisible(false);
 
         },
         gruposBarraTareas:[
@@ -68,7 +62,21 @@ header("content-type: text/javascript; charset=UTF-8");
         beditGroups: [0],
         bdelGroups:  [0],
         bactGroups:  [5],
-        bexcelGroups: [5]
+        bexcelGroups: [5],
+        font:function () {
+            this.Atributos[this.getIndAtributo('nro_po')].grid=true;
+            this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_arribado_bolivia')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_desaduanizacion')].grid=true;
+            this.Atributos[this.getIndAtributo('fecha_en_almacen')].grid=true;
+            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=true;
+            this.Atributos[this.getIndAtributo('taller_asignado')].grid=true;
+            this.Atributos[this.getIndAtributo('observacion_nota')].grid=true;
+            this.Atributos[this.getIndAtributo('lugar_entrega')].grid=true;
+            this.Atributos[this.getIndAtributo('condicion')].grid=true;
+
+        }
 
 
     }

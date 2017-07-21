@@ -24,11 +24,20 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.pes_estado = 'borrador_reg';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
+
             this.getBoton('ant_estado').setVisible(false);
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
             this.getBoton('Control_aLmacene').setVisible(false);
+            this.getBoton('btnproveedor').setVisible(false);
+            this.getBoton('Cotizacion').setVisible(false);
+            this.getBoton('btnObs').setVisible(false);
+            this.getBoton('btnproveedor').setVisible(false);
+            this.ocultarComponente(this.Cmp.fecha_po);
+           // this.ocultarComponente(this.Cmp.tipo_evaluacion);
+           // this.ocultarComponente(this.Cmp.taller_asignado);
+           // this.ocultarComponente(this.Cmp.observacion_nota);
 
         },
         gruposBarraTareas:[
@@ -59,8 +68,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 'Formulario Requerimiento de Materiales',
                 {
                     modal:true,
-                    width:'78%',
-                    height:'90%'
+                    width:'95%',
+                    height:'95%'
                 }, {data:{objPadre: me}
                 },
                 this.idContenedor,
@@ -83,6 +92,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         sigEstado: function(){
             var rec = this.sm.getSelected();
+            console.log('rec.data.id_estado_wf R:', rec.data.id_estado_wf,'rec.data.id_proceso_wf R:',rec.data.id_proceso_wf);
             this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
                 'Estado de Wf',
                 {
@@ -130,7 +140,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope:this
             });
 
-            var rec = this.sm.getSelected();
+            /*var rec = this.sm.getSelected();
             Phx.CP.loadingShow();
             Ext.Ajax.request({
                 url: '../../sis_gestion_materiales/control/Solicitud/iniciarDisparo',
@@ -144,7 +154,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 argument:{wizard:wizard},
                 timeout: this.timeout,
                 scope: this
-            });
+            });*/
 
 
         },

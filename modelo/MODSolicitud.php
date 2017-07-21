@@ -79,12 +79,13 @@ class MODSolicitud extends MODbase{
         $this->captura('contador_estados_firma','bigint');
         $this->captura('nombre_estado','varchar');
         $this->captura('nombre_estado_firma','varchar');
-       /* $this->captura('fecha_po','date');
+       $this->captura('fecha_po','date');
         $this->captura('tipo_evaluacion','varchar');
         $this->captura('taller_asignado','varchar');
         $this->captura('lista_correos','varchar');
         $this->captura('condicion','varchar');
-        $this->captura('lugar_entrega','varchar');*/
+        $this->captura('lugar_entrega','varchar');
+        $this->captura('mensaje_correo','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -190,6 +191,7 @@ class MODSolicitud extends MODbase{
 
         $this->setParametro('condicion','condicion','varchar');
         $this->setParametro('lugar_entrega','lugar_entrega','varchar');
+        $this->setParametro('mensaje_correo','mensaje_correo','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -305,6 +307,7 @@ class MODSolicitud extends MODbase{
                 $this->arreglo['nro_parte_alterno'] = $f['nro_parte_alterno'];
                 $this->arreglo['cantidad_sol'] = $f['cantidad_sol'];
                 $this->arreglo['tipo'] = $f['tipo'];
+                $this->arreglo['explicacion_detallada_part'] = $f['explicacion_detallada_part'];
 
                 //Define los parametros para la funcion
                 $this->setParametro('id_solicitud','id_solicitud','int4');
@@ -316,6 +319,7 @@ class MODSolicitud extends MODbase{
                 $this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
                 $this->setParametro('cantidad_sol','cantidad_sol','numeric');
                 $this->setParametro('tipo','tipo','varchar');
+                $this->setParametro('explicacion_detallada_part','explicacion_detallada_part','varchar');
 
                 //Ejecuta la instruccion
                 $this->armarConsulta();
@@ -766,10 +770,24 @@ class MODSolicitud extends MODbase{
         $this->captura('taller_asignado','varchar');
         $this->captura('observacion_nota','varchar');
         $this->captura('cotizacion_solicitadas','int4');
+        $this->captura('nro_cotizacion','varchar');
+        $this->captura('monto_total','numeric');
+        $this->captura('proveedores_resp','int4');
+        $this->captura('desc_proveedor','varchar');
+
+        $this->captura('aero','varchar');
+        $this->captura('fecha_aero','text');
+        $this->captura('visto_rev','varchar');
+        $this->captura('fecha_rev','text');
+        $this->captura('visto_abas','varchar');
+        $this->captura('fecha_abas','text');
+        $this->captura('obs','varchar');
+        $this->captura('recomendacion','varchar');
+        $this->captura ('codigo','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-       // var_dump($this->respuesta); exit;
+       //var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }

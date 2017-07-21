@@ -23,6 +23,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'almacen';
             this.load({params:{start:0, limit:this.tam_pag}});
+            this.getBoton('btnproveedor').setVisible(false);
+            this.getBoton('Cotizacion').setVisible(false);
         },
         gruposBarraTareas:[
             {name:'almacen',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:1,height:0, width: 100},

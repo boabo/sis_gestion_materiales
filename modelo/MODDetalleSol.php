@@ -18,8 +18,7 @@ class MODDetalleSol extends MODbase{
 		$this->procedimiento='mat.ft_detalle_sol_sel';
 		$this->transaccion='MAT_DET_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-       
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_detalle','int4');
 		$this->captura('id_solicitud','int4');
@@ -45,8 +44,7 @@ class MODDetalleSol extends MODbase{
         $this->captura('revisado','varchar');
         $this->captura('tipo','varchar');
         $this->captura('estado','varchar');
-
-		
+        $this->captura('explicacion_detallada_part','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -71,6 +69,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('nro_parte_alterno','nro_parte_alterno','varchar');
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
 		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('explicacion_detallada_part','explicacion_detallada_part','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -98,7 +97,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('cantidad_sol','cantidad_sol','numeric');
         $this->setParametro('revisado','revisado','varchar');
         $this->setParametro('tipo','tipo','varchar');
-
+        $this->setParametro('explicacion_detallada_part','explicacion_detallada_part','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

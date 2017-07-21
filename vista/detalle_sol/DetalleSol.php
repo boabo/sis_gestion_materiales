@@ -130,8 +130,32 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
                 }
             },
-            type:'TextField',
+            type:'TextArea',
             filters:{pfiltro:'det.descripcion',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'explicacion_detallada_part',
+                fieldLabel: 'Explicacion Detallada P/N',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 200,
+                maxLength:100,
+                renderer: function(value, p, record) {
+                    if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+                        return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
+                    }else{
+                        return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+
+                    }
+
+                }
+            },
+            type:'TextArea',
+            filters:{pfiltro:'det.explicacion_detallada_part',type:'string'},
             id_grupo:1,
             grid:true,
             form:true
@@ -148,7 +172,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 mode: 'local',
                 anchor: '50%',
                 gwidth: 80,
-                store:['Consumible','Rotable'],
+                store:['Consumible','Rotable','Herramienta'],
                 renderer: function(value, p, record) {
                     if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
                         return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);
@@ -348,7 +372,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
     ],
 	tam_pag:50,	
-	title:'Detalle_sol',
+	title:'Detalle',
 	ActSave:'../../sis_gestion_materiales/control/DetalleSol/insertarDetalleSol',
 	ActDel:'../../sis_gestion_materiales/control/DetalleSol/eliminarDetalleSol',
 	ActList:'../../sis_gestion_materiales/control/DetalleSol/listarDetalleSol',
@@ -377,7 +401,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         {name:'desc_descripcion', type: 'string'},
         {name:'revisado', type: 'string'},
         {name:'tipo', type: 'string'},
-        {name:'estado', type: 'string'}
+        {name:'estado', type: 'string'},
+        {name:'explicacion_detallada_part', type: 'string'}
 
 
 
@@ -392,32 +417,37 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
         onReloadPage: function (m) {
             this.maestro = m;
-
             this.store.baseParams = {id_solicitud: this.maestro.id_solicitud};
             this.load({params: {start: 0, limit: 50}});
         },
 
         loadValoresIniciales: function () {
-            //console.log( 'lleha',this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud));
             this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
             Phx.vista.DetalleSol.superclass.loadValoresIniciales.call(this);
+        },
+        preparaMenu:function(n){
+        Phx.vista.DetalleSol.superclass.preparaMenu.call(this,n);
+        if(this.maestro.estado == 'borrador'){
+            this.getBoton('del').enable();
+            this.getBoton('new').enable();
+            this.getBoton('edit').enable();
+        }else{
+            this.getBoton('del').disable();
+            this.getBoton('new').disable();
+            this.getBoton('edit').disable();
+        }
+        },
+        liberaMenu: function() {
+            //Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
+            var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
+            if(tb){
+                //this.getBoton('del').disable();
+                //this.getBoton('new').disable();
+                //this.getBoton('edit').disable();
+            }
 
         },
-    preparaMenu:function(n){
-        Phx.vista.DetalleSol.superclass.preparaMenu.call(this,n);
-        if(this.maestro.estado ==  'borrador' ||this.maestro.estado==  'Borrador'){
-            this.getBoton('edit').enable();
-            this.getBoton('new').enable();
-            this.getBoton('del').enable();
-
-        }
-
-    },
-
-    liberaMenu: function() {
-        Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
-    },
-    oncellclick : function(grid, rowIndex, columnIndex, e) {
+        oncellclick : function(grid, rowIndex, columnIndex, e) {
 
         var record = this.store.getAt(rowIndex),
             fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
@@ -425,8 +455,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         if(fieldName == 'revisado') {
             this.cambiarRevision(record);
         }
-    },
-    cambiarRevision: function(record){
+        },
+        cambiarRevision: function(record){
         Phx.CP.loadingShow();
         var d = record.data;
         Ext.Ajax.request({
@@ -438,8 +468,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             scope: this
         });
         this.reload();
-    },
-    successRevision: function(resp){
+        },
+        successRevision: function(resp){
         Phx.CP.loadingHide();
         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
     }

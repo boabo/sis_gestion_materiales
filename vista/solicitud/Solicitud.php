@@ -18,15 +18,12 @@ header("content-type: text/javascript; charset=UTF-8");
             //llama al constructor de la clase padre
             Phx.vista.Solicitud.superclass.constructor.call(this,config);
             this.init();
-
-            //this.grid.addListener('cellclick', this.oncellclick,this);
             this.store.baseParams = {tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'borrador';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
-
-
-
+            this.controlCorreos=false;
+            this.mensaje='';
             this.addButton('ini_estado',{
                 grupo:[8,3],
                 argument: {estado: 'inicio'},
@@ -63,7 +60,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Documentos del Reclamo</b><br/>Subir los documetos requeridos en el Reclamo seleccionado.'
             });
             this.addButton('btnObs',{
-                grupo:[0,1,2,3,4],
+                grupo:[2,3,4],
                 text :'Obs Wf.',
                 iconCls : 'bchecklist',
                 disabled: true,
@@ -78,7 +75,35 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler:diagramGantt,
                 tooltip: '<b>Diagrama Gantt de proceso macro</b>'
             });
-            //modi
+
+            this.addButton('btnproveedor',
+                {
+                    iconCls: 'bemail',
+                    grupo:[3],
+                    text: 'Posibles Proveedores',
+                    disabled: true,
+                    handler: this.winCotProveedores,
+                    tooltip: '<b>Lista de  Proveedores</b><br/>Se definen los proveedores a los  que se enviara correos, con el detalle de cotización de repuestos.'
+                }
+            );
+
+            this.addButton('Cotizacion',{
+                grupo: [3],
+                text: 'Cotización',
+                iconCls: 'bdocuments',
+                disabled: false,
+                handler: this.onButtonCotizacion,
+                tooltip: '<b>Cotización</b>',
+                scope:this
+            });
+            /*this.addButton('btnCuadroComparativo',{
+                grupo:[3,4],
+                text :'Cuadro Comparativo',
+                iconCls : 'bexcel',
+                disabled: false,
+                handler : this.onCuadroComparativo,
+                tooltip : '<b>Cuadro Comparativo</b><br/><b>Cuadro Comparativo de Cotizaciones</b>'});
+            //modi*/
             this.addButton('Report',{
                 grupo:[0,1],
                 text :'Reporte',
@@ -93,16 +118,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 iconCls: 'blist',
                 disabled: false,
                 handler: this.controlAlmacen,
-                tooltip: '<b>Control ALmacene</b>',
+                tooltip: '<b>Control Almacen</b>',
                 scope:this
             });
             this.addButton('Consulta_desaduanizacion',{
-                grupo: [2,3],
-                text: 'Consulta Desaduanizacion',
+                grupo: [3],
+                text: 'Desaduanización',
                 iconCls: 'bassign',
                 disabled: false,
                 handler: this.consultadesaduanizacion,
-                tooltip: '<b>Consulta Desaduanizacion</b>',
+                tooltip: '<b>Desaduanizacion</b><br>Nos permite consultar las Desaduanizaciones, de las solicitudes en proceso.',
                 scope:this
             });
             this.addButton('Archivado_concluido',{
@@ -114,6 +139,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Archivado/Concluido</b>',
                 scope:this
             });
+
             function diagramGantt(){
                 var data=this.sm.getSelected().data.id_proceso_wf;
                 Phx.CP.loadingShow();
@@ -131,6 +157,16 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         Atributos:[
+            {
+                //configuracion del componente
+                config:{
+                    labelSeparator:'',
+                    inputType:'hidden',
+                    name: 'nro_cotizacion'
+                },
+                type:'Field',
+                form:true
+            },
             {
                 //configuracion del componente
                 config:{
@@ -237,7 +273,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     renderer:function (value,p,record){
 
                         var dias = record.data.control_fecha;
-                        if (dias >= 5 && dias <= 10 || dias >= 18 && dias <= 30 || dias >= 40 && dias <= 80) {
+                        if (dias >= 5 && dias <= 15 || dias >= 15 && dias <= 30 || dias >= 30 && dias <= 80) {
                             return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value?value.dateFormat('d/m/Y'):'');
                         }
                         else if(dias >= 2 && dias <= 4){
@@ -452,7 +488,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_justificacion',
-                    fieldLabel: 'Nro. Justicaion',
+                    fieldLabel: 'Nro. Justicación',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 100,
@@ -554,7 +590,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_no_rutina',
-                    fieldLabel: 'Nro. Doc. Origen de Solicitud',
+                    fieldLabel: 'Nro. No Rutina',
                     allowBlank: true,
                     anchor: '100%',
                     gwidth: 200,
@@ -580,6 +616,22 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:false,
                 form:true,
                 bottom_filter:true
+            },
+            {
+                config:{
+                    name: 'fecha_po',
+                    fieldLabel: 'Fecha P.O.',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_po',type:'date'},
+                id_grupo:2,
+                grid:false,
+                form:true
             },
             {
                 config: {
@@ -682,6 +734,119 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:false,
                 bottom_filter:true
+            },
+            {
+                config:{
+                    name:'tipo_evaluacion',
+                    fieldLabel:'Tipo de Evaluacion',
+                    typeAhead: true,
+                    allowBlank:false,
+                    triggerAction: 'all',
+                    emptyText:'Tipo...',
+                    selectOnFocus:true,
+                    mode:'local',
+                    store:new Ext.data.ArrayStore({
+                        fields: ['ID', 'valor'],
+                        data :	[
+                            ['1','Compra'],
+                            ['2','Reparacion'],
+                            ['3','Exchage']
+                        ]
+                    }),
+                    valueField:'valor',
+                    displayField:'valor',
+                    gwidth:100
+
+                },
+                type:'ComboBox',
+                id_grupo:5,
+                grid:false,
+                form:true
+            },
+            {
+                config:{
+                    name: 'taller_asignado',
+                    fieldLabel: 'Taller Asignado',
+                    gwidth: 100,
+                    maxLength:30,
+                    items: [
+                        {boxLabel: 'Si',name: 'pg-var',  inputValue: 'si',qtip:'Si'},
+                        {boxLabel: 'No',name: 'pg-var', inputValue: 'no', checked:true, qtip:'No'}
+                    ]
+                },
+                type:'RadioGroupField',
+                filters:{pfiltro:'taller_asignado',type:'string'},
+                id_grupo:5,
+                grid:false,
+                form:true
+            },
+            {
+                config:{
+                    name: 'observacion_nota',
+                    fieldLabel: 'Observaciones Evaluación',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 200,
+                    maxLength:10000
+                },
+                type:'TextArea',
+                filters:{pfiltro:'sol.observacion_nota',type:'string'},
+                id_grupo:5,
+                grid:false,
+                form:true
+            },
+            {
+                config:{
+                    name: 'lugar_entrega',
+                    fieldLabel: 'Lugar Entrega',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 200,
+                    maxLength:100,
+                    value: 'MIAMI'
+
+                },
+                type:'TextField',
+                filters:{pfiltro:'sol.lugar_entrega',type:'string'},
+                id_grupo:2,
+                grid:false,
+                form:false
+            },
+            {
+                config: {
+                    name: 'condicion',
+                    fieldLabel: 'Condición',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength: 25,
+                    typeAhead:true,
+                    forceSelection: true,
+                    triggerAction:'all',
+                    mode:'local',
+                    store:[ 'EXCHANGE','NEW','OVER HALL','PROPUESTA'],
+                    style:'text-transform:uppercase;'
+                },
+                type: 'ComboBox',
+                filters: {pfiltro: 'sol.condicion', type: 'string'},
+                id_grupo: 2,
+                grid: false,
+                form: false
+            },
+            {
+                config:{
+                    name: 'mensaje_correo',
+                    fieldLabel: 'Mensaje Correo',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 200,
+                    maxLength:10000
+                },
+                type:'TextArea',
+                filters:{pfiltro:'sol.mensaje_correo',type:'string'},
+                id_grupo:5,
+                grid:false,
+                form:true
             },
             {
                 config:{
@@ -856,9 +1021,16 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'id_estado_wf_firma', type: 'numeric'},
             'contador_estados_firma',
             {name:'nombre_estado', type: 'string'},
-            {name:'nombre_estado_firma', type: 'string'}
+            {name:'nombre_estado_firma', type: 'string'},
+            {name:'fecha_po', type: 'date',dateFormat:'Y-m-d'},
+            {name:'tipo_evaluacion', type: 'string'},
+            {name:'taller_asignado', type: 'string'},
+            {name:'lista_correos', type: 'string'},
+            {name:'condicion', type: 'string'},
+            {name:'lugar_entrega', type: 'string'},
+            {name:'mensaje_correo', type: 'string'}
 
-
+            
 
         ],
         sortInfo:{
@@ -991,6 +1163,62 @@ header("content-type: text/javascript; charset=UTF-8");
 
         sigEstado: function(){
             var rec = this.sm.getSelected();
+            //permite controlar que cuando se haya elegido proveedores y alguno no tenga correo de contacto.
+
+            if(rec.data.estado == 'cotizacion' ){
+
+                if(rec.data.lista_correos==''){
+                    Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/CorreoProveedores.php',
+                        'Definir Proveedores Para Enviar Correo de Cotización',
+                        {
+                            width: '40%',
+                            height: '25%'
+                        },
+                        rec.data,
+                        this.idContenedor,
+                        'CorreoProveedores'
+                    );
+                }else {
+                    Ext.Ajax.request({
+                        url:'../../sis_gestion_materiales/control/Solicitud/verificarCorreosProveedor',
+                        params:{'id_solicitud':rec.data.id_solicitud},
+                        success:function (resp) {
+                            var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                            if(reg.ROOT.datos.v_bandera){
+
+                                proveedores = (reg.ROOT.datos.v_sin_correo).split('#');
+                                for(var i=0;i<proveedores.length;i++){
+
+                                    this.mensaje+=(i+1)+'.- '+proveedores[i]+'<br>';
+                                }
+                                Ext.Msg.show({
+                                    title: 'Alerta',
+                                    msg: '<p>Estimado Usuario anteriormente definio a que proveedores  ' +
+                                    'enviara correo de cotización de materiales, de los cuales los siguientes proveedores no cuentan ' +
+                                    'con un correo de contacto:</p><br>'+this.mensaje+'<br>Le sugerimos completar este dato para que su cotización sea enviada exitosamente.',
+                                    buttons: Ext.Msg.OK,
+                                    width: 512,
+                                    icon: Ext.Msg.INFO
+                                });
+                            }else{
+                                this.confirmarEstado();
+                            }
+
+                        },
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+                    });
+                }
+                this.mensaje='';
+            }else {
+                this.confirmarEstado();
+            }
+        },
+
+        confirmarEstado:function () {
+            var rec = this.sm.getSelected();
+            console.log('rec.data.id_estado_wf', rec.data.id_estado_wf,'rec.data.id_proceso_wf',rec.data.id_proceso_wf);
             this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
                 'Estado de Wf',
                 {
@@ -1012,12 +1240,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     }],
                     scope: this
                 }
-
             );
-            if( rec.data.estado=='cotizacion_solicitada' && rec.data.nro_po=='' &&  rec.data.id_proveedor == null || rec.data.estado=='despachado' && rec.data.fecha_despacho_miami == null  || rec.data.estado=='despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado=='arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado=='desaduanizado' && rec.data.fecha_en_almacen == null){
+            if (rec.data.estado == 'cotizacion_solicitada' && rec.data.fecha_po == null) {
                 this.onButtonEdit();
             }
         },
+
         onSaveWizard:function(wizard,resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             console.log('Datos: '+JSON.stringify(resp));
@@ -1062,11 +1290,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.ocultarComponente(this.Cmp.nro_po);
+                this.ocultarComponente(this.Cmp.fecha_po);
 
                 if(data['estado'] ==  'cotizacion_solicitada' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
                     this.mostrarComponente(this.Cmp.nro_po);
+                    this.mostrarComponente(this.Cmp.fecha_po);
+                    this.Cmp.id_proveedor.setValue(data['id_proveedor']);
+                    this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
+                    this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
 
                 }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
 
@@ -1088,11 +1321,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.ocultarComponente(this.Cmp.nro_po);
+                this.ocultarComponente(this.Cmp.fecha_po);
 
                 if(data['estado'] ==  'cotizacion_solicitada' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
                     this.mostrarComponente(this.Cmp.nro_po);
+                    this.mostrarComponente(this.Cmp.fecha_po);
 
                 }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
 
@@ -1116,11 +1351,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.ocultarComponente(this.Cmp.nro_po);
+                this.ocultarComponente(this.Cmp.fecha_po);
 
                 if(data['estado'] ==  'cotizacion_solicitada' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
                     this.mostrarComponente(this.Cmp.nro_po);
+                    this.mostrarComponente(this.Cmp.fecha_po);
+                    this.Cmp.id_proveedor.setValue(data['id_proveedor']);
+                    this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
+                    this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
 
                 }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
 
@@ -1132,10 +1372,27 @@ header("content-type: text/javascript; charset=UTF-8");
                 }
 
             }
+            this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
 
-
+                if (record.data.ID == 1 ){
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                }if (record.data.ID == 2){
+                    this.mostrarComponente(this.Cmp.taller_asignado);
+                    this.mostrarComponente(this.Cmp.observacion_nota);
+                }if (record.data.ID == 3){
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.mostrarComponente(this.Cmp.observacion_nota);
+                }
+                this.Cmp.taller_asignado.reset();
+                this.Cmp.observacion_nota.reset();
+            },this);
+            this.ocultarComponente(this.Cmp.taller_asignado);
+            this.ocultarComponente(this.Cmp.observacion_nota);
+            this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
 
         },
+
 
         antEstado:function(res){
             var rec=this.sm.getSelected();
@@ -1215,15 +1472,30 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         succeEstadoSinc:function(resp){
             Phx.CP.loadingHide();
-            resp.argument.wizard.panel.destroy()
+            resp.argument.wizard.panel.destroy();
             this.reload();
         },
+
+        winCotProveedores: function () {
+            var dato = this.sm.getSelected().data;
+            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/CorreoProveedores.php',
+                'Definir Proveedores Para Enviar Correo de Cotización',
+                {
+                    modal:true,
+                    width:600,
+                    height:150
+                },
+                dato,
+                this.idContenedor,
+                'CorreoProveedores'
+            );
+        },
+
         onButtonReporte:function(){
             var rec=this.sm.getSelected();
             Ext.Ajax.request({
                 url:'../../sis_gestion_materiales/control/Solicitud/reporteRequerimientoMateriales',
                 params:{'id_proceso_wf':rec.data.id_proceso_wf},
-                //params:{'id_solicitud': rec.data.id_solicitud},
                 success: this.successExport,
                 failure: this.conexionFailure,
                 timeout:this.timeout,
@@ -1271,7 +1543,21 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.idContenedor,
                 'Almacen'
             )
+        },
+        onButtonCotizacion:function() {
+            var rec=this.sm.getSelected();
+            console.log ('Data',rec.data);
+            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/cotizacion/Cotizacion.php',
+                'Cotizacion de solicitud',
+                {
+                    width:'98%',
+                    height:'98%'
+                },
+                rec.data,
+                this.idContenedor,
+                'Cotizacion');
         }
 
     })
+
 </script>

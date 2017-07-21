@@ -70,7 +70,7 @@ BEGIN
 
    elsif(p_codigo_estado in ('compra')) then
     	begin
-          IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad')THEN
+          IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad','vobo_dpto_abastecimientos')    THEN
         RAISE EXCEPTION'Aun no fue aprobado por %', v_solicitud.estado_firma;
         END IF;
           if v_solicitud.fecha_cotizacion is null then
@@ -102,6 +102,8 @@ BEGIN
 		       	usuario_ai = p_usuario_ai,
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
+
+            --SELECT mat.f_disparar_adquisiciones(p_id_usuario, p_id_estado_wf, p_id_proceso_wf, p_codigo_estado);
     	end;
      elsif(p_codigo_estado in ('arribo')) then
     	begin
@@ -133,10 +135,8 @@ BEGIN
     	end;
      elsif(p_codigo_estado in ('almacen')) then
     	begin
-          IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad')THEN
-        RAISE EXCEPTION'Aun no fue aprobado por %', v_solicitud.estado_firma;
-        END IF;
-        if v_solicitud.fecha_en_almacen is null then
+
+        if v_solicitud.fecha_en_almacen is null and v_solicitud.estado <> 'cotizacion' then
             raise exception 'Tiene que registar la fecha de Almacen';
 		  end if;
     		update mat.tsolicitud s set
@@ -150,9 +150,7 @@ BEGIN
     	end;
         elsif(p_codigo_estado in ('finalizado')) then
     	begin
-        IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad')THEN
-        RAISE EXCEPTION'Aun no fue aprobado por %', v_solicitud.estado_firma;
-        END IF;
+
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,

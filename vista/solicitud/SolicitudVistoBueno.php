@@ -25,8 +25,13 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
 
             this.Atributos[this.getIndAtributo('nombre_estado')].grid=false;
+            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=false;
+            this.Atributos[this.getIndAtributo('taller_asignado')].grid=false;
+            this.Atributos[this.getIndAtributo('observacion_nota')].grid=false;
+            this.Atributos[this.getIndAtributo('lugar_entrega')].grid=false;
+            this.Atributos[this.getIndAtributo('condicion')].grid=false;
+
             Phx.vista.SolicitudVistoBueno.superclass.constructor.call(this, config);
-            //this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'visto_bueno';
             this.load({params:{start:0, limit:this.tam_pag}});
@@ -38,7 +43,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
             this.getBoton('Control_aLmacene').setVisible(false);
-
+            this.getBoton('btnproveedor').setVisible(false);
+            this.getBoton('Cotizacion').setVisible(false);
         },
 
 

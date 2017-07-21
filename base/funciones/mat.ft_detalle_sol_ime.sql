@@ -65,8 +65,6 @@ BEGIN
 			nro_parte,
 			referencia,
 			nro_parte_alterno,
-			--id_moneda,
-			--precio,
 			cantidad_sol,
 			id_usuario_reg,
 			usuario_ai,
@@ -74,7 +72,8 @@ BEGIN
 			id_usuario_ai,
 			id_usuario_mod,
 			fecha_mod,
-            tipo
+            tipo,
+            explicacion_detallada_part
           	) values(
 			v_parametros.id_solicitud,
 			v_parametros.descripcion,
@@ -83,8 +82,6 @@ BEGIN
 			v_parametros.nro_parte,
 			v_parametros.referencia,
 			v_parametros.nro_parte_alterno,
-			--v_parametros.id_moneda,
-			--v_parametros.precio,
 			v_parametros.cantidad_sol,
 			p_id_usuario,
 			v_parametros._nombre_usuario_ai,
@@ -92,7 +89,9 @@ BEGIN
 			v_parametros._id_usuario_ai,
 			null,
 			null,
-            v_parametros.tipo)RETURNING id_detalle into v_id_detalle;
+            v_parametros.tipo,
+            v_parametros.explicacion_detallada_part
+            )RETURNING id_detalle into v_id_detalle;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Detalle_sol almacenado(a) con exito (id_detalle'||v_id_detalle||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_detalle',v_id_detalle::varchar);
@@ -132,15 +131,14 @@ BEGIN
 			nro_parte = v_parametros.nro_parte,
 			referencia = v_parametros.referencia,
 			nro_parte_alterno = v_parametros.nro_parte_alterno,
-			--id_moneda = v_parametros.id_moneda,
-			--precio = v_parametros.precio,
 			cantidad_sol = v_parametros.cantidad_sol,
 			id_usuario_mod = p_id_usuario,
 			fecha_mod = now(),
 			id_usuario_ai = v_parametros._id_usuario_ai,
 			usuario_ai = v_parametros._nombre_usuario_ai,
             revisado = v_revisado,
-            tipo = v_parametros.tipo
+            tipo = v_parametros.tipo,
+            explicacion_detallada_part = v_parametros.explicacion_detallada_part
 			where id_detalle=v_parametros.id_detalle;
 
 			--Definicion de la respuesta

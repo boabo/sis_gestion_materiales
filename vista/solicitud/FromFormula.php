@@ -26,11 +26,48 @@ header("content-type: text/javascript; charset=UTF-8");
             this.init();
             this.onNew();
             this.iniciarEventos();
+            console.log('master', this.editorDetaille);
+           // this.inicarEventoDetalle();
         },
         buildComponentesDetalle: function () {
 
             this.detCmp =
-                {
+                /*{
+                    'nro_parte': new Ext.form.ComboBox({
+                        name: 'nro_parte',
+                        fieldLabel: 'Nro. Partes',
+                        allowBlank: false,
+                        store: new Ext.data.JsonStore({
+                            url: '../../sis_gestion_materiales/control/DetalleSol/listarDetalleSol',
+                            id: 'id_detalle',
+                            root: 'datos',
+                            sortInfo: {
+                                field: 'codigo',
+                                direction: 'ASC'
+                            },
+                            totalProperty: 'total',
+                            fields: ['id_detalle','nro_parte','nro_parte_alterno','referencia','descripcion','tipo','id_unidad_medida'],
+                            remoteSort: true,
+                            baseParams: {par_filtro: 'det.nro_parte',parte:'si'}
+                        }),
+                        valueField: 'nro_parte',
+                        displayField: 'nro_parte',
+                       // queryParam: 'nro_parte',
+                        hiddenName: 'nro_parte',
+                        forceSelection: false,
+                        autoSelect: false,
+                        typeAhead: false,
+                        hideTrigger:true,
+                        triggerAction: 'all',
+                        listWidth:300,
+                        resizable: true,
+                        lazyRender: true,
+                        mode: 'remote',
+                        pageSize: 100,
+                        queryDelay: 1000,
+                        minChars: 2
+                    }),*/
+                     {
                     'nro_parte': new Ext.form.TextField({
                         name: 'nro_parte',
                         msgTarget: 'title',
@@ -38,7 +75,6 @@ header("content-type: text/javascript; charset=UTF-8");
                         allowBlank: false,
                         anchor: '90%',
                         maxLength:50
-
                     }),
                     'nro_parte_alterno': new Ext.form.TextField({
                         name: 'nro_parte_alterno',
@@ -65,6 +101,14 @@ header("content-type: text/javascript; charset=UTF-8");
                         anchor: '80%',
                         maxLength:5000
                     }),
+                         'explicacion_detallada_part': new Ext.form.TextArea({
+                             name: 'explicacion_detallada_part',
+                             msgTarget: 'title',
+                             fieldLabel: 'Explicacion Detallada P/N',
+                             allowBlank: false,
+                             anchor: '100%',
+                             maxLength:5000
+                         }),
 
                     'tipo': new Ext.form.ComboBox({
 
@@ -78,20 +122,17 @@ header("content-type: text/javascript; charset=UTF-8");
                         lazyRender:true,
                         mode: 'local',
                         anchor: '50%',
-                        store:['Consumible','Rotable'],
+                        store:['Consumible','Rotable','Herramienta'],
                         maxLength: 100
                     }),
 
-                    'cantidad_sol': new Ext.form.TextField({
+                    'cantidad_sol': new Ext.form.NumberField({
                         name: 'cantidad_sol',
                         msgTarget: 'title',
-                        currencyChar:' ',
                         fieldLabel: 'Cantidad',
-                        minValue: 0.0001,
                         allowBlank: false,
-                        allowDecimals: true,
-                        allowNegative:false,
-                        decimalPrecision:2
+                        allowDecimals: false,
+                        maxLength:10
                     }),
                     'id_unidad_medida': new Ext.form.ComboBox({
                         name: 'id_unidad_medida',
@@ -145,7 +186,7 @@ header("content-type: text/javascript; charset=UTF-8");
         iniciarEventos : function () {
 
             this.Cmp.fecha_solicitud.on('change',function(f){
-                Phx.CP.loadingShow();
+                 Phx.CP.loadingShow();
                 this.obtenerGestion(this.Cmp.fecha_solicitud);
                 this.Cmp.id_funcionario_sol.reset();
                 this.Cmp.id_funcionario_sol.enable();
@@ -228,7 +269,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var i = 0;
             sw = true;
             while( i < this.Componentes.length) {
-                console.log('componetes '+this.Componentes[i].isValid());
+                console.log('componetes ',this.Componentes[i].isValid());
                 if(!this.Componentes[i].isValid()){
                     sw = false;
                 }
@@ -337,7 +378,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 totalProperty: 'total',
                 fields: ['id_detalle','id_solicitud','precio', 'cantidad_sol',
                     'id_unidad_medida','descripcion','nro_parte_alterno','moneda','referencia',
-                    'nro_parte','codigo','desc_descripcion','tipo'
+                    'nro_parte','codigo','desc_descripcion','tipo','explicacion_detallada_part'
                 ],remoteSort: true,
                 baseParams: {dir:'ASC',sort:'id_detalle',limit:'100',start:'0'}
             });
@@ -347,18 +388,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 name: 'btn_editor'
 
             });
-
             // al iniciar la edicion
             this.editorDetaille.on('beforeedit', this.onInitAdd , this);
-
             //al cancelar la edicion
             this.editorDetaille.on('canceledit', this.onCancelAdd , this);
-
             //al cancelar la edicion
             this.editorDetaille.on('validateedit', this.onUpdateRegister, this);
-
             this.editorDetaille.on('afteredit', this.onAfterEdit, this);
-
             this.megrid = new Ext.grid.GridPanel({
                 layout: 'fit',
                 store:  this.mestore,
@@ -434,10 +470,17 @@ header("content-type: text/javascript; charset=UTF-8");
                         editor: this.detCmp.descripcion
                     },
                     {
+                        header: 'Explicacion Detallada P/N',
+                        dataIndex: 'explicacion_detallada_part',
+                        align: 'center',
+                        width: 210,
+                        editor: this.detCmp.explicacion_detallada_part
+                    },
+                    {
                         header: 'Tipo',
                         dataIndex: 'tipo',
                         align: 'center',
-                        width: 95,
+                        width: 125,
                         editor: this.detCmp.tipo
                     },
                     {
@@ -445,37 +488,22 @@ header("content-type: text/javascript; charset=UTF-8");
                         dataIndex: 'cantidad_sol',
                         align: 'center',
                         width: 50,
+                        summaryType: 'sum',
                         editor: this.detCmp.cantidad_sol
                     },
                    {
                         header: 'U/M',
                         dataIndex: 'id_unidad_medida',
-                       align: 'center',
+                        align: 'center',
                         width: 95,
-                       renderer:function(value, p, record){return String.format('{0}', record.data['codigo']);},
+                        renderer:function(value, p, record){return String.format('{0}', record.data['codigo']);},
                         editor: this.detCmp.id_unidad_medida
                     }
-                    /*{
-                     header: 'Presio',
-                     dataIndex: 'precio',
-                     align: 'center',
-                     width: 50,
-                     editor: this.detCmp.precio
-                     },
-                     {
-                     header: 'Moneda',
-                     dataIndex: 'moneda',
-                     align: 'center',
-                     width: 50,
-                     editor: this.detCmp.moneda
-                     }*/
-
                 ]
             });
 
         },
-        buildGrupos: function () {
-
+        buildGrupos: function(){
             this.Grupos = [{
                 layout: 'border',
                 border: false,
@@ -498,46 +526,50 @@ header("content-type: text/javascript; charset=UTF-8");
                             {
                                 bodyStyle: 'padding-right:5px;',
 
+                                border: false,
+                                autoHeight: true,
+                                items: [{
+                                    xtype: 'fieldset',
+                                    //frame: true,
+                                    layout: 'form',
+                                    title: ' DATOS BÁSICOS ',
+                                    width: '33%',
+                                    //border: false,
+                                    //margins: '0 0 0 5',
+                                    padding: '0 0 0 10',
+                                    bodyStyle: 'padding-left:5px;',
+                                    id_grupo: 0,
+                                    items: []
+                                }]
+                            },
+                            {
+                                bodyStyle: 'padding-right:5px;',
+
                                 autoHeight: true,
                                 border: false,
                                 items:[
                                     {
                                         xtype: 'fieldset',
-                                        frame: true,
-                                        border: false,
+                                        /*frame: true,
+                                         border: false,*/
                                         layout: 'form',
-                                        title: ' Datos Generales ',
-                                        width: '33%',
+                                        title: 'JUSTIFICACION DE NECESIDAD',
+                                        width: '55%',
+
+
                                         padding: '0 0 0 10',
                                         bodyStyle: 'padding-left:5px;',
-                                        id_grupo: 0,
-                                        items: [],
+                                        id_grupo: 1,
+                                        items: []
                                     }]
-                            },
-                            {
-                                bodyStyle: 'padding-right:5px;',
-
-                                border: false,
-                                autoHeight: true,
-                                items: [{
-                                    xtype: 'fieldset',
-                                    frame: true,
-                                    layout: 'form',
-                                    title: ' Justificacion de Necesidad ',
-                                    width: '33%',
-                                    border: false,
-                                    padding: '0 0 0 10',
-                                    bodyStyle: 'padding-left:5px;',
-                                    id_grupo: 1,
-                                    items: [],
-                                }]
-                            },
-
+                            }
                         ]
                     },
                     this.megrid
                 ]
             }];
+
+
         },
         successSave:function(resp)
         {
@@ -764,7 +796,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     editable: false,
                     triggerAction: 'all',
                     lazyRender: true,
-                    lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
                     store:['Falla Confirmada','T/S en Progreso ','No Aplica']
@@ -847,6 +878,30 @@ header("content-type: text/javascript; charset=UTF-8");
 
         ],
         title: 'Frm Materiales',
+
+        /*inicarEventoDetalle: function () {
+            this.detCmp.nro_parte.on('select', function(cmb,rec,i){
+                    this.detCmp.nro_parte_alterno.setValue(rec.data.nro_parte_alterno);
+                    this.detCmp.referencia.setValue(rec.data.referencia);
+                    this.detCmp.descripcion.setValue(rec.data.descripcion);
+                    this.detCmp.tipo.setValue(rec.data.tipo);
+                    //this.detCmp.id_unidad_medida.setValue(rec.data.id_unidad_medida);
+                    //this.detCmp.id_funcionario_sol.setRawValue(reg.ROOT.datos.nombre_completo1);
+            } ,this);
+            this.detCmp.nro_parte.on('change', function(cmb,newval,oldval){
+                var rec = cmb.getStore().getById(newval);
+                if(!rec){
+                    //si el combo no tiene resultado
+                    if(cmb.lastQuery){
+                        //y se tiene una consulta anterior( cuando editemos no abra cnsulta anterior)
+                        this.detCmp.nro_parte_alterno.reset();
+                        this.detCmp.referencia.reset();
+                        this.detCmp.descripcion.reset();
+                        this.detCmp.tipo.reset();
+                    }
+                }
+            } ,this);
+        },*/
         onSubmit: function(o) {
             //  validar formularios
             var arra = [], k, me = this;
@@ -857,43 +912,46 @@ header("content-type: text/javascript; charset=UTF-8");
             me.argumentExtraSubmit = { 'json_new_records': JSON.stringify(arra, function replacer(key, value) {
                 return value;
             }) };
-            if(this.evaluaRequistos()){
-                Ext.Ajax.request({
-                    url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
-                    params:{
-                        justificacion: this.Cmp.nro_justificacion.getValue(),
-                        nro_parte: this.detCmp.nro_parte.getValue(),
-                        id_matricula: this.Cmp.id_matricula.getValue()
-                    },
-                    success:function(resp){
-                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                        var nro_justificacion =reg.ROOT.datos.justificacion;
-                        var nro_parte =reg.ROOT.datos.parte;
-                        var matricula=reg.ROOT.datos.matricula;
-                        var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
-                        var ma =this;
-                        if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue() != '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
-                            Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ', function (btn) {
-                                if (btn === 'yes') {
-                                    Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                                } else {
-                                }
-                            },this);
-                        }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()!=matricula){
-                            Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
-                        }
-                    },
-                    failure: this.conexionFailure,
-                    timeout:this.timeout,
-                    scope:this
-                });
                 if( k > 0 &&  !this.editorDetaille.isVisible()){
+                    Ext.Ajax.request({
+                        url:'../../sis_gestion_materiales/control/Solicitud/compararNroJustificacion',
+                        params:{
+                            justificacion: this.Cmp.nro_justificacion.getValue(),
+                            nro_parte: this.detCmp.nro_parte.getValue(),
+                            id_matricula: this.Cmp.id_matricula.getValue()
+                        },
+                        success:function(resp){
+                            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                            var nro_justificacion =reg.ROOT.datos.justificacion;
+                            var nro_parte =reg.ROOT.datos.parte;
+                            var matricula=reg.ROOT.datos.matricula;
+                            var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
+                            var ma =this;
+                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue() != '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
+                                Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ', function (btn) {
+                                    if (btn === 'yes') {
+                                        Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                                    } else {
+                                    }
+                                },this);
+                                // Ext.Msg.alert('Alerta', mgs_control+ '</b> ya fue registrado por el Funcionario <b> ');
+                            }else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()!=matricula){
+                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                            }
+                            else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()==''){
+                                Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                            }
+                        },
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+                    });
+
                 }
                 else{
-                    this.mensaje_('ALERTA', "No tiene datos en el detalle", 'ERROR');
-                    //alert("No tiene datos en el detalle")
+                    alert("No tiene datos en el detalle")
                 }
-            }
+
         },
         mensaje_: function (titulo, mensaje, icono) {
 
