@@ -1241,7 +1241,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope: this
                 }
             );
-            if (rec.data.estado == 'cotizacion_solicitada' && rec.data.fecha_po == null) {
+            if (rec.data.estado == 'cotizacion_solicitada' && rec.data.fecha_po == null || rec.data.estado == 'arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado == 'desaduanizado' && rec.data.fecha_en_almacen == null) {
                 this.onButtonEdit();
             }
         },

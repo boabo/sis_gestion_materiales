@@ -35,9 +35,10 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('btnObs').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
             this.ocultarComponente(this.Cmp.fecha_po);
-           // this.ocultarComponente(this.Cmp.tipo_evaluacion);
-           // this.ocultarComponente(this.Cmp.taller_asignado);
-           // this.ocultarComponente(this.Cmp.observacion_nota);
+            this.ocultarComponente(this.Cmp.tipo_evaluacion);
+            this.ocultarComponente(this.Cmp.taller_asignado);
+            this.ocultarComponente(this.Cmp.observacion_nota);
+            this.ocultarComponente(this.Cmp.mensaje_correo);
 
         },
         gruposBarraTareas:[
