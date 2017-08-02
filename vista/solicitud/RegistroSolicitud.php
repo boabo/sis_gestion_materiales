@@ -39,6 +39,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.taller_asignado);
             this.ocultarComponente(this.Cmp.observacion_nota);
             this.ocultarComponente(this.Cmp.mensaje_correo);
+            this.ocultarComponente(this.Cmp.condicion);
+            this.ocultarComponente(this.Cmp.lugar_entrega);
 
         },
         gruposBarraTareas:[

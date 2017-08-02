@@ -488,7 +488,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_justificacion',
-                    fieldLabel: 'Nro. Justicación',
+                    fieldLabel: 'Nro. Justificación',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 100,
@@ -810,7 +810,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 filters:{pfiltro:'sol.lugar_entrega',type:'string'},
                 id_grupo:2,
                 grid:false,
-                form:false
+                form:true
             },
             {
                 config: {
@@ -830,8 +830,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboBox',
                 filters: {pfiltro: 'sol.condicion', type: 'string'},
                 id_grupo: 2,
-                grid: false,
-                form: false
+                grid:false,
+                form:true
             },
             {
                 config:{
