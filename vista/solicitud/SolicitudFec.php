@@ -25,9 +25,46 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         constructor: function (config) {
+            this.Grupos.push( {
+                layout: 'column',
+                border: false,
+                defaults: {
+                    border: false
+                },
 
+                items: [
+                    {
+                        bodyStyle: 'padding-right:10px;',
+                        items: [
+                            {
+                                xtype: 'fieldset',
+                                title: ' Datos Adquisiciones ',
+                                autoHeight: true,
+                                items: [],
+                                id_grupo: 2
+                            }
+
+                        ]
+                    },
+
+                    {
+                        bodyStyle: 'padding-left:10px;',
+                        items: [
+                            {
+                                xtype: 'fieldset',
+                                title: ' Registro Fechas',
+                                autoHeight: true,
+                                items: [],
+                                id_grupo: 8
+                            }
+
+
+                        ]
+                    }
+                ]
+
+            });
             this.font();
-
             Phx.vista.SolicitudFec.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
