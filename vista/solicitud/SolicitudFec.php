@@ -33,6 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
 
                 items: [
+
                     {
                         bodyStyle: 'padding-right:10px;',
                         items: [
@@ -43,21 +44,6 @@ header("content-type: text/javascript; charset=UTF-8");
                                 items: [],
                                 id_grupo: 2
                             }
-
-                        ]
-                    },
-
-                    {
-                        bodyStyle: 'padding-left:10px;',
-                        items: [
-                            {
-                                xtype: 'fieldset',
-                                title: ' Registro Fechas',
-                                autoHeight: true,
-                                items: [],
-                                id_grupo: 8
-                            }
-
 
                         ]
                     }
@@ -78,9 +64,20 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
             this.getBoton('Control_aLmacene').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
-
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
+
+            this.ocultarComponente(this.Cmp.mensaje_correo);
+            this.ocultarComponente(this.Cmp.observacion_nota);
+            this.ocultarComponente(this.Cmp.taller_asignado);
+            this.ocultarComponente(this.Cmp.tipo_evaluacion);
+            this.ocultarComponente(this.Cmp.condicion);
+            this.ocultarComponente(this.Cmp.lugar_entrega);
+
+
+            //
+
+
 
         },
         gruposBarraTareas:[

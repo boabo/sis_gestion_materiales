@@ -410,7 +410,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     }),
                     valueField: 'id_orden_trabajo',
                     displayField: 'desc_orden',
-                    gdisplayField: 'desc_orden',
+                    gdisplayField: 'matricula',
                     tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_orden}</p><p style="color: blue">{matricula}</p></div></tpl>',
                     hiddenName: 'id_matricula',
                     forceSelection: true,
@@ -620,7 +620,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'fecha_po',
-                    fieldLabel: 'Fecha P.O.',
+                    fieldLabel: 'Fecha P.O',
                     allowBlank: false,
                     anchor: '100%',
                     gwidth: 100,
@@ -682,7 +682,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'DateField',
                 filters:{pfiltro:'sol.fecha_arribo_bolivia',type:'date'},
-                id_grupo:8,
+                id_grupo:2,
                 grid:false,
                 form:true
             },
@@ -698,7 +698,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'DateField',
                 filters:{pfiltro:'sol.fecha_desaduanizacion',type:'date'},
-                id_grupo:8,
+                id_grupo:2,
                 grid:false,
                 form:true
             },
@@ -714,7 +714,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'DateField',
                 filters:{pfiltro:'sol.fecha_en_almacen',type:'date'},
-                id_grupo:8,
+                id_grupo:2,
                 grid:false,
                 form:true
             },
@@ -1241,7 +1241,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope: this
                 }
             );
-            if ( rec.data.estado == 'arribo' && rec.data.fecha_desaduanizacion == null || rec.data.estado == 'despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado == 'desaduanizado' && rec.data.fecha_en_almacen == null) {
+            if ( rec.data.estado == 'cotizacion_solicitada' && rec.data.fecha_po == null || rec.data.estado == 'despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado == 'desaduanizado' && rec.data.fecha_en_almacen == null || rec.data.estado == 'arribo' && rec.data.fecha_desaduanizacion == null ||
+                rec.data.estado == 'cotizacion' && rec.data.condicion == '') {
                 this.onButtonEdit();
             }
         },
@@ -1304,10 +1305,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
 
                     this.mostrarComponente(this.Cmp.fecha_arribado_bolivia);
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 }if(data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
                     this.mostrarComponente(this.Cmp.fecha_desaduanizacion);
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 } if(data['estado'] ==  'desaduanizado') {
                     this.mostrarComponente(this.Cmp.fecha_en_almacen)
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 }
 
             }  if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
@@ -1332,10 +1363,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
 
                     this.mostrarComponente(this.Cmp.fecha_arribado_bolivia);
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 }if(data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
                     this.mostrarComponente(this.Cmp.fecha_desaduanizacion);
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 } if(data['estado'] ==  'desaduanizado') {
                     this.mostrarComponente(this.Cmp.fecha_en_almacen)
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 }
 
             }    if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
@@ -1365,10 +1426,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
 
                     this.mostrarComponente(this.Cmp.fecha_arribado_bolivia);
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 }if(data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
                     this.mostrarComponente(this.Cmp.fecha_desaduanizacion);
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 } if(data['estado'] ==  'desaduanizado') {
                     this.mostrarComponente(this.Cmp.fecha_en_almacen)
+                    this.ocultarComponente(this.Cmp.mensaje_correo);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    this.ocultarComponente(this.Cmp.condicion);
+                    this.ocultarComponente(this.Cmp.lugar_entrega);
+                    this.ocultarComponente(this.Cmp.fecha_po);
+                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.fecha_po);
                 }
 
             }
