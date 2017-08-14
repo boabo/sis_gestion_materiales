@@ -111,6 +111,13 @@ class ACTSolicitud extends ACTbase{
         }if ($this->objParam->getParametro('pes_estado') == 'origen_alm') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and  sol.estado  in (''revision'')");
         }
+        if ($this->objParam->getParametro('tipo_interfaz') == 'SolicitudvoboComite') {
+            $this->objParam->addFiltro("sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+        }
+
+
+
+
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
             $this->res = $this->objReporte->generarReporteListado('MODSolicitud','listarSolicitud');
@@ -537,10 +544,15 @@ class ACTSolicitud extends ACTbase{
         if ($this->objParam->getParametro('tipo') != '') {
             $this->objParam->addFiltro("provee.tipo  = ''". $this->objParam->getParametro('tipo')."''");
         }
-
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarProveedor();
 
+        if($this->objParam->getParametro('_adicionar')!=''){
+
+            $respuesta = $this->res->getDatos();
+            array_unshift ( $respuesta, array('rotulo_comercial'=>'Todos','desc_proveedor'=>'Todos','id_proveedor'=>'0','email'=>'todo@gmail.com'));
+            $this->res->setDatos($respuesta);
+        }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
     //fea 04/07/2017

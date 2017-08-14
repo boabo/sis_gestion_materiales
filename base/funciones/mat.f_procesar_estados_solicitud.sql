@@ -56,6 +56,41 @@ BEGIN
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
     	end;
+        ---
+        elsif(p_codigo_estado in ('comite_unidad_abastecimientos')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+        elsif(p_codigo_estado in ('comite_aeronavegabilidad')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+        elsif(p_codigo_estado in ('comite_dpto_abastecimientos')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+        ---
     elsif(p_codigo_estado in ('cotizacion_sin_respuesta')) then
     	begin
     		update mat.tsolicitud s set

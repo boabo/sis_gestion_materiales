@@ -85,7 +85,7 @@ BEGIN
 	if(p_transaccion='MAT_SOL_SEL')then
 
     	begin
-
+			--raise exception 'Hoy viernes a las 17:30 cortaremos el Sistema de Gestión de Materiales para publicar todos los cambios solicitados';
         SELECT		tf.id_funcionario,
  					fun.desc_funcionario1,
                     fun.nombre_cargo
@@ -157,7 +157,7 @@ BEGIN
                     WHERE   so.estado_firma = 'vobo_dpto_abastecimientos'
                     GROUP BY fu.id_funcionario;
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '|||v_record.id_funcionario||' AND  ';
+         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
          				ELSE
          				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
          			END IF;
@@ -199,6 +199,24 @@ BEGIN
          								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
          							END IF;
                         END IF;
+                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' ) THEN
+                         select u.id_usuario,
+                				count(u.id_usuario)::varchar as cant_reg
+         						into
+                                v_id_usuario_rev
+                                from wf.testado_wf es
+                                inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
+                                inner join segu.tusuario u on u.id_persona = fu.id_persona
+                                inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
+                                inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
+                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Analista II Presupuestos'
+                                GROUP BY u.id_usuario;
+                                	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         								v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+         							ELSE
+         								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+         							END IF;
+                        END IF;
                         IF(v_record.nombre_cargo = 'Técnico Adquisiciones' ) THEN
                          select u.id_usuario,
                 				count(u.id_usuario)::varchar as cant_reg
@@ -217,6 +235,7 @@ BEGIN
          								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
          							END IF;
                         END IF;
+
 
     				ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
           					v_filtro = '';
@@ -364,7 +383,7 @@ BEGIN
 	elsif(p_transaccion='MAT_SOL_CONT')then
 
 		begin
-            SELECT	tf.id_funcionario,
+            /*SELECT	tf.id_funcionario,
  					fun.desc_funcionario1,
                     fun.nombre_cargo
                     INTO
@@ -540,7 +559,7 @@ BEGIN
                             ' AND';
                     ELSE
                     v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
-            END IF;
+            END IF;*/
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(sol.id_solicitud)
 						from mat.tsolicitud sol
@@ -557,7 +576,7 @@ BEGIN
                         left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                         left join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
                         left JOIN mat.tgestion_proveedores tgp ON tgp.id_solicitud = sol.id_solicitud
-                        where '||v_filtro;
+                        where ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
