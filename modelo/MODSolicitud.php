@@ -79,7 +79,7 @@ class MODSolicitud extends MODbase{
         $this->captura('contador_estados_firma','bigint');
         $this->captura('nombre_estado','varchar');
         $this->captura('nombre_estado_firma','varchar');
-       $this->captura('fecha_po','date');
+        $this->captura('fecha_po','date');
         $this->captura('tipo_evaluacion','varchar');
         $this->captura('taller_asignado','varchar');
         $this->captura('lista_correos','varchar');

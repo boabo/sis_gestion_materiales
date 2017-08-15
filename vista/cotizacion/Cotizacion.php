@@ -18,7 +18,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config;
     	//llama al constructor de la clase padre
         this.id_solicitud=this.maestro.id_solicitud;
-        console.log('hola',this.maestro);
+        //console.log('hola',this.maestro);
         //console.log('heee',this.idContenedor);
 		Phx.vista.Cotizacion.superclass.constructor.call(this,config);
 		this.init();
@@ -124,18 +124,18 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                 emptyText: 'Elija una opción...',
                 store: new Ext.data.JsonStore({
                     url: '../../sis_gestion_materiales/control/Cotizacion/listarProvedor',
-                    id: 'id_prove',
+                    id: 'id_prov',
                     root: 'datos',
                     sortInfo: {
                         field: 'desc_proveedor',
                         direction: 'ASC'
                     },
                     totalProperty: 'total',
-                    fields: ['id_solicitud', 'id_gestion_proveedores','desc_proveedor','id_prove'],
+                    fields: ['id_solicitud', 'id_gestion_proveedores','id_prov','desc_proveedor'],
                     remoteSort: true,
-                    baseParams: {par_filtro: 'ge.id_solicitud#id_solicitud'}
+                    baseParams: {par_filtro: 'desc_proveedor'}
                 }),
-                valueField: 'id_prove',
+                valueField: 'id_prov',
                 displayField: 'desc_proveedor',
                 gdisplayField: 'desc_proveedor',
                 hiddenName: 'id_proveedor',
@@ -190,28 +190,6 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true
         },
-       /* {
-            config:{
-                name: 'monto_total',
-                fieldLabel: 'Monto Total',
-                allowBlank: false,
-                anchor: '80%',
-                disabled: true,
-                gwidth: 100,
-                maxLength:1245186,
-                renderer : function(value, p, record) {
-                    return value.replace(/\D/g, ",")
-                                .replace(/([0-9])([0-9]{2})$/, '$1.$2')
-                                .replace(/\B(?=(\d{3})+(?!\d)\.?)/g, ".");
-                    //return String.format('{0}', record.data['desc_moneda']);
-                }
-            },
-            type:'NumberField',
-            filters:{pfiltro:'cts.monto_total',type:'numeric'},
-            id_grupo:0,
-            grid:true,
-            form:false
-        },*/
         {
             config: {
                 name: 'monto_total',
@@ -441,7 +419,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true,
+	bsave:false,
     south:
         {
             url:'../../../sis_gestion_materiales/vista/cotizacion_detalle/CotizacionDetalle.php',
@@ -453,7 +431,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 	    console.log('id:',this.getComponente('id_solicitud'));
         Phx.vista.Cotizacion.superclass.onButtonNew.call(this);
         this.getComponente('id_solicitud').setValue(this.id_solicitud);
-        this.Cmp.id_proveedor.store.baseParams ={id_solicitud:this.maestro.id_solicitud};
+        this.Cmp.id_proveedor.store.baseParams ={id_solicitud:this.maestro.id_solicitud ,par_filtro: 'desc_proveedor'};
         this.Cmp.pie_pag.setValue('La entrega del producto es en Miami, de acuerdo a oferta del proveedor; sin embargo la recepción del mismo en almacen Cochabamba hasta en 30 dias. ');
         this.Cmp.id_moneda.setValue(2);
         this.Cmp.id_moneda.setRawValue('Dolares Americanos');

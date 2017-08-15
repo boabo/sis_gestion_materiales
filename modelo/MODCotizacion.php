@@ -127,10 +127,12 @@ class MODCotizacion extends MODbase{
         $this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setCount(false);
         $this->setParametro('id_solicitud','id_solicitud','int4');
-        $this->captura('id_gestion_proveedores','int4');
+        
         $this->captura('id_solicitud','int4');
+        $this->captura('id_gestion_proveedores','int4');
+        $this->captura('id_prov','int4');
         $this->captura('desc_proveedor','varchar');
-        $this->captura('id_prove','int4');
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();

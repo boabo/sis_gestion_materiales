@@ -103,6 +103,13 @@ DECLARE
     v_record					record;
     v_sin_correo				varchar[];
     v_bandera					boolean;
+    v_i							integer;
+    v_id_proveedores			varchar;
+
+    vv_id_proveedor_md			integer[];
+    vv_lista					integer;
+   	vv_id 						integer;
+    vv_ids						integer;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -302,7 +309,7 @@ END IF;
             condicion = v_parametros.condicion,
             lugar_entrega = v_parametros.lugar_entrega,
             tipo_evaluacion = v_parametros.tipo_evaluacion,
-            taller_asignado = v_parametros.taller_asignado,
+        	taller_asignado = v_parametros.taller_asignado,
             mensaje_correo = v_parametros.mensaje_correo
         	where id_solicitud=v_parametros.id_solicitud;
 
@@ -874,7 +881,7 @@ END IF;
 	elsif(p_transaccion='MAT_EMAIL_COT_IME')then
 
 		begin
-            v_ids_prov = string_to_array(v_parametros.lista_correos,',');
+           /* v_ids_prov = string_to_array(v_parametros.lista_correos,',');
             v_tam = array_length(v_ids_prov,1);
 
             SELECT tgp.cotizacion_solicitadas
@@ -913,6 +920,97 @@ END IF;
                 v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Lista de correos fue modificado Exitosamente');
 
             END IF;
+
+            */
+         	--v_ids_prov = string_to_array(v_parametros.lista_correos,',');
+            --v_tam = array_length(v_ids_prov,1);
+
+            if (v_parametros.lista_correos = '0') then
+            select pxp.list (p.id_proveedor::text)
+            into
+            v_id_proveedores
+            from param.vproveedor p
+            where p.tipo = 'abastecimiento' and  p.email <> '';
+
+            v_ids_prov = string_to_array(v_id_proveedores,',');
+            v_tam = array_length(v_ids_prov,1);
+
+            else
+
+            v_ids_prov = string_to_array(v_parametros.lista_correos,',');
+            v_tam = array_length(v_ids_prov,1);
+            end if;
+
+            SELECT pxp.aggarray(tgp.id_proveedor)
+            INTO v_ids_prov_act
+            FROM mat.tgestion_proveedores_new tgp
+            WHERE tgp.id_solicitud = v_parametros.id_solicitud;
+
+
+            IF (v_tam IS NOT NULL AND v_ids_prov_act IS NULL)THEN
+			v_i = 1;
+           	while v_i <= v_tam loop
+                    INSERT INTO mat.tgestion_proveedores_new(
+                      id_usuario_reg,
+                      id_usuario_mod,
+                      fecha_reg,
+                      fecha_mod,
+                      estado_reg,
+                      id_usuario_ai,
+                      usuario_ai,
+  					  id_solicitud,
+  					  id_proveedor
+
+                    )VALUES(
+                      p_id_usuario,
+                      null,
+                      now(),
+                      null,
+                      'activo',
+                      v_parametros._id_usuario_ai,
+                      v_parametros._nombre_usuario_ai,
+                      v_parametros.id_solicitud,
+                   	  v_ids_prov[v_i]::integer);
+            	--Definicion de la respuesta
+                v_i = v_i + 1;
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Lista de correos fue definido Exitosamente');
+
+            end loop;
+
+            ELSIF(v_ids_prov_act <> v_ids_prov)THEN
+
+            delete from mat.tgestion_proveedores_new
+            where id_solicitud=v_parametros.id_solicitud;
+
+            v_i = 1;
+           	while v_i <= v_tam loop
+                    INSERT INTO mat.tgestion_proveedores_new(
+                      id_usuario_reg,
+                      id_usuario_mod,
+                      fecha_reg,
+                      fecha_mod,
+                      estado_reg,
+                      id_usuario_ai,
+                      usuario_ai,
+  					  id_solicitud,
+  					  id_proveedor
+
+                    )VALUES(
+                      p_id_usuario,
+                      null,
+                      now(),
+                      null,
+                      'activo',
+                      v_parametros._id_usuario_ai,
+                      v_parametros._nombre_usuario_ai,
+                      v_parametros.id_solicitud,
+                   	  v_ids_prov[v_i]::integer);
+            	--Definicion de la respuesta
+            v_i = v_i + 1;
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Lista de correos fue modificado Exitosamente');
+            end loop;
+            END IF;
+
 
             --Devuelve la respuesta
             return v_resp;

@@ -83,7 +83,7 @@ BEGIN
 			v_parametros.cantidad_det,
 			v_parametros.precio_unitario,
 			'activo',
-			v_total_ca,
+			v_parametros.cantidad_det * v_parametros.precio_unitario,
 			v_parametros._id_usuario_ai,
 			p_id_usuario,
 			v_parametros._nombre_usuario_ai,

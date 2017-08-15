@@ -12,11 +12,55 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         bnew: true,
+        fheight: '45%',
+        fwidth: '75%',
         constructor: function (config) {
+
+            this.Grupos = [
+                {
+                    layout: 'column',
+                    border: false,
+                    autoHeight : true,
+                    defaults: {
+                        border: false,
+                        autoHeight: false,
+                        bodyStyle: 'padding-right:4px'
+                    },
+                    items: [
+                        {
+                            xtype: 'fieldset',
+                            columnWidth: 0.5,
+                            defaults: {
+                                anchor: '-20' // leave room for error icon
+                            },
+                            title: 'Datos Part Number',
+                            items: [],
+                            id_grupo: 0,
+                            flex:1,
+                            autoHeight : true,
+                            margins:'2 2 2 2'
+                        },
+
+                        {
+                            xtype: 'fieldset',
+                            columnWidth: 0.5,
+                            title: 'Datos Cotización',
+                            items: [],
+                            margins:'2 10 2 2',
+                            id_grupo:1,
+                            autoHeight : true,
+                            flex:1
+                        }
+                    ]
+                }];
+
+
+
             this.maestro = config.maestro;
             //llama al constructor de la clase padre
             Phx.vista.CotizacionDetalle.superclass.constructor.call(this, config);
             this.init();
+            //console.log('LLega',this.getSelectedData());
         },
 
         Atributos: [
@@ -100,7 +144,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 },
                 type: 'TextField',
                 filters: {pfiltro: 'cde.nro_parte_cot', type: 'string'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 egrid: true,
                 form: true
@@ -116,7 +160,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 },
                 type: 'TextField',
                 filters: {pfiltro: 'cde.nro_parte_alterno_cot', type: 'string'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 egrid: true,
                 form: true
@@ -132,7 +176,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 },
                 type: 'TextField',
                 filters: {pfiltro: 'cde.referencia_cot', type: 'string'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 egrid: true,
                 form: true
@@ -148,7 +192,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 },
                 type: 'TextArea',
                 filters: {pfiltro: 'cde.descripcion_cot', type: 'string'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 egrid: true,
                 form: true
@@ -164,7 +208,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 },
                 type: 'TextArea',
                 filters: {pfiltro: 'cde.explicacion_detallada_part_cot', type: 'string'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 egrid: true,
                 form: true
@@ -181,7 +225,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     mode: 'local',
                     anchor: '50%',
                     gwidth: 80,
-                    store: ['Consumible', 'Rotable','Herramienta']
+                    store: ['Consumible', 'Rotable','Herramienta','Otros Cargos','NA']
 
                 },
                 type: 'ComboBox',
@@ -191,21 +235,6 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 form: true
 
             },
-            /*{
-             config:{
-             name: 'cantidad_sol',
-             fieldLabel: 'Cantidad',
-             allowBlank: true,
-             anchor: '80%',
-             gwidth: 50,
-             maxLength:4
-             },
-             type:'NumberField',
-             filters:{pfiltro:'det.cantidad_sol',type:'numeric'},
-             id_grupo:1,
-             grid:true,
-             form:false
-             },*/
             {
                 config: {
                     name: 'codigo',
@@ -218,7 +247,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 },
                 type: 'TextField',
                 filters: {pfiltro: 'd.codigo', type: 'string'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 form: false
             },
@@ -227,13 +256,13 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'cantidad_det',
                     fieldLabel: 'Cantidad Total',
                     allowBlank: true,
-                    width: 100,
+                    width: 120,
                     gwidth: 120,
-                    maxLength: 4
+                    maxLength: 1000
                 },
                 type: 'NumberField',
                 filters: {pfiltro: 'cde.cantidad_det', type: 'numeric'},
-                id_grupo: 1,
+                id_grupo: 0,
                 grid: true,
                 egrid: true,
                 form: true
@@ -271,6 +300,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     }),
                     valueField:'valor',
                     displayField:'valor',
+                    anchor: '50%',
                     gwidth:100
 
                 },
@@ -280,37 +310,13 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 egrid: true,
                 form:true
             },
-            /*{
-                config: {
-                    name: 'precio_unitario',
-                    currencyChar: ' ',
-                    fieldLabel: 'Precio Unitario',
-                    allowBlank: false,
-                    allowDecimals: true,
-                    allowNegative: false,
-                    decimalPrecision: 2,
-                    renderer: function (value, p, record) {
-                        var num = Number(record.data['precio_unitario']);
-                        return String.format('{0}', num.toFixed(2));
-
-                    },
-                    width: 100,
-                    gwidth: 110
-                },
-                type: 'MoneyField',
-                filters: {pfiltro: 'cde.precio_unitario', type: 'numeric'},
-                id_grupo: 1,
-                grid: true,
-                egrid: true,
-                form: true
-            },*/
             {
                 config: {
                     name: 'precio_unitario',
                     fieldLabel: 'Precio Unitario',
                     currencyChar: ' ',
                     allowBlank: true,
-                    width: 100,
+                    width: 120,
                     gwidth: 120,
                     disabled: false,
                     maxLength: 1245186
@@ -347,20 +353,20 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     emptyText: 'Elija una opción...',
                     store: new Ext.data.JsonStore({
                         url: '../../sis_gestion_materiales/control/CotizacionDetalle/listarDay_week',
-                        id: 'id_day',
+                        id: 'id_day_week',
                         root: 'datos',
                         sortInfo: {
-                            field: 'id_day',
+                            field: 'codigo_tipo',
                             direction: 'ASC'
                         },
                         totalProperty: 'total',
-                        fields: ['id_day', 'codigo_tipo'],
+                        fields: ['id_day','codigo_tipo'],
                         remoteSort: true,
-                        baseParams: {par_filtro: 'codigo_tipo'}
+                        baseParams: {par_filtro: 'da.codigo_tipo'}
                     }),
                     valueField: 'id_day',
                     displayField: 'codigo_tipo',
-                    gdisplayField: 'codigo_tipo',
+                    gdisplayField: 'desc_codigo_tipo',
                     hiddenName: 'id_day_week',
                     forceSelection: true,
                     typeAhead: false,
@@ -369,20 +375,21 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     mode: 'remote',
                     pageSize: 500,
                     queryDelay: 1000,
-                    anchor: '80%',
+                    anchor: '50%',
                     gwidth: 100,
                     minChars: 2,
                     renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['codigo_tipo']);
+                        return String.format('{0}', record.data['desc_codigo_tipo']);
                     }
                 },
                 type: 'ComboBox',
-                id_grupo: 0,
+                id_grupo: 1,
                 filters: {pfiltro: 'da.codigo_tipo',type: 'string'},
                 grid: true,
                 egrid: true,
                 form: true
             },
+
             {
                 config: {
                     name: 'estado_reg',
@@ -502,6 +509,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         ActList: '../../sis_gestion_materiales/control/CotizacionDetalle/listarCotizacionDetalle',
         id_store: 'id_cotizacion_det',
         fields: [
+            {name: 'id_day_week', type: 'numeric'},
             {name: 'id_cotizacion_det', type: 'numeric'},
             {name: 'id_cotizacion', type: 'numeric'},
             {name: 'id_detalle', type: 'numeric'},
@@ -526,8 +534,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             {name: 'usr_mod', type: 'string'},
             {name: 'cd', type: 'string'},
             {name: 'codigo', type: 'string'},
-            {name: 'codigo_tipo', type: 'string'},
-            {name: 'revisado', type: 'string'}
+            {name: 'revisado', type: 'string'},
+            {name: 'desc_codigo_tipo', type: 'string'}
 
         ],
         sortInfo: {
@@ -539,7 +547,6 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         onReloadPage: function (m) {
             this.maestro = m;
             this.store.baseParams = {id_cotizacion: this.maestro.id_cotizacion};
-            //this.store.baseParams = {id_cotizacion_det: this.Cmp.id_cotizacion_det};
             this.load({params: {start: 0, limit: 50}});
 
         },
@@ -552,8 +559,12 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
     onButtonSave:function(){
         Phx.vista.CotizacionDetalle.superclass.onButtonSave.call(this);
         Phx.CP.getPagina(this.idContenedorPadre).reload();
-        //this.reload();
-    }
+    },
+    onButtonEdit:function () {
+     var data = this.getSelectedData();
+     console.log('id_detalle',data);
+     Phx.vista.CotizacionDetalle.superclass.onButtonEdit.call(this);
+     }
     })
 </script>
 		

@@ -21,12 +21,15 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->SetFont('times', 'B', 10);
         foreach ($this->datos as $Key) {
             $this->MultiCell(0, 7, 'Enviado a: '.$Key['lista_proveedor']."\n" , 0, 'J', 0, '', '');
+
         }
+
 
 
     }
     function Footer() {
-        $this->setY(-15);
+        $this->Ln();
+       // $this->setY(-15);
         $ormargins = $this->getOriginalMargins();
         $this->SetTextColor(0, 0, 0);
         //set style for cell border
@@ -153,9 +156,10 @@ class RCuandroComparativoPDF extends  ReportePDF
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0, 5, 'OBSERVACIONES: ' . $Key['obs'] . "\n", 0, 'L', 0, '', '');
+                $this->ln();
             }
         }
-        $this->ln(14);
+        $this->ln();
         $elaborado = $this->datos2[0]['visto_ag'];
         $revision = $this->datos2[0]['visto_rev'];
         $aero =  $this->datos2[0]['aero'];

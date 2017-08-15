@@ -61,7 +61,12 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_solicitada'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_sin_resp') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_sin_respuesta'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra') {
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_comite') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+        }
+
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_concluido') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''finalizado'')");
@@ -72,7 +77,11 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_solicitada'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_sin_resp') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_sin_respuesta'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_comite') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_concluido') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''finalizado'')");
@@ -83,7 +92,10 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_solicitada'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_sin_resp') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_sin_respuesta'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra') {
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_comite') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_concluido') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''finalizado'')");

@@ -34,6 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Cotizacion').setVisible(false);
             this.getBoton('btnObs').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
+
             this.ocultarComponente(this.Cmp.fecha_po);
             this.ocultarComponente(this.Cmp.tipo_evaluacion);
             this.ocultarComponente(this.Cmp.taller_asignado);
@@ -265,7 +266,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ini_estado').setVisible(false);
             }
             return tb;
-        },
+        }
 
 
     };

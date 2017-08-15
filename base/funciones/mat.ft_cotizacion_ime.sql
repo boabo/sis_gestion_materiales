@@ -35,6 +35,8 @@ DECLARE
     v_registros 			record;
     v_valor					varchar;
     v_proveedor				record;
+    v_id_pro				integer;
+    v_nom_proveedor			varchar;
 
 
 BEGIN
@@ -59,6 +61,20 @@ BEGIN
         v_id_solicitud
         from mat.tsolicitud s
        	where s.id_solicitud = v_parametros.id_solicitud;
+
+
+        select 	c.id_proveedor,
+        		p.desc_proveedor
+        into
+        v_id_pro,
+        v_nom_proveedor
+        from mat.tcotizacion c
+        inner join param.vproveedor p on p.id_proveedor = c.id_proveedor
+        where c.id_solicitud = v_parametros.id_solicitud;
+
+        if v_id_pro = v_parametros.id_proveedor then
+        raise exception 'El proveedor % ya fue registrato',v_nom_proveedor;
+        end if;
 
         	--Sentencia de la insercion
         	insert into mat.tcotizacion(
@@ -211,7 +227,10 @@ BEGIN
 
 		begin
 			--Sentencia de la eliminacion
-			delete from mat.tcotizacion
+            delete from mat.tcotizacion_detalle
+            where id_cotizacion=v_parametros.id_cotizacion;
+
+            delete from mat.tcotizacion
             where id_cotizacion=v_parametros.id_cotizacion;
 
             --Definicion de la respuesta

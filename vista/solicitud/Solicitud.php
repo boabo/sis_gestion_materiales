@@ -24,6 +24,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
             this.controlCorreos=false;
             this.mensaje='';
+
             this.addButton('ini_estado',{
                 grupo:[8,3],
                 argument: {estado: 'inicio'},
@@ -33,6 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler:this.iniEstado,
                 tooltip: '<b>Retorna a estado borrador</b>'
             });
+
             this.addButton('ant_estado',{
                 grupo: [3,4],//2
                 argument: {estado: 'anterior'},
@@ -96,14 +98,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Cotización</b>',
                 scope:this
             });
-            /*this.addButton('btnCuadroComparativo',{
-                grupo:[3,4],
-                text :'Cuadro Comparativo',
-                iconCls : 'bexcel',
-                disabled: false,
-                handler : this.onCuadroComparativo,
-                tooltip : '<b>Cuadro Comparativo</b><br/><b>Cuadro Comparativo de Cotizaciones</b>'});
-            //modi*/
+
             this.addButton('Report',{
                 grupo:[0,1],
                 text :'Reporte',
@@ -1002,7 +997,6 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'usr_reg', type: 'string'},
             {name:'usr_mod', type: 'string'},
             {name:'desc_funcionario1', type: 'string'},
-            {name:'desc_matricula', type: 'string'},
             {name:'matricula', type: 'string'},
 
             {name:'tipo_reporte', type: 'string'},
@@ -1121,7 +1115,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
                 this.getBoton('diagrama_gantt').disable();
                 this.getBoton('btnObs').disable();
-                this.getBoton('ini_estado').setVisible(false);
+                this.getBoton('ini_estado').disable();
                 this.getBoton('Report').disable();
 
 

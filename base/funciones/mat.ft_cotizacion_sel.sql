@@ -144,17 +144,17 @@ BEGIN
     elsif(p_transaccion='MAT_CTS_COM')then
 
 		begin
-
-        -- raise EXCEPTION 'lle %',v_parametros.id_solicitud;
-        v_consulta:='select   ge.id_solicitud,
-                              ge.id_gestion_proveedores,
-                              mat.f_obtener_proveedor(unnest(ge.cotizacion_solicitadas)::integer)::varchar as desc_proveedor,
-                              unnest(ge.cotizacion_solicitadas)::integer as id_prove
-                              from mat.tgestion_proveedores ge
-        					  where ge.id_solicitud ='||v_parametros.id_solicitud||'and';
+        v_consulta:='select 	ne.id_solicitud,
+								ne.id_gestion_proveedores,
+                                ne.id_proveedor as id_prov,
+                                prov.desc_proveedor
+                                from mat.tgestion_proveedores_new ne
+                                inner join param.vproveedor prov on prov.id_proveedor = ne.id_proveedor
+                                where ne.id_solicitud = '||v_parametros.id_solicitud||' and ';
         --Definicion de la respuesta
+
 			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -169,8 +169,7 @@ BEGIN
 
 	elsif(p_transaccion='MAT_CTS_CUAR')then
     	begin
-        --raise exception 'id %',v_parametros.id_solicitud;
-          v_consulta:='select s.id_solicitud,
+			 v_consulta:='select s.id_solicitud,
 							  d.id_cotizacion,
                               d.nro_parte_cot::varchar as parte,
                               d.descripcion_cot::varchar as descripcion,
@@ -187,16 +186,21 @@ BEGIN
                               to_char(c.fecha_cotizacion,''DD/MM/YYYY'')::varchar as fecha_cotizacion,
                               s.fecha_po,
                               c.monto_total,
-                              (select pxp.list(initcap(p.desc_proveedor))
+                              /*(select pxp.list(initcap(p.desc_proveedor))
                                from param.vproveedor p
                                where p.id_proveedor = ANY( ges.cotizacion_solicitadas)
+                              )::varchar as lista_proveedor,*/
+                              (select pxp.list(initcap(p.desc_proveedor))
+                              from mat.tgestion_proveedores_new ne
+                              inner join param.vproveedor p on p.id_proveedor = ne.id_proveedor
+                              where ne.id_solicitud = s.id_solicitud
                               )::varchar as lista_proveedor,
                               c.pie_pag
 							  from mat.tsolicitud s
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
                               inner join param.vproveedor pr on pr.id_proveedor = c.id_proveedor
-                              inner join mat.tgestion_proveedores ges on ges.id_solicitud = s.id_solicitud
+                             -- inner join mat.tgestion_proveedores ges on ges.id_solicitud = s.id_solicitud
                               left join mat.tday_week dy on dy.id_day_week = d.id_day_week
                               where s.id_proceso_wf ='||v_parametros.id_proceso_wf||'and d.revisado = ''si'' and ';
 			--Definicion de la respuesta
@@ -294,11 +298,10 @@ BEGIN
 
 	elsif(p_transaccion='MAT_CTS_PART')then
     	begin
-        --raise exception 'id %',v_parametros.id_solicitud;
-          v_consulta:='SELECT d.nro_parte
-FROM mat.tdetalle_sol d
-inner join mat.tsolicitud s on s.id_solicitud = d.id_solicitud
-where s.id_proceso_wf  ='||v_parametros.id_proceso_wf||'and';
+          v_consulta:='SELECT 	d.nro_parte
+								FROM mat.tdetalle_sol d
+                                inner join mat.tsolicitud s on s.id_solicitud = d.id_solicitud
+                                where s.id_proceso_wf  ='||v_parametros.id_proceso_wf||'and';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			--Devuelve la respuesta

@@ -26,11 +26,6 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
 
             this.font();
-            this.Atributos[this.getIndAtributo('condicion')].form = true;
-            this.Atributos[this.getIndAtributo('lugar_entrega')].form = true;
-            this.Atributos[this.getIndAtributo('tipo_evaluacion')].form = true;
-
-
 
             this.Grupos.push( {
                 layout: 'column',
@@ -76,40 +71,40 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
             this.store.baseParams.pes_estado = 'pedido_ma_pendiente';
             this.load({params: {start: 0, limit: this.tam_pag}});
-            this.finCons = true;
-            this.getBoton('ini_estado').setVisible(true);
             this.getBoton('Report').setVisible(false);
-            this.getBoton('ant_estado').setVisible(true);
+            this.finCons = true;
 
         },
         gruposBarraTareas:[
             {name:'pedido_ma_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
             {name:'pedido_ma_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
             {name:'pedido_ma_sin_resp',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
+            {name:'pedido_ma_comite',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Vobo Comite</h1>',grupo:5,height:0},
             {name:'pedido_ma_compra',title:'<H1 align="center"><i class="fa fa-money"></i> Compra</h1>',grupo:3,height:0},
-            {name:'pedido_ma_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:3,height:0}
+            {name:'pedido_ma_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:5,height:0}
         ],
         
         actualizarSegunTab: function(name, indice){
 
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
-                if(name == 'pedido_ma_pendiente' || name == 'pedido_ma_solicitada'){
+                if(name == 'pedido_ma_pendiente' || name == 'pedido_ma_solicitada' ){
                     this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
                 }else{
                     this.getBoton('btnproveedor').setVisible(false);
                     this.getBoton('Cotizacion').setVisible(false);
                 }
+
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
         tam_pag:50,
         beditGroups: [2,3],
         bdelGroups:  [0],
-        bactGroups:  [0,1,2,3],
+        bactGroups:  [0,1,2,3,5],
         btestGroups: [0],
-        bexcelGroups: [0,1,2,3],
+        bexcelGroups: [0,1,2,3,5],
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
@@ -160,24 +155,17 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb = Phx.vista.PedidosMantenimiento.superclass.liberaMenu.call(this);
             if(tb){
 
+
                 this.getBoton('sig_estado').disable();
-                this.getBoton('sig_estado').disable();
-                this.getBoton('edit').setVisible(true);
-                this.getBoton('Report').setVisible(false);
-                this.getBoton('ini_estado').setVisible(true);
                 this.getBoton('btnproveedor').disable();
                 this.getBoton('Consulta_desaduanizacion').enable();
                 this.getBoton('Control_aLmacene').enable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
-
-
+                this.getBoton('ini_estado').disable();
+                this.getBoton('Report').setVisible(false);
             }
             return tb;
-        },
-        
-        sigEstado: function () {
-            Phx.vista.PedidosMantenimiento.superclass.sigEstado.call(this);
         },
         font :function () {
             this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
@@ -192,6 +180,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos[this.getIndAtributo('observacion_nota')].grid=true;
             this.Atributos[this.getIndAtributo('lugar_entrega')].grid=true;
             this.Atributos[this.getIndAtributo('condicion')].grid=true;
+
         }
 
 

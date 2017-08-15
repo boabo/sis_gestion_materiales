@@ -22,7 +22,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.id_solicitud = this.maestro.id_solicitud;
 
             //var rec = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
-
             this.Cmp.lista_correos.setValue(this.maestro.lista_correos);
         },
 
@@ -61,7 +60,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields: ['id_proveedor','desc_proveedor','codigo','nit','rotulo_comercial','lugar','email'],
                         // turn on remote sorting
                         remoteSort: true,
-                        baseParams:{par_filtro:'desc_proveedor#codigo#nit#rotulo_comercial',tipo:'abastecimiento'}
+                        baseParams:{par_filtro:'desc_proveedor#codigo#nit#rotulo_comercial',tipo:'abastecimiento',_adicionar:'si'}
 
                     }),
                     valueField: 'id_proveedor',

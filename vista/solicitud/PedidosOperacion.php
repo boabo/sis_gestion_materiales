@@ -27,8 +27,6 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
 
             this.font();
-            this.Atributos[this.getIndAtributo('condicion')].form = true;
-            this.Atributos[this.getIndAtributo('lugar_entrega')].form = true;
 
             this.Grupos.push( {
                 layout: 'column',
@@ -76,9 +74,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.pes_estado = 'pedido_op_pendiente';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
-           this.getBoton('ini_estado').setVisible(true);
             this.getBoton('Report').setVisible(false);
-            this.getBoton('ant_estado').setVisible(true);
 
 
         },
@@ -88,8 +84,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'pedido_op_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
             {name:'pedido_op_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
             {name:'pedido_op_sin_resp',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
+            {name:'pedido_op_comite',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Vobo Comite</h1>',grupo:5,height:0},
             {name:'pedido_op_compra',title:'<H1 align="center"><i class="fa fa-money"></i> Compra</h1>',grupo:3,height:0},
-            {name:'pedido_op_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:3,height:0}
+            {name:'pedido_op_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:5,height:0}
         ],
 
         actualizarSegunTab: function(name, indice){
@@ -109,9 +106,9 @@ header("content-type: text/javascript; charset=UTF-8");
         tam_pag:50,
         beditGroups: [2,3],
         bdelGroups:  [0],
-        bactGroups:  [0,1,2,3],
+        bactGroups:  [0,1,2,3,5],
         btestGroups: [0],
-        bexcelGroups: [0,1,2,3],
+        bexcelGroups: [0,1,2,3,5],
 
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
@@ -159,28 +156,26 @@ header("content-type: text/javascript; charset=UTF-8");
         liberaMenu:function(){
             var tb = Phx.vista.PedidosOperacion.superclass.liberaMenu.call(this);
             if(tb){
-
                 this.getBoton('sig_estado').disable();
-                this.getBoton('sig_estado').disable();
-                this.getBoton('edit').setVisible(true);
-                this.getBoton('Report').setVisible(false);
-                this.getBoton('ini_estado').setVisible(true);
                 this.getBoton('btnproveedor').disable();
                 this.getBoton('Consulta_desaduanizacion').enable();
                 this.getBoton('Control_aLmacene').enable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
+                this.getBoton('ini_estado').disable();
+                this.getBoton('Report').setVisible(false);
+
             }
             return tb;
         },
         bnew: false,
         fwidth: '65%',
         fheight: '75%',
+
         font:function () {
             this.Atributos[this.getIndAtributo('tipo_falla')].grid=false;
             this.Atributos[this.getIndAtributo('tipo_reporte')].grid=false;
             this.Atributos[this.getIndAtributo('mel')].grid=false;
-
             this.Atributos[this.getIndAtributo('nro_po')].grid=true;
             this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
             this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;

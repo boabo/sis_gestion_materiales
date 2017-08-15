@@ -85,7 +85,7 @@ BEGIN
 	if(p_transaccion='MAT_SOL_SEL')then
 
     	begin
-			--raise exception 'Hoy viernes a las 17:30 cortaremos el Sistema de Gestión de Materiales para publicar todos los cambios solicitados';
+
         SELECT		tf.id_funcionario,
  					fun.desc_funcionario1,
                     fun.nombre_cargo
@@ -99,69 +99,79 @@ BEGIN
         IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
             ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
-            	IF(v_record.nombre_cargo ='Gerente Mantenimiento') THEN
-                	select 	fun.id_funcionario,
-					count(fun.id_funcionario)::varchar as cant_reg
-                    into
-                    v_id_usuario_rev
-                    from wf.testado_wf ewf
-                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
-                    inner join mat.tsolicitud so on so.id_proceso_wf_firma = ewf.id_proceso_wf
-                    where so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento'
-                    group by fun.id_funcionario;
+
+               IF(v_record.nombre_cargo ='Gerente Mantenimiento') THEN
+
+
+                    select  fun.id_funcionario,
+              count(fun.id_funcionario)::varchar as cant_reg
+                            into
+                            v_id_usuario_rev
+                            from wf.testado_wf es
+                            inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
+                            inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                            where te.codigo = 'vobo_area' and fun.nombre_cargo ='Gerente Mantenimiento'
+                            group by fun.id_funcionario;
+
+
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-         			END IF;
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                ELSE
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+              END IF;
+
                 ELSIF(v_record.nombre_cargo ='Especialista Planificación Servicios') THEN
-                	select 	fun.id_funcionario,
-					count(fun.id_funcionario)::varchar as cant_reg
-                    into
-                    v_id_usuario_rev
-                    from wf.testado_wf ewf
-                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
-                    inner join mat.tsolicitud so on so.id_proceso_wf_firma = ewf.id_proceso_wf
-                    where so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones'
-                    group by fun.id_funcionario;
+
+                select  fun.id_funcionario,
+            count(fun.id_funcionario)::varchar as cant_reg
+                        into
+                      v_id_usuario_rev
+                        from wf.testado_wf es
+                        inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
+                        inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                        where te.codigo = 'vobo_area' and fun.nombre_cargo ='Especialista Planificación Servicios'
+                        group by fun.id_funcionario;
+
+
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-            		END IF;
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                ELSE
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+                END IF;
                 ELSIF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
-                	select 	fun.id_funcionario,
-					count(fun.id_funcionario)::varchar as cant_reg
-                    into
-                    v_id_usuario_rev
-                    from wf.testado_wf ewf
-                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
-                    inner join mat.tsolicitud so on so.id_proceso_wf_firma = ewf.id_proceso_wf
-                    where so.estado_firma = 'vobo_aeronavegabilidad'
-                    group by fun.id_funcionario;
+                  select  fun.id_funcionario,
+              count(fun.id_funcionario)::varchar as cant_reg
+                             into
+                        v_id_usuario_rev
+                            from wf.testado_wf es
+                            inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
+                            inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                            where te.codigo = 'vobo_aeronavegabilidad' and fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua'
+                            group by fun.id_funcionario;
+
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-            		END IF;
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                ELSE
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+                END IF;
                 ELSIF(v_record.nombre_cargo ='Jefe Departamento Abastecimientos y Logistica') THEN
-               	select 	fu.id_funcionario,
-						count(fu.id_funcionario)::varchar as cant_reg
-         				into
-                    	v_id_usuario_rev
+                select  fu.id_funcionario,
+            count(fu.id_funcionario)::varchar as cant_reg
+                into
+                      v_id_usuario_rev
                     from wf.testado_wf es
                     inner join orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
                     inner join segu.tusuario u on u.id_persona = fu.id_persona
                     inner join mat.tsolicitud  so ON so.id_estado_wf_firma = es.id_estado_wf
-                   	left join wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
+                    left join wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
                     WHERE   so.estado_firma = 'vobo_dpto_abastecimientos'
                     GROUP BY fu.id_funcionario;
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-         			END IF;
-            	END IF;
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                ELSE
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+              END IF;
+              END IF;
                 ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen')THEN
 						IF(v_record.nombre_cargo = 'Técnico Revision Procesos' ) THEN
                          select u.id_usuario,
@@ -199,24 +209,6 @@ BEGIN
          								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
          							END IF;
                         END IF;
-                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' ) THEN
-                         select u.id_usuario,
-                				count(u.id_usuario)::varchar as cant_reg
-         						into
-                                v_id_usuario_rev
-                                from wf.testado_wf es
-                                inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                                inner join segu.tusuario u on u.id_persona = fu.id_persona
-                                inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
-                                inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Analista II Presupuestos'
-                                GROUP BY u.id_usuario;
-                                	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         								v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         							ELSE
-         								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-         							END IF;
-                        END IF;
                         IF(v_record.nombre_cargo = 'Técnico Adquisiciones' ) THEN
                          select u.id_usuario,
                 				count(u.id_usuario)::varchar as cant_reg
@@ -235,7 +227,64 @@ BEGIN
          								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
          							END IF;
                         END IF;
+               ------
+               ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComite') THEN
 
+               IF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
+
+                    select 	fun.id_funcionario,
+					count(fun.id_funcionario)::varchar as cant_reg
+                    into
+                    v_id_usuario_rev
+                    from wf.testado_wf ewf
+                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
+                    inner join mat.tsolicitud so on so.id_proceso_wf = ewf.id_proceso_wf
+                    where so.estado = 'comite_aeronavegabilidad'group by fun.id_funcionario;
+
+                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         			v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+         			ELSE
+         			v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+         			END IF;
+               END IF;
+
+                IF(v_record.nombre_cargo ='Jefe Departamento Abastecimientos y Logistica') THEN
+
+                select 	fun.id_funcionario,
+					count(fun.id_funcionario)::varchar as cant_reg
+                    into
+                    v_id_usuario_rev
+                    from wf.testado_wf ewf
+                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
+                    inner join mat.tsolicitud so on so.id_proceso_wf = ewf.id_proceso_wf
+                    where so.estado = 'comite_dpto_abastecimientos'group by fun.id_funcionario;
+
+                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         			v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+         			ELSE
+         			v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+         			END IF;
+
+            	END IF;
+
+                IF(v_record.nombre_cargo ='Jefe Abastecimientos y Suministros') THEN
+                 select 	fun.id_funcionario,
+					count(fun.id_funcionario)::varchar as cant_reg
+                    into
+                    v_id_usuario_rev
+                    from wf.testado_wf ewf
+                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
+                    inner join mat.tsolicitud so on so.id_proceso_wf = ewf.id_proceso_wf
+                    where so.estado = 'comite_unidad_abastecimientos'group by fun.id_funcionario;
+
+                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+         			v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+         			ELSE
+         			v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+         			END IF;
+
+            	END IF;
+                -------
 
     				ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
           					v_filtro = '';
@@ -326,7 +375,7 @@ BEGIN
                         sol.fecha_po,
                         sol.tipo_evaluacion,
                         sol.taller_asignado,
-                        array_to_string(tgp.cotizacion_solicitadas::INTEGER[],'','')::varchar as lista_correos,
+                        pxp.list(tgp.id_proveedor::text)::varchar as lista_correos,
                         sol.condicion,
                         sol.lugar_entrega,
                         sol.mensaje_correo
@@ -343,7 +392,7 @@ BEGIN
                         left join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
                         left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
                         left join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
-                        left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = sol.id_solicitud
+                        left join mat.tgestion_proveedores_new tgp ON tgp.id_solicitud = sol.id_solicitud
                         where  '||v_filtro;
 
 			--Definicion de la respuesta
@@ -364,8 +413,7 @@ BEGIN
                         ewb.id_tipo_estado,
                         pwfb.id_tipo_estado_wfs,
                         ti.nombre_estado,
-                        tip.nombre_estado,
-                        tgp.cotizacion_solicitadas';
+                        tip.nombre_estado';
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
@@ -383,183 +431,7 @@ BEGIN
 	elsif(p_transaccion='MAT_SOL_CONT')then
 
 		begin
-            /*SELECT	tf.id_funcionario,
- 					fun.desc_funcionario1,
-                    fun.nombre_cargo
-                    INTO
-                    v_record
-                    FROM segu.tusuario tu
-                    INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
-                    INNER JOIN orga.vfuncionario_cargo fun on fun.id_funcionario = tf.id_funcionario
-                    WHERE tu.id_usuario = p_id_usuario and fun.fecha_finalizacion is null;
 
-        IF 	p_administrador THEN
-				v_filtro = ' 0=0 AND ';
-            ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
-            	IF(v_record.nombre_cargo ='Gerente Mantenimiento') THEN
-                	select 	fun.id_funcionario,
-					count(fun.id_funcionario)::varchar as cant_reg
-                    into
-                    v_id_usuario_rev
-                    from wf.testado_wf ewf
-                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
-                    inner join mat.tsolicitud so on so.id_proceso_wf_firma = ewf.id_proceso_wf
-                    where so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Mantenimiento'
-                    group by fun.id_funcionario;
-                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-         			END IF;
-                ELSIF(v_record.nombre_cargo ='Especialista Planificación Servicios') THEN
-                	select 	fun.id_funcionario,
-					count(fun.id_funcionario)::varchar as cant_reg
-                    into
-                    v_id_usuario_rev
-                    from wf.testado_wf ewf
-                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
-                    inner join mat.tsolicitud so on so.id_proceso_wf_firma = ewf.id_proceso_wf
-                    where so.estado_firma = 'vobo_area' and so.origen_pedido = 'Gerencia de Operaciones'
-                    group by fun.id_funcionario;
-                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-            		END IF;
-                ELSIF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
-                	select 	fun.id_funcionario,
-					count(fun.id_funcionario)::varchar as cant_reg
-                    into
-                    v_id_usuario_rev
-                    from wf.testado_wf ewf
-                    inner join orga.tfuncionario fun on fun.id_funcionario = ewf.id_funcionario
-                    inner join mat.tsolicitud so on so.id_proceso_wf_firma = ewf.id_proceso_wf
-                    where so.estado_firma = 'vobo_aeronavegabilidad'
-                    group by fun.id_funcionario;
-                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-            		END IF;
-                ELSIF(v_record.nombre_cargo ='Jefe Departamento Abastecimientos y Logistica') THEN
-               	select 	fu.id_funcionario,
-						count(fu.id_funcionario)::varchar as cant_reg
-         				into
-                    	v_id_usuario_rev
-                    from wf.testado_wf es
-                    inner join orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                    inner join segu.tusuario u on u.id_persona = fu.id_persona
-                    inner join mat.tsolicitud  so ON so.id_estado_wf_firma = es.id_estado_wf
-                   	left join wf.testado_wf te ON te.id_estado_anterior = es.id_estado_wf
-                    WHERE   so.estado_firma = 'vobo_dpto_abastecimientos'
-                    GROUP BY fu.id_funcionario;
-                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         				v_filtro = 'ewb.id_funcionario = '|||v_record.id_funcionario||' AND  ';
-         				ELSE
-         				v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
-         			END IF;
-            	END IF;
-                ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen')THEN
-						IF(v_record.nombre_cargo = 'Técnico Revision Procesos' ) THEN
-                         select u.id_usuario,
-                				count(u.id_usuario)::varchar as cant_reg
-         						into
-                                v_id_usuario_rev
-                                from wf.testado_wf es
-                                inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                                inner join segu.tusuario u on u.id_persona = fu.id_persona
-                                inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
-                                inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Técnico Revision Procesos'
-                                GROUP BY u.id_usuario;
-                                	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         								v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         							ELSE
-         								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-         							END IF;
-                        END IF;
-                        IF(v_record.nombre_cargo = 'Auxiliar Suministros' ) THEN
-                         select u.id_usuario,
-                				count(u.id_usuario)::varchar as cant_reg
-         						into
-                                v_id_usuario_rev
-                                from wf.testado_wf es
-                                inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                                inner join segu.tusuario u on u.id_persona = fu.id_persona
-                                inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
-                                inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Auxiliar Suministros'
-                                GROUP BY u.id_usuario;
-                                	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         								v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         							ELSE
-         								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-         							END IF;
-                        END IF;
-                        IF(v_record.nombre_cargo = 'Técnico Adquisiciones' ) THEN
-                         select u.id_usuario,
-                				count(u.id_usuario)::varchar as cant_reg
-         						into
-                                v_id_usuario_rev
-                                from wf.testado_wf es
-                                inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                                inner join segu.tusuario u on u.id_persona = fu.id_persona
-                                inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
-                                inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Técnico Adquisiciones'
-                                GROUP BY u.id_usuario;
-                                	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         								v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         							ELSE
-         								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-         							END IF;
-
-
-                        END IF;
-                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' ) THEN
-                        		 select u.id_usuario,
-                				count(u.id_usuario)::varchar as cant_reg
-         						into
-                                v_id_usuario_rev
-                                from wf.testado_wf es
-                                inner JOIN orga.tfuncionario fu on fu.id_funcionario = es.id_funcionario
-                                inner join segu.tusuario u on u.id_persona = fu.id_persona
-                                inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
-                                inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Analista II Presupuestos'
-                                GROUP BY u.id_usuario;
-                                	IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-         								v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-         							ELSE
-         								v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-         							END IF;
-       				 END IF;
-    				ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
-          					v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
-                        v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
-                        v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
-                        v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
-                        v_filtro = '';
-
-                    ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
-                    v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'and ';
-
-                    ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
-                     v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
-
-                    ELSIF v_parametros.pes_estado = 'revision_reg' THEN
-                    v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
-
-                    ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
-                    v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
-                            ' AND';
-                    ELSE
-                    v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
-            END IF;*/
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(sol.id_solicitud)
 						from mat.tsolicitud sol

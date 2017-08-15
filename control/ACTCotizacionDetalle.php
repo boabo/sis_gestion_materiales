@@ -43,13 +43,11 @@ class ACTCotizacionDetalle extends ACTbase{
 	}
 						
 	function eliminarCotizacionDetalle(){
-			$this->objFunc=$this->create('MODCotizacionDetalle');	
+        $this->objFunc=$this->create('MODCotizacionDetalle');
 		$this->res=$this->objFunc->eliminarCotizacionDetalle($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
     function listarDay_week(){
-        $this->objParam->defecto('ordenacion','id_cotizacion_det');
-        $this->objParam->defecto('dir_ordenacion','asc');
         $this->objFunc=$this->create('MODCotizacionDetalle');
         $this->res=$this->objFunc->listarDay_week($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());

@@ -172,7 +172,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
                 mode: 'local',
                 anchor: '50%',
                 gwidth: 80,
-                store:['Consumible','Rotable','Herramienta'],
+                store:['Consumible','Rotable','Herramienta','Otros Cargos'],
                 renderer: function(value, p, record) {
                     if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
                         return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', value);

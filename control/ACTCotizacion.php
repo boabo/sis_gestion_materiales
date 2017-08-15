@@ -41,7 +41,11 @@ class ACTCotizacion extends ACTbase{
 	}
 
     function listarProvedor(){
+        $this->objParam->defecto('ordenacion','id_proveedor');
         $this->objParam->defecto('dir_ordenacion','asc');
+        /*if ($this->objParam->getParametro('desc_proveedor') != '') {
+            $this->objParam->addFiltro("prov.desc_proveedor = ''". $this->objParam->getParametro('desc_proveedor')."''");
+        }*/
         $this->objFunc=$this->create('MODCotizacion');
         $this->res=$this->objFunc->listarProveedor($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());

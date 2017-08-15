@@ -26,12 +26,6 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
 
             this.font();
-            this.Atributos[this.getIndAtributo('condicion')].form = true;
-            this.Atributos[this.getIndAtributo('lugar_entrega')].form = true;
-            this.Atributos[this.getIndAtributo('mensaje_correo')].form = true;
-
-
-
             this.Grupos.push( {
                 layout: 'column',
                 border: false,
@@ -67,24 +61,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
                         ]
-                    }/*,
-                    {
-                        bodyStyle: 'padding-left:10px;',
-                        items: [
-                            {
-                                xtype: 'fieldset',
-                                title: ' Datos Correo',
-                                defaults: {
-                                    anchor: '30' // leave room for error icon
-                                },
-                                autoHeight: true,
-                                items: [],
-                                id_grupo: 6
-                            }
-
-
-                        ]
-                    }*/
+                    }
                 ]
 
             });
@@ -94,9 +71,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.pes_estado = 'pedido_al_pendiente';
             this.load({params: {start: 0, limit: this.tam_pag}});
             this.finCons = true;
-            this.getBoton('ini_estado').setVisible(true);
             this.getBoton('Report').setVisible(false);
-            this.getBoton('ant_estado').setVisible(true);
 
         },
         
@@ -105,8 +80,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'pedido_al_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
             {name:'pedido_al_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
             {name:'pedido_al_sin_resp',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
+            {name:'pedido_al_comite',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Vobo Comite</h1>',grupo:5,height:0},
             {name:'pedido_al_compra',title:'<H1 align="center"><i class="fa fa-money"></i> Compra</h1>',grupo:3,height:0},
-            {name:'pedido_al_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:3,height:0}
+            {name:'pedido_al_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:5,height:0}
         ],
 
         actualizarSegunTab: function(name, indice){
@@ -126,9 +102,9 @@ header("content-type: text/javascript; charset=UTF-8");
         tam_pag:50,
         beditGroups: [2,3],
         bdelGroups:  [0],
-        bactGroups:  [0,1,2,3],
+        bactGroups:  [0,1,2,3,5],
         btestGroups: [0],
-        bexcelGroups: [0,1,2,3],
+        bexcelGroups: [0,1,2,3,5],
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
@@ -179,15 +155,14 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
 
                 this.getBoton('sig_estado').disable();
-                this.getBoton('sig_estado').disable();
-                this.getBoton('edit').setVisible(true);
-                this.getBoton('Report').setVisible(false);
-                this.getBoton('ini_estado').setVisible(true);
+                this.getBoton('btnproveedor').disable();
                 this.getBoton('Consulta_desaduanizacion').enable();
                 this.getBoton('Control_aLmacene').enable();
                 this.getBoton('Archivado_concluido').enable();
-                this.getBoton('btnproveedor').disable();
                 this.getBoton('Cotizacion').disable();
+                this.getBoton('ini_estado').disable();
+                this.getBoton('Report').setVisible(false);
+
             }
 
             return tb;

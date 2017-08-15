@@ -122,7 +122,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         lazyRender:true,
                         mode: 'local',
                         anchor: '50%',
-                        store:['Consumible','Rotable','Herramienta'],
+                        store:['Consumible','Rotable','Herramienta','Otros Cargos'],
                         maxLength: 100
                     }),
 

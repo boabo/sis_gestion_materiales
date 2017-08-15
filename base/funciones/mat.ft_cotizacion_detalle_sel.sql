@@ -47,25 +47,10 @@ BEGIN
 
     	begin
 
-          /*select 	d.id_cotizacion_det,
-        			d.precio_unitario_mb
-                into
-                v_id_detalle,
-                v_precio
-        from mat.tcotizacion_detalle d
-        where d.id_cotizacion = v_parametros.id_cotizacion;
-        if (v_precio > 0)then
-    	update mat.tcotizacion_detalle  set
-    	revisado = 'si'
-        where id_cotizacion_det = v_id_detalle;
-        else
-        update mat.tcotizacion_detalle  set
-    	revisado = 'no'
-        where id_cotizacion_det = v_id_detalle;
-        end if;*/
 
     		--Sentencia de la consulta
 			v_consulta:='select
+            			cde.id_day_week,
 						cde.id_cotizacion_det,
 						cde.id_cotizacion,
 						cde.id_detalle,
@@ -90,8 +75,8 @@ BEGIN
 						usu2.cuenta as usr_mod,
                         cde.cd,
                         u.codigo,
-                        da.codigo_tipo,
-                        cde.revisado
+                        cde.revisado,
+                        da.codigo_tipo as desc_codigo_tipo
 						from mat.tcotizacion_detalle cde
 						inner join segu.tusuario usu1 on usu1.id_usuario = cde.id_usuario_reg
             			left join mat.tunidad_medida u on u.id_unidad_medida = cde.id_unidad_medida_cot
@@ -118,22 +103,7 @@ BEGIN
 	elsif(p_transaccion='MAT_CDE_CONT')then
 
 		begin
-          select 	d.id_cotizacion_det,
-        		d.precio_unitario_mb
-                into
-                v_id_detalle,
-                v_precio
-        from mat.tcotizacion_detalle d
-        where d.id_cotizacion = v_parametros.id_cotizacion;
-        if (v_precio > 0)then
-    	update mat.tcotizacion_detalle  set
-    	revisado = 'si'
-        where id_cotizacion_det = v_id_detalle;
-        else
-        update mat.tcotizacion_detalle  set
-    	revisado = 'no'
-        where id_cotizacion_det = v_id_detalle;
-        end if;
+
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_cotizacion_det),
             					COALESCE(sum(cde.precio_unitario),0)::numeric as total_precio_unitario,

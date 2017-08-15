@@ -19,10 +19,11 @@ class MODCotizacionDetalle extends MODbase{
 		$this->transaccion='MAT_CDE_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setParametro('id_cotizacion','id_cotizacion','int4');
-      //  $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+
 		//Definicion de la lista del resultado del query
         $this->capturaCount('total_precio_unitario','numeric');
 		$this->capturaCount('total_precio','numeric');
+        $this->captura('id_day_week','int4');
 		$this->captura('id_cotizacion_det','int4');
 		$this->captura('id_cotizacion','int4');
 		$this->captura('id_detalle','int4');
@@ -47,16 +48,12 @@ class MODCotizacionDetalle extends MODbase{
 		$this->captura('usr_mod','varchar');
 		$this->captura('cd','varchar');
 		$this->captura('codigo','varchar');
-		$this->captura('codigo_tipo','varchar');
         $this->captura('revisado','varchar');
-
-
-
-
+        $this->captura('desc_codigo_tipo','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+		//var_dump($this->respuesta);exit;
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
