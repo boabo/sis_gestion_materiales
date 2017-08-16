@@ -118,8 +118,8 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             this.addButton('Consulta_desaduanizacion',{
                 grupo: [3],
-                text: 'Desaduanización',
-                iconCls: 'bassign',
+                text: 'Mod. Sol.',
+                iconCls: 'bfolder',
                 disabled: false,
                 handler: this.consultadesaduanizacion,
                 tooltip: '<b>Desaduanizacion</b><br>Nos permite consultar las Desaduanizaciones, de las solicitudes en proceso.',

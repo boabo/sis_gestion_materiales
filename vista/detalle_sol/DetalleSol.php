@@ -427,23 +427,24 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         },
         preparaMenu:function(n){
         Phx.vista.DetalleSol.superclass.preparaMenu.call(this,n);
-        if(this.maestro.estado == 'borrador'){
+       // if(this.maestro.estado == 'borrador' ){
             this.getBoton('del').enable();
             this.getBoton('new').enable();
             this.getBoton('edit').enable();
-        }else{
+        /*}
+        else{
             this.getBoton('del').disable();
             this.getBoton('new').disable();
             this.getBoton('edit').disable();
-        }
+        }*/
         },
         liberaMenu: function() {
             //Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
             var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
             if(tb){
-                //this.getBoton('del').disable();
-                //this.getBoton('new').disable();
-                //this.getBoton('edit').disable();
+                this.getBoton('del').enable();
+                this.getBoton('new').enable();
+                this.getBoton('edit').enable();
             }
 
         },

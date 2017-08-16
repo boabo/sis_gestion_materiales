@@ -186,6 +186,7 @@ class MODCotizacion extends MODbase{
         $this->captura('monto_total','numeric');
         $this->captura('lista_proveedor','varchar');
         $this->captura('pie_pag','varchar');
+        $this->captura('estado','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

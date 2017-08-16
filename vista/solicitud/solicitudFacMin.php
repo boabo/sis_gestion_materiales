@@ -18,10 +18,10 @@ header("content-type: text/javascript; charset=UTF-8");
         ActList:'../../sis_gestion_materiales/control/Solicitud/listarSolicitud',
         tabsouth :[
             {
-                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',
                 title:'Detalle',
                 height:'50%',
-                cls:'DetalleNoEdit'
+                cls:'DetalleSol'
             }
         ],
 
@@ -38,7 +38,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
             this.getBoton('sig_estado').setVisible(false);
-            this.getBoton('edit').setVisible(false);
+            this.getBoton('edit').setVisible(true);
             this.getBoton('ant_estado').setVisible(false);
             this.getBoton('btnObs').setVisible(false);
             this.getBoton('Control_aLmacene').setVisible(false);
@@ -63,7 +63,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.store.baseParams.pes_estado = name;
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
-        },
+        }
 
     }
 </script>

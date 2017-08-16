@@ -7,7 +7,7 @@ class RCuandroComparativoPDF extends  ReportePDF
     function Header()
     {
         $height = 15;
-        $this->ln(8);
+        //$this->ln(8);
         $this->MultiCell(35, $height, '', 0, 'C', 0, '', '');
         $this->SetFontSize(11);
         $this->SetFont('', 'B');
@@ -17,19 +17,10 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->SetFont('times', '', 10);
         $this->MultiCell(0, 5, '(Decreto Supremo N° 26688) Versión I', 0, 'C', 0, '', '');
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 17, 15, 36);
-        $this->ln(10);
-        $this->SetFont('times', 'B', 10);
-        foreach ($this->datos as $Key) {
-            $this->MultiCell(0, 7, 'Enviado a: '.$Key['lista_proveedor']."\n" , 0, 'J', 0, '', '');
-
-        }
-
-
-
     }
     function Footer() {
         $this->Ln();
-       // $this->setY(-15);
+        // $this->setY(-15);
         $ormargins = $this->getOriginalMargins();
         $this->SetTextColor(0, 0, 0);
         //set style for cell border
@@ -39,7 +30,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->Ln(2);
         $cur_y = $this->GetY();
         //$this->Cell($ancho, 0, 'Generado por XPHS', 'T', 0, 'L');
-         $this->Cell($ancho, 0, '', '', 0, 'L');
+        $this->Cell($ancho, 0, '', '', 0, 'L');
         $pagenumtxt = 'Página'.' '.$this->getAliasNumPage().' de '.$this->getAliasNbPages();
         $this->Cell($ancho, 0, $pagenumtxt, '', 0, 'C');
         //$this->Cell($ancho, 0, $_SESSION['_REP_NOMBRE_SISTEMA'], '', 0, 'R');
@@ -47,12 +38,17 @@ class RCuandroComparativoPDF extends  ReportePDF
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
-
             }
         }
     }
     function reporteCuadroComparativo(){
-       //
+        $this->SetFont('times', 'B', 10);
+        foreach ($this->datos as $Key) {
+            if($Key['adjudicado'] == 'si') {
+            $this->writeHTML('<p align="justify"> Enviado a: '.$Key['lista_proveedor'].'</p> <br>', true, false, false, false, '');
+            }
+        }
+        $this->Ln();
         foreach ($this->datos as  $val)
         {
             if (  !array_key_exists($val['desc_proveedor'], $this->proveedor)
@@ -145,25 +141,36 @@ class RCuandroComparativoPDF extends  ReportePDF
                         <td align="justify" style="width:100%;"><b> RECOMENDACION:</b> '.$rec.'</td>
                         </tr>';
 
-            $tbl2 .= '<br></table>';
+            $tbl2 .= '</table>';
             $this->SetFont('times', '', 10);
             $this->writeHTML($tbl2);
-
-
         }
-
-
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
-                $this->MultiCell(0, 5, 'OBSERVACIONES: ' . $Key['obs'] . "\n", 0, 'L', 0, '', '');
-                $this->ln();
+                $this->writeHTML('<p align="justify"> OBSERVACIONES:  '.$Key['obs'].'</p> <br>', true, false, false, false, '');
             }
         }
-        $this->ln();
-        $elaborado = $this->datos2[0]['visto_ag'];
-        $revision = $this->datos2[0]['visto_rev'];
-        $aero =  $this->datos2[0]['aero'];
-        $abastecimiento= $this->datos2[0]['visto_abas'];
+        if ( $this->datos[0]['estado'] != 'cotizacion') {
+            $elaborado = $this->datos2[0]['visto_ag'];
+        }else{
+            $elaborado = ' ';
+        }
+        if ($this->datos[0]['estado'] != 'comite_unidad_abastecimientos') {
+            $revision = $this->datos2[0]['visto_rev'];
+        }else{
+            $revision= ' ';
+        }
+        if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad') {
+            $aero = $this->datos2[0]['aero'];
+        }else{
+            $aero = ' ';
+        }
+        if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
+            $abastecimiento = $this->datos2[0]['visto_abas'];
+        }else{
+            $abastecimiento = ' ';
+        }
+
         $fun_sol = explode('|',$elaborado);
         $fun_rev = explode('|',$revision);
         $fun_aero = explode('|',$aero);
@@ -180,10 +187,15 @@ class RCuandroComparativoPDF extends  ReportePDF
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Elaborado por</b><br>'.$fun_sol[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Abastecimientos y suministros</b><br>'.$fun_rev[0].'</td>
         </tr>
-        <tr>
-                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $primeraFirma . '" alt="Logo"><br></td>
-                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $segundaFirma . '" alt="Logo"><br></td>
-         </tr>
+        <tr>';
+        if ( $this->datos[0]['estado'] != 'cotizacion') {
+            $tbl .= '
+                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $primeraFirma . '" alt="Logo"><br></td>';
+        }
+        if ($this->datos[0]['estado'] != 'comite_unidad_abastecimientos') {
+            $tbl .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $segundaFirma . '" alt="Logo"><br> </td>';
+        }
+        $tbl .= ' </tr>
          </tbody>
         </table>';
         $tbl1 = ' <table border="2">
@@ -192,10 +204,16 @@ class RCuandroComparativoPDF extends  ReportePDF
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Aeronavegabilidad Continua</b><br>'.$fun_aero[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Dpto Abastecimiento y Logistica</b><br>'.$fun_abas[0].'</td>
         </tr>
-        <tr>
-                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"><br></td>
-                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>
-         </tr>
+        <tr>';
+        if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad') {
+            $tbl1 .= '<td align="center"><br><br>';
+            $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
+            $tbl1 .= '<br></td>';
+        }
+        if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
+            $tbl1 .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>';
+        }
+        $tbl1 .= '</tr>
          </tbody>
         </table>';
 
@@ -241,10 +259,10 @@ class RCuandroComparativoPDF extends  ReportePDF
 
     }
     function generarReporte() {
-        $this->SetMargins(15,50,15);
+        $this->SetMargins(15,35,15);
         $this->setFontSubsetting(false);
         $this->AddPage();
-        $this->SetMargins(15,50,15);
+        $this->SetMargins(15,35,15);
         $this->reporteCuadroComparativo();
 
     }
