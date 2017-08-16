@@ -356,7 +356,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                         id: 'id_day_week',
                         root: 'datos',
                         sortInfo: {
-                            field: 'codigo_tipo',
+                            field: 'id_day',
                             direction: 'ASC'
                         },
                         totalProperty: 'total',
