@@ -54,7 +54,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.SolicitudFec.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'ab_origen_ing';
+            this.store.baseParams.pes_estado = 'ab_origen_ing_n';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.getBoton('new').setVisible(false);
             this.getBoton('del').setVisible(false);
@@ -71,9 +71,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         gruposBarraTareas:[
-         {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:4,height:0, width: 100},
-         {name:'ab_origen_man',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:4,height:0, width: 100},
-         {name:'ab_origen_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:4,height:0, width: 150}
+         {name:'ab_origen_ing_n',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:4,height:0, width: 100},
+         {name:'ab_origen_man_n',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:4,height:0, width: 100},
+         {name:'ab_origen_alm_n',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:4,height:0, width: 150}
 
          ],
         tam_pag:50,

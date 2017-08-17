@@ -15,11 +15,19 @@ header("content-type: text/javascript; charset=UTF-8");
         title: 'Solicitud',
         nombreVista: 'Noedit',
         constructor: function (config) {
-
             Phx.vista.DetalleNoEdit.superclass.constructor.call(this, config);
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'edit';
+        },
+        preparaMenu:function(n){
+            var tb =this.tbar;
+            Phx.vista.DetalleNoEdit.superclass.preparaMenu.call(this,n);
+            return tb;
+        },
+        liberaMenu: function() {
+            var tb = Phx.vista.DetalleNoEdit.superclass.liberaMenu.call(this);
+
+            return tb;
         },
         bnew: false,
         bdel: false,

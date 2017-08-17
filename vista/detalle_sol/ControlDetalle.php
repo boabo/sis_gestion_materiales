@@ -15,6 +15,7 @@ header("content-type: text/javascript; charset=UTF-8");
         title: 'Solicitud',
         nombreVista: 'Control',
         constructor: function (config) {
+
             this.Atributos.unshift({
                     config: {
                         name: 'revisado',
@@ -42,11 +43,45 @@ header("content-type: text/javascript; charset=UTF-8");
                     form: false
                 });
             Phx.vista.ControlDetalle.superclass.constructor.call(this, config);
+            this.grid.addListener('cellclick', this.oncellclick,this);
             this.maestro = config.maestro;
-
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'Control';
-            //this.load({params:{start:0, limit:this.tam_pag}});
+        },
+        preparaMenu:function(n){
+            var tb =this.tbar;
+            Phx.vista.ControlDetalle.superclass.preparaMenu.call(this,n);
+            return tb;
+        },
+        liberaMenu: function() {
+            var tb = Phx.vista.ControlDetalle.superclass.liberaMenu.call(this);
+
+            return tb;
+        },
+        oncellclick : function(grid, rowIndex, columnIndex, e) {
+
+            var record = this.store.getAt(rowIndex),
+                fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
+
+            if(fieldName == 'revisado') {
+                this.cambiarRevision(record);
+            }
+        },
+        cambiarRevision: function(record){
+            Phx.CP.loadingShow();
+            var d = record.data;
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/DetalleSol/cambiarRevision',
+                params:{ id_detalle: d.id_detalle,revisado:d.revisado},
+                success: this.successRevision,
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+            this.reload();
+        },
+        successRevision: function(resp){
+            Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
         },
         bnew: true,
         bdel: true,

@@ -131,7 +131,7 @@ EOF;
                 </tr>
                 <tr style="font-size: 9pt; text-align: left;" >
                      <td colspan="2"><b>&nbsp;&nbsp;Descripción del Bien o Servicio (Incluir y detallar servicios adicionales como transporte):<br><br>
-                       SEGÚN LISTA DE ORDEN DE COMPRA:
+                       SEGÚN LISTA DE ESPECIFICACIONES TECNICAS:
                      </b>
                      <ol>';
                         foreach ($nro_partes as $partes){

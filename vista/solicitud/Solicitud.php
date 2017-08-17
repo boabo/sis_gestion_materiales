@@ -602,7 +602,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'nro_po',
                     fieldLabel: 'Nro. PO',
                     allowBlank: false,
-                    anchor: '100%',
+                    anchor: '95%',
                     gwidth: 100, maxLength:50
                 },
                 type:'TextField',
@@ -617,7 +617,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'fecha_po',
                     fieldLabel: 'Fecha P.O',
                     allowBlank: false,
-                    anchor: '100%',
+                    anchor: '95%',
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -1040,10 +1040,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
         tabsouth :[
             {
-                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetEdit.php',
                 title:'Detalle',
                 height:'50%',
-                cls:'DetalleSol'
+                cls:'DetEdit'
             }
         ],
         Grupos: [

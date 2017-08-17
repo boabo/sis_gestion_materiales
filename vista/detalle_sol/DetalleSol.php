@@ -16,7 +16,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
         Phx.vista.DetalleSol.superclass.constructor.call(this,config);
         this.init();
-        this.grid.addListener('cellclick', this.oncellclick,this);
     },
 			
 	Atributos:[
@@ -420,59 +419,38 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.store.baseParams = {id_solicitud: this.maestro.id_solicitud};
             this.load({params: {start: 0, limit: 50}});
         },
-
         loadValoresIniciales: function () {
             this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
             Phx.vista.DetalleSol.superclass.loadValoresIniciales.call(this);
         },
-        preparaMenu:function(n){
+    preparaMenu:function(n){
+        var tb =this.tbar;
         Phx.vista.DetalleSol.superclass.preparaMenu.call(this,n);
-       // if(this.maestro.estado == 'borrador' ){
-            this.getBoton('del').enable();
-            this.getBoton('new').enable();
-            this.getBoton('edit').enable();
-        /*}
-        else{
+
+
+
+
+        if(this.maestro.estado == 'comite_unidad_abastecimientos' || this.maestro.estado == 'comite_dpto_abastecimientos' || this.maestro.estado == 'comite_aeronavegabilidad' || this.maestro.estado == 'finalizado'){
             this.getBoton('del').disable();
             this.getBoton('new').disable();
             this.getBoton('edit').disable();
-        }*/
-        },
-        liberaMenu: function() {
-            //Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
-            var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
-            if(tb){
-                this.getBoton('del').enable();
-                this.getBoton('new').enable();
-                this.getBoton('edit').enable();
-            }
-
-        },
-        oncellclick : function(grid, rowIndex, columnIndex, e) {
-
-        var record = this.store.getAt(rowIndex),
-            fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
-
-        if(fieldName == 'revisado') {
-            this.cambiarRevision(record);
+        }else{
+            this.getBoton('del').enable();
+            this.getBoton('new').enable();
+            this.getBoton('edit').enable();
         }
-        },
-        cambiarRevision: function(record){
-        Phx.CP.loadingShow();
-        var d = record.data;
-        Ext.Ajax.request({
-            url:'../../sis_gestion_materiales/control/DetalleSol/cambiarRevision',
-            params:{ id_detalle: d.id_detalle,revisado:d.revisado},
-            success: this.successRevision,
-            failure: this.conexionFailure,
-            timeout: this.timeout,
-            scope: this
-        });
-        this.reload();
-        },
-        successRevision: function(resp){
-        Phx.CP.loadingHide();
-        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+        return tb;
+    },
+
+    liberaMenu: function() {
+        var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
+        if(tb){
+            this.getBoton('del').disable();
+            this.getBoton('new').disable();
+            this.getBoton('edit').disable();
+        }
+        return tb;
     }
 
 })

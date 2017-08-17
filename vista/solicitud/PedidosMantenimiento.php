@@ -16,10 +16,10 @@ header("content-type: text/javascript; charset=UTF-8");
         nombreVista: 'PedidoMantenimiento',
         tabsouth :[
             {
-                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',
+                url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',
                 title:'Detalle',
                 height:'50%',
-                cls:'DetalleNoEdit'
+                cls:'DetalleSol'
             }
         ],
 

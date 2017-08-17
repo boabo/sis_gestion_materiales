@@ -49,12 +49,28 @@ class ACTSolicitud extends ACTbase{
          }
 
         if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing') {
-           $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+           $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }
+
+        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n') {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
+        }
+
+
+
+
+
+
+
+
         if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada') {
