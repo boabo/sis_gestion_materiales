@@ -38,17 +38,17 @@ class RCuandroComparativoPDF extends  ReportePDF
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
+               // $this->writeHTML('<p align="justify">Enviado a: '.$Key['pie_pag'].'</p>', true, false, false, false, '');
+
             }
         }
     }
     function reporteCuadroComparativo(){
         $this->SetFont('times', 'B', 10);
-        foreach ($this->datos as $Key) {
-            if($Key['adjudicado'] == 'si') {
-            $this->writeHTML('<p align="justify"> Enviado a: '.$Key['lista_proveedor'].'</p> <br>', true, false, false, false, '');
-            }
-        }
-        $this->Ln();
+        //var_dump($this->datos4[0]['lista_proverod']);exit;
+        $this->writeHTML('<p align="justify">Enviado a: '.$this->datos4[0]['lista_proverod'].'</p> <br>', true, false, false, false, '');
+
+        //$this->Ln();
         foreach ($this->datos as  $val)
         {
             if (  !array_key_exists($val['desc_proveedor'], $this->proveedor)
@@ -145,11 +145,8 @@ class RCuandroComparativoPDF extends  ReportePDF
             $this->SetFont('times', '', 10);
             $this->writeHTML($tbl2);
         }
-        foreach ($this->datos as $Key) {
-            if($Key['adjudicado'] == 'si') {
-                $this->writeHTML('<p align="justify"> OBSERVACIONES:  '.$Key['obs'].'</p> <br>', true, false, false, false, '');
-            }
-        }
+
+        $this->writeHTML('<p align="justify"> OBSERVACIONES:  '.$this->datos4[0]['obs'].'</p> <br>', true, false, false, false, '');
         if ( $this->datos[0]['estado'] != 'cotizacion') {
             $elaborado = $this->datos2[0]['visto_ag'];
         }else{
@@ -252,10 +249,12 @@ class RCuandroComparativoPDF extends  ReportePDF
         return $fecha;
     }
 
-    function setDatos($datos,$datos2,$datos3) {
+    function setDatos($datos,$datos2,$datos3,$datos4) {
         $this->datos = $datos;
         $this->datos2 = $datos2;
         $this->datos3 = $datos3;
+        $this->datos4 = $datos4;
+       // var_dump($this->datos4);exit;
 
     }
     function generarReporte() {

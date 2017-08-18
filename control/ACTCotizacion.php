@@ -65,6 +65,9 @@ class ACTCotizacion extends ACTbase{
         $this->objFunc=$this->create('MODCotizacion');
         $this->res3=$this->objFunc->listaPartes($this->objParam);
 
+        $this->objFunc=$this->create('MODCotizacion');
+        $this->res4=$this->objFunc->listaProveedor($this->objParam);
+
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
         //Genera el nombre del archivo (aleatorio + titulo)
@@ -76,7 +79,7 @@ class ACTCotizacion extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RCuandroComparativoPDF($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos);
+        $this->objReporteFormato->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos,$this->res4->datos);
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 

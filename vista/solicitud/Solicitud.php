@@ -1235,7 +1235,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope: this
                 }
             );
-            if ( rec.data.estado == 'cotizacion_solicitada' && rec.data.fecha_po == null || rec.data.estado == 'despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado == 'desaduanizado' && rec.data.fecha_en_almacen == null || rec.data.estado == 'arribo' && rec.data.fecha_desaduanizacion == null ||
+            if ( rec.data.estado == 'compra' && rec.data.fecha_po == null || rec.data.estado == 'despachado' && rec.data.fecha_arribado_bolivia == null || rec.data.estado == 'desaduanizado' && rec.data.fecha_en_almacen == null || rec.data.estado == 'arribo' && rec.data.fecha_desaduanizacion == null ||
                 rec.data.estado == 'cotizacion' && rec.data.condicion == '') {
                 this.onButtonEdit();
             }
@@ -1287,7 +1287,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.nro_po);
                 this.ocultarComponente(this.Cmp.fecha_po);
 
-                if(data['estado'] ==  'cotizacion_solicitada' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
+                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
                     this.mostrarComponente(this.Cmp.nro_po);
@@ -1348,7 +1348,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.nro_po);
                 this.ocultarComponente(this.Cmp.fecha_po);
 
-                if(data['estado'] ==  'cotizacion_solicitada' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
+                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
                     this.mostrarComponente(this.Cmp.nro_po);
@@ -1408,7 +1408,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.nro_po);
                 this.ocultarComponente(this.Cmp.fecha_po);
 
-                if(data['estado'] ==  'cotizacion_solicitada' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
+                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
                     this.mostrarComponente(this.Cmp.nro_po);

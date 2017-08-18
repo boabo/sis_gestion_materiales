@@ -236,6 +236,23 @@ class MODCotizacion extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function listaProveedor(){
+        $this->procedimiento ='mat.ft_cotizacion_sel';
+        $this->transaccion='MAT_CTS_PROVEE';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+        $this->captura('lista_proverod','varchar');
+        $this->captura('obs','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 			
 }
 ?>

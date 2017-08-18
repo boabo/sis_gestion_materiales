@@ -308,6 +308,30 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
+         /*********************************
+ 	#TRANSACCION:  'MAT_CTS_PROVEE'
+ 	#DESCRIPCION:	lista de proveedor
+ 	#AUTOR:		Miguel Alejandro Mamani Villegas
+ 	#FECHA:		02-06-2017
+	***********************************/
+
+	elsif(p_transaccion='MAT_CTS_PROVEE')then
+    	begin
+          v_consulta:='select pxp.list(initcap(p.desc_proveedor))::varchar as lista_proverod,
+		c.obs
+		from mat.tgestion_proveedores_new ne
+        inner join param.vproveedor p on p.id_proveedor = ne.id_proveedor
+        inner join mat.tsolicitud s on s.id_solicitud = ne.id_solicitud
+        inner join mat.tcotizacion  c on c.id_solicitud = ne.id_solicitud and c.adjudicado = ''si''
+        where s.id_proceso_wf  ='||v_parametros.id_proceso_wf||'and';
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||'group by c.obs';
+			--Devuelve la respuesta
+			return v_consulta;
+		end;
+
+
 
 
 	else
