@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Report').setVisible(false);
-            this.getBoton('ant_estado').setVisible(false);
+           // this.getBoton('ant_estado').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Consulta_desaduanizacion').setVisible(false);
@@ -81,11 +81,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').enable();
                 this.getBoton('Control_aLmacene').enable();
                 this.getBoton('Archivado_concluido').enable();
+                this.getBoton('ant_estado').enable();
                 this. enableTabDetalle();
             } else {
                 this.getBoton('sig_estado').disable();
                 this.getBoton('Control_aLmacene').disable();
                 this.getBoton('Archivado_concluido').disable();
+                this.getBoton('ant_estado').disable();
                 this.disableTabDetalle();
             }
             return tb;
@@ -97,6 +99,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('Control_aLmacene').disable();
                 this.getBoton('Archivado_concluido').disable();
+                this.getBoton('ant_estado').disable();
+
 
             }
             return tb;
