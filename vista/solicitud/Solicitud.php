@@ -36,7 +36,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
             this.addButton('ant_estado',{
-                grupo: [3,4],//2
+                grupo: [3,4,2],//2
                 argument: {estado: 'anterior'},
                 text: 'Anterior',
                 iconCls: 'batras',
