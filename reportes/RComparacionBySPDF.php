@@ -98,7 +98,7 @@ EOF;
             $qr2 = $this->generarImagen($funcionario_adm);
             $fun_admi = explode('|', $funcionario_adm);
         }
-        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+        if($this->datos[0]["codigo_pres"] != 'vbrpc') {
             $funcionario_presu = $this->datos[0]["funcionario_pres"];
             $qr3 =  $this->generarImagen($funcionario_presu);
             $fun_presu = explode('|', $funcionario_presu);

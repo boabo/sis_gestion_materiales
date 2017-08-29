@@ -126,26 +126,29 @@ class RComiteEvaluacion extends  ReportePDF
      $tb.='</table>';
 
 
-        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+        if($this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos') {
             $revision = $this->datos[0]['visto_rev'];
             $fun_rev = explode('|', $revision);
             $primeraFirma = $this->codigoQr($revision, 'prime');
         }
-        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+        if($this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad') {
             $abastecimiento = $this->datos[0]['visto_abas'];
             $fun_abas = explode('|', $abastecimiento);
             $segundaFirma = $this->codigoQr($abastecimiento, 'segundo');
         }
-        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+        if($this->datos[0]["estado_materiales"] != 'comite_dpto_abastecimientos') {
             $aero = $this->datos[0]['aero'];
             $terceraFirma = $this->codigoQr($aero, 'tercera');
             $fun_aero = explode('|', $aero);
         }
-        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+        if($this->datos[0]["codigo_pres"] != 'vbrpc' ) {
             $rpce = $this->datos[0]['funcionario_pres'];
             $CuartaFirma = $this->codigoQr($rpce, 'cuarto');
             $fun_rpcs = explode('|', $rpce);
         }
+        //if ($this->datos[0]["codigo_pres"] != 'vbrpc' or $this->datos[0]["codigo_pres"] != 'suppresu'or $this->datos[0]["codigo_pres"] != 'vbgaf' ){
+            $var = 'X';
+        //}
      $firmas ='
        <table border="2">
          <tbody>
@@ -176,11 +179,18 @@ class RComiteEvaluacion extends  ReportePDF
         </table>
         ';
         $pie='<table border="1">
+            <tr>';
+        if ($this->datos[0]["codigo_pres"] == 'vbrpc' or $this->datos[0]["codigo_pres"] == 'suppresu'or $this->datos[0]["codigo_pres"] == 'vbgaf' or $this->datos[0]["codigo_pres"] == 'vbpresupuestos') {
+
+            $pie .= '  <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td><br>
+            ';
+        }else{
+            $pie .= ' <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;X&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td><br>
+            ';
+        }
+       $pie.=' </tr>
             <tr>
-              <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td>
-            </tr>
-            <tr>
-              <td align="justify"><b>Instruciones RPCE:</b> adjudiquese el proceso de contratación de '.$itemSeleccionados.' a la Empresa '.$proveedor.' de acuerdo con la recomendación del comite de evaluacion de compra y selección de proveedor. Debiendo notificarse via Purchase Order a la empresa adjudicada.</td>
+              <td align="justify"><b>Instruciones RPCE:</b> Adjudiquese el proceso de contratación de items '.$itemSeleccionados.' a la empresa '.$proveedor.', de acuerdo con la recomendación del comite de evaluacion de compra y selección de proveedor. Debiendo notificarse via Purchase Order a la empresa adjudicada.</td>
             </tr>
             </table>';
 
