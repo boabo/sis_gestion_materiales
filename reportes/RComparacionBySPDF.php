@@ -87,7 +87,23 @@ EOF;
 
         $unidad_sol = $this->datos[0]["unidad_sol"];
         $gerencia = $this->datos[0]["gerencia"];
-        $funcionario_sol = $this->datos[0]["funcionario_sol"];
+
+        if($this->datos[0]["codigo_pres"] != 'borrador') {
+            $funcionario_sol = $this->datos[0]["funcionario_sol"];
+            $qr = $this->generarImagen($funcionario_sol);
+            $fun_sol = explode('|', $funcionario_sol);
+        }
+        if($this->datos[0]["codigo_pres"] != 'vbgerencia') {
+            $funcionario_adm = $this->datos[0]["funcionario_adm"];
+            $qr2 = $this->generarImagen($funcionario_adm);
+            $fun_admi = explode('|', $funcionario_adm);
+        }
+        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+            $funcionario_presu = $this->datos[0]["funcionario_pres"];
+            $qr3 =  $this->generarImagen($funcionario_presu);
+            $fun_presu = explode('|', $funcionario_presu);
+        }
+
         $nro_items = $this->datos[0]["nro_items"];
         $adjudicado = $this->datos[0]["adjudicado"];
         $motivo_solicitud = $this->datos[0]["motivo_solicitud"];
@@ -148,17 +164,25 @@ EOF;
                 <tr>
                     <td align="center" style="font-family: Calibri; font-size: 9px;"> 
                         <br><br>
-                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen('Jefe Abastecimientos',$funcionario_sol) . '" alt="Logo">
-                        <br>'.$funcionario_sol.' - Solicitante
+                        <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
+                        <br>'.$fun_sol[0].' <b>Solicitante</b>
                     </td>
                     <td align="center" style="font-family: Calibri; font-size: 9px;">
                         <br><br>
-                        FIRMA
-                        <br>03/07/2017 - Vo.Bo.
+                        <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
+                        <br>'.$fun_admi[0].' <b>Vo.Bo</b>
                     </td>
                  </tr>
                  <tr>
-                    <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br><br> </td>
+                    <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                </tr>
+                 <tr>
+                    <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                    <br><br> 
+                    <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                     <br>'.$fun_presu[0].' <b>RPCE</b>
+                    
+                    </td>
                 </tr>
                 </table>
                 ';
@@ -183,8 +207,8 @@ EOF;
 
     }
 
-    function generarImagen($nom, $nac){
-        $cadena_qr = 'Nombre: '.$nom. "\n" . 'Cargo: '.$nac ;
+    function generarImagen( $nac){
+        $cadena_qr =  'Funcionario: '.$nac ;
         $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
         $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
         $im = imagecreatefromstring($png);

@@ -238,7 +238,7 @@ BEGIN
               'Boa',
               now()::date,
               v_registros_solicitud_mat.id_proveedor,
-              'boa_po',
+              'bien',
               v_registros_solicitud_mat.lugar_entrega,
               v_registros_solicitud_mat.motivo_solicitud,
 
@@ -259,12 +259,17 @@ BEGIN
             FROM mat.tdetalle_sol tds
             WHERE tds.id_solicitud = p_id_solicitud;*/
             --raise exception 'v_record_det %',p_id_solicitud;
-            FOR v_record_det IN  (
-            					  SELECT DISTINCT ON (tds.nro_parte)tds.nro_parte,tcd.cantidad_det, tcd.precio_unitario, tcd.precio_unitario_mb,tds.descripcion,tds.explicacion_detallada_part,tds.tipo
-                                  FROM mat.tcotizacion_detalle tcd
-                                  --INNER JOIN mat.tsolicitud ts ON ts.id_solicitud = tcd.id_solicitud
-                                  INNER JOIN mat.tdetalle_sol tds ON tds.id_solicitud = tcd.id_solicitud
-                                  where tcd.id_solicitud = p_id_solicitud )LOOP
+            FOR v_record_det IN  (select 	d.nro_parte_cot,
+                                  			d.cantidad_det,
+                                            d.precio_unitario,
+                                            d.precio_unitario_mb,
+                                            d.descripcion_cot,
+                                            d.explicacion_detallada_part_cot,
+                                            d.tipo_cot
+
+                                  from mat.tcotizacion c
+                                  inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
+                                  where c.id_solicitud =  p_id_solicitud and c.adjudicado = 'si'  )LOOP
             --raise exception 'v_record_det %',v_record_det;
             	INSERT INTO adq.tsolicitud_det
                 (
@@ -272,8 +277,6 @@ BEGIN
                   fecha_reg,
                   estado_reg,
                   id_solicitud,
-
-
                   descripcion,
                   cantidad,
                   precio_unitario,
@@ -289,10 +292,7 @@ BEGIN
                   now(),
                   'activo',
                   v_id_solicitud,
-
-
-
-                  '('||v_record_det.nro_parte||') '||v_record_det.descripcion||' ('||v_record_det.explicacion_detallada_part||') '||v_record_det.tipo,
+                  '('||v_record_det.nro_parte_cot||') '||v_record_det.descripcion_cot||' ('||v_record_det.explicacion_detallada_part_cot||') '||v_record_det.tipo_cot,
                   COALESCE(v_record_det.cantidad_det,0),
                   COALESCE(v_record_det.precio_unitario,0),
                   COALESCE(v_record_det.precio_unitario_mb,0),
@@ -305,167 +305,6 @@ BEGIN
                 );
             END LOOP;
 
-            /*INSERT INTO adq.tsolicitud_det
-            (
-              id_usuario_reg,
-              fecha_reg,
-              estado_reg,
-              id_solicitud,
-
-              id_centro_costo,
-              id_partida,
-              id_cuenta,
-              id_auxiliar,
-              id_concepto_ingas,
-              id_partida_ejecucion,
-              id_orden_trabajo,
-              descripcion,
-              precio_unitario,
-              cantidad,
-
-              precio_total,
-              precio_ga
-
-            )
-            VALUES (
-              p_id_usuario,
-              now(),
-              'activo',
-              v_id_solicitud,
-
-              845,
-              9739,
-              25148,
-              1856,
-              1697,
-              null,
-              43,
-              v_record_det.descripcion,
-              v_registros_solicitud_mat.monto_total,
-              v_record_det.cantidad_sol,
-
-              v_registros_solicitud_mat.monto_total,
-              v_registros_solicitud_mat.monto_total
-
-            )RETURNING id_solicitud_det into v_id_solicitud_det;*/
-
-            -----------------------------------------------------------------------------
-            --recupera datos del detalle de cotizacion e inserta en detalle de obligacion
-            -----------------------------------------------------------------------------
-
-            /*FOR v_registros in (
-              select
-                cd.id_cotizacion_det,
-                sd.id_concepto_ingas,
-                sd.id_cuenta,
-                sd.id_auxiliar,
-                sd.id_partida,
-                sd.id_partida_ejecucion,
-                cd.cantidad_adju,
-                cd.precio_unitario,
-                cd.precio_unitario_mb,
-                sd.id_centro_costo,
-                sd.descripcion,
-                sd.id_orden_trabajo
-              from adq.tcotizacion_det cd
-              inner join adq.tsolicitud_det sd on sd.id_solicitud_det = cd.id_solicitud_det
-              where cd.id_cotizacion = p_id_cotizacion
-                    and cd.estado_reg='activo'
-
-            )LOOP
-
-
-              --TO DO,  para el pago de dos gestion  gestion hay que
-              --        mandar solamente el total comprometido  de la gestion actual menos el revrtido
-              --         o el monto total adjudicado, el que sea menor.
-
-               -- inserta detalle obligacion
-                IF((v_registros.cantidad_adju * v_registros.precio_unitario) > 0)THEN
-
-                       INSERT INTO
-                        tes.tobligacion_det
-                      (
-                        id_usuario_reg,
-                        fecha_reg,
-                        estado_reg,
-                        id_obligacion_pago,
-                        id_concepto_ingas,
-                        id_centro_costo,
-                        id_partida,
-                        id_cuenta,
-                        id_auxiliar,
-                        id_partida_ejecucion_com,
-                        monto_pago_mo,
-                        monto_pago_mb,
-                        descripcion,
-                        id_orden_trabajo)
-                      VALUES (
-                        p_id_usuario,
-                        now(),
-                        'activo',
-                        v_id_obligacion_pago,
-                        v_registros.id_concepto_ingas,
-                        v_registros.id_centro_costo,
-                        v_registros.id_partida,
-                        v_registros.id_cuenta,
-                        v_registros.id_auxiliar,
-                        v_registros.id_partida_ejecucion,
-                        (v_registros.cantidad_adju *v_registros.precio_unitario),
-                        (v_registros.cantidad_adju *v_registros.precio_unitario_mb),
-                        v_registros.descripcion,
-                        v_registros.id_orden_trabajo
-                      )RETURNING id_obligacion_det into v_id_obligacion_det;
-
-                       -- actulizar detalle de cotizacion
-
-                       update adq.tcotizacion_det set
-                       id_obligacion_det = v_id_obligacion_det
-                       where id_cotizacion_det=v_registros.id_cotizacion_det;
-
-               END IF;
-
-            END LOOP;
-
-
-              -- actualiza estado en la solicitud
-               update adq.tcotizacion  c set
-               id_obligacion_pago = v_id_obligacion_pago
-              where c.id_cotizacion  = p_id_cotizacion;
-
-              IF  p_id_depto_wf_pro::integer  is NULL  THEN
-
-                 raise exception 'Para obligaciones de pago el depto es indispensable';
-
-              END IF;
-
-               update tes.tobligacion_pago  o set
-                   id_estado_wf =  p_id_estado_wf,
-                   id_proceso_wf = p_id_proceso_wf,
-                   id_depto =   p_id_depto_wf_pro::integer,
-                   estado = p_codigo_ewf,
-                   id_usuario_mod=p_id_usuario,
-                   fecha_mod=now(),
-                   id_usuario_ai = p_id_usuario_ai,
-                   usuario_ai = p_usuario_ai
-                   where o.id_obligacion_pago  = v_id_obligacion_pago;
-
-            --Llamada a obliagcion de pago para que pase de borrador a en_pago
-            v_hstore_registros =   hstore(
-            						ARRAY[
-                                    'id_obligacion_pago', v_id_obligacion_pago::varchar,
-                                    'id_estado_wf_act', p_id_estado_wf::varchar,
-                                    'id_tipo_estado', 33::varchar,
-                                    'id_funcionario_wf', v_registros_cotizacion.id_funcionario::varchar,
-                                    'id_depto_wf',p_id_depto_wf_pro::varchar,
-                                    'obs', ''::varchar,
-                                    '_id_usuario_ai', p_id_usuario_ai::varchar,
-                                    '_nombre_usuario_ai', p_usuario_ai::varchar,
-                                    'json_procesos',arr::varchar
-                                    ]);
-            --
-            IF( tes.f_sig_stado_ob(1,p_id_usuario, v_hstore_registros) )THEN
-            	RAISE NOTICE 'EXITO';
-            END IF;*/
 
     return TRUE;
 EXCEPTION

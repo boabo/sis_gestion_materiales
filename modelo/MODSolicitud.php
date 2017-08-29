@@ -71,7 +71,6 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
-
         $this->captura('control_fecha','varchar');
         $this->captura('estado_firma','varchar');
         $this->captura('id_proceso_wf_firma','int4');
@@ -86,6 +85,7 @@ class MODSolicitud extends MODbase{
         $this->captura('condicion','varchar');
         $this->captura('lugar_entrega','varchar');
         $this->captura('mensaje_correo','varchar');
+        $this->captura('tipo','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -135,6 +135,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('mel','mel','varchar');
         $this->setParametro('nro_no_rutina','nro_no_rutina','varchar');
         $this->setParametro('nro_justificacion','nro_justificacion','varchar');
+
 
 
         //Ejecuta la instruccion
@@ -784,6 +785,9 @@ class MODSolicitud extends MODbase{
         $this->captura('obs','varchar');
         $this->captura('recomendacion','varchar');
         $this->captura ('codigo','varchar');
+        $this->captura ('funcionario_pres','varchar');
+        $this->captura ('codigo_pres','varchar');
+        $this->captura ('estado_materiales','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -896,6 +900,9 @@ class MODSolicitud extends MODbase{
         $this->captura('unidad_sol','varchar');
         $this->captura('gerencia','varchar');
         $this->captura('funcionario_sol','varchar');
+        $this->captura('funcionario_adm','varchar');
+        $this->captura('funcionario_pres','varchar');
+        $this->captura('codigo_pres','varchar');
         $this->captura('nro_items','integer');
         $this->captura('adjudicado','varchar');
         $this->captura('motivo_solicitud','varchar');
@@ -927,8 +934,20 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function clonarSolicitud (){
+
+        $this->procedimiento='mat.ft_solicitud_ime';
+        $this->transaccion='MAT_CLONAR_IME';
+        $this->tipo_procedimiento='IME';
+
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
 
 
-
+    }
 }
 ?>

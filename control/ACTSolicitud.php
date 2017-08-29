@@ -171,9 +171,6 @@ class ACTSolicitud extends ACTbase{
         if($this->objParam->insertar('id_solicitud')){
             $this->res=$this->objFunc->insertarSolicitudCompleta($this->objParam);
             var_dump($this->res); exit;
-        } else{
-            //$this->res=$this->objFunc->modificarSolicitud($this->objParam);
-            //trabajar en la modificacion compelta de solicitud ....
         }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
@@ -619,6 +616,13 @@ class ACTSolicitud extends ACTbase{
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function clonarSolicitud(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->clonarSolicitud();
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 
 
 

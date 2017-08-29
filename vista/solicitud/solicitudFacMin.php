@@ -25,7 +25,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 cls:'DetalleSol'
             }
         ],
-        Grupos: [
+        /*Grupos: [
             {
                 layout: 'column',
                 border: false,
@@ -51,7 +51,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     }
                 ]
             }
-        ],
+        ],*/
 
         constructor: function(config) {
             this.Atributos[this.getIndAtributo('fecha_po')].id_grupo=1;
@@ -121,6 +121,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.mensaje_correo);
                 this.mostrarComponente(this.Cmp.fecha_po);
                 this.mostrarComponente(this.Cmp.nro_po);
+
         }
     }
 </script>

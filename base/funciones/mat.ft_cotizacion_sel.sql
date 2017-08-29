@@ -201,7 +201,6 @@ BEGIN
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
                               inner join param.vproveedor pr on pr.id_proveedor = c.id_proveedor
-                             -- inner join mat.tgestion_proveedores ges on ges.id_solicitud = s.id_solicitud
                               left join mat.tday_week dy on dy.id_day_week = d.id_day_week
                               where s.id_proceso_wf ='||v_parametros.id_proceso_wf||'and d.revisado = ''si'' and ';
 			--Definicion de la respuesta

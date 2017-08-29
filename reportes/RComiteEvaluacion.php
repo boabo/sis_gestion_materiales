@@ -126,16 +126,26 @@ class RComiteEvaluacion extends  ReportePDF
      $tb.='</table>';
 
 
-
-        $revision = $this->datos[0]['visto_rev'];
-        $fun_rev = explode('|',$revision);
-        $primeraFirma=$this->codigoQr($revision,'prime');
-        $abastecimiento= $this->datos[0]['visto_abas'];
-        $fun_abas= explode('|',$abastecimiento);
-        $segundaFirma=$this->codigoQr($abastecimiento,'segundo');
-        $aero =  $this->datos[0]['aero'];
-        $terceraFirma=$this->codigoQr($aero,'tercera');
-        $fun_aero = explode('|',$aero);
+        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+            $revision = $this->datos[0]['visto_rev'];
+            $fun_rev = explode('|', $revision);
+            $primeraFirma = $this->codigoQr($revision, 'prime');
+        }
+        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+            $abastecimiento = $this->datos[0]['visto_abas'];
+            $fun_abas = explode('|', $abastecimiento);
+            $segundaFirma = $this->codigoQr($abastecimiento, 'segundo');
+        }
+        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+            $aero = $this->datos[0]['aero'];
+            $terceraFirma = $this->codigoQr($aero, 'tercera');
+            $fun_aero = explode('|', $aero);
+        }
+        if($this->datos[0]["codigo_pres"] != 'suppresu') {
+            $rpce = $this->datos[0]['funcionario_pres'];
+            $CuartaFirma = $this->codigoQr($rpce, 'cuarto');
+            $fun_rpcs = explode('|', $rpce);
+        }
      $firmas ='
        <table border="2">
          <tbody>
@@ -156,11 +166,11 @@ class RComiteEvaluacion extends  ReportePDF
          <tbody>
         <tr>    
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Representante de Gestión de Aeronavegabilidad continua</b><br>'.$fun_aero[0].'</td>
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>RPCE</b></td>
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>RPCE</b><br>'.$fun_rpcs[0].'</td>
         </tr>
         <tr>
                 <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"></td>
-                <td align="center"><br><br> <br></td>
+                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $CuartaFirma . '" alt="Logo"><br></td>
          </tr>
          </tbody>
         </table>

@@ -52,6 +52,16 @@ BEGIN
 	if(p_transaccion='MAT_CDE_INS')then
         begin
 
+        select sum (d.precio_unitario_mb)
+        into
+        v_monto_total
+        from mat.tcotizacion_detalle d
+        where d.id_cotizacion = v_parametros.id_cotizacion;
+
+        update mat.tcotizacion set
+        monto_total =  v_monto_total
+        where id_cotizacion = v_parametros.id_cotizacion;
+
         	--Sentencia de la insercion
         	insert into mat.tcotizacion_detalle(
 			id_cotizacion,
@@ -172,22 +182,6 @@ BEGIN
         monto_total =  v_monto_total
         where id_cotizacion = v_parametros.id_cotizacion;
 
-        /*select 	d.id_cotizacion_det,
-        		d.precio_unitario_mb
-                into
-                v_id_detalle,
-                v_precio
-        from mat.tcotizacion_detalle d
-        where d.id_cotizacion = v_parametros.id_cotizacion;
-        if (v_precio > 0)then
-    	update mat.tcotizacion_detalle  set
-    	revisado = 'si'
-        where id_cotizacion_det = v_id_detalle;
-        else
-        update mat.tcotizacion_detalle  set
-    	revisado = 'no'
-        where id_cotizacion_det = v_id_detalle;
-        end if;*/
 
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización Detalle modificado(a)');

@@ -272,7 +272,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name:'cd',
                     fieldLabel:'CD',
                     typeAhead: true,
-                    allowBlank:false,
+                    allowBlank:true,
                     triggerAction: 'all',
                     emptyText:'Tipo...',
                     selectOnFocus:true,
