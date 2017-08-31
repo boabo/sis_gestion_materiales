@@ -910,6 +910,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_cobs','varchar');
         $this->captura('fecha_solicitud','date');
         $this->captura('monto_ref','numeric');
+        $this->captura('funcionario','varchar');
         //$this->captura('codigo','varchar');
 
 

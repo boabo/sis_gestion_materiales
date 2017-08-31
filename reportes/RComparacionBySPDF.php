@@ -87,7 +87,7 @@ EOF;
 
         $unidad_sol = $this->datos[0]["unidad_sol"];
         $gerencia = $this->datos[0]["gerencia"];
-
+        $funcionario = $this->datos[0]["funcionario"];
         if($this->datos[0]["codigo_pres"] != 'borrador') {
             $funcionario_sol = $this->datos[0]["funcionario_sol"];
             $qr = $this->generarImagen($funcionario_sol);
@@ -116,7 +116,7 @@ EOF;
                 <tr style="font-size: 9pt; text-align: left;">
                     <td style="width:34%; padding: 2em;"><b>&nbsp;&nbsp;Unidad Solicitante:</b><br><span style="text-align: center;">'.$unidad_sol.'</span><br></td>
                     <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Gerencia de Area:</b><br><span style="text-align: center;">'.$gerencia.'</span></td>
-                    <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Funcionario Solicitante:</b><br><span style="text-align: center;">'.$funcionario_sol.'</span></td>
+                    <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Funcionario Solicitante:</b><br><span style="text-align: center;">'.$funcionario.'</span></td>
                 </tr>
                 <tr style="font-size: 9pt; text-align: left;">
                     <td style="width:34%; padding: 5px;"><b>&nbsp;&nbsp;Monto Referencial:</b><br><span style="text-align: center;"> $us&nbsp; '.$monto_ref.'</span><br></td>
