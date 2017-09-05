@@ -108,7 +108,7 @@ BEGIN
           IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad','vobo_dpto_abastecimientos')    THEN
         RAISE EXCEPTION'Aun no fue aprobado por %', v_solicitud.estado_firma;
         END IF;
-          if v_solicitud.fecha_cotizacion is null then
+         /* if v_solicitud.fecha_cotizacion is null then
             raise exception 'Tiene que registar la fecha de contizacion';
 		  end if;
           if v_solicitud.id_proveedor is null then
@@ -116,7 +116,7 @@ BEGIN
 		  end if;
            if v_solicitud.nro_po = '' then
             raise exception 'Tiene que registar Nro. P.O.';
-		  end if;
+		  end if;*/
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,

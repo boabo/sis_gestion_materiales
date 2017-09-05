@@ -33,6 +33,8 @@ DECLARE
     v_total					numeric;
     v_monto_total			numeric;
     v_total_ca					numeric;
+    v_total_cotizacion					numeric;
+    v_id_cotizacion 		integer;
 
     --v_id_detalle		integer;
     --v_precio			numeric;
@@ -52,15 +54,7 @@ BEGIN
 	if(p_transaccion='MAT_CDE_INS')then
         begin
 
-        select sum (d.precio_unitario_mb)
-        into
-        v_monto_total
-        from mat.tcotizacion_detalle d
-        where d.id_cotizacion = v_parametros.id_cotizacion;
 
-        update mat.tcotizacion set
-        monto_total =  v_monto_total
-        where id_cotizacion = v_parametros.id_cotizacion;
 
         	--Sentencia de la insercion
         	insert into mat.tcotizacion_detalle(
@@ -115,6 +109,16 @@ BEGIN
             'no'
             end::varchar
 			)RETURNING id_cotizacion_det into v_id_cotizacion_det;
+
+        select sum (d.precio_unitario_mb)
+        into
+        v_monto_total
+        from mat.tcotizacion_detalle d
+        where d.id_cotizacion = v_parametros.id_cotizacion;
+
+        update mat.tcotizacion set
+        monto_total =  v_monto_total
+        where id_cotizacion = v_parametros.id_cotizacion;
 
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización Detalle almacenado(a) con exito (id_cotizacion_det'||v_id_cotizacion_det||')');
@@ -202,6 +206,26 @@ BEGIN
 	elsif(p_transaccion='MAT_CDE_ELI')then
 
 		begin
+
+        select precio_unitario_mb,
+        id_cotizacion
+        into
+        v_total_cotizacion,
+        v_id_cotizacion
+        from mat.tcotizacion_detalle d
+        where id_cotizacion_det=v_parametros.id_cotizacion_det;
+
+        select monto_total
+        into
+        v_total
+        from mat.tcotizacion
+        where id_cotizacion = v_id_cotizacion;
+
+        update mat.tcotizacion  set
+        monto_total = v_total - v_total_cotizacion
+        where id_cotizacion = v_id_cotizacion;
+
+
 			--Sentencia de la eliminacion
 			delete from mat.tcotizacion_detalle
             where id_cotizacion_det=v_parametros.id_cotizacion_det;
