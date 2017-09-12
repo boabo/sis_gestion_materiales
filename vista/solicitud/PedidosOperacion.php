@@ -93,7 +93,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
-                if(name == 'pedido_op_pendiente' || name == 'pedido_op_solicitada'){
+                if(name == 'pedido_op_pendiente' || name == 'pedido_op_solicitada' || name == 'pedido_op_compra'){
                     this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
                 }else{
