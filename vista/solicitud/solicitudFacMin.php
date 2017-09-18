@@ -75,7 +75,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('btnObs').setVisible(false);
             this.getBoton('Control_aLmacene').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
-            this.getBoton('Cotizacion').setVisible(false);
+            this.getBoton('Cotizacion').setVisible(true);
         },
         gruposBarraTareas:[
             {name:'ab_origen_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:7,height:0},
