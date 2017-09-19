@@ -8,7 +8,7 @@ class RComiteEvaluacion extends  ReportePDF
         $this->SetFont('', 'B');
         $this->MultiCell(105, 25, "\n" . 'COMITÉ DE EVALUACIÓN DE' . "\n" . 'COMPRA Y SELECCIÓN DE'."\n".'PROVEEDOR', 1, 'C', 0, '', '');
         $this->SetFont('times', '', 10);
-        $this->MultiCell(0, 25, "\n" . 'Form MA-01'."\n" .' '."\n" .'Rev 0      20/06/2016', 1, 'C', 0, '', '');
+        $this->MultiCell(0, 25, "\n" . 'Form MA-01'."\n" .' '."\n" .'Rev 0 20/06/2016'."\n" .$this->datos[0]['nro_tramite'], 1, 'C', 0, '', '');
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 12, 15, 36);
     }
     function ReporteComiteEvaluacion(){
@@ -19,6 +19,7 @@ class RComiteEvaluacion extends  ReportePDF
         $neo_cotizacion =$this->datos[0]['nro_cotizacion'];
         $itemSeleccionados = preg_replace('/[0-9]+/', '', $this->datos[0]['item_selecionados']);
         $itemSeleccionados =str_replace(',/','',$itemSeleccionados);
+        $itemSeleccionados =str_replace('/','',$itemSeleccionados);
         $tipo = $this->datos[0]['tipo_evaluacion'];
         $nroParte = explode(',',$this->datos[0]['nro_parte']);
         $a ='{';
@@ -31,7 +32,7 @@ class RComiteEvaluacion extends  ReportePDF
         $talleAsignado = $this->datos[0]['taller_asignado'];
         $obs = $this->datos[0]['obs'];
         $simbolo = $this->datos[0]['codigo'];
-     $tb ='<table cellspacing="0" cellpadding="1" border="1">
+        $tb ='<table cellspacing="0" cellpadding="1" border="1">
               <tr>
                 <th scope="col" width="60" align="center" ><b>Fecha:</b></th>
                 <th scope="col" width="95" align="center" >'.$fechaPo.'</th>
@@ -62,7 +63,6 @@ class RComiteEvaluacion extends  ReportePDF
                     <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
                     <th scope="col" width="32"   align="center" ></th>
                   </tr>';
-
         }elseif ($tipo == 'Exchage'){
             $tb .= '<tr>
                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
@@ -75,7 +75,7 @@ class RComiteEvaluacion extends  ReportePDF
                     <th scope="col" width="32"   align="center" >SI</th>
                   </tr>';
         }
-            $tb.=' <tr>
+        $tb.=' <tr>
                         <th scope="col"  height="10"> <b>Empresa:</b></th>
                         <th scope="col" width="495"  align="justify"> '.$proveedor.'</th>
                    </tr>
@@ -95,17 +95,17 @@ class RComiteEvaluacion extends  ReportePDF
     <table class="conborde">
     <tr>
       <td width="150"><b>Comentario:</b></td>
-      <td align="center" width="545" > El Comité de evaluación de acuerdo al cuadro comparativo adjunto y siendo la opción mas conveniente, recomienda la adjudicacioón al proveedor
+      <td align="center" width="545" > El Comité de evaluación de acuerdo al cuadro comparativo adjunto y siendo la opción mas conveniente, recomienda la adjudicación al proveedor
            <br> <b>'.$proveedor.'</b> por un importe de <b>'.$simbolo.' '.$nomto.'.</b></td>
     </tr>
     <br>
     <tr>
       <td width="150"><b>Segun:</b></td>
       <td><ol>';
-            foreach ($nroParte as $partes){
-                $tb.='<li>'.$partes.'</li>';
-            }
-    $tb.='</ol></td>
+        foreach ($nroParte as $partes){
+            $tb.='<li>'.$partes.'</li>';
+        }
+        $tb.='</ol></td>
     </tr>
     <tr>
       <td width="150"><b>Observaciones:</b></td>
@@ -123,33 +123,31 @@ class RComiteEvaluacion extends  ReportePDF
     <td width="695"> <b>Observaciones para componentes en exchange:</b> '.$observaciones.'</td>
     </tr>
     ';
-     $tb.='</table>';
-
-
+        $tb.='</table>';
         if($this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos') {
             $revision = $this->datos[0]['visto_rev'];
             $fun_rev = explode('|', $revision);
             $primeraFirma = $this->codigoQr($revision, 'prime');
         }
-        if($this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad') {
+        if(  $this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad' and $this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos') {
             $abastecimiento = $this->datos[0]['visto_abas'];
             $fun_abas = explode('|', $abastecimiento);
             $segundaFirma = $this->codigoQr($abastecimiento, 'segundo');
         }
-        if($this->datos[0]["estado_materiales"] != 'comite_dpto_abastecimientos') {
+        if( $this->datos[0]["estado_materiales"] != 'comite_dpto_abastecimientos' and $this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos' and $this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad'  ) {
             $aero = $this->datos[0]['aero'];
             $terceraFirma = $this->codigoQr($aero, 'tercera');
             $fun_aero = explode('|', $aero);
         }
-        if($this->datos[0]["codigo_pres"] != 'vbrpc' ) {
+        if($this->datos[0]["codigo_pres"] != 'vbrpc'and $this->datos[0]["estado_materiales"] != 'comite_dpto_abastecimientos' and $this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos' and $this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad' and $this->datos[0]["estado_materiales"] != 'compra'  ) {
             $rpce = $this->datos[0]['funcionario_pres'];
             $CuartaFirma = $this->codigoQr($rpce, 'cuarto');
             $fun_rpcs = explode('|', $rpce);
         }
         //if ($this->datos[0]["codigo_pres"] != 'vbrpc' or $this->datos[0]["codigo_pres"] != 'suppresu'or $this->datos[0]["codigo_pres"] != 'vbgaf' ){
-            $var = 'X';
+        $var = 'X';
         //}
-     $firmas ='
+        $firmas ='
        <table border="2">
          <tbody>
         <tr>    
@@ -163,7 +161,6 @@ class RComiteEvaluacion extends  ReportePDF
          </tbody>
         </table>
         ';
-
         $firmas2 ='
        <table border="2">
          <tbody>
@@ -181,24 +178,21 @@ class RComiteEvaluacion extends  ReportePDF
         $pie='<table border="1">
             <tr>';
         if ($this->datos[0]["codigo_pres"] == 'vbrpc' or $this->datos[0]["codigo_pres"] == 'suppresu'or $this->datos[0]["codigo_pres"] == 'vbgaf' or $this->datos[0]["codigo_pres"] == 'vbpresupuestos') {
-
             $pie .= '  <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td><br>
             ';
         }else{
             $pie .= ' <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;X&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td><br>
             ';
         }
-       $pie.=' </tr>
+        $pie.=' </tr>
             <tr>
-              <td align="justify"><b>Instruciones RPCE:</b> Adjudiquese el proceso de contratación de items '.$itemSeleccionados.' a la empresa '.$proveedor.', de acuerdo con la recomendación del comite de evaluacion de compra y selección de proveedor. Debiendo notificarse via Purchase Order a la empresa adjudicada.</td>
+              <td align="justify"><b>Instruciones RPCE:</b> Adjudiquese el proceso de contratación de '.strtolower($itemSeleccionados).' items  a la empresa '.$proveedor.', de acuerdo con la recomendación del comite de evaluacion de compra y selección de proveedor. Debiendo notificarse via Purchase Order a la empresa adjudicada.</td>
             </tr>
             </table>';
-
-     $this->writeHTML($tb);
-     $this->writeHTML($firmas);
-     $this->writeHTML($firmas2);
-     $this->writeHTML($pie);
-
+        $this->writeHTML($tb);
+        $this->writeHTML($firmas);
+        $this->writeHTML($firmas2);
+        $this->writeHTML($pie);
     }
     function  codigoQr ($cadena,$ruta){
         $barcodeobj = new TCPDF2DBarcode($cadena, 'QRCODE,M');
@@ -214,20 +208,6 @@ class RComiteEvaluacion extends  ReportePDF
         $url =  dirname(__FILE__) . "/../../reportes_generados/".$ruta.".png";
         return $url;
     }
-   /* function revisarfinPagina(){
-        $dimensions = $this->getPageDimensions();
-        $hasBorder = false; //flag for fringe case
-        $startY = $this->GetY();
-
-        if (($startY + 4 * 6) + $dimensions['bm'] > ($dimensions['hk'])) {
-
-            $this->ReporteComiteEvaluacion();
-            if($this->total!= 0){
-                $this->AddPage();
-            }
-        }
-
-    }*/
 
     function setDatos($datos)
     {
