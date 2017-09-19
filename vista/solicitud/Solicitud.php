@@ -90,7 +90,7 @@ header("content-type: text/javascript; charset=UTF-8");
             );
 
             this.addButton('Cotizacion',{
-                grupo: [3],
+                grupo: [3,7],
                 text: 'Cotización',
                 iconCls: 'bdocuments',
                 disabled: false,
@@ -134,6 +134,15 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Archivado/Concluido</b>',
                 scope:this
             });
+            /*this.addButton('clonar_solicitud',{
+                grupo: [3],
+                text: 'Clonar Solicitud',
+                iconCls: 'bchecklist',
+                disabled: false,
+                handler: this.clonarSolicitud,
+                tooltip: '<b>Clonar Solicitud</b>',
+                scope:this
+            });*/
 
             function diagramGantt(){
                 var data=this.sm.getSelected().data.id_proceso_wf;
@@ -191,8 +200,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 150,
                     maxLength:100,
                     renderer: function(value, p, record) {
-                        if(record.data.estado == 'almacen'){
-                            return String.format('<div ext:qtip="Optimo"><b><font color="blue">{0}</font></b><br></div>', value);
+                        if(record.data.tipo == 'clon'){
+                            return String.format('<div ext:qtip="Optimo"><b><font color="#8b008b">{0}</font></b><br></div>', value);
                         }else{
                             return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
                         }
@@ -1022,7 +1031,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'lista_correos', type: 'string'},
             {name:'condicion', type: 'string'},
             {name:'lugar_entrega', type: 'string'},
-            {name:'mensaje_correo', type: 'string'}
+            {name:'mensaje_correo', type: 'string'},
+            {name:'tipo', type: 'string'}
 
             
 
@@ -1641,6 +1651,24 @@ header("content-type: text/javascript; charset=UTF-8");
                 rec.data,
                 this.idContenedor,
                 'Cotizacion');
+        },
+        clonarSolicitud: function () {
+
+            var rec=this.sm.getSelected();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/clonarSolicitud',
+                params:{'id_proceso_wf':rec.data.id_proceso_wf},
+                success:this.succeClonSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+
+        },
+        succeClonSinc:function(resp){
+            Phx.CP.loadingHide();
+            //resp.argument.wizard.panel.destroy()
+            this.reload();
         }
 
     })
