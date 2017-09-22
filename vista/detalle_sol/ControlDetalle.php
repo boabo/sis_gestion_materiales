@@ -85,6 +85,13 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         bnew: true,
         bdel: true,
-        bedit: true
+        bedit: true,
+        arrayDefaultColumHidden:['nro_parte'],
+        rowExpander: new Ext.ux.grid.RowExpander({
+            tpl : new Ext.Template(
+                '<br>',
+                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Nro. Parte:&nbsp;&nbsp;</b> {nro_parte}</p>'
+              )
+        })
     }
 </script>

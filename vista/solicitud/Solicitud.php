@@ -107,7 +107,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler : this.onButtonReporte,
                 tooltip : '<b>Reporte Requerimiento de Materiale</b>'
             });
-            this.addButton('Control_aLmacene',{
+            /*this.addButton('Control_aLmacene',{
                 grupo: [2,3],
                 text: 'Control Almacen',
                 iconCls: 'blist',
@@ -124,25 +124,25 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler: this.consultadesaduanizacion,
                 tooltip: '<b>Desaduanizacion</b><br>Nos permite consultar las Desaduanizaciones, de las solicitudes en proceso.',
                 scope:this
-            });
+            });*/
             this.addButton('Archivado_concluido',{
                 grupo: [2,3],
                 text: 'Archivado/Concluido',
-                iconCls: 'bdocuments',
+                iconCls: 'bfolder',
                 disabled: false,
                 handler: this.archivadoConcluido,
                 tooltip: '<b>Archivado/Concluido</b>',
                 scope:this
             });
-            /*this.addButton('clonar_solicitud',{
+            this.addButton('clonar_solicitud',{
                 grupo: [3],
                 text: 'Clonar Solicitud',
-                iconCls: 'bchecklist',
+                iconCls: 'blist',
                 disabled: false,
                 handler: this.clonarSolicitud,
                 tooltip: '<b>Clonar Solicitud</b>',
                 scope:this
-            });*/
+            });
 
             function diagramGantt(){
                 var data=this.sm.getSelected().data.id_proceso_wf;
@@ -1282,395 +1282,192 @@ header("content-type: text/javascript; charset=UTF-8");
             this.reload();
         },
         onButtonEdit: function() {
-            var data = this.getSelectedData();
             Phx.vista.Solicitud.superclass.onButtonEdit.call(this);
-            if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
-                this.ocultarComponente(this.Cmp.mel);
-                this.ocultarComponente(this.Cmp.tipo_reporte);
-                this.ocultarComponente(this.Cmp.tipo_falla);
+        },
 
-                this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
-                this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
-                this.ocultarComponente(this.Cmp.fecha_en_almacen);
-                this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                this.ocultarComponente(this.Cmp.id_proveedor);
-                this.ocultarComponente(this.Cmp.nro_po);
-                this.ocultarComponente(this.Cmp.fecha_po);
 
-                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
-                    this.mostrarComponente(this.Cmp.fecha_cotizacion);
-                    this.mostrarComponente(this.Cmp.id_proveedor);
-                    this.mostrarComponente(this.Cmp.nro_po);
-                    this.mostrarComponente(this.Cmp.fecha_po);
-                    this.Cmp.id_proveedor.setValue(data['id_proveedor']);
-                    this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
-                    this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
-
-                }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
-
-                    this.mostrarComponente(this.Cmp.fecha_arribado_bolivia);
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                }if(data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
-                    this.mostrarComponente(this.Cmp.fecha_desaduanizacion);
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                } if(data['estado'] ==  'desaduanizado') {
-                    this.mostrarComponente(this.Cmp.fecha_en_almacen)
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                }
-
-            }  if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
-                this.mostrarComponente(this.Cmp.mel);
-                this.mostrarComponente(this.Cmp.tipo_reporte);
-                this.mostrarComponente(this.Cmp.tipo_falla);
-
-                this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
-                this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
-                this.ocultarComponente(this.Cmp.fecha_en_almacen);
-                this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                this.ocultarComponente(this.Cmp.id_proveedor);
-                this.ocultarComponente(this.Cmp.nro_po);
-                this.ocultarComponente(this.Cmp.fecha_po);
-
-                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
-                    this.mostrarComponente(this.Cmp.fecha_cotizacion);
-                    this.mostrarComponente(this.Cmp.id_proveedor);
-                    this.mostrarComponente(this.Cmp.nro_po);
-                    this.mostrarComponente(this.Cmp.fecha_po);
-
-                }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
-
-                    this.mostrarComponente(this.Cmp.fecha_arribado_bolivia);
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                }if(data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
-                    this.mostrarComponente(this.Cmp.fecha_desaduanizacion);
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                } if(data['estado'] ==  'desaduanizado') {
-                    this.mostrarComponente(this.Cmp.fecha_en_almacen)
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                }
-
-            }    if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
-                this.ocultarComponente(this.Cmp.mel);
-                this.ocultarComponente(this.Cmp.tipo_reporte);
-                this.ocultarComponente(this.Cmp.tipo_falla);
-                this.ocultarComponente(this.Cmp.justificacion);
-                this.ocultarComponente(this.Cmp.id_matricula);
-                this.ocultarComponente(this.Cmp.nro_justificacion);
-                this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
-                this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
-                this.ocultarComponente(this.Cmp.fecha_en_almacen);
-                this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                this.ocultarComponente(this.Cmp.id_proveedor);
-                this.ocultarComponente(this.Cmp.nro_po);
-                this.ocultarComponente(this.Cmp.fecha_po);
-
-                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
-                    this.mostrarComponente(this.Cmp.fecha_cotizacion);
-                    this.mostrarComponente(this.Cmp.id_proveedor);
-                    this.mostrarComponente(this.Cmp.nro_po);
-                    this.mostrarComponente(this.Cmp.fecha_po);
-                    this.Cmp.id_proveedor.setValue(data['id_proveedor']);
-                    this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
-                    this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
-
-                }if(data['estado'] ==  'despachado'||data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
-
-                    this.mostrarComponente(this.Cmp.fecha_arribado_bolivia);
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                }if(data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado') {
-                    this.mostrarComponente(this.Cmp.fecha_desaduanizacion);
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                } if(data['estado'] ==  'desaduanizado') {
-                    this.mostrarComponente(this.Cmp.fecha_en_almacen)
-                    this.ocultarComponente(this.Cmp.mensaje_correo);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                    this.ocultarComponente(this.Cmp.condicion);
-                    this.ocultarComponente(this.Cmp.lugar_entrega);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                    this.ocultarComponente(this.Cmp.fecha_cotizacion);
-                    this.ocultarComponente(this.Cmp.id_proveedor);
-                    this.ocultarComponente(this.Cmp.fecha_po);
-                }
-
+antEstado:function(res){
+    var rec=this.sm.getSelected();
+    Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+        'Estado de Wf',
+        {
+            modal:true,
+            width:450,
+            height:250
+        }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+        {
+            config:[{
+                event:'beforesave',
+                delegate: this.onAntEstado,
             }
-            this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
+            ],
+            scope:this
+        })
+},
+onAntEstado: function(wizard,resp){
+    Phx.CP.loadingShow();
+    Ext.Ajax.request({
+        url:'../../sis_gestion_materiales/control/Solicitud/anteriorEstadoSolicitud',
+        params:{
+            id_proceso_wf: resp.id_proceso_wf,
+            id_estado_wf:  resp.id_estado_wf,
+            obs: resp.obs,
+            estado_destino: resp.estado_destino
+        },
+        argument:{wizard:wizard},
+        success:this.successEstadoSinc,
+        failure: this.conexionFailure,
+        timeout:this.timeout,
+        scope:this
+    });
+},
+successEstadoSinc:function(resp){
+    Phx.CP.loadingHide();
+    resp.argument.wizard.panel.destroy()
+    this.reload();
+},
 
-                if (record.data.ID == 1 ){
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.ocultarComponente(this.Cmp.observacion_nota);
-                }if (record.data.ID == 2){
-                    this.mostrarComponente(this.Cmp.taller_asignado);
-                    this.mostrarComponente(this.Cmp.observacion_nota);
-                }if (record.data.ID == 3){
-                    this.ocultarComponente(this.Cmp.taller_asignado);
-                    this.mostrarComponente(this.Cmp.observacion_nota);
-                }
-                this.Cmp.taller_asignado.reset();
-                this.Cmp.observacion_nota.reset();
-            },this);
-            this.ocultarComponente(this.Cmp.taller_asignado);
-            this.ocultarComponente(this.Cmp.observacion_nota);
-            this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
+iniEstado:function(res){
+    var rec=this.sm.getSelected();
+    Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+        'Estado de Wf',
+        {
+            modal:true,
+            width:450,
+            height:250
+        }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+        {
+            config:[{
+                event:'beforesave',
+                delegate: this.inAntEstado,
+            }
+            ],
+            scope:this
+        })
+},
+inAntEstado: function(wizard,resp){
+    Phx.CP.loadingShow();
+    Ext.Ajax.request({
+        url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitud',
+        params:{
+            id_proceso_wf: resp.id_proceso_wf,
+            id_estado_wf:  resp.id_estado_wf,
+            obs: resp.obs,
+            estado_destino: resp.estado_destino
+        },
+        argument:{wizard:wizard},
+        success:this.succeEstadoSinc,
+        failure: this.conexionFailure,
+        timeout:this.timeout,
+        scope:this
+    });
+},
+succeEstadoSinc:function(resp){
+    Phx.CP.loadingHide();
+    resp.argument.wizard.panel.destroy();
+    this.reload();
+},
 
+winCotProveedores: function () {
+    var dato = this.sm.getSelected().data;
+    Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/CorreoProveedores.php',
+        'Definir Proveedores Para Enviar Correo de Cotización',
+        {
+            modal:true,
+            width:600,
+            height:150
         },
+        dato,
+        this.idContenedor,
+        'CorreoProveedores'
+    );
+},
 
+onButtonReporte:function(){
+    var rec=this.sm.getSelected();
+    Ext.Ajax.request({
+        url:'../../sis_gestion_materiales/control/Solicitud/reporteRequerimientoMateriales',
+        params:{'id_proceso_wf':rec.data.id_proceso_wf},
+        success: this.successExport,
+        failure: this.conexionFailure,
+        timeout:this.timeout,
+        scope:this
+    });
+},
+archivadoConcluido:function() {
+    var me = this;
+    me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/SolicitudArchivado.php',
+        'Solicitudes Archivados/Concluidos',
+        {
+            width:'80%',
+            height:600
+        },
+        {data:{objPadre: me}
+        },
+        this.idContenedor,
+        'SolicitudArchivado'
+    )
+},
+consultadesaduanizacion:function() {
+    var me = this;
+    me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/solicitudFacMin.php',
+        'Consulta Desaduanizacion',
+        {
+            width:'80%',
+            height:600
+        },
+        {data:{objPadre: me}
+        },
+        this.idContenedor,
+        'solicitudFacMin'
+    )
+},
+controlAlmacen:function () {
+    var me =this;
+    me.objSolForm = Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/almacen/Almacen.php',
+        'Control ALmacen',
+        {
+            width:'80%',
+            height:600
+        },
+        {data:{objPadre: me}
+        },
+        this.idContenedor,
+        'Almacen'
+    )
+},
+onButtonCotizacion:function() {
+    var rec=this.sm.getSelected();
+    console.log ('Data',rec.data);
+    Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/cotizacion/Cotizacion.php',
+        'Cotizacion de solicitud',
+        {
+            width:'98%',
+            height:'98%'
+        },
+        rec.data,
+        this.idContenedor,
+        'Cotizacion');
+},
+clonarSolicitud: function () {
 
-        antEstado:function(res){
-            var rec=this.sm.getSelected();
-            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
-                'Estado de Wf',
-                {
-                    modal:true,
-                    width:450,
-                    height:250
-                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
-                {
-                    config:[{
-                        event:'beforesave',
-                        delegate: this.onAntEstado,
-                    }
-                    ],
-                    scope:this
-                })
-        },
-        onAntEstado: function(wizard,resp){
-            Phx.CP.loadingShow();
-            Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/anteriorEstadoSolicitud',
-                params:{
-                    id_proceso_wf: resp.id_proceso_wf,
-                    id_estado_wf:  resp.id_estado_wf,
-                    obs: resp.obs,
-                    estado_destino: resp.estado_destino
-                },
-                argument:{wizard:wizard},
-                success:this.successEstadoSinc,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
-        },
-        successEstadoSinc:function(resp){
-            Phx.CP.loadingHide();
-            resp.argument.wizard.panel.destroy()
-            this.reload();
-        },
+    var rec=this.sm.getSelected();
+    Ext.Ajax.request({
+        url:'../../sis_gestion_materiales/control/Solicitud/clonarSolicitud',
+        params:{'id_proceso_wf':rec.data.id_proceso_wf},
+        success:this.succeClonSinc,
+        failure: this.conexionFailure,
+        timeout:this.timeout,
+        scope:this
+    });
 
-        iniEstado:function(res){
-            var rec=this.sm.getSelected();
-            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
-                'Estado de Wf',
-                {
-                    modal:true,
-                    width:450,
-                    height:250
-                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
-                {
-                    config:[{
-                        event:'beforesave',
-                        delegate: this.inAntEstado,
-                    }
-                    ],
-                    scope:this
-                })
-        },
-        inAntEstado: function(wizard,resp){
-            Phx.CP.loadingShow();
-            Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitud',
-                params:{
-                    id_proceso_wf: resp.id_proceso_wf,
-                    id_estado_wf:  resp.id_estado_wf,
-                    obs: resp.obs,
-                    estado_destino: resp.estado_destino
-                },
-                argument:{wizard:wizard},
-                success:this.succeEstadoSinc,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
-        },
-        succeEstadoSinc:function(resp){
-            Phx.CP.loadingHide();
-            resp.argument.wizard.panel.destroy();
-            this.reload();
-        },
+},
+succeClonSinc:function(resp){
+    Phx.CP.loadingHide();
+    //resp.argument.wizard.panel.destroy()
+    this.reload();
+}
 
-        winCotProveedores: function () {
-            var dato = this.sm.getSelected().data;
-            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/CorreoProveedores.php',
-                'Definir Proveedores Para Enviar Correo de Cotización',
-                {
-                    modal:true,
-                    width:600,
-                    height:150
-                },
-                dato,
-                this.idContenedor,
-                'CorreoProveedores'
-            );
-        },
-
-        onButtonReporte:function(){
-            var rec=this.sm.getSelected();
-            Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/reporteRequerimientoMateriales',
-                params:{'id_proceso_wf':rec.data.id_proceso_wf},
-                success: this.successExport,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
-        },
-        archivadoConcluido:function() {
-            var me = this;
-            me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/SolicitudArchivado.php',
-                'Solicitudes Archivados/Concluidos',
-                {
-                    width:'80%',
-                    height:600
-                },
-                {data:{objPadre: me}
-                },
-                this.idContenedor,
-                'SolicitudArchivado'
-            )
-        },
-        consultadesaduanizacion:function() {
-            var me = this;
-            me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/solicitudFacMin.php',
-                'Consulta Desaduanizacion',
-                {
-                    width:'80%',
-                    height:600
-                },
-                {data:{objPadre: me}
-                },
-                this.idContenedor,
-                'solicitudFacMin'
-            )
-        },
-        controlAlmacen:function () {
-            var me =this;
-            me.objSolForm = Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/almacen/Almacen.php',
-                'Control ALmacen',
-                {
-                    width:'80%',
-                    height:600
-                },
-                {data:{objPadre: me}
-                },
-                this.idContenedor,
-                'Almacen'
-            )
-        },
-        onButtonCotizacion:function() {
-            var rec=this.sm.getSelected();
-            console.log ('Data',rec.data);
-            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/cotizacion/Cotizacion.php',
-                'Cotizacion de solicitud',
-                {
-                    width:'98%',
-                    height:'98%'
-                },
-                rec.data,
-                this.idContenedor,
-                'Cotizacion');
-        },
-        clonarSolicitud: function () {
-
-            var rec=this.sm.getSelected();
-            Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/clonarSolicitud',
-                params:{'id_proceso_wf':rec.data.id_proceso_wf},
-                success:this.succeClonSinc,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
-
-        },
-        succeClonSinc:function(resp){
-            Phx.CP.loadingHide();
-            //resp.argument.wizard.panel.destroy()
-            this.reload();
-        }
-
-    })
+})
 
 </script>

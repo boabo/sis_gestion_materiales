@@ -66,6 +66,26 @@ header("content-type: text/javascript; charset=UTF-8");
                 ]
 
             });
+            this.historico = 'no';
+            this.tbarItems = ['-',{
+                text: 'Histórico',
+                enableToggle: true,
+                pressed: false,
+                toggleHandler: function(btn, pressed) {
+
+                    if(pressed){
+                        this.historico = 'si';
+                        //this.desBotoneshistorico();
+                    }
+                    else{
+                        this.historico = 'no'
+                    }
+
+                    this.store.baseParams.historico = this.historico;
+                    this.reload();
+                },
+                scope: this
+            }];
 
             Phx.vista.PedidosMantenimiento.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
@@ -158,8 +178,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('btnproveedor').disable();
-                this.getBoton('Consulta_desaduanizacion').enable();
-                this.getBoton('Control_aLmacene').enable();
+               // this.getBoton('Consulta_desaduanizacion').enable();
+               // this.getBoton('Control_aLmacene').enable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
                 this.getBoton('ini_estado').disable();
@@ -167,6 +187,91 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             return tb;
         },
+        onButtonEdit: function() {
+             this.iniciarEvento();
+            Phx.vista.PedidosMantenimiento.superclass.onButtonEdit.call(this);
+            this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
+            this.ocultarComponente(this.Cmp.taller_asignado);
+            this.ocultarComponente(this.Cmp.observacion_nota);
+            this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
+                if (record.data.ID == 1 ){
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.ocultarComponente(this.Cmp.observacion_nota);
+                }if (record.data.ID == 2){
+                    this.mostrarComponente(this.Cmp.taller_asignado);
+                    this.mostrarComponente(this.Cmp.observacion_nota);
+                }if (record.data.ID == 3){
+                    this.ocultarComponente(this.Cmp.taller_asignado);
+                    this.mostrarComponente(this.Cmp.observacion_nota);
+                }
+                this.Cmp.taller_asignado.reset();
+                this.Cmp.observacion_nota.reset();
+            },this);
+            this.reload();
+        },
+
+        iniciarEvento:function () {
+            var data = this.getSelectedData();
+            if (data['origen_pedido'] == 'Gerencia de Mantenimiento' && this.historico == 'si') {
+
+                this.mostrarComponente(this.Cmp.mel);
+                this.mostrarComponente(this.Cmp.tipo_reporte);
+                this.mostrarComponente(this.Cmp.tipo_falla);
+
+                this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
+                this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
+                this.ocultarComponente(this.Cmp.fecha_en_almacen);
+
+                this.mostrarComponente(this.Cmp.fecha_cotizacion);
+                this.mostrarComponente(this.Cmp.id_proveedor);
+                this.mostrarComponente(this.Cmp.nro_po);
+                this.mostrarComponente(this.Cmp.fecha_po);
+                this.CampoBloqueado(true);
+            }else{
+                var data = this.getSelectedData();
+                this.mostrarComponente(this.Cmp.mel);
+                this.mostrarComponente(this.Cmp.tipo_reporte);
+                this.mostrarComponente(this.Cmp.tipo_falla);
+                this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
+                this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
+                this.ocultarComponente(this.Cmp.fecha_en_almacen);
+                this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                this.ocultarComponente(this.Cmp.id_proveedor);
+                this.ocultarComponente(this.Cmp.nro_po);
+                this.ocultarComponente(this.Cmp.fecha_po);
+                this.CampoBloqueado(true);
+
+                if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
+                    this.mostrarComponente(this.Cmp.fecha_cotizacion);
+                    this.mostrarComponente(this.Cmp.id_proveedor);
+                    this.mostrarComponente(this.Cmp.nro_po);
+                    this.mostrarComponente(this.Cmp.fecha_po);
+                    this.Cmp.id_proveedor.setValue(data['id_proveedor']);
+                    this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
+                    this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
+                }
+
+            }
+
+        },
+        CampoBloqueado : function (sw) {
+            this.Cmp.id_funcionario_sol.setDisabled(sw);
+            this.Cmp.origen_pedido.setDisabled(sw);
+            this.Cmp.id_matricula.setDisabled(sw);
+            this.Cmp.motivo_solicitud.setDisabled(sw);
+            this.Cmp.observaciones_sol.setDisabled(sw);
+            this.Cmp.justificacion.setDisabled(sw);
+            this.Cmp.nro_justificacion.setDisabled(sw);
+            this.Cmp.tipo_solicitud.setDisabled(sw);
+            this.Cmp.nro_no_rutina.setDisabled(sw);
+            this.Cmp.mel.setDisabled(sw);
+            this.Cmp.tipo_reporte.setDisabled(sw);
+            this.Cmp.tipo_falla.setDisabled(sw);
+        },
+
+
+
+
         font :function () {
             this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
             this.Atributos[this.getIndAtributo('nro_po')].grid=true;

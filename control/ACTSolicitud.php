@@ -56,11 +56,29 @@ class ACTSolicitud extends ACTbase{
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
         }
 
-        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n') {
+
+        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n') {
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n') {
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n' and $this->objParam->getParametro('historico') == null) {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
+        }
+
+        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
+        }
+
+        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n' and $this->objParam->getParametro('historico') == 'no'){
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'')");
         }
 
@@ -71,51 +89,111 @@ class ACTSolicitud extends ACTbase{
 
 
 
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente') {
+        //operaciones
+
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente' and $this->objParam->getParametro('historico') == null) {
+
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada') {
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_solicitada'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_sin_resp') {
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_sin_resp') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_sin_respuesta'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra'  and $this->objParam->getParametro('historico') == null) {
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'')");
+        }
+
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_solicitada'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''cotizacion_solicitada'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'')");
         }
         if ($this->objParam->getParametro('pes_estado') == 'pedido_op_comite') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
         }
 
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra') {
-            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_op_concluido') {
+       if ($this->objParam->getParametro('pes_estado') == 'pedido_op_concluido') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''finalizado'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente') {
+
+        ///matenimiento
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada') {
+
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada'and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_solicitada'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_sin_resp') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_sin_respuesta'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_comite') {
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_comite' ) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra' and $this->objParam->getParametro('historico') == null ) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_concluido') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''finalizado'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente') {
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_solicitada'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''cotizacion_solicitada'')");
+        } if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''compra'')");
+        }
+
+        //almacenes
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion'')");
-        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada') {
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_solicitada'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_sin_resp') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_sin_respuesta'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_comite') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
         }
-        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra') {
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra' and $this->objParam->getParametro('historico') == null) {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''compra'')");
         }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_concluido') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''finalizado'')");
         }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_solicitada'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''cotizacion_solicitada'')");
+        }
+        if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra' and $this->objParam->getParametro('historico') == 'si'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+        }if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra' and $this->objParam->getParametro('historico') == 'no'){
+            $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''compra'')");
+        }
+
+
+
+
 
         if ($this->objParam->getParametro('pes_estado') == 'almacen') {
             $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and  sol.estado  in (''almacen'')");
@@ -170,7 +248,7 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         if($this->objParam->insertar('id_solicitud')){
             $this->res=$this->objFunc->insertarSolicitudCompleta($this->objParam);
-            var_dump($this->res); exit;
+            //var_dump($this->res); exit;
         }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
