@@ -28,12 +28,13 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ant_estado').setVisible(false);
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
-            this.getBoton('Consulta_desaduanizacion').setVisible(false);
-            this.getBoton('Control_aLmacene').setVisible(false);
+           // this.getBoton('Consulta_desaduanizacion').setVisible(false);
+            //this.getBoton('Control_aLmacene').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
             this.getBoton('btnObs').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
+            this.getBoton('clonar_solicitud').setVisible(false);
 
             this.ocultarComponente(this.Cmp.fecha_po);
             this.ocultarComponente(this.Cmp.tipo_evaluacion);

@@ -36,7 +36,7 @@ header("content-type: text/javascript; charset=UTF-8");
            // this.getBoton('ant_estado').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
-            this.getBoton('Consulta_desaduanizacion').setVisible(false);
+            this.getBoton('clonar_solicitud').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
 
@@ -79,13 +79,13 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(data['estado'] ==  'revision'){
                 this.getBoton('sig_estado').enable();
-                this.getBoton('Control_aLmacene').enable();
+                //this.getBoton('Control_aLmacene').enable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('ant_estado').enable();
                 this. enableTabDetalle();
             } else {
                 this.getBoton('sig_estado').disable();
-                this.getBoton('Control_aLmacene').disable();
+                //this.getBoton('Control_aLmacene').disable();
                 this.getBoton('Archivado_concluido').disable();
                 this.getBoton('ant_estado').disable();
                 this.disableTabDetalle();
@@ -97,7 +97,7 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
 
                 this.getBoton('sig_estado').disable();
-                this.getBoton('Control_aLmacene').disable();
+                //this.getBoton('Control_aLmacene').disable();
                 this.getBoton('Archivado_concluido').disable();
                 this.getBoton('ant_estado').disable();
 

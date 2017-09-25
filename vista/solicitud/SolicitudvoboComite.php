@@ -27,6 +27,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
             Phx.vista.SolicitudvoboComite.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
+            this.store.baseParams.pes_estado = ' ';
             this.load({params: {start: 0, limit: this.tam_pag}});
             this.finCons = true;
             this.getBoton('new').setVisible(false);
@@ -35,8 +36,9 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Report').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
-            this.getBoton('Consulta_desaduanizacion').setVisible(false);
-            this.getBoton('Control_aLmacene').setVisible(false);
+            //this.getBoton('Consulta_desaduanizacion').setVisible(false);
+            //this.getBoton('Control_aLmacene').setVisible(false);
+            this.getBoton('clonar_solicitud').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
         },
