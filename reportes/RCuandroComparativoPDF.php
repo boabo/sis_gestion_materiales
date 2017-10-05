@@ -38,7 +38,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
-               // $this->writeHTML('<p align="justify">Enviado a: '.$Key['pie_pag'].'</p>', true, false, false, false, '');
+
 
             }
         }
@@ -61,13 +61,13 @@ class RCuandroComparativoPDF extends  ReportePDF
                 ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
                 ||!array_key_exists($val['monto_total'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
                 ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
-
+                ||!array_key_exists($val['tipo_cot'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['tipo_cot']])
             ) {
 
-                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
+                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']][$val['tipo_cot']]= 1;
             } else {
 
-                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
+                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']][$val['tipo_cot']]++;
             }
 
         }
@@ -97,25 +97,28 @@ class RCuandroComparativoPDF extends  ReportePDF
         ';
             foreach ($value as $parte => $value2) {
 
-                $tbl2 .='<tr>';
-                $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' .$cont. '</td> ';
+                $tbl2 .= '<tr>';
+                $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
                 $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';
                 foreach ($value2 as $descripcion => $value3) {
                     $tbl2 .= ' <td rowspan="1"  align="center" style="width:22%;">' . $descripcion . '</td> ';
-                    foreach ($value3 as $QTY=> $value4) {
+                    foreach ($value3 as $QTY => $value4) {
                         $tbl2 .= '<td align="center"style="width:8%;">' . $QTY . '</td>';
                         foreach ($value4 as $cd => $value5) {
-                           $tbl2 .= '<td align="center"style="width:8%;">' . $cd . '</td>';
+                            $tbl2 .= '<td align="center"style="width:8%;">' . $cd . '</td>';
                             foreach ($value5 as $Precio => $value6) {
-                               $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
+                                $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
                                 foreach ($value6 as $Monto => $value7) {
-                                   $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto,2,",",".") . '</td>';
+                                    $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto, 2, ",", ".") . '</td>';
                                     foreach ($value7 as $dia => $value8) {
                                         $tbl2 .= '<td align="center" style="width:12%;">' . $dia . '</td>';
-                                        foreach ($value8 as $total =>$value9){
-                                            $tbl2 .='</tr>';
-                                            foreach ($value9 as $recomendacion =>$value10){
-                                                $rec=$recomendacion;
+                                        foreach ($value8 as $total => $value9) {
+                                            $tbl2 .= '</tr>';
+                                            foreach ($value9 as $recomendacion => $value10) {
+                                                $rec = $recomendacion;
+                                                foreach ($value10 as $tipo => $value11) {
+                                                    $tip = $tipo;
+                                                }
                                             }
                                         }
                                     }
@@ -125,12 +128,19 @@ class RCuandroComparativoPDF extends  ReportePDF
                         }
                     }
                 }
+                if ($tip == 'Otros Cargos') {
+                    $cont = '';
+                }else{
+                    $cont = 1;
+                    $cont++;
+                }
 
-                $cont++;
             }
-
-
-            $cont = $cont - count($this->datos3);
+            if(count($this->datos3) != $cont and $tip != 'Otros Cargos' ) {
+                $cont = $cont - count($this->datos3);
+            }else{
+                $cont = 1;
+            }
             $tbl2 .= '<tr>
                            <td align="center" style="width:26%;"><b>TOTALES</b></td>
                             <td align="center"style="width:50%;" ></td>
