@@ -61,13 +61,12 @@ class RCuandroComparativoPDF extends  ReportePDF
                 ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
                 ||!array_key_exists($val['monto_total'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
                 ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
-                ||!array_key_exists($val['tipo_cot'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['tipo_cot']])
             ) {
 
-                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']][$val['tipo_cot']]= 1;
+                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
             } else {
 
-                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']][$val['tipo_cot']]++;
+                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
             }
 
         }
@@ -100,6 +99,7 @@ class RCuandroComparativoPDF extends  ReportePDF
                 $tbl2 .= '<tr>';
                 $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
                 $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';
+                $cont++;
                 foreach ($value2 as $descripcion => $value3) {
                     $tbl2 .= ' <td rowspan="1"  align="center" style="width:22%;">' . $descripcion . '</td> ';
                     foreach ($value3 as $QTY => $value4) {
@@ -116,9 +116,6 @@ class RCuandroComparativoPDF extends  ReportePDF
                                             $tbl2 .= '</tr>';
                                             foreach ($value9 as $recomendacion => $value10) {
                                                 $rec = $recomendacion;
-                                                foreach ($value10 as $tipo => $value11) {
-                                                    $tip = $tipo;
-                                                }
                                             }
                                         }
                                     }
@@ -128,19 +125,9 @@ class RCuandroComparativoPDF extends  ReportePDF
                         }
                     }
                 }
-                if ($tip == 'Otros Cargos') {
-                    $cont = '';
-                }else{
-                    $cont = 1;
-                    $cont++;
-                }
+            }
 
-            }
-            if(count($this->datos3) != $cont and $tip != 'Otros Cargos' ) {
-                $cont = $cont - count($this->datos3);
-            }else{
-                $cont = 1;
-            }
+            $cont = 1;
             $tbl2 .= '<tr>
                            <td align="center" style="width:26%;"><b>TOTALES</b></td>
                             <td align="center"style="width:50%;" ></td>
@@ -154,6 +141,8 @@ class RCuandroComparativoPDF extends  ReportePDF
             $tbl2 .= '</table>';
             $this->SetFont('times', '', 10);
             $this->writeHTML($tbl2);
+
+
         }
 
         $this->writeHTML('<p align="justify"> OBSERVACIONES:  '.$this->datos4[0]['obs'].'</p> <br>', true, false, false, false, '');

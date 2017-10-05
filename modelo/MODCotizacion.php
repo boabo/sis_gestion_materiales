@@ -170,7 +170,7 @@ class MODCotizacion extends MODbase{
         $this->captura('id_solicitud','int4');
         $this->captura('id_cotizacion','int4');
         $this->captura('parte','varchar');
-        $this->captura('descripcion','varchar');
+        $this->captura('descripcion','text');
         $this->captura('explicacion_detallada_part_cot','varchar');
         $this->captura('cantidad','integer');
         $this->captura('tipo_cot','varchar');
