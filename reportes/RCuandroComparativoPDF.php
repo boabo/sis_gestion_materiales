@@ -3,6 +3,7 @@ require_once(dirname(__FILE__) . '/../../lib/tcpdf/tcpdf_barcodes_2d.php');
 class RCuandroComparativoPDF extends  ReportePDF
 {
     private $proveedor = array();
+    private $tipo = array();
     private  $nro;
     function Header()
     {
@@ -38,42 +39,44 @@ class RCuandroComparativoPDF extends  ReportePDF
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
-
-
             }
         }
     }
+
     function reporteCuadroComparativo(){
         $this->SetFont('times', 'B', 10);
         //var_dump($this->datos4[0]['lista_proverod']);exit;
         $this->writeHTML('<p align="justify">Enviado a: '.$this->datos4[0]['lista_proverod'].'</p> <br>', true, false, false, false, '');
 
-        //$this->Ln();
+        $this->nro= 1;
         foreach ($this->datos as  $val)
         {
             if (  !array_key_exists($val['desc_proveedor'], $this->proveedor)
-                ||!array_key_exists($val['parte'], $this->proveedor[$val['desc_proveedor']])
-                ||!array_key_exists($val['descripcion'],$this->proveedor[$val['desc_proveedor']][$val['parte']])
-                ||!array_key_exists($val['cantidad'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']])
-                ||!array_key_exists($val['cd'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']])
-                ||!array_key_exists($val['precio_unitario'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']])
-                ||!array_key_exists($val['precio_unitario_mb'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']])
-                ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
-                ||!array_key_exists($val['monto_total'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
-                ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
-            ) {
+                ||!array_key_exists($this->nro, $this->proveedor[$val['desc_proveedor']])
+                ||!array_key_exists($val['tipo_cot'], $this->proveedor[$val['desc_proveedor']][$this->nro])
+                ||!array_key_exists($val['parte'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']])
+                ||!array_key_exists($val['descripcion'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']])
+                ||!array_key_exists($val['cantidad'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']])
+                ||!array_key_exists($val['cd'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']])
+                ||!array_key_exists($val['precio_unitario'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']])
+                ||!array_key_exists($val['precio_unitario_mb'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']])
+                ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
+                ||!array_key_exists($val['monto_total'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
+                ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
 
-                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
+            )
+            {
+                $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
             } else {
-
-                $this->proveedor[$val['desc_proveedor']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
+                $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
             }
-
+            $this->nro++;
         }
 
-
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $cont = 1;
+
+            $cont = 1;
+
         foreach ($this->proveedor as $proveedor => $value){
 
             $tbl2 = '
@@ -94,39 +97,46 @@ class RCuandroComparativoPDF extends  ReportePDF
            
         </tr>
         ';
-            foreach ($value as $parte => $value2) {
+            foreach ($value as $jh=> $value2) {
+               foreach ($value2 as $tipo => $value3) {
+                   $tbl2 .= '<tr>';
+                   if($tipo == 'Otros Cargos'){
+                       $cont = $cont = '';
+                   }elseif ($tipo== 'NA'){
+                       $cont = $cont = '';
+                   }
+                   $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
+                        foreach ($value3 as $parte => $value4) {
+                            $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';
+                            foreach ($value4 as $descripcion => $value5) {
+                                $tbl2 .= ' <td rowspan="1"  align="center" style="width:22%;">' . $descripcion . '</td> ';
+                              foreach ($value5 as $qty => $value6) {
+                                  $tbl2 .= '<td align="center"style="width:8%;">' . $qty . '</td>';
+                                  foreach ($value6 as $cd=> $value7) {
+                                      $tbl2 .= '<td align="center"style="width:8%;">' . $cd . '</td>';
+                                       foreach ($value7 as $Precio => $value8) {
+                                           $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
+                                             foreach ($value8 as $Monto => $value9) {
+                                                 $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto, 2, ",", ".") . '</td>';
+                                                 foreach ($value9 as $dia  => $value10) {
+                                                     $tbl2 .= '<td align="center" style="width:12%;">' . $dia . '</td>';
+                                                     $tbl2 .= '</tr>';
+                                                    foreach ($value10 as $total => $value11) {
+                                                        foreach ($value11 as $recomendacion => $value12) {
+                                                             $rec = $recomendacion;
+                                                         }
+                                                     }
+                                                 }
+                                             }
+                                      }
 
-                $tbl2 .= '<tr>';
-                $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
-                $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';
+                                  }
+                              }
+                          }
+                      }
+               }
                 $cont++;
-                foreach ($value2 as $descripcion => $value3) {
-                    $tbl2 .= ' <td rowspan="1"  align="center" style="width:22%;">' . $descripcion . '</td> ';
-                    foreach ($value3 as $QTY => $value4) {
-                        $tbl2 .= '<td align="center"style="width:8%;">' . $QTY . '</td>';
-                        foreach ($value4 as $cd => $value5) {
-                            $tbl2 .= '<td align="center"style="width:8%;">' . $cd . '</td>';
-                            foreach ($value5 as $Precio => $value6) {
-                                $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
-                                foreach ($value6 as $Monto => $value7) {
-                                    $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto, 2, ",", ".") . '</td>';
-                                    foreach ($value7 as $dia => $value8) {
-                                        $tbl2 .= '<td align="center" style="width:12%;">' . $dia . '</td>';
-                                        foreach ($value8 as $total => $value9) {
-                                            $tbl2 .= '</tr>';
-                                            foreach ($value9 as $recomendacion => $value10) {
-                                                $rec = $recomendacion;
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
             }
-
             $cont = 1;
             $tbl2 .= '<tr>
                            <td align="center" style="width:26%;"><b>TOTALES</b></td>
@@ -253,7 +263,6 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->datos2 = $datos2;
         $this->datos3 = $datos3;
         $this->datos4 = $datos4;
-       // var_dump($this->datos4);exit;
 
     }
     function generarReporte() {
