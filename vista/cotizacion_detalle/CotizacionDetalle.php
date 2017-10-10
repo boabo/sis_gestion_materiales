@@ -564,7 +564,11 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
      var data = this.getSelectedData();
      console.log('id_detalle',data);
      Phx.vista.CotizacionDetalle.superclass.onButtonEdit.call(this);
-     }
+     },
+    successSave:function(resp){
+        Phx.vista.CotizacionDetalle.superclass.successSave.call(this,resp);
+        Phx.CP.getPagina(this.idContenedorPadre).reload();
+    }
     })
 </script>
 		

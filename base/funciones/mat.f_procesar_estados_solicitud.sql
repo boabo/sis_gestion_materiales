@@ -13,6 +13,8 @@ DECLARE
     v_resp    			 	varchar;
     v_mensaje 			 	varchar;
     v_solicitud		 	    record;
+    v_adjudicacion			varchar;
+    v_count					integer;
 
 BEGIN
   v_nombre_funcion = 'mat.f_procesar_estados_solicitud';
@@ -21,6 +23,15 @@ BEGIN
   FROM mat.tsolicitud
   where id_proceso_wf = p_id_proceso_wf;
 
+
+select count(c.id_cotizacion),
+		c.adjudicado
+into
+v_count,
+v_adjudicacion
+from mat.tcotizacion  c
+where c.id_solicitud  = v_solicitud.id_solicitud
+group by c.adjudicado;
 
    if(p_codigo_estado in ('revision')) then
     	begin
@@ -59,6 +70,22 @@ BEGIN
         ---
         elsif(p_codigo_estado in ('comite_unidad_abastecimientos')) then
     	begin
+        if (v_adjudicacion = 'no' and v_count > 1 ) then
+           raise exception 'Tiene que Adjudicar un Proveedor';
+        end if;
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+
+
+        end;
+        elsif(p_codigo_estado in ('comite_aeronavegabilidad')) then
+    	begin
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
@@ -68,7 +95,7 @@ BEGIN
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
     	end;
-        elsif(p_codigo_estado in ('comite_aeronavegabilidad')) then
+        elsif(p_codigo_estado in ('departamento_ceac')) then
     	begin
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
@@ -105,18 +132,6 @@ BEGIN
 
    elsif(p_codigo_estado in ('compra')) then
     	begin
-          IF v_solicitud.estado_firma in ('vobo_area','vobo_aeronavegabilidad','vobo_dpto_abastecimientos')    THEN
-        RAISE EXCEPTION'Aun no fue aprobado por %', v_solicitud.estado_firma;
-        END IF;
-         /* if v_solicitud.fecha_cotizacion is null then
-            raise exception 'Tiene que registar la fecha de contizacion';
-		  end if;
-          if v_solicitud.id_proveedor is null then
-            raise exception 'Tiene que registar el Proveedor';
-		  end if;
-           if v_solicitud.nro_po = '' then
-            raise exception 'Tiene que registar Nro. P.O.';
-		  end if;*/
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,

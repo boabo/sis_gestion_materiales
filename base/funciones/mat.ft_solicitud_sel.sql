@@ -81,6 +81,8 @@ DECLARE
     v_fecha_firma_presu_qr				text;
     v_codigo_pre						varchar;
     v_funcionario						varchar;
+     v_historico 						varchar;
+     vv_id_funcionario					integer;
 
 BEGIN
 
@@ -107,6 +109,145 @@ BEGIN
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
                     INNER JOIN orga.vfuncionario_cargo fun on fun.id_funcionario = tf.id_funcionario
                     WHERE tu.id_usuario = p_id_usuario and fun.fecha_finalizacion is null;
+
+         	IF  pxp.f_existe_parametro(p_tabla,'historico') THEN
+
+             v_historico =  v_parametros.historico;
+
+            ELSE
+
+            v_historico = 'no';
+
+            END IF;
+
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_op_pendiente' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = '(tew.id_funcionario = '|| v_record.id_funcionario||' or tew.id_funcionario = '||vv_id_funcionario|| ')and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_op_solicitada' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	--v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''cotizacion_solicitada'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         	v_filtro = '(tew.id_funcionario = '|| v_record.id_funcionario||' or tew.id_funcionario = '||vv_id_funcionario|| ')and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+
+         end if ;
+         END IF;
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_op_compra' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	--v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+  			v_filtro = '(tew.id_funcionario = '|| v_record.id_funcionario||' or tew.id_funcionario = '||vv_id_funcionario|| ')and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+
+         end if ;
+         END IF;
+         ---filtro funciorio wf
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_op_concluido' THEN
+		 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''finalizado'') and  ';
+         END IF;
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_op_comite' THEN
+		 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'') and  ';
+         END IF;
+
+         --Filtro Hisotico Mantnimeinto
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_ma_pendiente' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_ma_solicitada' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''cotizacion_solicitada'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+           IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_ma_compra' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+         ---filtro funciorio wf
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_ma_concluido' THEN
+		 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''finalizado'') and  ';
+         END IF;
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_ma_comite' THEN
+		 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'') and  ';
+         END IF;
+         --Filtro Hisotico almacen
+
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_al_pendiente' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = '( tew.id_funcionario = 1950 or tew.id_funcionario = '||v_record.id_funcionario||') and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_al_solicitada' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	--v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''cotizacion_solicitada'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+         	v_filtro = '( tew.id_funcionario = 1950 or tew.id_funcionario = '||v_record.id_funcionario||') and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+
+         end if ;
+         END IF;
+           IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_al_compra' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+         	v_filtro = '( tew.id_funcionario = 1950 or tew.id_funcionario = '||v_record.id_funcionario||') and  sol.estado in(''cotizacion'',''despachado'',''arribo'',''desaduanizado'',''almacen'') and  ';
+
+         end if ;
+         END IF;
+         ---filtro funciorio wf
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_al_concluido' THEN
+		 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''finalizado'') and  ';
+         END IF;
+         IF p_administrador !=1  and v_parametros.pes_estado =  'pedido_al_comite' THEN
+		 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'') and  ';
+         END IF;
+
+		---filto historico desaduanizacion
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'ab_origen_ing_n' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'ab_origen_man_n' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+
+         IF p_administrador !=1  and v_parametros.pes_estado =  'ab_origen_alm_n' THEN
+		 if  (v_historico = 'no')then
+         	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' and  ';
+         else
+		 	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||'  and  sol.estado in(''arribo'',''desaduanizado'',''almacen'') and  ';
+         end if ;
+         END IF;
+
+
 
         IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
@@ -200,7 +341,7 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1950,69,302) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                         IF(v_record.nombre_cargo = 'Auxiliar Suministros' ) THEN
@@ -218,7 +359,7 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1950,69,302) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                         IF(v_record.nombre_cargo = 'Analista II Presupuestos' ) THEN
@@ -236,7 +377,7 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1950,69,302) OR tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                         IF(v_record.nombre_cargo = 'Técnico Adquisiciones' ) THEN
@@ -254,7 +395,7 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(sol.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1950,69,302)  OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                ------
@@ -420,7 +561,7 @@ BEGIN
 						left join param.vproveedor pro on pro.id_proveedor =sol.id_proveedor
                         left join wf.testado_wf ewb on ewb.id_estado_wf = sol.id_estado_wf_firma
                         left join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
-                        left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
+                        left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
                         left join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
                         left join mat.tgestion_proveedores_new tgp ON tgp.id_solicitud = sol.id_solicitud
                         where  '||v_filtro;
@@ -447,7 +588,9 @@ BEGIN
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
+           -- raise exception 't';
 			RAISE NOTICE 'v_consulta %',v_consulta;
+
 			return v_consulta;
          end;
 
@@ -475,7 +618,7 @@ BEGIN
 						left join param.vproveedor pro on pro.id_proveedor =sol.id_proveedor
                         left join wf.testado_wf ewb on ewb.id_estado_wf = sol.id_estado_wf_firma
                         left join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
-                        left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
+                        left join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
                         left join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
                         left JOIN mat.tgestion_proveedores tgp ON tgp.id_solicitud = sol.id_solicitud
                         where ';
@@ -584,7 +727,7 @@ BEGIN
                                 to_char( sol.fecha_mod,''DD/MM/YYYY'') as fecha_fir
 
           						from mat.tsolicitud sol
-                                inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud
+                                inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf wof on wof.id_estado_wf = sol.id_estado_wf
@@ -726,7 +869,7 @@ BEGIN
                                 d.id_solicitud as id
                                 from mat.tsolicitud s
                                 inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
-                                inner join mat.tdetalle_sol d on d.id_solicitud = s.id_solicitud
+                                inner join mat.tdetalle_sol d on d.id_solicitud = s.id_solicitud and de.estado_reg = ''activo''
                                 inner join wf.testado_wf e on e.id_estado_wf = s.id_estado_wf
                                 inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
                                 where '||v_filtro_repo;
@@ -901,7 +1044,7 @@ BEGIN
                                 s.nro_tramite,
                                 s.origen_pedido,
                                 to_char(s.fecha_po,''DD/MM/YYYY'') as fecha_po,
-                                pxp.aggarray( d.nro_parte)::text as nro_parte,
+                                pxp.aggarray( d.nro_parte_cot)::text as nro_parte,
                                 s.tipo_evaluacion,
                                 (case
                                 when s.tipo_evaluacion =''Reparacion''then
@@ -933,12 +1076,12 @@ BEGIN
                                 '''||COALESCE(v_codigo_pre,' ')||'''::varchar AS codigo_pres,
                                 s.estado as estado_materiales
                                 from mat.tsolicitud s
-                                inner join mat.tdetalle_sol d on d.id_solicitud = s.id_solicitud
                                 inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
+                                inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion  and tipo_cot <> ''Otros Cargos'' and  tipo_cot <>''NA''
                                 inner join param.vproveedor p on p.id_proveedor = c.id_proveedor
                                 inner join param.tmoneda mo on mo.id_moneda = c.id_moneda
                                 left join mat.tgestion_proveedores ge on ge.id_solicitud = s.id_solicitud
-								where s.id_proceso_wf ='||v_parametros.id_proceso_wf;
+								where  d.revisado = ''si''and s.id_proceso_wf ='||v_parametros.id_proceso_wf;
 			--Devuelve la respuesta
             v_consulta:=v_consulta||'GROUP BY s.id_solicitud,ge.cotizacion_solicitadas,c.nro_cotizacion,c.monto_total,p.desc_proveedor,c.obs,c.recomendacion,mo.codigo';
 			return v_consulta;
@@ -1001,7 +1144,7 @@ BEGIN
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
                           inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
-                          inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
+                          inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud and det.estado_reg = ''activo''
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
         	--Devuelve la respuesta
             raise notice 'v_consulta %',v_consulta;
@@ -1141,7 +1284,7 @@ BEGIN
                           tc.monto_total AS monto_ref,
                            '''||v_funcionario||'''::varchar AS funcionario
                           from mat.tsolicitud s
-                          inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud
+                          inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
                           left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = s.id_solicitud
                           INNER JOIN mat.tcotizacion tc ON tc.id_solicitud = s.id_solicitud AND tc.adjudicado = ''si''
 

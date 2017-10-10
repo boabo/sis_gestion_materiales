@@ -200,8 +200,10 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.ocultarComponente(this.Cmp.nro_po);
+                this.mostrarComponente(this.Cmp.justificacion);
+                this.mostrarComponente(this.Cmp.nro_justificacion);
 
-            }  if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
+            }   else if (this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
                 this.mostrarComponente(this.Cmp.mel);
                 this.mostrarComponente(this.Cmp.tipo_reporte);
                 this.mostrarComponente(this.Cmp.tipo_falla);
@@ -211,8 +213,24 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.ocultarComponente(this.Cmp.nro_po);
+                this.mostrarComponente(this.Cmp.justificacion);
+                this.mostrarComponente(this.Cmp.nro_justificacion);
 
-            }  if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
+            }   else if (this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
+                this.ocultarComponente(this.Cmp.mel);
+                this.ocultarComponente(this.Cmp.tipo_reporte);
+                this.ocultarComponente(this.Cmp.tipo_falla);
+                this.ocultarComponente(this.Cmp.justificacion);
+                this.ocultarComponente(this.Cmp.id_matricula);
+                this.ocultarComponente(this.Cmp.nro_justificacion);
+                this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
+                this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
+                this.ocultarComponente(this.Cmp.fecha_en_almacen);
+                this.ocultarComponente(this.Cmp.fecha_cotizacion);
+                this.ocultarComponente(this.Cmp.id_proveedor);
+                this.ocultarComponente(this.Cmp.nro_po);
+
+            } else if (this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
                 this.ocultarComponente(this.Cmp.mel);
                 this.ocultarComponente(this.Cmp.tipo_reporte);
                 this.ocultarComponente(this.Cmp.tipo_falla);

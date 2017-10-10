@@ -118,54 +118,7 @@ BEGIN
                                                        'ADQ',
                                                        NULL);
 
-           /*IF  v_registros_cotizacion.estado  in('adjudicado','contrato_elaborado') THEN
-              raise exception 'Solo pueden habilitarce pago para cotizaciones adjudicadas';
-            END IF;*/
 
-           /*SELECT
-                 ps_num_tramite ,
-                 ps_id_proceso_wf ,
-                 ps_id_estado_wf ,
-                 ps_codigo_estado
-              into
-                 v_num_tramite,
-                 v_id_proceso_wf,
-                 v_id_estado_wf,
-                 v_codigo_estado
-
-            FROM wf.f_inicia_tramite(
-                 p_id_usuario,
-                 p_id_usuario_ai,
-                 p_usuario_ai,
-                 v_id_gestion,
-                 'SOLCINPD',
-                 370,--FUNCIONARIO SOLICITANTE
-                 NULL,
-                 'Solicitud de Compra '||v_num_sol,
-                 v_num_sol);*/
-
-
-            -- Iniciar el tramite en el sistema de WF
-            /*SELECT
-                         ps_id_proceso_wf,
-                         ps_id_estado_wf,
-                         ps_codigo_estado,
-                         ps_nro_tramite
-            INTO
-                         v_id_proceso_wf,
-                         v_id_estado_wf,
-                         v_codigo_estado,
-                         v_num_tramite
-            FROM wf.f_registra_proceso_disparado_wf(
-                        p_id_usuario,
-                        p_id_usuario_ai::integer,
-                        p_usuario_ai::varchar,
-                        v_registros_solicitud_mat.id_estado_wf,
-                        370,  --id_funcionario wf
-                        null,
-                        v_codigo_tipo_proceso||'-['||v_registros_solicitud_mat.nro_tramite||']',
-                        'SOLCINPD',
-                        v_codigo_tipo_proceso||'-['||v_registros_solicitud_mat.nro_tramite||']');*/
             --raise exception 'v_num_tramite %, %',v_num_tramite,v_codigo_estado ;
              -- disparar creacion de procesos seleccionados
                         SELECT
@@ -186,6 +139,8 @@ BEGIN
                                  'Solicitud de Compra ['||v_num_sol||']',
                                  'CINTPD',
                                  v_num_sol);
+
+
 
             v_num_tramite = wf.f_get_numero_tramite('CINTPD', v_id_gestion, p_id_usuario);
             INSERT INTO adq.tsolicitud
@@ -242,7 +197,7 @@ BEGIN
               v_registros_solicitud_mat.lugar_entrega,
               v_registros_solicitud_mat.motivo_solicitud,
 
-              v_num_tramite::varchar,
+              v_registros_solicitud_mat.nro_tramite,--v_num_tramite::varchar,
 
               v_registros_solicitud_mat.nro_po,
               v_registros_solicitud_mat.fecha_po,

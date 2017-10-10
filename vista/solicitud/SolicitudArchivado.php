@@ -44,9 +44,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         gruposBarraTareas:[
-            {name:'archivado_ing',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:6,height:0, width: 100},
-            {name:'archivado_man',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:6,height:0, width: 100},
-            {name:'archivado_alm',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:6,height:0, width: 150}
+            {name:'archivado_ing',title:'<H1 align="center"><i></i> Operaciones</h1>',grupo:6,height:0, width: 100},
+            {name:'archivado_man',title:'<H1 align="center"><i></i> Mantenimiento</h1>',grupo:6,height:0, width: 100},
+            {name:'archivado_alm',title:'<H1 align="center"><i></i> Abastecimientos</h1>',grupo:6,height:0, width: 150},
+            {name:'archivado_ceac',title:'<H1 align="center"><i></i> Operaciones CEAC</h1>',grupo:6,height:0, width: 150}
 
         ],
         tam_pag:50,

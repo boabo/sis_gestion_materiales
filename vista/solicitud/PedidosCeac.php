@@ -9,11 +9,11 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-    Phx.vista.PedidosAlmacen = {
+    Phx.vista.PedidosCeac = {
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
-        nombreVista: 'PerdidoAlmacen',
+        nombreVista: 'PedidoDgac',
         tabsouth :[
             {
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',
@@ -86,36 +86,36 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 scope: this
             }];
-            Phx.vista.PedidosAlmacen.superclass.constructor.call(this, config);
+
+            Phx.vista.PedidosCeac.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
-            this.store.baseParams.pes_estado = 'pedido_al_pendiente';
+            this.store.baseParams.pes_estado = 'pedido_dgac_pendiente';
             this.load({params: {start: 0, limit: this.tam_pag}});
-            this.finCons = true;
             this.getBoton('Report').setVisible(false);
+            this.finCons = true;
 
         },
-        
-
         gruposBarraTareas:[
-            {name:'pedido_al_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
-            {name:'pedido_al_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
-            {name:'pedido_al_sin_resp',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
-            {name:'pedido_al_comite',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Vobo Comite</h1>',grupo:5,height:0},
-            {name:'pedido_al_compra',title:'<H1 align="center"><i class="fa fa-money"></i> Compra</h1>',grupo:3,height:0},
-            {name:'pedido_al_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Concluido</h1>',grupo:5,height:0}
+            {name:'pedido_dgac_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_sin_resp',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_comite',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Vobo Comite</h1>',grupo:5,height:0},
+            {name:'pedido_dgac_compra',title:'<H1 align="center"><i class="fa fa-money"></i> Compra</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_concluido',title:'<H1 align="center" ><i class="fa fa-folder" ></i> Concluido</h1>',grupo:5,height:0}
         ],
 
         actualizarSegunTab: function(name, indice){
 
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
-                if(name == 'pedido_al_pendiente' || name == 'pedido_al_solicitada' || name == 'pedido_al_compra'){
+                if(name == 'pedido_dgac_pendiente' || name == 'pedido_dgac_solicitada' || name == 'pedido_dgac_compra' ){
                     this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
                 }else{
                     this.getBoton('btnproveedor').setVisible(false);
                     this.getBoton('Cotizacion').setVisible(false);
                 }
+
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
@@ -141,10 +141,11 @@ header("content-type: text/javascript; charset=UTF-8");
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
-            Phx.vista.PedidosAlmacen.superclass.preparaMenu.call(this,n);
+            Phx.vista.PedidosCeac.superclass.preparaMenu.call(this,n);
 
             this.getBoton('btnproveedor').enable();
             this.getBoton('Cotizacion').enable();
+
 
             if( data['estado'] ==  'cotizacion'){
                 this.getBoton('sig_estado').enable();
@@ -171,8 +172,9 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         liberaMenu:function(){
-            var tb = Phx.vista.PedidosAlmacen.superclass.liberaMenu.call(this);
+            var tb = Phx.vista.PedidosCeac.superclass.liberaMenu.call(this);
             if(tb){
+
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('btnproveedor').disable();
@@ -180,15 +182,12 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('Cotizacion').disable();
                 this.getBoton('ini_estado').disable();
                 this.getBoton('Report').setVisible(false);
-
             }
-
             return tb;
         },
-
         onButtonEdit: function() {
             this.iniciarEvento();
-            Phx.vista.PedidosAlmacen.superclass.onButtonEdit.call(this);
+            Phx.vista.PedidosCeac.superclass.onButtonEdit.call(this);
             this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
             this.ocultarComponente(this.Cmp.taller_asignado);
             this.ocultarComponente(this.Cmp.observacion_nota);
@@ -208,7 +207,6 @@ header("content-type: text/javascript; charset=UTF-8");
             },this);
             this.reload();
         },
-
         iniciarEvento:function () {
             var data = this.getSelectedData();
             if (data['origen_pedido'] == 'Almacenes Consumibles o Rotables' && this.historico == 'si') {
@@ -267,8 +265,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
 
-
-
         font :function () {
             this.Atributos[this.getIndAtributo('tipo_falla')].grid=false;
             this.Atributos[this.getIndAtributo('tipo_reporte')].grid=false;
@@ -294,6 +290,11 @@ header("content-type: text/javascript; charset=UTF-8");
 
         }
 
-    }
 
+
+
+
+
+
+    }
 </script>

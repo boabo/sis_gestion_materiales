@@ -22,6 +22,8 @@ class MODSolicitud extends MODbase{
         $this->setParametro('tipo_interfaz','tipo_interfaz','varchar');
         $this->setParametro('id_usuario','id_usuario','int4');
         $this->setParametro('fill','fill','varchar');
+        $this->setParametro('historico','historico','varchar');
+
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');
         $this->captura('id_funcionario_sol','int4');
@@ -68,6 +70,7 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_no_rutina','varchar');
         $this->captura('desc_proveedor','varchar');
         $this->captura('nro_parte','varchar');
+        $this->captura('nro_parte_alterno','varchar');
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
@@ -86,6 +89,7 @@ class MODSolicitud extends MODbase{
         $this->captura('lugar_entrega','varchar');
         $this->captura('mensaje_correo','varchar');
         $this->captura('tipo','varchar');
+        $this->captura('id_cotizacion','int4');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -482,8 +486,8 @@ class MODSolicitud extends MODbase{
         $this->captura('nro_justificacion','varchar');
         $this->captura('nro_parte_alterno','varchar');
         $this->captura('tipo','varchar');
-        $this->captura('estado_firma','varchar');
-        $this->captura('fecha_fir','text');
+        $this->captura('nro_no_rutina','varchar');
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -166,15 +166,15 @@ BEGIN
  	#AUTOR:		Miguel Alejandro Mamani Villegas
  	#FECHA:		02-06-2017
 	***********************************/
-
-	elsif(p_transaccion='MAT_CTS_CUAR')then
+elsif(p_transaccion='MAT_CTS_CUAR')then
     	begin
 			 v_consulta:='select s.id_solicitud,
 							  d.id_cotizacion,
                               d.nro_parte_cot::varchar as parte,
-                              d.descripcion_cot::varchar as descripcion,
+                              d.descripcion_cot::text as  descripcion_cot,
                               d.explicacion_detallada_part_cot,
                               d.cantidad_det::integer as cantidad,
+                              d.tipo_cot,
                               d.cd,
                               d.precio_unitario,
                               d.precio_unitario_mb,
@@ -186,10 +186,6 @@ BEGIN
                               to_char(c.fecha_cotizacion,''DD/MM/YYYY'')::varchar as fecha_cotizacion,
                               s.fecha_po,
                               c.monto_total,
-                              /*(select pxp.list(initcap(p.desc_proveedor))
-                               from param.vproveedor p
-                               where p.id_proveedor = ANY( ges.cotizacion_solicitadas)
-                              )::varchar as lista_proveedor,*/
                               (select pxp.list(initcap(p.desc_proveedor))
                               from mat.tgestion_proveedores_new ne
                               inner join param.vproveedor p on p.id_proveedor = ne.id_proveedor
@@ -209,6 +205,7 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
+
         /*********************************
  	#TRANSACCION:  'MAT_CTS_QR'
  	#DESCRIPCION:	Control de firmas  qr
@@ -256,7 +253,7 @@ BEGIN
                     FROM wf.testado_wf twf
                     INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'cotizacion' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'compra' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
     SELECT
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma

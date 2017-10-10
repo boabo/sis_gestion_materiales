@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             Phx.vista.SolicitudVistoBueno.superclass.constructor.call(this, config);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-            this.store.baseParams.pes_estado = 'visto_bueno';
+           // this.store.baseParams.pes_estado = 'visto_bueno';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
             this.getBoton('Report').setVisible(false);

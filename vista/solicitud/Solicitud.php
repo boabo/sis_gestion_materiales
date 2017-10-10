@@ -115,16 +115,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler: this.controlAlmacen,
                 tooltip: '<b>Control Almacen</b>',
                 scope:this
-            });
-            this.addButton('Consulta_desaduanizacion',{
-                grupo: [3],
-                text: 'Mod. Sol.',
-                iconCls: 'bfolder',
-                disabled: false,
-                handler: this.consultadesaduanizacion,
-                tooltip: '<b>Desaduanizacion</b><br>Nos permite consultar las Desaduanizaciones, de las solicitudes en proceso.',
-                scope:this
             });*/
+
             this.addButton('Archivado_concluido',{
                 grupo: [2,3],
                 text: 'Archivado/Concluido',
@@ -186,7 +178,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     labelSeparator:'',
                     inputType:'hidden',
-                    name: 'nro_solicitud'
+                    name: 'id_cotizacion'
                 },
                 type:'Field',
                 form:true
@@ -305,8 +297,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    gwidth: 230,
-                    store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables'],
+                    gwidth: 250,
+                    store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables','Centro de Entrenamiento Aeronautico Civil'],
                     renderer: function(value, p, record) {
                         if(record.data.estado == 'almacen'){
                             return String.format('<div ext:qtip="Optimo"><b><font color="blue">{0}</font></b><br></div>', value);
@@ -735,7 +727,24 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'TextField',
                 filters:{pfiltro:'de.nro_parte',type:'string'},
                 id_grupo:1,
-                grid:true,
+                grid:false,
+                form:false,
+                bottom_filter:true
+            },
+            {
+                config:{
+                    name: 'nro_parte_alterno',
+                    fieldLabel: 'Nro. de Parte Alterna',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 200,
+                    maxLength:100
+
+                },
+                type:'TextField',
+                filters:{pfiltro:'de.nro_parte_alterno',type:'string'},
+                id_grupo:1,
+                grid:false,
                 form:false,
                 bottom_filter:true
             },
@@ -1032,7 +1041,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'condicion', type: 'string'},
             {name:'lugar_entrega', type: 'string'},
             {name:'mensaje_correo', type: 'string'},
-            {name:'tipo', type: 'string'}
+            {name:'tipo', type: 'string'},
+            {name:'id_cotizacion', type: 'numeric'}
 
             
 
@@ -1286,187 +1296,174 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
 
-antEstado:function(res){
-    var rec=this.sm.getSelected();
-    Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
-        'Estado de Wf',
-        {
-            modal:true,
-            width:450,
-            height:250
-        }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
-        {
-            config:[{
-                event:'beforesave',
-                delegate: this.onAntEstado,
-            }
-            ],
-            scope:this
-        })
-},
-onAntEstado: function(wizard,resp){
-    Phx.CP.loadingShow();
-    Ext.Ajax.request({
-        url:'../../sis_gestion_materiales/control/Solicitud/anteriorEstadoSolicitud',
-        params:{
-            id_proceso_wf: resp.id_proceso_wf,
-            id_estado_wf:  resp.id_estado_wf,
-            obs: resp.obs,
-            estado_destino: resp.estado_destino
+        antEstado:function(res){
+            var rec=this.sm.getSelected();
+            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+                'Estado de Wf',
+                {
+                    modal:true,
+                    width:450,
+                    height:250
+                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+                {
+                    config:[{
+                        event:'beforesave',
+                        delegate: this.onAntEstado,
+                    }
+                    ],
+                    scope:this
+                })
         },
-        argument:{wizard:wizard},
-        success:this.successEstadoSinc,
-        failure: this.conexionFailure,
-        timeout:this.timeout,
-        scope:this
-    });
-},
-successEstadoSinc:function(resp){
-    Phx.CP.loadingHide();
-    resp.argument.wizard.panel.destroy()
-    this.reload();
-},
+        onAntEstado: function(wizard,resp){
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/anteriorEstadoSolicitud',
+                params:{
+                    id_proceso_wf: resp.id_proceso_wf,
+                    id_estado_wf:  resp.id_estado_wf,
+                    obs: resp.obs,
+                    estado_destino: resp.estado_destino
+                },
+                argument:{wizard:wizard},
+                success:this.successEstadoSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+        successEstadoSinc:function(resp){
+            Phx.CP.loadingHide();
+            resp.argument.wizard.panel.destroy()
+            this.reload();
+        },
 
-iniEstado:function(res){
-    var rec=this.sm.getSelected();
-    Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
-        'Estado de Wf',
-        {
-            modal:true,
-            width:450,
-            height:250
-        }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
-        {
-            config:[{
-                event:'beforesave',
-                delegate: this.inAntEstado,
-            }
-            ],
-            scope:this
-        })
-},
-inAntEstado: function(wizard,resp){
-    Phx.CP.loadingShow();
-    Ext.Ajax.request({
-        url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitud',
-        params:{
-            id_proceso_wf: resp.id_proceso_wf,
-            id_estado_wf:  resp.id_estado_wf,
-            obs: resp.obs,
-            estado_destino: resp.estado_destino
+        iniEstado:function(res){
+            var rec=this.sm.getSelected();
+            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+                'Estado de Wf',
+                {
+                    modal:true,
+                    width:450,
+                    height:250
+                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+                {
+                    config:[{
+                        event:'beforesave',
+                        delegate: this.inAntEstado,
+                    }
+                    ],
+                    scope:this
+                })
         },
-        argument:{wizard:wizard},
-        success:this.succeEstadoSinc,
-        failure: this.conexionFailure,
-        timeout:this.timeout,
-        scope:this
-    });
-},
-succeEstadoSinc:function(resp){
-    Phx.CP.loadingHide();
-    resp.argument.wizard.panel.destroy();
-    this.reload();
-},
+        inAntEstado: function(wizard,resp){
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitud',
+                params:{
+                    id_proceso_wf: resp.id_proceso_wf,
+                    id_estado_wf:  resp.id_estado_wf,
+                    obs: resp.obs,
+                    estado_destino: resp.estado_destino
+                },
+                argument:{wizard:wizard},
+                success:this.succeEstadoSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+        succeEstadoSinc:function(resp){
+            Phx.CP.loadingHide();
+            resp.argument.wizard.panel.destroy();
+            this.reload();
+        },
 
-winCotProveedores: function () {
-    var dato = this.sm.getSelected().data;
-    Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/CorreoProveedores.php',
-        'Definir Proveedores Para Enviar Correo de Cotización',
-        {
-            modal:true,
-            width:600,
-            height:150
+        winCotProveedores: function () {
+            var dato = this.sm.getSelected().data;
+            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/CorreoProveedores.php',
+                'Definir Proveedores Para Enviar Correo de Cotización',
+                {
+                    modal:true,
+                    width:600,
+                    height:150
+                },
+                dato,
+                this.idContenedor,
+                'CorreoProveedores'
+            );
         },
-        dato,
-        this.idContenedor,
-        'CorreoProveedores'
-    );
-},
 
-onButtonReporte:function(){
-    var rec=this.sm.getSelected();
-    Ext.Ajax.request({
-        url:'../../sis_gestion_materiales/control/Solicitud/reporteRequerimientoMateriales',
-        params:{'id_proceso_wf':rec.data.id_proceso_wf},
-        success: this.successExport,
-        failure: this.conexionFailure,
-        timeout:this.timeout,
-        scope:this
-    });
-},
-archivadoConcluido:function() {
-    var me = this;
-    me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/SolicitudArchivado.php',
-        'Solicitudes Archivados/Concluidos',
-        {
-            width:'80%',
-            height:600
+        onButtonReporte:function(){
+            var rec=this.sm.getSelected();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/reporteRequerimientoMateriales',
+                params:{'id_proceso_wf':rec.data.id_proceso_wf},
+                success: this.successExport,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
         },
-        {data:{objPadre: me}
+        archivadoConcluido:function() {
+            var me = this;
+            me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/SolicitudArchivado.php',
+                'Solicitudes Archivados/Concluidos',
+                {
+                    width:'80%',
+                    height:600
+                },
+                {data:{objPadre: me}
+                },
+                this.idContenedor,
+                'SolicitudArchivado'
+            )
         },
-        this.idContenedor,
-        'SolicitudArchivado'
-    )
-},
-consultadesaduanizacion:function() {
-    var me = this;
-    me.objSolForm =Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/solicitud/solicitudFacMin.php',
-        'Consulta Desaduanizacion',
-        {
-            width:'80%',
-            height:600
-        },
-        {data:{objPadre: me}
-        },
-        this.idContenedor,
-        'solicitudFacMin'
-    )
-},
-controlAlmacen:function () {
-    var me =this;
-    me.objSolForm = Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/almacen/Almacen.php',
-        'Control ALmacen',
-        {
-            width:'80%',
-            height:600
-        },
-        {data:{objPadre: me}
-        },
-        this.idContenedor,
-        'Almacen'
-    )
-},
-onButtonCotizacion:function() {
-    var rec=this.sm.getSelected();
-    console.log ('Data',rec.data);
-    Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/cotizacion/Cotizacion.php',
-        'Cotizacion de solicitud',
-        {
-            width:'98%',
-            height:'98%'
-        },
-        rec.data,
-        this.idContenedor,
-        'Cotizacion');
-},
-clonarSolicitud: function () {
 
-    var rec=this.sm.getSelected();
-    Ext.Ajax.request({
-        url:'../../sis_gestion_materiales/control/Solicitud/clonarSolicitud',
-        params:{'id_proceso_wf':rec.data.id_proceso_wf},
-        success:this.succeClonSinc,
-        failure: this.conexionFailure,
-        timeout:this.timeout,
-        scope:this
-    });
+        controlAlmacen:function () {
+            var me =this;
+            me.objSolForm = Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/almacen/Almacen.php',
+                'Control ALmacen',
+                {
+                    width:'80%',
+                    height:600
+                },
+                {data:{objPadre: me}
+                },
+                this.idContenedor,
+                'Almacen'
+            )
+        },
+        onButtonCotizacion:function() {
+            var rec=this.sm.getSelected();
+            console.log ('Data',rec.data);
+            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/cotizacion/Cotizacion.php',
+                'Cotizacion de solicitud',
+                {
+                    width:'98%',
+                    height:'98%'
+                },
+                rec.data,
+                this.idContenedor,
+                'Cotizacion');
+        },
+        clonarSolicitud: function () {
 
-},
-succeClonSinc:function(resp){
-    Phx.CP.loadingHide();
-    //resp.argument.wizard.panel.destroy()
-    this.reload();
-}
+            var rec=this.sm.getSelected();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/clonarSolicitud',
+                params:{'id_proceso_wf':rec.data.id_proceso_wf},
+                success:this.succeClonSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+
+        },
+        succeClonSinc:function(resp){
+            Phx.CP.loadingHide();
+            //resp.argument.wizard.panel.destroy()
+            this.reload();
+        }
 
 })
 

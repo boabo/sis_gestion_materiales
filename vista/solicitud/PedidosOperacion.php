@@ -266,8 +266,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.id_funcionario_sol.setDisabled(sw);
             this.Cmp.origen_pedido.setDisabled(sw);
             this.Cmp.id_matricula.setDisabled(sw);
-            this.Cmp.motivo_solicitud.setDisabled(sw);
-            this.Cmp.observaciones_sol.setDisabled(sw);
             this.Cmp.justificacion.setDisabled(sw);
             this.Cmp.nro_justificacion.setDisabled(sw);
             this.Cmp.tipo_solicitud.setDisabled(sw);

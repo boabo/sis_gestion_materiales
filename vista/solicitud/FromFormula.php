@@ -32,41 +32,6 @@ header("content-type: text/javascript; charset=UTF-8");
         buildComponentesDetalle: function () {
 
             this.detCmp =
-                /*{
-                    'nro_parte': new Ext.form.ComboBox({
-                        name: 'nro_parte',
-                        fieldLabel: 'Nro. Partes',
-                        allowBlank: false,
-                        store: new Ext.data.JsonStore({
-                            url: '../../sis_gestion_materiales/control/DetalleSol/listarDetalleSol',
-                            id: 'id_detalle',
-                            root: 'datos',
-                            sortInfo: {
-                                field: 'codigo',
-                                direction: 'ASC'
-                            },
-                            totalProperty: 'total',
-                            fields: ['id_detalle','nro_parte','nro_parte_alterno','referencia','descripcion','tipo','id_unidad_medida'],
-                            remoteSort: true,
-                            baseParams: {par_filtro: 'det.nro_parte',parte:'si'}
-                        }),
-                        valueField: 'nro_parte',
-                        displayField: 'nro_parte',
-                       // queryParam: 'nro_parte',
-                        hiddenName: 'nro_parte',
-                        forceSelection: false,
-                        autoSelect: false,
-                        typeAhead: false,
-                        hideTrigger:true,
-                        triggerAction: 'all',
-                        listWidth:300,
-                        resizable: true,
-                        lazyRender: true,
-                        mode: 'remote',
-                        pageSize: 100,
-                        queryDelay: 1000,
-                        minChars: 2
-                    }),*/
                      {
                     'nro_parte': new Ext.form.TextField({
                         name: 'nro_parte',
@@ -180,6 +145,9 @@ header("content-type: text/javascript; charset=UTF-8");
             ],
             'Gerencia de Mantenimiento':[
                 ['Gerencia de Mantenimiento'],
+            ],
+            'Centro de Entrenamiento Aeronautico Civil':[
+                ['Centro de Entrenamiento Aeronautico Civil'],
             ]
         },
 
@@ -210,11 +178,13 @@ header("content-type: text/javascript; charset=UTF-8");
                      this.ocultarComponente(this.Cmp.tipo_falla);
                      this.ocultarComponente(this.Cmp.nro_justificacion);
                     this.mostrarComponente(this.Cmp.id_matricula);
+                    this.mostrarComponente(this.Cmp.justificacion);
+                    this.mostrarComponente(this.Cmp.id_matricula);
                     this.Cmp.nro_justificacion.reset();
                  }
 
-                 if(this.isInArray(rec.json, this.arrayStore['Gerencia de Mantenimiento'])){
-                    this.Cmp.origen_pedido.setValue('Gerencia de Mantenimiento');
+                 if(this.isInArray(rec.json, this.arrayStore['Gerencia de Mantenimiento']) || this.isInArray(rec.json, this.arrayStore['Gerencia de Operaciones DGAC'])){
+                    this.Cmp.origen_pedido.setValue('Gerencia de Mantenimiento'); this.Cmp.origen_pedido.setValue('Gerencia de Operaciones DGAC');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
                     this.mostrarComponente(this.Cmp.mel);
@@ -226,6 +196,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.nro_justificacion.reset();
 
                 }
+
                 if(this.isInArray(rec.json, this.arrayStore['Almacenes Consumibles o Rotables'])){
                     this.Cmp.origen_pedido.setValue('Almacenes Consumibles o Rotables');
                 }
@@ -236,6 +207,20 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.nro_justificacion);
                     this.ocultarComponente(this.Cmp.justificacion);
                     this.ocultarComponente(this.Cmp.id_matricula);
+                    this.Cmp.id_matricula.setValue(null);
+
+                }
+                if( this.isInArray(rec.json, this.arrayStore['Centro de Entrenamiento Aeronautico Civil'])){
+                    this.Cmp.origen_pedido.setValue('Centro de Entrenamiento Aeronautico Civil');
+                }
+                if(this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
+                    this.ocultarComponente(this.Cmp.mel);
+                    this.ocultarComponente(this.Cmp.tipo_reporte);
+                    this.ocultarComponente(this.Cmp.tipo_falla);
+                    this.ocultarComponente(this.Cmp.nro_justificacion);
+                    this.ocultarComponente(this.Cmp.justificacion);
+                    this.ocultarComponente(this.Cmp.id_matricula);
+                    
                     this.Cmp.id_matricula.setValue(null);
 
                 }
@@ -600,7 +585,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '105%',
-                    store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables']
+                    store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables','Centro de Entrenamiento Aeronautico Civil']
 
                 },
                 type:'ComboBox',

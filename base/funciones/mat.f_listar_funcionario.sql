@@ -18,18 +18,6 @@ DECLARE
     v_id_funcionario   integer;
 BEGIN
 v_nombre_funcion ='mat.f_listar_funcionario';
-
-
-/*select  ewf.id_funcionario
-		into
-        v_id_funcionario
-from wf.testado_wf e
-inner join wf.testado_wf es on es.id_estado_wf = e.id_estado_anterior
-inner join wf.testado_wf eo on eo.id_estado_wf = es.id_estado_anterior
-inner join wf.testado_wf ewf on ewf.id_estado_wf = eo.id_estado_anterior
-inner join orga.vfuncionario f on f.id_funcionario = ewf.id_funcionario
-where e.id_estado_wf = p_id_estado_wf;*/
-
 WITH RECURSIVE firmas(id_estado_fw, id_estado_anterior,fecha_reg, codigo, id_funcionario) AS (
                               SELECT tew.id_estado_wf, tew.id_estado_anterior , tew.fecha_reg, te.codigo, tew.id_funcionario
                               FROM wf.testado_wf tew

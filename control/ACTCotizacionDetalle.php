@@ -21,6 +21,7 @@ class ACTCotizacionDetalle extends ACTbase{
 			$this->res=$this->objFunc->listarCotizacionDetalle($this->objParam);
 		}
         $temp = Array();
+        $temp['nro_parte_alterno_cot'] = 'TOTAL';
         $temp['precio_unitario'] = $this->res->extraData['total_precio_unitario'];
         $temp['precio_unitario_mb'] = $this->res->extraData['total_precio'];
         $temp['tipo_reg'] = 'summary';

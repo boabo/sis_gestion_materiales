@@ -427,10 +427,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         var tb =this.tbar;
         Phx.vista.DetalleSol.superclass.preparaMenu.call(this,n);
 
-
-
-
-        if(this.maestro.estado == 'comite_unidad_abastecimientos' || this.maestro.estado == 'comite_dpto_abastecimientos' || this.maestro.estado == 'comite_aeronavegabilidad' || this.maestro.estado == 'finalizado'){
+        /*if(this.maestro.estado == 'comite_unidad_abastecimientos' || this.maestro.estado == 'comite_dpto_abastecimientos' || this.maestro.estado == 'comite_aeronavegabilidad' || this.maestro.estado == 'finalizado'){
             this.getBoton('del').disable();
             this.getBoton('new').disable();
             this.getBoton('edit').disable();
@@ -438,7 +435,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('del').enable();
             this.getBoton('new').enable();
             this.getBoton('edit').enable();
-        }
+        }*/
 
         return tb;
     },
@@ -446,9 +443,9 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
     liberaMenu: function() {
         var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
         if(tb){
-            this.getBoton('del').disable();
-            this.getBoton('new').disable();
-            this.getBoton('edit').disable();
+            //this.getBoton('del').disable();
+            //this.getBoton('new').disable();
+            //this.getBoton('edit').disable();
         }
         return tb;
     }

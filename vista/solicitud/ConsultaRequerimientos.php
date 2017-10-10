@@ -40,16 +40,16 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Report').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
-            //this.getBoton('Consulta_desaduanizacion').setVisible(false);
-            //this.getBoton('Control_aLmacene').setVisible(false);
+            this.getBoton('clonar_solicitud').setVisible(false);
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
 
         },
         gruposBarraTareas:[
-            {name:'consulta_op',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:5,height:0, width: 100},
-            {name:'consulta_mal',title:'<H1 "center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:5,height:2, width: 100},
-            {name:'consulta_ab',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:5,height:0},
+            {name:'consulta_op',title:'<H1 align="center"><i></i> Operaciones</h1>',grupo:5,height:0, width: 100},
+            {name:'consulta_mal',title:'<H1 "center"><i></i> Mantenimiento</h1>',grupo:5,height:2, width: 100},
+            {name:'consulta_ab',title:'<H1 align="center"><i></i> Abastecimientos</h1>',grupo:5,height:0},
+            {name:'consulta_ceac',title:'<H1 align="center"><i></i> Operaciones CEAC</h1>',grupo:5,height:0}
 
         ],
         tam_pag:50,
