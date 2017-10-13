@@ -147,13 +147,13 @@ class ACTSolicitud extends ACTbase{
                 }
             }else{
                 if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
                 }
                 if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
                 }
                 if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'')");
                 }
             }
         }
