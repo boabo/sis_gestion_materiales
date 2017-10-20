@@ -166,7 +166,8 @@ BEGIN
  	#AUTOR:		Miguel Alejandro Mamani Villegas
  	#FECHA:		02-06-2017
 	***********************************/
-elsif(p_transaccion='MAT_CTS_CUAR')then
+
+	elsif(p_transaccion='MAT_CTS_CUAR')then
     	begin
 			 v_consulta:='select s.id_solicitud,
 							  d.id_cotizacion,
@@ -192,7 +193,8 @@ elsif(p_transaccion='MAT_CTS_CUAR')then
                               where ne.id_solicitud = s.id_solicitud
                               )::varchar as lista_proveedor,
                               c.pie_pag,
-                              s.estado
+                              s.estado,
+                               c.nro_cotizacion
 							  from mat.tsolicitud s
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
@@ -205,7 +207,6 @@ elsif(p_transaccion='MAT_CTS_CUAR')then
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
-
         /*********************************
  	#TRANSACCION:  'MAT_CTS_QR'
  	#DESCRIPCION:	Control de firmas  qr
@@ -253,7 +254,7 @@ elsif(p_transaccion='MAT_CTS_CUAR')then
                     FROM wf.testado_wf twf
                     INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'compra' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'cotizacion' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
     SELECT
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma

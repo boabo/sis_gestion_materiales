@@ -106,6 +106,16 @@ BEGIN
             end::varchar
 			)RETURNING id_cotizacion_det into v_id_cotizacion_det;
 
+             select sum (d.precio_unitario_mb)
+        into
+        v_monto_total
+        from mat.tcotizacion_detalle d
+        where d.id_cotizacion = v_parametros.id_cotizacion;
+
+        update mat.tcotizacion set
+        monto_total =  v_monto_total
+        where id_cotizacion = v_parametros.id_cotizacion;
+
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización Detalle almacenado(a) con exito (id_cotizacion_det'||v_id_cotizacion_det||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_cotizacion_det',v_id_cotizacion_det::varchar);

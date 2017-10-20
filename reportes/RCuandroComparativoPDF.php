@@ -51,24 +51,25 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->nro= 1;
         foreach ($this->datos as  $val)
         {
-            if (  !array_key_exists($val['desc_proveedor'], $this->proveedor)
-                ||!array_key_exists($this->nro, $this->proveedor[$val['desc_proveedor']])
-                ||!array_key_exists($val['tipo_cot'], $this->proveedor[$val['desc_proveedor']][$this->nro])
-                ||!array_key_exists($val['parte'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']])
-                ||!array_key_exists($val['descripcion'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']])
-                ||!array_key_exists($val['cantidad'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']])
-                ||!array_key_exists($val['cd'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']])
-                ||!array_key_exists($val['precio_unitario'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']])
-                ||!array_key_exists($val['precio_unitario_mb'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']])
-                ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
-                ||!array_key_exists($val['monto_total'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
-                ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
+            if (  !array_key_exists($val['nro_cotizacion'], $this->proveedor)
+                ||!array_key_exists($val['desc_proveedor'], $this->proveedor[$val['nro_cotizacion']])
+                ||!array_key_exists($this->nro, $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']])
+                ||!array_key_exists($val['tipo_cot'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro])
+                ||!array_key_exists($val['parte'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']])
+                ||!array_key_exists($val['descripcion'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']])
+                ||!array_key_exists($val['cantidad'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']])
+                ||!array_key_exists($val['cd'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']])
+                ||!array_key_exists($val['precio_unitario'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']])
+                ||!array_key_exists($val['precio_unitario_mb'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']])
+                ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
+                ||!array_key_exists($val['monto_total'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
+                ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
 
             )
             {
-                $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
+                $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
             } else {
-                $this->proveedor[$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
+                $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['parte']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
             }
             $this->nro++;
         }
@@ -77,8 +78,8 @@ class RCuandroComparativoPDF extends  ReportePDF
 
             $cont = 1;
 
-        foreach ($this->proveedor as $proveedor => $value){
-
+        foreach ($this->proveedor as $cotizacion => $valueNro) {
+            foreach ($valueNro as $proveedor => $value){
             $tbl2 = '
         <table border="1">
         <tr>
@@ -97,62 +98,62 @@ class RCuandroComparativoPDF extends  ReportePDF
            
         </tr>
         ';
-            foreach ($value as $jh=> $value2) {
-               foreach ($value2 as $tipo => $value3) {
-                   $tbl2 .= '<tr>';
-                   if($tipo == 'Otros Cargos'){
-                       $cont = $cont = '';
-                   }elseif ($tipo== 'NA'){
-                       $cont = $cont = '';
-                   }
-                   $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
-                        foreach ($value3 as $parte => $value4) {
-                            $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';
-                            foreach ($value4 as $descripcion => $value5) {
-                                $tbl2 .= ' <td rowspan="1"  align="center" style="width:22%;">' . $descripcion . '</td> ';
-                              foreach ($value5 as $qty => $value6) {
-                                  $tbl2 .= '<td align="center"style="width:8%;">' . $qty . '</td>';
-                                  foreach ($value6 as $cd=> $value7) {
-                                      $tbl2 .= '<td align="center"style="width:8%;">' . $cd . '</td>';
-                                       foreach ($value7 as $Precio => $value8) {
-                                           $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
-                                             foreach ($value8 as $Monto => $value9) {
-                                                 $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto, 2, ",", ".") . '</td>';
-                                                 foreach ($value9 as $dia  => $value10) {
-                                                     $tbl2 .= '<td align="center" style="width:12%;">' . $dia . '</td>';
-                                                     $tbl2 .= '</tr>';
-                                                    foreach ($value10 as $total => $value11) {
-                                                        foreach ($value11 as $recomendacion => $value12) {
-                                                             $rec = $recomendacion;
-                                                         }
-                                                     }
-                                                 }
-                                             }
-                                      }
+            foreach ($value as $jh => $value2) {
+                foreach ($value2 as $tipo => $value3) {
+                    $tbl2 .= '<tr>';
+                    if ($tipo == 'Otros Cargos') {
+                        $cont = $cont = '';
+                    } elseif ($tipo == 'NA') {
+                        $cont = $cont = '';
+                    }
+                    $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
+                    foreach ($value3 as $parte => $value4) {
+                        $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';
+                        foreach ($value4 as $descripcion => $value5) {
+                            $tbl2 .= ' <td rowspan="1"  align="center" style="width:22%;">' . $descripcion . '</td> ';
+                            foreach ($value5 as $qty => $value6) {
+                                $tbl2 .= '<td align="center"style="width:8%;">' . $qty . '</td>';
+                                foreach ($value6 as $cd => $value7) {
+                                    $tbl2 .= '<td align="center"style="width:8%;">' . $cd . '</td>';
+                                    foreach ($value7 as $Precio => $value8) {
+                                        $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
+                                        foreach ($value8 as $Monto => $value9) {
+                                            $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto, 2, ",", ".") . '</td>';
+                                            foreach ($value9 as $dia => $value10) {
+                                                $tbl2 .= '<td align="center" style="width:12%;">' . $dia . '</td>';
+                                                $tbl2 .= '</tr>';
+                                                foreach ($value10 as $total => $value11) {
+                                                    foreach ($value11 as $recomendacion => $value12) {
+                                                        $rec = $recomendacion;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
 
-                                  }
-                              }
-                          }
-                      }
-               }
+                                }
+                            }
+                        }
+                    }
+                }
                 $cont++;
             }
             $cont = 1;
             $tbl2 .= '<tr>
                            <td align="center" style="width:26%;"><b>TOTALES</b></td>
                             <td align="center"style="width:50%;" ></td>
-                            <td align="right" style="width:12%; color: red" ><b>'.number_format($total,2,",",".") .'</b></td>
+                            <td align="right" style="width:12%; color: red" ><b>' . number_format($total, 2, ",", ".") . '</b></td>
                              
                         </tr>
                         <tr>
-                        <td align="justify" style="width:100%;"><b> RECOMENDACION:</b> '.$rec.'</td>
+                        <td align="justify" style="width:100%;"><b> RECOMENDACION:</b> ' . $rec . '</td>
                         </tr>';
 
             $tbl2 .= '</table>';
             $this->SetFont('times', '', 10);
             $this->writeHTML($tbl2);
 
-
+        }
         }
 
         $this->writeHTML('<p align="justify"> OBSERVACIONES:  '.$this->datos4[0]['obs'].'</p> <br>', true, false, false, false, '');
