@@ -48,6 +48,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: true,
                 form: false
             });
+            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=false;
             Phx.vista.SolicitudvoboComite.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
             this.store.baseParams.pes_estado = ' ';
