@@ -416,7 +416,10 @@ BEGIN
                         sol.tipo_reporte,
                         sol.mel,
                         sol.nro_no_rutina,
-                        pro.desc_proveedor,
+                       (select po.desc_proveedor
+from mat.tcotizacion c
+inner join param.vproveedor po on po.id_proveedor = c.id_proveedor
+where c.adjudicado = ''si'' and c.id_solicitud =  sol.id_solicitud) as desc_proveedor,
                         pxp.list (de.nro_parte)::varchar as nro_parte,
                         pxp.list (de.nro_parte_alterno)::varchar as nro_parte_alterno,
                         sol.nro_justificacion,
@@ -514,7 +517,7 @@ BEGIN
                         left join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
                         inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
                         left join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
-                        left JOIN mat.tgestion_proveedores tgp ON tgp.id_solicitud = sol.id_solicitud
+                        left JOIN mat.tgestion_proveedores_new tgp ON tgp.id_solicitud = sol.id_solicitud
                         where ';
 
 			--Definicion de la respuesta
@@ -700,19 +703,6 @@ BEGIN
             return v_consulta;
    end;
 
-      /*********************************
- 	#TRANSACCION:  'MAT_MAF_SEL'
- 	#DESCRIPCION:	Control de firmas  qr
- 	#AUTOR:	  MVM
- 	#FECHA:		23-12-2016 13:13:01
-	***********************************/
-    elsif(p_transaccion='MAT_MAF_SEL')then
-
-		begin
-
-   end;
-
-
     /*********************************
  	#TRANSACCION:  'MAT_CON_AL_SEL'
  	#DESCRIPCION:	Reporte para control de numoer de partes alamcen
@@ -747,7 +737,7 @@ BEGIN
         END IF;
         END IF;
 
-            v_consulta:=' select
+             v_consulta:=' select
             					s.id_solicitud,
                                 s.nro_tramite,
                                 s.origen_pedido,
@@ -759,10 +749,11 @@ BEGIN
                                 d.descripcion,
                                 d.cantidad_sol,
                                 t.id_tipo_estado,
-                                d.id_solicitud as id
+                                d.id_solicitud as id,
+                                 to_char(s.fecha_requerida,''DD/MM/YYYY'')as fecha_requerida
                                 from mat.tsolicitud s
                                 inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
-                                inner join mat.tdetalle_sol d on d.id_solicitud = s.id_solicitud and de.estado_reg = ''activo''
+                                inner join mat.tdetalle_sol d on d.id_solicitud = s.id_solicitud
                                 inner join wf.testado_wf e on e.id_estado_wf = s.id_estado_wf
                                 inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
                                 where '||v_filtro_repo;
@@ -770,7 +761,7 @@ BEGIN
 			--Devuelve la respuesta
             v_consulta:=v_consulta||v_parametros.filtro;
             v_consulta:=v_consulta||'ORDER BY nro_tramite, s.nro_tramite';
-            --v_consulta:=v_consulta||' order by ';
+
 
 			return v_consulta;
 
@@ -822,7 +813,7 @@ BEGIN
             					t.id_tipo_estado,
 								t.nombre_estado as codigo
 								from wf.ttipo_estado t
-								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento Almacenes Consumibles o Rotables'' and t.estado_reg = ''activo''
+								inner join wf.ttipo_proceso pr on pr.id_tipo_proceso = t.id_tipo_proceso and pr.nombre = ''Requerimiento de Abastecimiento'' and t.estado_reg = ''activo''
                                 where';
 
 			--Definicion de la respuesta

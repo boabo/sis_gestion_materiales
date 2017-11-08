@@ -615,10 +615,11 @@ class MODSolicitud extends MODbase{
         $this->captura('cantidad_sol','numeric');
         $this->captura('id_tipo_estado','int4');
         $this->captura('id','int4');
+        $this->captura('fecha_requerida','text');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-        //var_dump($this->respuesta); exit;
+
         //Devuelve la respuesta
         return $this->respuesta;
     }

@@ -99,32 +99,30 @@ class RControlAlmacenXLS
 
         //modificacionw
 
-        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,2,'CONTROL ALMACÉN PART NUMBER' );
-        $this->docexcel->getActiveSheet()->getStyle('A2:I2')->applyFromArray($styleTitulos1);
-        $this->docexcel->getActiveSheet()->mergeCells('A2:I2');
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,2,'CONTROL PART NUMBER' );
+        $this->docexcel->getActiveSheet()->getStyle('A2:J2')->applyFromArray($styleTitulos1);
+        $this->docexcel->getActiveSheet()->mergeCells('A2:J2');
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,3,'Origen Pedido: '.$this->objParam->getParametro('origen_pedido'));
-        $this->docexcel->getActiveSheet()->getStyle('A3:I3')->applyFromArray($styleTitulos3);
-        $this->docexcel->getActiveSheet()->mergeCells('A3:I3');
+        $this->docexcel->getActiveSheet()->getStyle('A3:J3')->applyFromArray($styleTitulos3);
+        $this->docexcel->getActiveSheet()->mergeCells('A3:J3');
 
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,4,'Del: '.  $this->objParam->getParametro('fecha_ini').'   Al: '.  $this->objParam->getParametro('fecha_fin') );
-        $this->docexcel->getActiveSheet()->getStyle('A4:I4')->applyFromArray($styleTitulos3);
-        $this->docexcel->getActiveSheet()->mergeCells('A4:I4');
+        $this->docexcel->getActiveSheet()->getStyle('A4:J4')->applyFromArray($styleTitulos3);
+        $this->docexcel->getActiveSheet()->mergeCells('A4:J4');
 
         $this->docexcel->getActiveSheet()->getColumnDimension('B')->setWidth(25);
         $this->docexcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('D')->setWidth(40);
         $this->docexcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
-        $this->docexcel->getActiveSheet()->getColumnDimension('F')->setWidth(35);
+        $this->docexcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('G')->setWidth(30);
         $this->docexcel->getActiveSheet()->getColumnDimension('H')->setWidth(30);
-        $this->docexcel->getActiveSheet()->getColumnDimension('I')->setWidth(10);
+        $this->docexcel->getActiveSheet()->getColumnDimension('I')->setWidth(40);
+        $this->docexcel->getActiveSheet()->getColumnDimension('J')->setWidth(10);
 
-
-
-
-        $this->docexcel->getActiveSheet()->getStyle('A5:I5')->getAlignment()->setWrapText(true);
-        $this->docexcel->getActiveSheet()->getStyle('A5:I5')->applyFromArray($styleTitulos2);
+        $this->docexcel->getActiveSheet()->getStyle('A5:J5')->getAlignment()->setWrapText(true);
+        $this->docexcel->getActiveSheet()->getStyle('A5:J5')->applyFromArray($styleTitulos2);
 
 
 
@@ -134,11 +132,11 @@ class RControlAlmacenXLS
         $this->docexcel->getActiveSheet()->setCellValue('C5','ESTADO');
         $this->docexcel->getActiveSheet()->setCellValue('D5','FUNCIONARIO SOLICITANTE');
         $this->docexcel->getActiveSheet()->setCellValue('E5','FECHA SOLICITUD');
-        $this->docexcel->getActiveSheet()->setCellValue('F5','NRO. PART NUMBER');
-        $this->docexcel->getActiveSheet()->setCellValue('G5','NRO. PART NUMBER ALTERNO');
-        $this->docexcel->getActiveSheet()->setCellValue('H5','DESCRIPCION');
-        $this->docexcel->getActiveSheet()->setCellValue('I5','CANTIDAD');
-
+        $this->docexcel->getActiveSheet()->setCellValue('F5','FECHA REQUERIDA');
+        $this->docexcel->getActiveSheet()->setCellValue('G5','NRO. PART NUMBER');
+        $this->docexcel->getActiveSheet()->setCellValue('H5','NRO. PART NUMBER ALTERNO');
+        $this->docexcel->getActiveSheet()->setCellValue('I5','DESCRIPCION');
+        $this->docexcel->getActiveSheet()->setCellValue('J5','CANTIDAD');
 
     }
     function generarDatos()
@@ -149,21 +147,10 @@ class RControlAlmacenXLS
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
             ),
         );
-        $styleTitulos1 = array(
-
-            'fill' => array(
-                'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'color' => array(
-                    'rgb' => '969696'
-                )
-            )
-        );
-        $styleTitulos2 = array(
-
-            'fill' => array(
-                'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'color' => array(
-                    'rgb' => '3366FF'
+        $styleArray = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
                 )
             )
         );
@@ -172,8 +159,6 @@ class RControlAlmacenXLS
         $fila = 6;
         $datos = $this->objParam->getParametro('datos');
         $this->imprimeCabecera(0);
-        $par_impar = 1;
-
         foreach ($datos as $value) {
             if (!array_key_exists($value['nro_tramite'], $this->NroTra)) {
                 $this->NroTra[$value['nro_tramite']] = 1;
@@ -181,43 +166,40 @@ class RControlAlmacenXLS
                 $value['nro_tramite'];
                 $value['desc_funcionario1'];
                 $value['fecha_solicitud'];
+                $value['fecha_requerida'];
             } else {
                 $this->NroTra[$value['nro_tramite']]++;
                  $value['estado'] = '';
                  $value['nro_tramite'] = '';
                  $value['desc_funcionario1'] = '';
                  $value['fecha_solicitud'] = '';
+                $value['fecha_requerida'] = '';
 
             }
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $this->numero);
+            if ( $value['nro_tramite'] != "") {
+                $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $this->numero);
+            }
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $value['nro_tramite']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $value['estado']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $value['desc_funcionario1']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $value['fecha_solicitud']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $value['nro_parte']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $value['nro_parte_alterno']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['descripcion']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, $fila, $value['cantidad_sol']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $value['fecha_requerida']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $value['nro_parte']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['nro_parte_alterno']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, $fila, $value['descripcion']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['cantidad_sol']);
             $this->docexcel->getActiveSheet()->getStyle("E$fila:E$fila")->applyFromArray($styleTitulos3);
-            $this->docexcel->getActiveSheet()->getStyle("I$fila:I$fila")->applyFromArray($styleTitulos3);
-            $par_impar = $par_impar * -1;
-            $this->numero++;
+            $this->docexcel->getActiveSheet()->getStyle("F$fila:F$fila")->applyFromArray($styleTitulos3);
+            $this->docexcel->getActiveSheet()->getStyle("J$fila:J$fila")->applyFromArray($styleTitulos3);
+            $this->docexcel->getActiveSheet()->getStyle("A$fila:J$fila")->applyFromArray($styleArray);
+            if ( $value['nro_tramite'] != ""){
+                $this->numero++;
+            }
             $fila++;
-
-            /*if ($par_impar == 1) {
-            if($value['id_solicitud'] != $value['id']){
-                $this->docexcel->getActiveSheet()->getStyle("F$fila:F$fila")->applyFromArray($styleTitulos1);
             }
-            }else{
-                if($value['id_solicitud'] == $value['id']){
-                    $this->docexcel->getActiveSheet()->getStyle("F$fila:F$fila")->applyFromArray($styleTitulos2);
-                }
-            }*/
-            }
-
-
 
     }
+
 
     function generarReporte(){
 

@@ -185,6 +185,14 @@ BEGIN
            from  wf.tproceso_macro pm
            inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
            where pm.codigo='GA-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
+
+
+            elsif v_parametros.origen_pedido ='Centro de Entrenamiento Aeronautico Civil'then
+           	select    tp.codigo, pm.id_proceso_macro
+           into v_codigo_tipo_proceso, v_id_proceso_macro
+           from  wf.tproceso_macro pm
+           inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
+           where pm.codigo='GC-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
 END IF;
 
 
