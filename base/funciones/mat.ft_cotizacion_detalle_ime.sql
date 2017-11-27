@@ -33,6 +33,7 @@ DECLARE
     v_total					numeric;
     v_monto_total			numeric;
     v_total_ca					numeric;
+    v_datos 				record;
 
     --v_id_detalle		integer;
     --v_precio			numeric;
@@ -182,23 +183,6 @@ BEGIN
         monto_total =  v_monto_total
         where id_cotizacion = v_parametros.id_cotizacion;
 
-        /*select 	d.id_cotizacion_det,
-        		d.precio_unitario_mb
-                into
-                v_id_detalle,
-                v_precio
-        from mat.tcotizacion_detalle d
-        where d.id_cotizacion = v_parametros.id_cotizacion;
-        if (v_precio > 0)then
-    	update mat.tcotizacion_detalle  set
-    	revisado = 'si'
-        where id_cotizacion_det = v_id_detalle;
-        else
-        update mat.tcotizacion_detalle  set
-    	revisado = 'no'
-        where id_cotizacion_det = v_id_detalle;
-        end if;*/
-
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización Detalle modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_cotizacion_det',v_parametros.id_cotizacion_det::varchar);
@@ -218,6 +202,24 @@ BEGIN
 	elsif(p_transaccion='MAT_CDE_ELI')then
 
 		begin
+
+        	select precio_unitario_mb,
+            		id_cotizacion
+                    into
+                    v_datos
+                    from mat.tcotizacion_detalle
+                    where id_cotizacion_det=v_parametros.id_cotizacion_det;
+
+            select c.monto_total
+            into
+            v_monto_total
+            from mat.tcotizacion c
+			where c.id_cotizacion = v_datos.id_cotizacion;
+
+            update mat.tcotizacion  set
+            monto_total  = v_monto_total - v_datos.precio_unitario_mb
+            where id_cotizacion = v_datos.id_cotizacion;
+
 			--Sentencia de la eliminacion
 			delete from mat.tcotizacion_detalle
             where id_cotizacion_det=v_parametros.id_cotizacion_det;
@@ -225,6 +227,83 @@ BEGIN
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización Detalle eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_cotizacion_det',v_parametros.id_cotizacion_det::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    /*********************************
+ 	#TRANSACCION:  'MAT_CDE_CLO'
+ 	#DESCRIPCION:	Clonar numero de parte
+ 	#AUTOR:		miguel.mamani
+ 	#FECHA:		04-07-2017 14:51:54
+	***********************************/
+
+	elsif(p_transaccion='MAT_CDE_CLO')then
+
+		begin
+       -- raise exception 'id %',v_parametros.id_detalle;
+        FOR v_datos IN (select 	cds.id_solicitud,
+        						cds.id_cotizacion,
+                                cds.id_detalle,
+                                cds.nro_parte_cot,
+                                cds.nro_parte_alterno_cot,
+                                cds.referencia_cot,
+                                cds.descripcion_cot,
+                                cds.explicacion_detallada_part_cot,
+                                cds.tipo_cot,
+                                cds.id_unidad_medida_cot,
+                                cds.cantidad_det
+                                from mat.tcotizacion_detalle cds
+                                where cds.id_cotizacion_det = v_parametros.id_detalle)LOOP
+
+
+                                insert into mat.tcotizacion_detalle(
+                                                  id_cotizacion,
+                                                  id_detalle,
+                                                  id_solicitud,
+                                                  id_unidad_medida_cot,
+                                                  cantidad_det,
+                                                  estado_reg,
+                                                  id_usuario_ai,
+                                                  id_usuario_reg,
+                                                  usuario_ai,
+                                                  fecha_reg,
+                                                  fecha_mod,
+                                                  id_usuario_mod,
+                                                  nro_parte_cot,
+                                                  nro_parte_alterno_cot,
+                                                  referencia_cot,
+                                                  descripcion_cot,
+                                                  explicacion_detallada_part_cot,
+                                                  tipo_cot,
+                                                  revisado
+                                                  ) values(
+                                                  v_datos.id_cotizacion,
+                                                  v_datos.id_detalle,
+                                                  v_datos.id_solicitud,
+                                                  v_datos.id_unidad_medida_cot,
+                                                  v_datos.cantidad_det,
+                                                  'activo',
+                                                  v_parametros._id_usuario_ai,
+                                                  p_id_usuario,
+                                                  v_parametros._nombre_usuario_ai,
+                                                  now(),
+                                                  null,
+                                                  null,
+                                                  v_datos.nro_parte_cot,
+                                                  v_datos.nro_parte_alterno_cot,
+                                                  v_datos.referencia_cot,
+                                                  v_datos.descripcion_cot,
+                                                  v_datos.explicacion_detallada_part_cot,
+                                                  v_datos.tipo_cot,
+                                                  'no'
+                                                  );
+        END LOOP;
+
+           --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización Detalle clonad(a)');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_detalle',v_parametros.id_detalle::varchar);
 
             --Devuelve la respuesta
             return v_resp;

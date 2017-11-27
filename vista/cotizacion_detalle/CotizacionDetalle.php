@@ -60,7 +60,25 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             //llama al constructor de la clase padre
             Phx.vista.CotizacionDetalle.superclass.constructor.call(this, config);
             this.init();
-            //console.log('LLega',this.getSelectedData());
+
+            this.grid.on('rowcontextmenu', function(grid, rowIndex, e) {
+                e.stopEvent();
+                var selModel = this.grid.getSelectionModel();
+                if (!selModel.isSelected(rowIndex)) {
+                    selModel.selectRow(rowIndex);
+                    this.fireEvent('rowclick', this, rowIndex, e);
+                }
+                this.ctxMenu.showAt(e.getXY())
+            }, this);
+            this.ctxMenu = new Ext.menu.Menu({
+                items: [{
+                    handler: this.clonarDetalle,
+                    icon: '../../../lib/imagenes/arrow-down.gif',
+                    text: 'Clonar Nro. de Parte',
+                    scope: this
+                }],
+                scope: this
+            });
         },
 
         Atributos: [
@@ -258,7 +276,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     allowBlank: true,
                     width: 120,
                     gwidth: 120,
-                    maxLength: 1000
+                    maxLength: 1000,
+                    style: 'background-color: #9BF592; background-image: none;'
                 },
                 type: 'NumberField',
                 filters: {pfiltro: 'cde.cantidad_det', type: 'numeric'},
@@ -319,7 +338,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     width: 120,
                     gwidth: 120,
                     disabled: false,
-                    maxLength: 1245186
+                    maxLength: 1245186,
+                    style: 'background-color: #9BF592; background-image: none;'
                 },
                 type: 'MoneyField',
                 filters: {pfiltro: 'cde.precio_unitario', type: 'numeric'},
@@ -554,21 +574,35 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         loadValoresIniciales: function () {
             Phx.vista.CotizacionDetalle.superclass.loadValoresIniciales.call(this);
             this.Cmp.id_cotizacion.setValue(this.maestro.id_cotizacion);
-
         },
-    onButtonSave:function(){
-        Phx.vista.CotizacionDetalle.superclass.onButtonSave.call(this);
-        Phx.CP.getPagina(this.idContenedorPadre).reload();
-    },
-    onButtonEdit:function () {
-     var data = this.getSelectedData();
-     console.log('id_detalle',data);
-     Phx.vista.CotizacionDetalle.superclass.onButtonEdit.call(this);
-     },
-    successSave:function(resp){
-        Phx.vista.CotizacionDetalle.superclass.successSave.call(this,resp);
-        Phx.CP.getPagina(this.idContenedorPadre).reload();
-    }
+        successSave:function(resp){
+            Phx.vista.CotizacionDetalle.superclass.successSave.call(this,resp);
+            Phx.CP.getPagina(this.idContenedorPadre).reload();
+        },
+        successEdit:function(resp){
+            Phx.vista.CotizacionDetalle.superclass.successEdit.call(this,resp);
+            Phx.CP.getPagina(this.idContenedorPadre).reload();
+        },
+        successDel:function(resp){
+            Phx.vista.CotizacionDetalle.superclass.successDel.call(this,resp);
+            Phx.CP.getPagina(this.idContenedorPadre).reload();
+        },
+        clonarDetalle: function () {
+            var rec=this.sm.getSelected();
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/CotizacionDetalle/clonarDetalle',
+                params:{'id_detalle':rec.data.id_cotizacion_det},
+                success:this.succeClonSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+            this.ctxMenu.hide();
+        },
+        succeClonSinc:function(resp){
+            Phx.CP.loadingHide();
+            this.reload();
+        }
     })
 </script>
 		
