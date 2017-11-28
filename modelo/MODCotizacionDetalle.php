@@ -155,6 +155,21 @@ class MODCotizacionDetalle extends MODbase{
         return $this->respuesta;
 
     }
+    function clonarDetalle (){
+
+        $this->procedimiento='mat.ft_cotizacion_detalle_ime';
+        $this->transaccion='MAT_CDE_CLO';
+        $this->tipo_procedimiento='IME';
+
+        $this->setParametro('id_detalle','id_detalle','int4');
+
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+
+    }
 			
 }
 ?>
