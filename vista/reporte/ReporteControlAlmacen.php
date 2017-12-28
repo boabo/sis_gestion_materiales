@@ -273,6 +273,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 }if (this.Cmp.origen_pedido.getValue() == 'Todos'){
                     this.ocultarComponente(this.Cmp.estado_op);
                     this.ocultarComponente(this.Cmp.estado_ro);
+                    this.ocultarComponente(this.Cmp.estado_sac);
                     this.mostrarComponente(this.Cmp.estado);
                 }if (this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
                     this.ocultarComponente(this.Cmp.estado_op);
