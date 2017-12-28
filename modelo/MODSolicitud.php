@@ -603,7 +603,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('fecha_ini','fecha_ini','date');
         $this->setParametro('fecha_fin','fecha_fin','date');
         $this->setCount(false);
-        $this->captura('id_solicitud','int4');
+       // $this->captura('id_solicitud','int4');
         $this->captura('nro_tramite','varchar');
         $this->captura('origen_pedido','varchar');
         $this->captura('estado','varchar');
@@ -616,10 +616,24 @@ class MODSolicitud extends MODbase{
         $this->captura('id_tipo_estado','int4');
         $this->captura('id','int4');
         $this->captura('fecha_requerida','text');
+        $this->captura('matricula','varchar');
+        $this->captura('motivo_solicitud','varchar');
+        $this->captura('observaciones_sol','varchar');
+        $this->captura('justificacion','varchar');
+        $this->captura('nro_justificacion','varchar');
+        $this->captura('tipo_solicitud','varchar');
+        $this->captura('tipo_falla','varchar');
+        $this->captura('tipo_reporte','varchar');
+        $this->captura('mel','varchar');
+        $this->captura('nro_no_rutina','varchar');
+
+
+
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-
+        //var_dump( $this->respuesta);exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }
@@ -675,7 +689,23 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function listarEstadoSAC(){
 
+        $this->procedimiento ='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_ES_SAC_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+
+        $this->captura('id_tipo_estado','int4');
+        $this->captura('codigo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
     function  iniciarDisparo(){
         $this->procedimiento='mat.f_iniciar_disparo_ime';
         $this->transaccion='MAT_SOL_DIS';
