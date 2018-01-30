@@ -92,7 +92,7 @@ header("content-type: text/javascript; charset=UTF-8");
         agregarArgsExtraSubmit: function() {
 
             this.argumentExtraSubmit.origen = this.Cmp.origen_pedido.getRawValue();
-            this.argumentExtraSubmit.estados = this.Cmp.estado.getRawValue();
+   
         }
 
     })
