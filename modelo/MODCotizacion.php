@@ -256,6 +256,50 @@ class MODCotizacion extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-			
+    function ControlPartesCotizacion(){
+
+        $this->procedimiento ='mat.ft_cotizacion_sel';
+        $this->transaccion='MAT_CTS_REP';
+        $this->tipo_procedimiento='SEL';
+
+        $this->setParametro('origen_pedido','origen_pedido','varchar');
+        $this->setParametro('fecha_ini','fecha_ini','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setCount(false);
+        $this->captura('origen_pedido','varchar');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('estado','varchar');
+        $this->captura('funciaonario','text');
+        $this->captura('matricula','varchar');
+        $this->captura('fecha_solicitud','text');
+        $this->captura('fecha_requerida','text');
+        $this->captura('motivo_solicitud','varchar');
+        $this->captura('observaciones_sol','varchar');
+        $this->captura('justificacion','varchar');
+        $this->captura('nro_justificacion','varchar');
+        $this->captura('tipo_solicitud','varchar');
+        $this->captura('tipo_falla','varchar');
+        $this->captura('tipo_reporte','varchar');
+        $this->captura('mel','varchar');
+        $this->captura('nro_no_rutina','varchar');
+        $this->captura('nro_cotizacion','varchar');
+        $this->captura('proveedor','text');
+        $this->captura('nro_parte_cot','varchar');
+        $this->captura('nro_parte_alterno_cot','varchar');
+        $this->captura('descripcion_cot','varchar');
+        $this->captura('explicacion_detallada_part_cot','varchar');
+        $this->captura('cantidad_det','int4');
+        $this->captura('precio_unitario','numeric');
+        $this->captura('precio_unitario_mb','numeric');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump( $this->respuesta);exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
 }
 ?>
