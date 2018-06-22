@@ -99,19 +99,39 @@ class RComiteEvaluacion extends  ReportePDF
            <br> <b>'.$proveedor.'</b> por un importe de <b>'.$simbolo.' '.$nomto.'.</b></td>
     </tr>
     <br>
+ <table border="1">
+
     <tr>
-      <td width="150"><b>Segun:</b></td>
-      <td><ol>';
-        foreach ($nroParte as $partes){
-            $tb.='<li>'.$partes.'</li>';
-        }
-        $tb.='</ol></td>
-    </tr>
+
+<td align="center" ><b>Part Number </b></td>
+<td align="center" ><b>Descripción</b></td>
+<td align="center" ><b>Cantidad </b></td>
+<td align="center" ><b>Cndición</b></td>
+<td align="center" ><b>Tiempo Entrega</b></td>
+</tr>
+';
+foreach ($this->datos as $value){
+
+    $tb .= '<tr><td align="center" >'.$value['parte'].'</td>';
+    $tb .= '<td align="center" >'.$value['descripcion_cot'].'</td>';
+    $tb .= '<td align="center" >'.$value['cantidad_det'].'</td>';
+    $tb .= '<td align="center" >'.$value['cd'].'</td>';
+    $tb .= '<td align="center" >'.$value['codigo_tipo'].'</td>
+ 
+ </tr>';
+}
+        $tb .= '
+
+</table>
     <tr>
       <td width="150"><b>Observaciones:</b></td>
       <td align="justify" width="545" >'.$obs.'<br></td>
     </tr>
+  
+
+
     </table>
+    
     <table border="1">
     <tr>
     <td width="695"> <b>Para compomentes reparados</b>
@@ -161,11 +181,13 @@ class RComiteEvaluacion extends  ReportePDF
          </tbody>
         </table>
         ';
+        $fun_presu = explode('|', $aero);
+
         $firmas2 ='
        <table border="2">
          <tbody>
         <tr>    
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>Representante de Gestión de Aeronavegabilidad continua</b><br>'.$fun_aero[0].'</td>
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>RPCE</b><br>'.$fun_rpcs[0].'</td>
         </tr>
         <tr>

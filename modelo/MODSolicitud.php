@@ -89,7 +89,7 @@ class MODSolicitud extends MODbase{
         $this->captura('lugar_entrega','varchar');
         $this->captura('mensaje_correo','varchar');
         $this->captura('tipo','varchar');
-        $this->captura('id_cotizacion','int4');
+        $this->captura('id_cotizacion','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -823,6 +823,12 @@ class MODSolicitud extends MODbase{
         $this->captura ('funcionario_pres','varchar');
         $this->captura ('codigo_pres','varchar');
         $this->captura ('estado_materiales','varchar');
+
+        $this->captura ('parte','varchar');
+        $this->captura ('descripcion_cot','varchar');
+        $this->captura ('cantidad_det','int4');
+        $this->captura ('cd','varchar');
+        $this->captura ('codigo_tipo','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

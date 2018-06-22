@@ -101,9 +101,12 @@ class RCuandroComparativoPDF extends  ReportePDF
             foreach ($value as $jh => $value2) {
                 foreach ($value2 as $tipo => $value3) {
                     $tbl2 .= '<tr>';
-                    if ($tipo == 'Otros Cargos') {
+                    /*if ($tipo == 'Otros Cargos') {
                         $cont = $cont = '';
                     } elseif ($tipo == 'NA') {
+                        $cont = $cont = '';
+                    }*/
+                    if ($tipo == 'NA') {
                         $cont = $cont = '';
                     }
                     $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
@@ -155,8 +158,13 @@ class RCuandroComparativoPDF extends  ReportePDF
 
         }
         }
-
-        $this->writeHTML('<p align="justify"> OBSERVACIONES:  '.$this->datos4[0]['obs'].'</p> <br>', true, false, false, false, '');
+        foreach ($this->datos as $Key) {
+            if($Key['adjudicado'] == 'si') {
+            $obse = $Key['obs'];
+            }
+        }
+        $this->writeHTML('<p align="justify"> OBSERVACIONES:  ' . $obse . '</p> <br>', true, false, false, false, '');
+        $this->Ln();
         if ( $this->datos[0]['estado'] != 'cotizacion') {
             $elaborado = $this->datos2[0]['visto_ag'];
         }else{
@@ -205,14 +213,16 @@ class RCuandroComparativoPDF extends  ReportePDF
         $tbl .= ' </tr>
          </tbody>
         </table>';
+        $fun_presu = explode('|', $aero);
         $tbl1 = ' <table border="2">
          <tbody>
         <tr>    
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Aeronavegabilidad Continua</b><br>'.$fun_aero[0].'</td>
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Dpto Abastecimiento y Logistica</b><br>'.$fun_abas[0].'</td>
         </tr>
         <tr>';
-        if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad') {
+
+        if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad'|| $this->datos[0]['estado'] != 'departamento_ceac') {
             $tbl1 .= '<td align="center"><br><br>';
             $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
             $tbl1 .= '<br></td>';

@@ -79,7 +79,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             var tb =this.tbar;
             Phx.vista.SolicitudvoboComite.superclass.preparaMenu.call(this,n);
-            if( data['estado'] ==  'comite_unidad_abastecimientos' || data['estado'] ==  'comite_dpto_abastecimientos' || data['estado'] ==  'comite_aeronavegabilidad'){
+            if( data['estado'] ==  'comite_unidad_abastecimientos' || data['estado'] ==  'comite_dpto_abastecimientos' || data['estado'] ==  'comite_aeronavegabilidad'|| data['estado'] ==  'departamento_ceac'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 this. enableTabDetalle();
