@@ -47,6 +47,7 @@ DECLARE
     v_fecha_firma_rev_qr 		text;
     v_nombre_funcionario_abas_qr 	varchar;
     v_fecha_firma_abas_qr 		text;
+    v_fill						varchar;
 
 BEGIN
 
@@ -186,7 +187,9 @@ BEGIN
                               c.obs,
                               to_char(c.fecha_cotizacion,''DD/MM/YYYY'')::varchar as fecha_cotizacion,
                               s.fecha_po,
-                              c.monto_total,
+                              (select sum(cd.precio_unitario_mb)
+                              from mat.tcotizacion_detalle cd
+                              where cd.id_cotizacion = c.id_cotizacion ) as monto_total,
                               (select pxp.list(initcap(p.desc_proveedor))
                               from mat.tgestion_proveedores_new ne
                               inner join param.vproveedor p on p.id_proveedor = ne.id_proveedor
@@ -200,7 +203,7 @@ BEGIN
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
                               inner join param.vproveedor pr on pr.id_proveedor = c.id_proveedor
                               left join mat.tday_week dy on dy.id_day_week = d.id_day_week
-                              where s.id_proceso_wf ='||v_parametros.id_proceso_wf||'and d.revisado = ''si'' and ';
+                              where s.id_proceso_wf ='||v_parametros.id_proceso_wf||' and ';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
             v_consulta:=v_consulta||'ORDER BY parte, c.adjudicado DESC';
@@ -254,7 +257,7 @@ BEGIN
                     FROM wf.testado_wf twf
                     INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'compra' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'cotizacion' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
     SELECT
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -328,7 +331,60 @@ BEGIN
 			return v_consulta;
 		end;
 
+  /*********************************
+ 	#TRANSACCION:  'MAT_CTS_REP'
+ 	#DESCRIPCION:	Reporte detalle cotizacion
+ 	#AUTOR:		Miguel Alejandro Mamani Villegas
+ 	#FECHA:		02-06-2017
+	***********************************/
 
+	elsif(p_transaccion='MAT_CTS_REP')then
+    	begin
+        if (v_parametros.origen_pedido != 'Todos')then
+        		v_fill = 'c.adjudicado = ''si'' and s.origen_pedido ='||v_parametros.origen_pedido||' and s.fecha_solicitud >= '||v_parametros.fecha_ini ||'::date AND s.fecha_solicitud <= '||v_parametros.fecha_fin||'::date';
+        else
+                v_fill = 'c.adjudicado = ''si'' and s.fecha_solicitud >= '||v_parametros.fecha_ini ||'::date AND s.fecha_solicitud <= '||v_parametros.fecha_fin||'::date';
+		end if;
+
+
+       v_consulta:='select	 s.origen_pedido,
+                                 s.nro_tramite,
+                                 t.nombre_estado as estado,
+                                 initcap (f.desc_funcionario1) as funciaonario,
+                                 COALESCE (ot.desc_orden,'' '')::varchar as matricula,
+                                 to_char(s.fecha_solicitud,''DD/MM/YYYY'')as fecha_solicitud,
+                                 to_char(s.fecha_requerida,''DD/MM/YYYY'')as fecha_requerida,
+                                 initcap(s.motivo_solicitud)::varchar as motivo_solicitud,
+                                 initcap(s.observaciones_sol)::varchar as observaciones_sol,
+                                 s.justificacion,
+                                 s.nro_justificacion,
+                                 s.tipo_solicitud,
+                                 s.tipo_falla,
+                                 s.tipo_reporte,
+                                 s.mel,
+                                 s.nro_no_rutina,
+                                 c.nro_cotizacion,
+                                 initcap(v.desc_proveedor) as proveedor,
+                                 d.nro_parte_cot,
+                                 d.nro_parte_alterno_cot,
+                                 d.descripcion_cot,
+                                 d.explicacion_detallada_part_cot,
+                                 d.cantidad_det,
+                                 d.precio_unitario,
+                                 d.precio_unitario_mb
+                                 from mat.tsolicitud s
+                                 inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
+                                 inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
+                                 inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
+                                 inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
+                                 inner join wf.testado_wf e on e.id_estado_wf = s.id_estado_wf
+                                 inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
+          						 left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                                 where '||v_fill||'
+                                 order by origen_pedido ';
+
+			return v_consulta;
+		end;
 
 
 	else

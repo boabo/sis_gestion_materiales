@@ -569,6 +569,17 @@ class ACTSolicitud extends ACTbase{
         $this->res=$this->objFunc->listarEstadoRo($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+
+    function listarEstadoSAC(){
+        $this->objParam->defecto('ordenacion','id_tipo_estado');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('id_tipo_estado') != '') {
+            $this->objParam->addFiltro(" t.id_tipo_estado = " . $this->objParam->getParametro('id_tipo_estado'));
+        }
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->listarEstadoSAC($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
     function reporteRequerimientoMateriales (){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);

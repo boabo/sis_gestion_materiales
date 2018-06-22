@@ -1,5 +1,6 @@
 <?php
-class RControlAlmacenXLS
+
+class RControlParteCotizacion
 {
     private $docexcel;
     private $objWriter;
@@ -99,30 +100,30 @@ class RControlAlmacenXLS
 
         //modificacionw
 
-        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,2,'CONTROL PART NUMBER' );
-        $this->docexcel->getActiveSheet()->getStyle('A2:U2')->applyFromArray($styleTitulos1);
-        $this->docexcel->getActiveSheet()->mergeCells('A2:U2');
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,2,'PART NUMBER ADJUDICADAS' );
+        $this->docexcel->getActiveSheet()->getStyle('A2:V2')->applyFromArray($styleTitulos1);
+        $this->docexcel->getActiveSheet()->mergeCells('A2:V2');
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,3,'Origen Pedido: '.$this->objParam->getParametro('origen_pedido'));
-        $this->docexcel->getActiveSheet()->getStyle('A3:U3')->applyFromArray($styleTitulos3);
-        $this->docexcel->getActiveSheet()->mergeCells('A3:U3');
+        $this->docexcel->getActiveSheet()->getStyle('A3:V3')->applyFromArray($styleTitulos3);
+        $this->docexcel->getActiveSheet()->mergeCells('A3:V3');
 
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,4,'Del: '.  $this->objParam->getParametro('fecha_ini').'   Al: '.  $this->objParam->getParametro('fecha_fin') );
-        $this->docexcel->getActiveSheet()->getStyle('A4:U4')->applyFromArray($styleTitulos3);
-        $this->docexcel->getActiveSheet()->mergeCells('A4:U4');
+        $this->docexcel->getActiveSheet()->getStyle('A4:V4')->applyFromArray($styleTitulos3);
+        $this->docexcel->getActiveSheet()->mergeCells('A4:V4');
 
-        $this->docexcel->getActiveSheet()->getColumnDimension('B')->setWidth(40);
-        $this->docexcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('C')->setWidth(40);
         $this->docexcel->getActiveSheet()->getColumnDimension('D')->setWidth(30);
-        $this->docexcel->getActiveSheet()->getColumnDimension('E')->setWidth(40);
-        $this->docexcel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
-        $this->docexcel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
+        $this->docexcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('G')->setWidth(30);
         $this->docexcel->getActiveSheet()->getColumnDimension('H')->setWidth(30);
         $this->docexcel->getActiveSheet()->getColumnDimension('I')->setWidth(40);
-        $this->docexcel->getActiveSheet()->getColumnDimension('J')->setWidth(40);
+        $this->docexcel->getActiveSheet()->getColumnDimension('J')->setWidth(10);
 
-        $this->docexcel->getActiveSheet()->getColumnDimension('K')->setWidth(10);
-        $this->docexcel->getActiveSheet()->getColumnDimension('L')->setWidth(30);
+        $this->docexcel->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('L')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('M')->setWidth(30);
         $this->docexcel->getActiveSheet()->getColumnDimension('N')->setWidth(30);
         $this->docexcel->getActiveSheet()->getColumnDimension('O')->setWidth(20);
@@ -131,36 +132,38 @@ class RControlAlmacenXLS
         $this->docexcel->getActiveSheet()->getColumnDimension('Q')->setWidth(15);
         $this->docexcel->getActiveSheet()->getColumnDimension('S')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('T')->setWidth(20);
-        $this->docexcel->getActiveSheet()->getColumnDimension('u')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('U')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('V')->setWidth(20);
 
-        $this->docexcel->getActiveSheet()->getStyle('A5:U5')->getAlignment()->setWrapText(true);
-        $this->docexcel->getActiveSheet()->getStyle('A5:U5')->applyFromArray($styleTitulos2);
+        $this->docexcel->getActiveSheet()->getStyle('A5:V5')->getAlignment()->setWrapText(true);
+        $this->docexcel->getActiveSheet()->getStyle('A5:V5')->applyFromArray($styleTitulos2);
 
 
 
         //*************************************Cabecera*****************************************
         $this->docexcel->getActiveSheet()->setCellValue('A5','Nº');
-        $this->docexcel->getActiveSheet()->setCellValue('B5','ORIGEN');
-        $this->docexcel->getActiveSheet()->setCellValue('C5','NRO. TRAMITE');
-        $this->docexcel->getActiveSheet()->setCellValue('D5','ESTADO');
-        $this->docexcel->getActiveSheet()->setCellValue('E5','FUNCIONARIO SOLICITANTE');
-        $this->docexcel->getActiveSheet()->setCellValue('F5','FECHA SOLICITUD');
-        $this->docexcel->getActiveSheet()->setCellValue('G5','FECHA REQUERIDA');
-        $this->docexcel->getActiveSheet()->setCellValue('H5','NRO. PART NUMBER');
-        $this->docexcel->getActiveSheet()->setCellValue('I5','NRO. PART NUMBER ALTERNO');
-        $this->docexcel->getActiveSheet()->setCellValue('J5','DESCRIPCION');
-        $this->docexcel->getActiveSheet()->setCellValue('K5','CANTIDAD');
+        $this->docexcel->getActiveSheet()->setCellValue('B5','NRO. TRAMITE');
+        $this->docexcel->getActiveSheet()->setCellValue('C5','FUNCIONARIO SOLICITANTE');
+        $this->docexcel->getActiveSheet()->setCellValue('D5','PROVEEDOR');
+        $this->docexcel->getActiveSheet()->setCellValue('E5','FECHA SOLICITUD');
+        $this->docexcel->getActiveSheet()->setCellValue('F5','FECHA REQUERIDA');
+        $this->docexcel->getActiveSheet()->setCellValue('G5','NRO. PART NUMBER');
+        $this->docexcel->getActiveSheet()->setCellValue('H5','NRO. PART NUMBER ALTERNO');
+        $this->docexcel->getActiveSheet()->setCellValue('I5','DESCRIPCION');
+        $this->docexcel->getActiveSheet()->setCellValue('J5','CANTIDAD');
+        $this->docexcel->getActiveSheet()->setCellValue('K5','PRECIO UNITARIO');
 
-        $this->docexcel->getActiveSheet()->setCellValue('L5','MATRICULA');
-        $this->docexcel->getActiveSheet()->setCellValue('M5','MOTIVO SOLICITUD');
-        $this->docexcel->getActiveSheet()->setCellValue('N5','OBSERVACIONES');
-        $this->docexcel->getActiveSheet()->setCellValue('O5','JUSTIFICACION');
-        $this->docexcel->getActiveSheet()->setCellValue('P5','N° JUSTIFICACION');
-        $this->docexcel->getActiveSheet()->setCellValue('R5','TIPO SOLICITUD');
-        $this->docexcel->getActiveSheet()->setCellValue('Q5','TIPO FALLA');
-        $this->docexcel->getActiveSheet()->setCellValue('S5','TIPO REPORTE');
-        $this->docexcel->getActiveSheet()->setCellValue('T5','MEL');
-        $this->docexcel->getActiveSheet()->setCellValue('U5','N° NO RUTINA');
+        $this->docexcel->getActiveSheet()->setCellValue('L5','PRECIO TOTAL');
+        $this->docexcel->getActiveSheet()->setCellValue('M5','MATRICULA');
+        $this->docexcel->getActiveSheet()->setCellValue('N5','MOTIVO SOLICITUD');
+        $this->docexcel->getActiveSheet()->setCellValue('O5','OBSERVACIONES');
+        $this->docexcel->getActiveSheet()->setCellValue('P5','JUSTIFICACION');
+        $this->docexcel->getActiveSheet()->setCellValue('R5','N° JUSTIFICACION');
+        $this->docexcel->getActiveSheet()->setCellValue('Q5','TIPO SOLICITUD');
+        $this->docexcel->getActiveSheet()->setCellValue('S5','TIPO FALLA');
+        $this->docexcel->getActiveSheet()->setCellValue('T5','TIPO REPORTE');
+        $this->docexcel->getActiveSheet()->setCellValue('U5','MEL');
+        $this->docexcel->getActiveSheet()->setCellValue('V5','N° NO RUTINA');
 
     }
     function generarDatos()
@@ -179,17 +182,31 @@ class RControlAlmacenXLS
             )
         );
 
+        $styleTitulos = array(
+            'font'  => array(
+                'bold'  => true,
+                'size'  => 11,
+                'name'  => 'Calibri'
+            ));
         $this->numero = 1;
         $fila = 6;
         $datos = $this->objParam->getParametro('datos');
         $this->imprimeCabecera(0);
+        $ger = '';
         foreach ($datos as $value) {
+            if ($value['origen_pedido'] != $ger) {
+                $this->imprimeSubtitulo($fila,$value['origen_pedido']);
+                $ger = $value['origen_pedido'];
+                $fila++;
+            }
+
+
             if (!array_key_exists($value['nro_tramite'], $this->NroTra)) {
                 $this->NroTra[$value['nro_tramite']] = 1;
-                $value['origen_pedido'];
-                $value['estado'];
+               // $value['origen_pedido'];
+                $value['proveedor'];
                 $value['nro_tramite'];
-                $value['desc_funcionario1'];
+                $value['funciaonario'];
                 $value['fecha_solicitud'];
                 $value['fecha_requerida'];
                 $value['matricula'];
@@ -204,11 +221,11 @@ class RControlAlmacenXLS
                 $value['nro_no_rutina'];
             } else {
                 $this->NroTra[$value['nro_tramite']]++;
-                 $value['estado'] = '';
-                 $value['origen_pedido'] = 'Part Number';
-                 $value['nro_tramite'] = '';
-                 $value['desc_funcionario1'] = '';
-                 $value['fecha_solicitud'] = '';
+              //  $value['estado'] = '';
+               $value['proveedor'] = '';
+                $value['nro_tramite'] = '';
+                $value['funciaonario'] = '';
+                $value['fecha_solicitud'] = '';
                 $value['fecha_requerida'] = '';
                 $value['matricula'] = '';
                 $value['motivo_solicitud'] = '';
@@ -225,40 +242,53 @@ class RControlAlmacenXLS
             if ( $value['nro_tramite'] != "") {
                 $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $this->numero);
             }
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $value['origen_pedido']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $value['nro_tramite']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $value['estado']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $value['desc_funcionario1']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $value['fecha_solicitud']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $value['fecha_requerida']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['nro_parte']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, $fila, $value['nro_parte_alterno']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['descripcion']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10, $fila, $value['cantidad_sol']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(11, $fila, $value['matricula']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $value['nro_tramite']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $value['funciaonario']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $value['proveedor']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $value['fecha_solicitud']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $value['fecha_requerida']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $value['nro_parte_cot']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['nro_parte_alterno_cot']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, $fila, $value['descripcion_cot']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['cantidad_det']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10, $fila, $value['precio_unitario']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(11, $fila, $value['precio_unitario_mb']);
 
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(12, $fila, $value['motivo_solicitud']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(13, $fila, $value['observaciones_sol']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(14, $fila, $value['justificacion']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(15, $fila, $value['nro_justificacion']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(16, $fila, $value['tipo_solicitud']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(17, $fila, $value['tipo_falla']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(18, $fila, $value['tipo_reporte']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(19, $fila, $value['mel']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(20, $fila, $value['nro_no_rutina']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(12, $fila, $value['matricula']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(13, $fila, $value['motivo_solicitud']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(14, $fila, $value['observaciones_sol']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(15, $fila, $value['justificacion']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(16, $fila, $value['nro_justificacion']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(17, $fila, $value['tipo_solicitud']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(18, $fila, $value['tipo_falla']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(19, $fila, $value['tipo_reporte']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(20, $fila, $value['mel']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(21, $fila, $value['nro_no_rutina']);
 
 
-
+            $this->docexcel->getActiveSheet()->getStyle("E$fila:E$fila")->applyFromArray($styleTitulos3);
             $this->docexcel->getActiveSheet()->getStyle("F$fila:F$fila")->applyFromArray($styleTitulos3);
-            $this->docexcel->getActiveSheet()->getStyle("G$fila:G$fila")->applyFromArray($styleTitulos3);
-            $this->docexcel->getActiveSheet()->getStyle("K$fila:K$fila")->applyFromArray($styleTitulos3);
+            $this->docexcel->getActiveSheet()->getStyle("D$fila:D$fila")->applyFromArray($styleTitulos);
             $this->docexcel->getActiveSheet()->getStyle("Q$fila:Q$fila")->applyFromArray($styleTitulos3);
-            $this->docexcel->getActiveSheet()->getStyle("A$fila:U$fila")->applyFromArray($styleArray);
+            $this->docexcel->getActiveSheet()->getStyle("A$fila:V$fila")->applyFromArray($styleArray);
+            $this->docexcel->getActiveSheet()->getStyle("J$fila:L$fila")->applyFromArray($styleTitulos);
             if ( $value['nro_tramite'] != ""){
                 $this->numero++;
             }
             $fila++;
-            }
+        }
+
+    }
+    function imprimeSubtitulo($fila, $valor) {
+        $styleTitulos = array(
+            'font'  => array(
+                'bold'  => true,
+                'size'  => 12,
+                'name'  => 'Arial'
+            ));
+
+        $this->docexcel->getActiveSheet()->getStyle("A$fila:A$fila")->applyFromArray($styleTitulos);
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $valor);
 
     }
 
