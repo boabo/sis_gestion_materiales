@@ -78,6 +78,18 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Diagrama Gantt de proceso macro</b>'
             });
 
+            this.addButton('btnpac',
+                {
+                    iconCls: 'bemail',
+                    text: 'Generar PAC',
+                    grupo:[3],
+                    disabled: true,
+                    handler: this.correoPac,
+                    tooltip: '<b>Envia Correo PAC</b>'
+                }
+            );
+
+
             this.addButton('btnproveedor',
                 {
                     iconCls: 'bemail',
@@ -1044,7 +1056,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tipo', type: 'string'},
             {name:'id_cotizacion', type: 'numeric'}
 
-            
+
 
         ],
         sortInfo:{
@@ -1124,6 +1136,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('diagrama_gantt').enable();
             this.getBoton('btnObs').enable();
             this.getBoton('Report').enable();
+            this.getBoton('btnpac').enable();
 
         },
 
@@ -1137,6 +1150,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('btnObs').disable();
                 this.getBoton('ini_estado').disable();
                 this.getBoton('Report').disable();
+                this.getBoton('btnpac').disable();
+
 
 
             }
@@ -1447,7 +1462,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 'Cotizacion');
         },
         clonarSolicitud: function () {
-
+            Phx.CP.loadingShow();
             var rec=this.sm.getSelected();
             Ext.Ajax.request({
                 url:'../../sis_gestion_materiales/control/Solicitud/clonarSolicitud',
@@ -1463,8 +1478,121 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.CP.loadingHide();
             //resp.argument.wizard.panel.destroy()
             this.reload();
+        },
+        correoPac: function () {
+
+            var nro_tramite = new Ext.form.TextField(
+                {
+                    name: 'nro_tramite',
+                    msgTarget: 'title',
+                    fieldLabel: 'Nro. Tramite',
+                    allowBlank: true,
+                    readOnly :true,
+                    anchor: '90%',
+                    style: 'background-color: #5BF36A; background-image: none;',
+                    value: this.sm.getSelected().data['nro_tramite'] ,
+                    maxLength:50
+                });
+            var importe = new Ext.form.NumberField(
+                {
+                    name: 'importe',
+                    msgTarget: 'title',
+                    fieldLabel: 'Importe Total',
+                    allowBlank: true,
+                    anchor: '90%',
+                    style: 'background-color: #F9BAB3; background-image: none;',
+                    maxLength:100
+                });
+
+            var moneda = new Ext.form.ComboBox(
+                {
+                    name: 'moneda',
+                    msgTarget: 'title',
+                    fieldLabel: 'Moneda',
+                    typeAhead: true,
+                    allowBlank:true,
+                    triggerAction: 'all',
+                    emptyText:'Tipo...',
+                    selectOnFocus:true,
+                    mode:'local',
+                    anchor: '90%',
+                    store:new Ext.data.ArrayStore({
+                        fields: ['ID', 'valor'],
+                        data :	[
+                            ['1','BOB'],
+                            ['2','USD']
+                        ]
+                    }),
+                    valueField:'ID',
+                    displayField:'valor'
+                });
+
+            var formularioInicio = new Ext.form.FormPanel({
+                items: [nro_tramite,importe,moneda],
+                padding: true,
+                bodyStyle:'padding:5px 5px 0',
+                border: false,
+                frame: false
+
+            });
+
+            var VentanaInicio = new Ext.Window({
+                title: 'Generar PAC',
+                modal: true,
+                width: 300,
+                height: 180,
+                bodyStyle: 'padding:5px;',
+                layout: 'fit',
+                hidden: true,
+                closable: false,
+                buttons: [
+                    {
+                        text: '<i class="fa fa-check"></i> Aceptar',
+                        handler: function () {
+                            if (formularioInicio.getForm().isValid()) {
+                                validado = true;
+                                this.nro_tramite = nro_tramite.getValue();
+                                this.importe = importe.getValue();
+                                this.moneda = moneda.getValue();
+                                VentanaInicio.close();
+                                m = this;
+
+                                console.log(m.sm.getSelected().data['id_proceso_wf'],this.importe,this.moneda);
+                                Phx.CP.loadingShow();
+                                Ext.Ajax.request({
+                                    url:'../../sis_gestion_materiales/control/Solicitud/generarPAC',
+                                    params:{id_proceso_wf: m.sm.getSelected().data['id_proceso_wf'],
+                                            importe: this.importe,
+                                            moneda:this.moneda},
+                                    success:function(resp){
+                                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                                        console.log(reg);
+                                    },
+                                    failure: this.conexionFailure,
+                                    timeout:this.timeout,
+                                    scope:this
+                                });
+
+                            }
+                        },
+                        scope: this
+                    },
+                    {
+                        text: '<i class="fa fa-check"></i> Cancelar',
+                        handler: function () {
+                            VentanaInicio.close();
+                        },
+                        scope: this
+                    }
+                ],
+                items: formularioInicio,
+                autoDestroy: true,
+                closeAction: 'close'
+            });
+            VentanaInicio.show();
         }
 
-})
+
+    })
 
 </script>

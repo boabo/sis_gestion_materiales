@@ -393,7 +393,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_depto_wf','id_depto_wf','int4');
         $this->setParametro('obs','obs','text');
         $this->setParametro('json_procesos','json_procesos','text');
-        
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -515,7 +515,7 @@ class MODSolicitud extends MODbase{
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-      //  var_dump($this->respuesta); exit;
+        //  var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }
@@ -603,7 +603,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('fecha_ini','fecha_ini','date');
         $this->setParametro('fecha_fin','fecha_fin','date');
         $this->setCount(false);
-       // $this->captura('id_solicitud','int4');
+        // $this->captura('id_solicitud','int4');
         $this->captura('nro_tramite','varchar');
         $this->captura('origen_pedido','varchar');
         $this->captura('estado','varchar');
@@ -714,7 +714,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
         $this->armarConsulta();
         $this->ejecutarConsulta();
-        
+
         return $this->respuesta;
     }
     function siguienteDisparo(){
@@ -832,7 +832,7 @@ class MODSolicitud extends MODbase{
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-       //var_dump($this->respuesta); exit;
+        //var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }
