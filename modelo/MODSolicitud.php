@@ -988,8 +988,20 @@ class MODSolicitud extends MODbase{
         $this->ejecutarConsulta();
         //Devuelve la respuesta
         return $this->respuesta;
+    }
+    function generarPAC(){
+        $this->procedimiento='mat.ft_solicitud_ime';
+        $this->transaccion='MAT_PAC_IME';
+        $this->tipo_procedimiento='IME';
 
-
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+        $this->setParametro('importe','importe','int4');
+        $this->setParametro('id_moneda','id_moneda','int4');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
     }
 }
 ?>
