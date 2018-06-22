@@ -99,7 +99,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         },
-        
+
 
         gruposBarraTareas:[
             {name:'pedido_op_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
@@ -114,12 +114,18 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
-                if(name == 'pedido_op_pendiente' || name == 'pedido_op_solicitada' || name == 'pedido_op_compra'){
+                if(name == 'pedido_op_solicitada'){
                     this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
-                }else{
+                    this.getBoton('btnpac').setVisible(true);
+                }else if (name == 'pedido_op_pendiente' || name == 'pedido_op_compra'){
+                    this.getBoton('btnproveedor').setVisible(true);
+                    this.getBoton('Cotizacion').setVisible(true);
+                } else{
                     this.getBoton('btnproveedor').setVisible(false);
+                    this.getBoton('btnpac').setVisible(false);
                     this.getBoton('Cotizacion').setVisible(false);
+                    this.getBoton('btnpac').setVisible(false);
                 }
                 this.load({params:{start:0, limit:this.tam_pag}});
             }

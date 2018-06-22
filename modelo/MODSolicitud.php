@@ -27,32 +27,31 @@ class MODSolicitud extends MODbase{
         //Definicion de la lista del resultado del query
         $this->captura('id_solicitud','int4');
         $this->captura('id_funcionario_sol','int4');
+        $this->captura('id_matricula','int4');
         $this->captura('id_proveedor','int4');
         $this->captura('id_proceso_wf','int4');
         $this->captura('id_estado_wf','int4');
-        $this->captura('nro_po','varchar');
-        $this->captura('tipo_solicitud','varchar');
-        $this->captura('fecha_entrega_miami','date');
-        $this->captura('origen_pedido','varchar');
-        $this->captura('fecha_requerida','date');
-        $this->captura('observacion_nota','text');
-        $this->captura('fecha_solicitud','date');
-        $this->captura('estado_reg','varchar');
-        $this->captura('observaciones_sol','varchar');
-        $this->captura('fecha_tentativa_llegada','date');
-        $this->captura('fecha_despacho_miami','date');
-        $this->captura('justificacion','varchar');
-        $this->captura('fecha_arribado_bolivia','date');
-        $this->captura('fecha_desaduanizacion','date');
-        $this->captura('fecha_entrega_almacen','date');
-        $this->captura('cotizacion','numeric');
-        $this->captura('tipo_falla','varchar');
+        $this->captura('id_proceso_wf_firma','int4');
+        $this->captura('id_estado_wf_firma','int4');
         $this->captura('nro_tramite','varchar');
-        $this->captura('id_matricula','int4');
-        $this->captura('nro_solicitud','varchar');
-        $this->captura('motivo_solicitud','varchar');
-        $this->captura('fecha_en_almacen','date');
         $this->captura('estado','varchar');
+        $this->captura('contador_estados','bigint');
+        $this->captura('estado_firma','varchar');
+        $this->captura('fecha_requerida','date');
+        $this->captura('origen_pedido','varchar');
+        $this->captura('desc_funcionario1','text');
+        $this->captura('fecha_solicitud','date');
+        $this->captura('matricula','varchar');
+        $this->captura('motivo_solicitud','varchar');
+        $this->captura('observaciones_sol','varchar');
+        $this->captura('justificacion','varchar');
+        $this->captura('nro_justificacion','varchar');
+        $this->captura('tipo_solicitud','varchar');
+        $this->captura('tipo_falla','varchar');
+        $this->captura('tipo_reporte','varchar');
+        $this->captura('mel','varchar');
+        $this->captura('nro_no_rutina','varchar');
+        $this->captura('estado_reg','varchar');
         $this->captura('id_usuario_reg','int4');
         $this->captura('usuario_ai','varchar');
         $this->captura('fecha_reg','timestamp');
@@ -61,26 +60,27 @@ class MODSolicitud extends MODbase{
         $this->captura('id_usuario_mod','int4');
         $this->captura('usr_reg','varchar');
         $this->captura('usr_mod','varchar');
-        $this->captura('desc_funcionario1','text');
-        $this->captura('matricula','varchar');
+        $this->captura('nombre_estado','varchar');
+        $this->captura('nombre_estado_firma','varchar');
 
-
-        $this->captura('tipo_reporte','varchar');
-        $this->captura('mel','varchar');
-        $this->captura('nro_no_rutina','varchar');
+       /* $this->captura('nro_po','varchar');
+        $this->captura('fecha_entrega_miami','date');
+        $this->captura('observacion_nota','text');
+        $this->captura('fecha_tentativa_llegada','date');
+        $this->captura('fecha_despacho_miami','date');
+        $this->captura('fecha_arribado_bolivia','date');
+        $this->captura('fecha_desaduanizacion','date');
+        $this->captura('fecha_entrega_almacen','date');
+        $this->captura('cotizacion','numeric');
+        $this->captura('nro_solicitud','varchar');
+        $this->captura('fecha_en_almacen','date');
         $this->captura('desc_proveedor','varchar');
         $this->captura('nro_parte','varchar');
         $this->captura('nro_parte_alterno','varchar');
-        $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
-        $this->captura('contador_estados','bigint');
         $this->captura('control_fecha','varchar');
-        $this->captura('estado_firma','varchar');
-        $this->captura('id_proceso_wf_firma','int4');
-        $this->captura('id_estado_wf_firma','int4');
         $this->captura('contador_estados_firma','bigint');
-        $this->captura('nombre_estado','varchar');
-        $this->captura('nombre_estado_firma','varchar');
+
         $this->captura('fecha_po','date');
         $this->captura('tipo_evaluacion','varchar');
         $this->captura('taller_asignado','varchar');
@@ -89,7 +89,7 @@ class MODSolicitud extends MODbase{
         $this->captura('lugar_entrega','varchar');
         $this->captura('mensaje_correo','varchar');
         $this->captura('tipo','varchar');
-        $this->captura('id_cotizacion','int4');
+        $this->captura('id_cotizacion','int4');*/
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -955,5 +955,20 @@ class MODSolicitud extends MODbase{
 
 
     }
+    function generarPAC(){
+        $this->procedimiento='mat.ft_solicitud_ime';
+        $this->transaccion='MAT_PAC_IME';
+        $this->tipo_procedimiento='IME';
+
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+        $this->setParametro('importe','importe','int4');
+        $this->setParametro('id_moneda','id_moneda','int4');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 }
 ?>

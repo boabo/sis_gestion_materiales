@@ -108,14 +108,20 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
-                if(name == 'pedido_ma_pendiente' || name == 'pedido_ma_solicitada' || name == 'pedido_ma_compra' ){
+                if(name == 'pedido_ma_solicitada'){
                     this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
-                }else{
+                    this.getBoton('btnpac').setVisible(true);
+                }else if (name == 'pedido_ma_pendiente' || name == 'pedido_ma_compra'){
+                    this.getBoton('btnproveedor').setVisible(true);
+                    this.getBoton('Cotizacion').setVisible(true);
+                    this.getBoton('btnpac').setVisible(false);
+                } else{
                     this.getBoton('btnproveedor').setVisible(false);
+                    this.getBoton('btnpac').setVisible(false);
                     this.getBoton('Cotizacion').setVisible(false);
+                    this.getBoton('btnpac').setVisible(false);
                 }
-
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },

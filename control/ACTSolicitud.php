@@ -769,7 +769,11 @@ class ACTSolicitud extends ACTbase{
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-
+    function generarPAC(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->generarPAC($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 
 
