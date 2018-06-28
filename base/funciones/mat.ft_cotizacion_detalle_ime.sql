@@ -242,7 +242,7 @@ BEGIN
 	elsif(p_transaccion='MAT_CDE_CLO')then
 
 		begin
-       -- raise exception 'id %',v_parametros.id_detalle;
+
         FOR v_datos IN (select 	cds.id_solicitud,
         						cds.id_cotizacion,
                                 cds.id_detalle,

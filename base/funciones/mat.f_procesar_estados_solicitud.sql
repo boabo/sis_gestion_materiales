@@ -70,9 +70,9 @@ group by c.adjudicado;
         ---
         elsif(p_codigo_estado in ('comite_unidad_abastecimientos')) then
     	begin
-        if (v_adjudicacion = 'no' and v_count > 1 ) then
+        /*if (v_adjudicacion = 'no' and v_count > 1 ) then
            raise exception 'Tiene que Adjudicar un Proveedor';
-        end if;
+        end if;*/
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,

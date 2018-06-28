@@ -1213,7 +1213,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 inner join param.vproveedor p on p.id_proveedor = c.id_proveedor
                                 inner join param.tmoneda mo on mo.id_moneda = c.id_moneda
                                 left join mat.tgestion_proveedores ge on ge.id_solicitud = s.id_solicitud
-                                inner join mat.tday_week da on da.id_day_week =d.id_day_week
+                                left join mat.tday_week da on da.id_day_week =d.id_day_week
 
 								where  s.id_proceso_wf ='||v_parametros.id_proceso_wf;
 			--Devuelve la respuesta

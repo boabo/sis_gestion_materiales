@@ -72,9 +72,7 @@ BEGIN
         inner join param.vproveedor p on p.id_proveedor = c.id_proveedor
         where c.id_solicitud = v_parametros.id_solicitud;
 
-        if v_id_pro = v_parametros.id_proveedor then
-        raise exception 'El proveedor % ya fue registrato',v_nom_proveedor;
-        end if;
+    
 
         	--Sentencia de la insercion
         	insert into mat.tcotizacion(
