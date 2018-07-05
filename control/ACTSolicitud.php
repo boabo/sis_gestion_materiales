@@ -24,9 +24,9 @@ class ACTSolicitud extends ACTbase{
     {
         $this->objParam->defecto('ordenacion', 'id_solicitud');
         $this->objParam->defecto('dir_ordenacion', 'asc');
-
-        $this->objParam->addFiltro("sol.id_gestion = ". $this->objParam->getParametro('id_gestion'));
-        
+        if($this->objParam->getParametro('id_gestion') != '' ) {
+            $this->objParam->addFiltro("sol.id_gestion = " . $this->objParam->getParametro('id_gestion'));
+        }
         if ($this->objParam->getParametro('tipo_interfaz') == 'RegistroSolicitud' ) {
 
             if ($this->objParam->getParametro('pes_estado') == 'borrador_reg') {
