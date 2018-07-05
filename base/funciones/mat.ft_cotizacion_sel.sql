@@ -47,7 +47,12 @@ DECLARE
     v_fecha_firma_rev_qr 		text;
     v_nombre_funcionario_abas_qr 	varchar;
     v_fecha_firma_abas_qr 		text;
-    v_fill						varchar;
+    v_fill	varchar;
+    v_origen 	varchar;
+    v_estado varchar;
+    --v_nombre_funcionario_ac_qr varchar,
+    				--v_fecha_firma_ac_qr
+    
 
 BEGIN
 
@@ -187,9 +192,7 @@ BEGIN
                               c.obs,
                               to_char(c.fecha_cotizacion,''DD/MM/YYYY'')::varchar as fecha_cotizacion,
                               s.fecha_po,
-                              (select sum(cd.precio_unitario_mb)
-                              from mat.tcotizacion_detalle cd
-                              where cd.id_cotizacion = c.id_cotizacion ) as monto_total,
+                              c.monto_total,
                               (select pxp.list(initcap(p.desc_proveedor))
                               from mat.tgestion_proveedores_new ne
                               inner join param.vproveedor p on p.id_proveedor = ne.id_proveedor
@@ -219,12 +222,17 @@ BEGIN
     elsif(p_transaccion='MAT_CTS_QR')then
 
 		begin
-         select sou.id_proceso_wf_firma
-        		into
-                v_id_proceso_wf_firma
-        from mat.tsolicitud sou
-        where sou.id_proceso_wf = v_parametros.id_proceso_wf;
-
+      
+        
+       
+      /*  
+        if (v_origen  = 'Centro de Entrenamiento Aeronautico Civil')then
+        v_estado = 'departamento_ceac';
+        else
+        v_estado = 'comite_aeronavegabilidad';
+        end if;*/
+	
+      
 
 	SELECT			twf.id_funcionario,
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -236,7 +244,15 @@ BEGIN
           FROM wf.testado_wf twf
           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'comite_aeronavegabilidad' and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo =  
+          (case
+          when (select s.origen_pedido
+          		from mat.tsolicitud s
+                where s.id_proceso_wf = v_parametros.id_proceso_wf) = 'Centro de Entrenamiento Aeronautico Civil' then
+          'departamento_ceac'
+           else
+          'comite_aeronavegabilidad' 
+           end) and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
      SELECT
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -257,7 +273,7 @@ BEGIN
                     FROM wf.testado_wf twf
                     INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'cotizacion' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'compra' and  vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
     SELECT
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -269,9 +285,19 @@ BEGIN
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                     WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
+/*  SELECT
+        			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+          			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+                    INTO
+                    v_nombre_funcionario_ac_qr,
+    				v_fecha_firma_ac_qr
+                    FROM wf.testado_wf twf
+                    INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                    INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                    WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
 
-
+*/
 
             v_consulta:='select 	s.origen_pedido,
                                     '''||COALESCE (initcap(v_nombre_funcionario_dc_qr),' ')||'''::varchar as aero,
@@ -330,8 +356,7 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
-
-  /*********************************
+ /*********************************
  	#TRANSACCION:  'MAT_CTS_REP'
  	#DESCRIPCION:	Reporte detalle cotizacion
  	#AUTOR:		Miguel Alejandro Mamani Villegas
@@ -340,14 +365,17 @@ BEGIN
 
 	elsif(p_transaccion='MAT_CTS_REP')then
     	begin
+        
         if (v_parametros.origen_pedido != 'Todos')then
-        		v_fill = 'c.adjudicado = ''si'' and s.origen_pedido ='||v_parametros.origen_pedido||' and s.fecha_solicitud >= '||v_parametros.fecha_ini ||'::date AND s.fecha_solicitud <= '||v_parametros.fecha_fin||'::date';
+                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+
         else
-                v_fill = 'c.adjudicado = ''si'' and s.fecha_solicitud >= '||v_parametros.fecha_ini ||'::date AND s.fecha_solicitud <= '||v_parametros.fecha_fin||'::date';
+                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
 		end if;
-
-
-       v_consulta:='select	 s.origen_pedido,
+        
+        
+    
+       v_consulta:='select	 s.origen_pedido,	
                                  s.nro_tramite,
                                  t.nombre_estado as estado,
                                  initcap (f.desc_funcionario1) as funciaonario,
@@ -364,27 +392,28 @@ BEGIN
                                  s.mel,
                                  s.nro_no_rutina,
                                  c.nro_cotizacion,
-                                 initcap(v.desc_proveedor) as proveedor,
+                                 initcap(v.desc_proveedor) as proveedor, 
                                  d.nro_parte_cot,
                                  d.nro_parte_alterno_cot,
                                  d.descripcion_cot,
                                  d.explicacion_detallada_part_cot,
                                  d.cantidad_det,
                                  d.precio_unitario,
-                                 d.precio_unitario_mb
-                                 from mat.tsolicitud s
+                                 d.precio_unitario_mb		
+                                 from mat.tsolicitud s 
                                  inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                                  inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
-                                 inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
+                                 inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion and d.revisado = ''si''
                                  inner join wf.testado_wf e on e.id_estado_wf = s.id_estado_wf
                                  inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
           						 left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
                                  where '||v_fill||'
                                  order by origen_pedido ';
-
+			
 			return v_consulta;
 		end;
+
 
 
 	else

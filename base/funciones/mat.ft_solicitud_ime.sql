@@ -135,6 +135,12 @@ DECLARE
     v_id_estado_tipo		integer;
     vv_id_funcionario		integer;
     v_id_tipo_docuemnteo	integer;
+    v_cotizacon	record;
+    vv_id_cot	integer;
+    v_cotizacion_det record;
+     vv_id_det	integer;
+     v_documento record;
+      v_nro_cite_dce		varchar;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -719,6 +725,7 @@ END IF;
                                                              v_parametros_ad,
                                                              v_tipo_noti,
                                                              v_titulo);
+             
 
 
          		IF mat.f_procesar_estados_solicitud(p_id_usuario,
@@ -1107,10 +1114,10 @@ END IF;
         from mat.tsolicitud
         where id_proceso_wf = v_parametros.id_proceso_wf;
 
-        if v_registros.estado != 'cotizacion_solicitada'then
+     /*   if v_registros.estado != 'cotizacion_solicitada'then
         raise exception 'Solo puede ejecutar la clonacion de solicitud en estado Cotizacion Solicitada';
         end if;
-
+*/
 
 
          IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
@@ -1135,6 +1142,13 @@ END IF;
            from  wf.tproceso_macro pm
            inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
            where pm.codigo='GA-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
+           
+           elsif v_registros.origen_pedido ='Centro de Entrenamiento Aeronautico Civil'then
+           	select    tp.codigo, pm.id_proceso_macro
+           into v_codigo_tipo_proceso, v_id_proceso_macro
+           from  wf.tproceso_macro pm
+           inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
+           where pm.codigo='GC-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
 			END IF;
 
 
@@ -1173,11 +1187,11 @@ END IF;
 
 
 
-        	 FOR v_datos_solicitud in (  select *
-									from wf.testado_wf
+        	FOR v_datos_solicitud in (  select *
+									from wf.testado_wf 
 									where id_proceso_wf = v_parametros.id_proceso_wf and id_estado_anterior is not null
                                     order by id_estado_wf ASC )LOOP
-
+       
         INSERT INTO wf.testado_wf(
         id_usuario_reg,
         fecha_reg,
@@ -1189,11 +1203,11 @@ END IF;
         id_depto,
         id_usuario_ai,
         usuario_ai,
-        obs
-      	)
+        obs    
+      	) 
       	VALUES (
         v_datos_solicitud.id_usuario_reg,
-        now(),
+        v_datos_solicitud.fecha_reg,
         v_datos_solicitud.estado_reg,
         v_datos_solicitud.id_estado_anterior,---
         v_datos_solicitud.id_tipo_estado,
@@ -1202,52 +1216,55 @@ END IF;
         NULL,
         NULL,
         NULL,
-        'Clon de :'||v_registros.nro_tramite
+        v_datos_solicitud.obs
         )RETURNING id_estado_wf into v_id_estado_clon;
-
+        
         END LOOP;
-        if v_registros.origen_pedido != 'Almacenes Consumibles o Rotables'then
+        
+        if v_registros.origen_pedido = 'Gerencia de Operaciones' 
+        or v_registros.origen_pedido = 'Gerencia de Mantenimiento'then
+        
         if v_registros.origen_pedido ='Gerencia de Operaciones' THEN
-
         select ts.id_tipo_estado
-        into
+        into 
         v_id_estado_tipo
-        from wf.ttipo_estado ts
+        from wf.ttipo_estado ts 
         inner join wf.ttipo_proceso tp on tp.id_tipo_proceso = ts.id_tipo_proceso
         where ts.codigo = 'revision'and tp.nombre = 'Requerimiento Gerencia de Operaciones';
-
+         
          select fu.id_funcionario
         into
         vv_id_funcionario
         from orga.vfuncionario_cargo fu
         where fu.fecha_finalizacion is null and fu.nombre_cargo = 'Especialista Planificación Servicios';
-
-
+       
+        
         elsif v_registros.origen_pedido ='Gerencia de Mantenimiento'then
-
+        
         select ts.id_tipo_estado
-        into
+        into 
         v_id_estado_tipo
-        from wf.ttipo_estado ts
+        from wf.ttipo_estado ts 
         inner join wf.ttipo_proceso tp on tp.id_tipo_proceso = ts.id_tipo_proceso
         where ts.codigo = 'revision'and tp.nombre = 'Requerimiento Gerencia de Mantenimiento';
-
+        
         select fu.id_funcionario
         into
         vv_id_funcionario
         from orga.vfuncionario_cargo fu
         where fu.fecha_finalizacion is null and fu.nombre_cargo = 'Gerente Mantenimiento';
         end if;
-
-
-
+        
+        
+       
        select e.id_estado_wf
        into
        v_id
        from wf.testado_wf e
        where e.id_proceso_wf = v_id_proceso_wf and e.id_tipo_estado = v_id_estado_tipo;
-
-
+       
+      
+      
        SELECT	 			 ps_id_proceso_wf,
                              ps_id_estado_wf,
                              ps_codigo_estado
@@ -1259,19 +1276,20 @@ END IF;
                              v_registros.id_usuario_reg,
                              null,
                              null,
-                             v_id,
-                             vv_id_funcionario,
+                             v_id, 
+                             vv_id_funcionario, 
                              null,
                              'Firma ['||v_registros.nro_tramite||']',
-                             'FRD',
+                             'FRD',    
                              v_registros.nro_tramite);
-    end if;
-
+    
+    
+        
        FOR v_datos_solicitud in (  select *
-									from wf.testado_wf
+									from wf.testado_wf 
 									where id_proceso_wf = v_registros.id_proceso_wf_firma and id_estado_anterior is not null
                                     order by id_estado_wf ASC )LOOP
-
+       
         INSERT INTO wf.testado_wf(
         id_usuario_reg,
         fecha_reg,
@@ -1283,11 +1301,11 @@ END IF;
         id_depto,
         id_usuario_ai,
         usuario_ai,
-        obs
-      	)
+        obs    
+      	) 
       	VALUES (
         v_datos_solicitud.id_usuario_reg,
-        now(),
+        v_datos_solicitud.fecha_reg,
         v_datos_solicitud.estado_reg,
         v_datos_solicitud.id_estado_anterior,---
         v_datos_solicitud.id_tipo_estado,
@@ -1296,93 +1314,212 @@ END IF;
         NULL,
         NULL,
         NULL,
-        'Clon de :'||v_registros.nro_tramite
+        v_datos_solicitud.obs
         )RETURNING id_estado_wf into v_id_estado_firma;
-
+        
         END LOOP;
+        
+    end if;    
 
+          IF (substr(v_nro_tramite,1,2)='GM')THEN
+          	v_nro_cite_dce = 'OB.DAB.DCE.GM.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
+          ELSIF (substr(v_nro_tramite,1,2)='GA')THEN
+          	v_nro_cite_dce = 'OB.DAB.DCE.GA.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
+          ELSIF (substr(v_nro_tramite,1,2)='GO')THEN
+          	v_nro_cite_dce = 'OB.DAB.DCE.GO.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
+             ELSIF (substr(v_nro_tramite,1,2)='GC')THEN
+          	v_nro_cite_dce = 'OB.DAB.DCE.GC.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
+          END IF;
+      
     FOR v_record_clon in ( 	select *
         						from mat.tsolicitud s
  								where s.id_proceso_wf = v_parametros.id_proceso_wf)
         loop
-
-
-
-                insert into mat.tsolicitud(
-                        id_funcionario_sol,
-                        id_proceso_wf,
-                        id_estado_wf,
-                        nro_po,
-                        tipo_solicitud,
-                        origen_pedido,
-                        fecha_requerida,
-                        fecha_solicitud,
-                        estado_reg,
-                        observaciones_sol,
-                        justificacion,
-                        tipo_falla,
-                        nro_tramite,
-                        id_matricula,
-                        motivo_solicitud,
-                        tipo_reporte,
-                        mel,
-                        nro_no_rutina,
-                        nro_justificacion,
-                        estado,
-                        id_usuario_reg,
-                        usuario_ai,
-                        fecha_reg,
-                        id_usuario_ai,
-                        fecha_mod,
-                        id_usuario_mod,
-                        estado_firma,
-                        tipo,
-                        id_solicitud_padre,
-                        id_proceso_wf_firma,
-                        id_estado_wf_firma,
-                        condicion,
-                        tipo_evaluacion,
-                        taller_asignado
-                    ) values(
-                        v_record_clon.id_funcionario_sol,
-                        v_id_proceso_wf,
-                        v_id_estado_clon,
-                        null,
-                        v_record_clon.tipo_solicitud,
-                        v_record_clon.origen_pedido,
-                        v_record_clon.fecha_requerida,
-                        v_record_clon.fecha_solicitud,
-                        'activo',
-                        v_record_clon.observaciones_sol,
-                        v_record_clon.justificacion,
-                        v_record_clon.tipo_falla,
-                        v_nro_tramite,
-                        v_record_clon.id_matricula,
-                        v_record_clon.motivo_solicitud,
-                        v_record_clon.tipo_reporte,
-                        v_record_clon.mel,
-                        v_record_clon.nro_no_rutina,
-                        v_record_clon.nro_justificacion,
-                        v_record_clon.estado,
-                        v_record_clon.id_usuario_reg,
-                        null,
-                        now(),
-                        null,
-                        null,
-                        null,
-                        v_record_clon.estado_firma,
-                        'clon',
-                        v_record_clon.id_solicitud,
-                        v_id_proceso_wf_clo,
-                        v_id_estado_firma,
-                        v_record_clon.condicion,
-                        v_record_clon.tipo_evaluacion,
-                        v_record_clon.taller_asignado
-
-                    )RETURNING id_solicitud into v_id_solicitud;
-
+    INSERT INTO  mat.tsolicitud(	id_usuario_reg,
+                                id_usuario_mod,
+                                fecha_reg,
+                                fecha_mod,
+                                estado_reg,
+                                id_usuario_ai,
+                                usuario_ai,
+                              
+                                origen_pedido,
+                                id_funcionario_sol,
+                                nro_solicitud,
+                                nro_tramite,
+                                fecha_solicitud,
+                                fecha_requerida,
+                                observaciones_sol,
+                                tipo_solicitud,
+                                motivo_solicitud,
+                                id_matricula,
+                                justificacion,
+                                cotizacion,
+                                id_proveedor,
+                                nro_po,
+                                fecha_entrega_miami,
+                                fecha_despacho_miami,
+                                fecha_arribado_bolivia,
+                                fecha_desaduanizacion,
+                                fecha_entrega_almacen,
+                                observacion_nota,
+                                id_proceso_wf,
+                                id_estado_wf,
+                                estado,
+                                fecha_tentativa_llegada,
+                                fecha_en_almacen,
+                                tipo_falla,
+                                tipo_reporte,
+                                mel,
+                                nro_no_rutina,
+                                nro_justificacion,
+                                fecha_cotizacion,
+                                estado_firma,
+                                id_proceso_wf_firma,
+                                id_estado_wf_firma,
+                                fecha_po,
+                                nro_cite_dce,
+                                lugar_entrega,
+                                condicion,
+                                tipo_evaluacion,
+                                taller_asignado,
+                                nro_cite_cobs,
+                                mensaje_correo,
+                                tipo,
+                                id_solicitud_padre)
+								VALUES (
+                                v_record_clon.id_usuario_reg,
+                                v_record_clon.id_usuario_mod,
+                                v_record_clon.fecha_reg,
+                                v_record_clon.fecha_mod,
+                                v_record_clon.estado_reg,
+                                v_record_clon.id_usuario_ai,
+                                v_record_clon.usuario_ai,
+                                
+                                v_record_clon.origen_pedido,
+                                v_record_clon.id_funcionario_sol,
+                                v_record_clon.nro_solicitud,
+                                v_nro_tramite,
+                                v_record_clon.fecha_solicitud,
+                                v_record_clon.fecha_requerida,
+                                v_record_clon.observaciones_sol,
+                                v_record_clon.tipo_solicitud,
+                                v_record_clon.motivo_solicitud,
+                                v_record_clon.id_matricula,
+                                v_record_clon.justificacion,
+                                v_record_clon.cotizacion,
+                                v_record_clon.id_proveedor,
+                                v_record_clon.nro_po,
+                                v_record_clon.fecha_entrega_miami,
+                                v_record_clon.fecha_despacho_miami,
+                                v_record_clon.fecha_arribado_bolivia,
+                                v_record_clon.fecha_desaduanizacion,
+                                v_record_clon.fecha_entrega_almacen,
+                                v_record_clon.observacion_nota,
+                                 v_id_proceso_wf,
+                                v_id_estado_clon,
+                                v_record_clon.estado,
+                                v_record_clon.fecha_tentativa_llegada,
+                                v_record_clon.fecha_en_almacen,
+                                v_record_clon.tipo_falla,
+                                v_record_clon.tipo_reporte,
+                                v_record_clon.mel,
+                                v_record_clon.nro_no_rutina,
+                                v_record_clon.nro_justificacion,
+                                v_record_clon.fecha_cotizacion,
+                                v_record_clon.estado_firma,
+                                v_id_proceso_wf_clo,
+                        		v_id_estado_firma,
+                                v_record_clon.fecha_po,
+                                v_nro_cite_dce,
+                                v_record_clon.lugar_entrega,
+                                v_record_clon.condicion,
+                                v_record_clon.tipo_evaluacion,
+                                v_record_clon.taller_asignado,
+                                v_nro_cite_dce,
+                                v_record_clon.mensaje_correo,
+                                'clon',
+                                v_record_clon.id_solicitud
+								)RETURNING id_solicitud into v_id_solicitud ;
+                    
+                    
+    	for v_documento in (select *
+        from wf.tdocumento_wf d
+				inner join wf.ttipo_documento t on t.id_tipo_documento = d.id_tipo_documento
+        where d.id_proceso_wf = v_parametros.id_proceso_wf and t.nombre != 'Requerimiento de Materiales ERP')
+        loop
+        INSERT INTO  wf.tdocumento_wf (id_usuario_reg,
+                    id_usuario_mod,
+                    fecha_reg,
+                    fecha_mod,
+                    estado_reg,
+                    id_usuario_ai,
+                    usuario_ai,
+                   
+                    id_tipo_documento,
+                    id_proceso_wf,
+                    num_tramite,
+                    momento,
+                    nombre_tipo_doc,
+                    nombre_doc,
+                    chequeado,
+                    url,
+                    extension,
+                    obs,
+                    id_estado_ini,
+                    chequeado_fisico,
+                    momento_fisico,
+                    id_usuario_upload,
+                    fecha_upload,
+                    id_proceso_wf_ori,
+                    nro_tramite_ori,
+                    id_documento_wf_ori,
+                    accion_pendiente,
+                    fecha_firma,
+                    usuario_firma,
+                    datos_firma,
+                    hash_firma,
+                    demanda
+                  )
+                  VALUES (
+                    v_documento.id_usuario_reg,
+                    v_documento.id_usuario_mod,
+                    v_documento.fecha_reg,
+                    v_documento.fecha_mod,
+                    v_documento.estado_reg,
+                    v_documento.id_usuario_ai,
+                    v_documento.usuario_ai,
+                    
+                    v_documento.id_tipo_documento,
+                    v_id_proceso_wf,
+                    v_documento.num_tramite,
+                    v_documento.momento,
+                    v_documento.nombre_tipo_doc,
+                    v_documento.nombre_doc,
+                    v_documento.chequeado,
+                    v_documento.url,
+                    v_documento.extension,
+                    v_documento.obs,
+                    v_documento.id_estado_ini,
+                    v_documento.chequeado_fisico,
+                    v_documento.momento_fisico,
+                    v_documento.id_usuario_upload,
+                    v_documento.fecha_upload,
+                    v_documento.id_proceso_wf_ori,
+                    v_documento.nro_tramite_ori,
+                    v_documento.id_documento_wf_ori,
+                    v_documento.accion_pendiente,
+                    v_documento.fecha_firma,
+                    v_documento.usuario_firma,
+                    v_documento.datos_firma,
+                    v_documento.hash_firma,
+                    v_documento.demanda
+                  );
+        end loop;
+                    
+                    
         		for v_detalle_clon in (	select *
-                						from mat.tdetalle_sol d
+                						from mat.tdetalle_sol d 
                                         where d.id_solicitud =v_record_clon.id_solicitud )
                 loop
                 insert into mat.tdetalle_sol( id_solicitud,
@@ -1418,10 +1555,119 @@ END IF;
                                               null,
                                               v_detalle_clon.tipo,
                                               v_detalle_clon.explicacion_detallada_part);
-
+                
                 end loop;
+        for v_cotizacon in (select *
+                            from mat.tcotizacion c
+                            where c.id_solicitud = v_record_clon.id_solicitud )loop
+        
+        INSERT INTO mat.tcotizacion ( id_usuario_reg,
+                                      id_usuario_mod,
+                                      fecha_reg,
+                                      fecha_mod,
+                                      estado_reg,
+                                      id_usuario_ai,
+                                      usuario_ai,
+                                    
+                                      monto_total,
+                                      fecha_cotizacion,
+                                      nro_tramite,
+                                      adjudicado,
+                                      id_proveedor,
+                                      id_solicitud,
+                                      id_moneda,
+                                      nro_cotizacion,
+                                      recomendacion,
+                                      obs,
+                                      pie_pag)
+                                      VALUES (
+                                      v_cotizacon.id_usuario_reg,
+                                      v_cotizacon.id_usuario_mod,
+                                      v_cotizacon.fecha_reg,
+                                      v_cotizacon.fecha_mod,
+                                      v_cotizacon.estado_reg,
+                                      v_cotizacon.id_usuario_ai,
+                                      v_cotizacon.usuario_ai,
+                                   
+                                      v_cotizacon.monto_total,
+                                      v_cotizacon.fecha_cotizacion,
+                                      v_cotizacon.nro_tramite,
+                                      v_cotizacon.adjudicado,
+                                      v_cotizacon.id_proveedor,
+                                      v_id_solicitud,
+                                      v_cotizacon.id_moneda,
+                                      v_cotizacon.nro_cotizacion,
+                                      v_cotizacon.recomendacion,
+                                      v_cotizacon.obs,
+                                      v_cotizacon.pie_pag
+        
+                                      ) RETURNING id_cotizacion into vv_id_cot ;
+                                      for v_cotizacion_det in (
+        select *
+        from mat.tcotizacion_detalle d
+        where d.id_cotizacion = v_cotizacon.id_cotizacion
+        ) loop
+        
+    INSERT INTO  mat.tcotizacion_detalle (	id_usuario_reg,
+                                            id_usuario_mod,
+                                            fecha_reg,
+                                            fecha_mod,
+                                            estado_reg,
+                                            id_usuario_ai,
+                                            usuario_ai,
+                                          
+                                            id_cotizacion,
+                                            id_detalle,
+                                            precio_unitario,
+                                            precio_unitario_mb,
+                                            cantidad_det,
+                                            id_solicitud,
+                                            cd,
+                                            id_day_week,
+                                            nro_parte_cot,
+                                            nro_parte_alterno_cot,
+                                            referencia_cot,
+                                            descripcion_cot,
+                                            explicacion_detallada_part_cot,
+                                            tipo_cot,
+                                            id_unidad_medida_cot,
+                                            revisado
+                                          )
+                                      VALUES (
+                                        v_cotizacion_det.id_usuario_reg,
+                                        v_cotizacion_det.id_usuario_mod,
+                                        v_cotizacion_det.fecha_reg,
+                                        v_cotizacion_det.fecha_mod,
+                                        v_cotizacion_det.estado_reg,
+                                        v_cotizacion_det.id_usuario_ai,
+                                        v_cotizacion_det.usuario_ai,
+                                       
+                                        vv_id_cot,
+                                        v_cotizacion_det.id_detalle,
+                                        v_cotizacion_det.precio_unitario,
+                                        v_cotizacion_det.precio_unitario_mb,
+                                        v_cotizacion_det.cantidad_det,
+                                        v_cotizacion_det.id_solicitud,
+                                        v_cotizacion_det.cd,
+                                        v_cotizacion_det.id_day_week,
+                                        v_cotizacion_det.nro_parte_cot,
+                                        v_cotizacion_det.nro_parte_alterno_cot,
+                                        v_cotizacion_det.referencia_cot,
+                                        v_cotizacion_det.descripcion_cot,
+                                        v_cotizacion_det.explicacion_detallada_part_cot,
+                                        v_cotizacion_det.tipo_cot,
+                                        v_cotizacion_det.id_unidad_medida_cot,
+                                        v_cotizacion_det.revisado
+                                      );
+         			end loop;
+        	end loop;
+    	
+    	
+    
         end loop;
-
+        
+        
+        
         FOR v_mod in (	select *
 		 				from wf.testado_wf
 						where id_proceso_wf = v_id_proceso_wf) loop
@@ -1443,7 +1689,7 @@ END IF;
         end loop;
         end if;
 
-       select d.url
+/*       select d.url
        into v_url
        from wf.tdocumento_wf d
        where d.id_proceso_wf = v_parametros.id_proceso_wf and d.chequeado = 'si';
@@ -1480,13 +1726,33 @@ END IF;
        chequeado = 'si',
        extension = 'pdf'
        where id_proceso_wf =  v_id_proceso_wf and id_tipo_documento = v_id_tipo_docuemnteo;
-
-         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado)');
+*/
+         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado');
          v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
 
             --Devuelve la respuesta
             return v_resp;
          END;
+         
+	/*********************************
+ 	#TRANSACCION:  'MAT_PAC_IME'
+ 	#DESCRIPCION:	generar pac
+ 	#AUTOR:		MMV
+ 	#FECHA:		10-01-2018 13:13:01
+	***********************************/
+
+	elsif(p_transaccion='MAT_PAC_IME')then
+
+		begin
+			 PERFORM mat.f_correo_solicitud(v_parametros.id_proceso_wf,v_parametros.importe,v_parametros.moneda);
+             
+             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado');
+         	 v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
 
 else
 
