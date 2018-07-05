@@ -1530,6 +1530,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: true,
                     anchor: '90%',
                     style: 'background-color: #F9BAB3; background-image: none;',
+                    value: this.sm.getSelected().data['monto_pac'] ,
                     maxLength:100
                 });
 
@@ -1553,7 +1554,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         ]
                     }),
                     valueField:'ID',
-                    displayField:'valor'
+                    displayField:'valor',
+                    value:'2'
                 });
 
             var formularioInicio = new Ext.form.FormPanel({
@@ -1591,8 +1593,8 @@ header("content-type: text/javascript; charset=UTF-8");
                                 Ext.Ajax.request({
                                     url:'../../sis_gestion_materiales/control/Solicitud/generarPAC',
                                     params:{id_proceso_wf: m.sm.getSelected().data['id_proceso_wf'],
-                                            importe: this.importe,
-                                            moneda:this.moneda},
+                                        importe: this.importe,
+                                        moneda:this.moneda},
                                     success:function(resp){
                                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                                         console.log(reg);
@@ -1601,7 +1603,8 @@ header("content-type: text/javascript; charset=UTF-8");
                                     timeout:this.timeout,
                                     scope:this
                                 });
-
+                                Phx.CP.loadingHide();
+                                this.reload();
                             }
                         },
                         scope: this

@@ -162,6 +162,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.getBoton('btnproveedor').enable();
             this.getBoton('Cotizacion').enable();
+            this.getBoton('btnpac').enable();
 
 
             if( data['estado'] ==  'cotizacion'){
@@ -195,8 +196,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('btnproveedor').disable();
-               // this.getBoton('Consulta_desaduanizacion').enable();
-               // this.getBoton('Control_aLmacene').enable();
+                this.getBoton('btnpac').disable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
                 this.getBoton('ini_estado').disable();
