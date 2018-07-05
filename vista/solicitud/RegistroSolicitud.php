@@ -6,6 +6,7 @@
  *@date 27-12-2016 14:45
  *@Interface para el inicio de solicitudes de materiales
  */
+include_once ('../../media/styles.php');
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>

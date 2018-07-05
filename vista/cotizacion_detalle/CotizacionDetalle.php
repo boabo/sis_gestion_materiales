@@ -60,7 +60,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             //llama al constructor de la clase padre
             Phx.vista.CotizacionDetalle.superclass.constructor.call(this, config);
             this.init();
-
+            this.grid.addListener('cellclick', this.oncellclick,this);
             this.grid.on('rowcontextmenu', function(grid, rowIndex, e) {
                 e.stopEvent();
                 var selModel = this.grid.getSelectionModel();
@@ -122,33 +122,30 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 type: 'Field',
                 form: true
             },
-
             {
                 config:{
                     name: 'revisado',
                     fieldLabel: 'Cotizado',
                     allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 70,
-                    maxLength:200,
-                    renderer: function(value,p,record){
-                       var i = record.data.nro_parte_cot;
-                        if(record.data.revisado=='si'){
-                            return String.format('<div title="Cotizado"><b><font color="green"><i class="fa fa-check" style="font-size:36px"></i></b></font></b></div>', value);
-                        }else if(record.data.revisado==''){
+                    anchor: '50%',
+                    gwidth: 80,
+                    maxLength:3,
+                    renderer: function (value){
+                        //check or un check row
+                        var checked = '',
+                            momento = 'no';
+                        if(value == 'si'){
+                            checked = 'checked';;
+                        }else if(value==''){
                             return value;
                         }
-                        else {
-                            return String.format('<div title="No cotizado "><b><font color="red"><i class="fa fa-close" style="font-size:36px" ></i></font></b></div>', value);
-                        }
+                        return  String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:37px;width:37px;" type="checkbox"  {0}></div>',checked);
 
                     }
                 },
-                type:'TextField',
-                //filters:{pfiltro:'sol.num_tramite',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
+                type: 'TextField',
+                grid: true,
+                form: false
             },
             {
                 config: {
@@ -602,7 +599,34 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         succeClonSinc:function(resp){
             Phx.CP.loadingHide();
             this.reload();
+        },
+    oncellclick : function(grid, rowIndex, columnIndex, e) {
+        var record = this.store.getAt(rowIndex),
+            fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
+
+        if(fieldName == 'revisado') {
+            this.cambiarRevision(record);
         }
+    },
+    cambiarRevision: function(record){
+        Phx.CP.loadingShow();
+        var d = record.data;
+        Ext.Ajax.request({
+            url:'../../sis_gestion_materiales/control/CotizacionDetalle/cambiarRevision',
+            params:{ id_cotizacion_det: d.id_cotizacion_det,
+                revisado: d.revisado
+            },
+            success: this.successRevision,
+            failure: this.conexionFailure,
+            timeout: this.timeout,
+            scope: this
+        });
+        this.reload();
+    },
+    successRevision: function(resp){
+        Phx.CP.loadingHide();
+        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+    }
     })
 </script>
 		
