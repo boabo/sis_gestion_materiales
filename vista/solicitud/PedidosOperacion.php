@@ -165,6 +165,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.PedidosOperacion.superclass.preparaMenu.call(this,n);
             this.getBoton('btnproveedor').enable();
             this.getBoton('Cotizacion').enable();
+            this.getBoton('btnpac').enable();
             if( data['estado'] ==  'cotizacion'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ini_estado').enable();
@@ -194,8 +195,8 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
                 this.getBoton('sig_estado').disable();
                 this.getBoton('btnproveedor').disable();
-               // this.getBoton('Consulta_desaduanizacion').enable();
-              //  this.getBoton('Control_aLmacene').enable();
+                this.getBoton('btnpac').disable();
+
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
                 this.getBoton('ini_estado').disable();

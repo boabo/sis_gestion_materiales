@@ -48,7 +48,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: true,
                 form: false
             });
-            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=false;
+            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
+            this.Atributos[this.getIndAtributo('origen_pedido')].grid=true;
             Phx.vista.SolicitudvoboComite.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
             this.store.baseParams.pes_estado = ' ';
@@ -97,18 +98,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             }
             return tb;
-        },
-        arrayDefaultColumHidden:['estado_reg','fecha_solicitud','fecha_reg','fecha_mod','usr_reg','usr_mod','origen_pedido','desc_funcionario1'],
-        rowExpander: new Ext.ux.grid.RowExpander({
-            tpl : new Ext.Template(
-                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FUNCIONARIO:&nbsp;&nbsp;</b> {desc_funcionario1}</p>',
-                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ORIGEN PEDIDO:&nbsp;&nbsp;</b> {origen_pedido}</p>',
-                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FECHA SOLICITUD:&nbsp;&nbsp;</b> {fecha_solicitud:date("d/m/Y")}</p>',
-                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FECHA ULT. MODIFICACION:&nbsp;&nbsp;</b> {fecha_mod:date("d/m/Y")}</p>',
-                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FECHA DE REGISTRO:&nbsp;&nbsp;</b> {fecha_reg:date("d/m/Y")}</p>',
-                '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>MODIFICADO POR:&nbsp;&nbsp;</b> {usr_mod}</p><br>'
-            )
-        })
+        }
     }
 
 </script>

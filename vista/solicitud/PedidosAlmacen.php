@@ -164,6 +164,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.getBoton('btnproveedor').enable();
             this.getBoton('Cotizacion').enable();
+            this.getBoton('btnpac').enable();
 
             if( data['estado'] ==  'cotizacion'){
                 this.getBoton('sig_estado').enable();
@@ -194,6 +195,7 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
 
                 this.getBoton('sig_estado').disable();
+                this.getBoton('btnpac').disable();
                 this.getBoton('btnproveedor').disable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
