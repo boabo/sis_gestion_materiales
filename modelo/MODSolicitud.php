@@ -63,14 +63,12 @@ class MODSolicitud extends MODbase{
         $this->captura('usr_mod','varchar');
         $this->captura('desc_funcionario1','text');
         $this->captura('matricula','varchar');
-
-
         $this->captura('tipo_reporte','varchar');
         $this->captura('mel','varchar');
         $this->captura('nro_no_rutina','varchar');
         $this->captura('desc_proveedor','varchar');
-        $this->captura('nro_parte','varchar');
-        $this->captura('nro_parte_alterno','varchar');
+        $this->captura('nro_partes','text');
+        $this->captura('nro_parte_alterno','text');
         $this->captura('nro_justificacion','varchar');
         $this->captura('fecha_cotizacion','date');
         $this->captura('contador_estados','bigint');
@@ -90,7 +88,8 @@ class MODSolicitud extends MODbase{
         $this->captura('mensaje_correo','varchar');
         $this->captura('tipo','varchar');
         $this->captura('id_cotizacion','varchar');
-
+        $this->captura('monto_pac','numeric');
+        $this->captura('moneda','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         //var_dump($this->consulta); exit;
