@@ -58,7 +58,12 @@ class ACTCotizacionDetalle extends ACTbase{
         $this->res=$this->objFunc->clonarDetalle();
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function cambiarRevision(){
+        $this->objFunc=$this->create('MODCotizacionDetalle');
+        $this->res=$this->objFunc->cambiarRevision($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
 
+    }
 
 }
 

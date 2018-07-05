@@ -173,7 +173,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Gerencia de Operaciones');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
-                     this.ocultarComponente(this.Cmp.mel);
+                     this.mostrarComponente(this.Cmp.mel);
                      this.ocultarComponente(this.Cmp.tipo_reporte);
                      this.ocultarComponente(this.Cmp.tipo_falla);
                      this.ocultarComponente(this.Cmp.nro_justificacion);
@@ -201,7 +201,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Almacenes Consumibles o Rotables');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
-                    this.ocultarComponente(this.Cmp.mel);
+                    this.mostrarComponente(this.Cmp.mel);
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.tipo_falla);
                     this.ocultarComponente(this.Cmp.nro_justificacion);
@@ -214,7 +214,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Centro de Entrenamiento Aeronautico Civil');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
-                    this.ocultarComponente(this.Cmp.mel);
+                    this.mostrarComponente(this.Cmp.mel);
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.tipo_falla);
                     this.ocultarComponente(this.Cmp.nro_justificacion);
@@ -227,7 +227,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.Cmp.nro_justificacion.reset();
             },this);
 
-            this.ocultarComponente(this.Cmp.mel);
+            this.mostrarComponente(this.Cmp.mel);
             this.ocultarComponente(this.Cmp.tipo_reporte);
             this.ocultarComponente(this.Cmp.tipo_falla);
             this.ocultarComponente(this.Cmp.nro_justificacion);
@@ -813,8 +813,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name:'mel',
-                    fieldLabel:'MEL',
-                    allowBlank:true,
+                    fieldLabel:'Mel/Prioridad',
+                    allowBlank:false,
                     emptyText:'Elija una opción...',
                     editable: false,
                     typeAhead: true,

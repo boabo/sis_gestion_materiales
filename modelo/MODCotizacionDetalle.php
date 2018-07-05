@@ -170,6 +170,23 @@ class MODCotizacionDetalle extends MODbase{
 
 
     }
-			
+    function cambiarRevision(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.ft_cotizacion_detalle_ime';
+        $this->transaccion='MAT_CDE_REV';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
 }
 ?>

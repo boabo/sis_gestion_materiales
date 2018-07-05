@@ -68,30 +68,41 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             this.historico = 'no';
             this.tbarItems = ['-',{
-                text: 'Histórico',
-                enableToggle: true,
-                pressed: false,
-                toggleHandler: function(btn, pressed) {
+                    text: 'Histórico',
+                    enableToggle: true,
+                    pressed: false,
+                    toggleHandler: function(btn, pressed) {
 
-                    if(pressed){
-                        this.historico = 'si';
-                        //this.desBotoneshistorico();
-                    }
-                    else{
-                        this.historico = 'no'
-                    }
+                        if(pressed){
+                            this.historico = 'si';
+                            //this.desBotoneshistorico();
+                        }
+                        else{
+                            this.historico = 'no'
+                        }
 
-                    this.store.baseParams.historico = this.historico;
-                    this.reload();
-                },
-                scope: this
-            }];
-
+                        this.store.baseParams.historico = this.historico;
+                        this.reload();
+                    },
+                    scope: this
+                }
+            ];
             Phx.vista.PedidosMantenimiento.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
             this.store.baseParams.pes_estado = 'pedido_ma_pendiente';
             this.load({params: {start: 0, limit: this.tam_pag}});
             this.getBoton('Report').setVisible(false);
+            this.addButton('btnpac',
+                {
+                    iconCls: 'bemail',
+                    text: 'Generar PAC',
+                    grupo:[3],
+                    disabled: true,
+                    handler: this.correoPac,
+                    tooltip: '<b>Envia Correo PAC</b>'
+                }
+            );
+
             this.finCons = true;
 
         },

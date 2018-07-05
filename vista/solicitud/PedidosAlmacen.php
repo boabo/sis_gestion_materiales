@@ -26,7 +26,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
 
             this.font();
-            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=false;
+            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
             this.Grupos.push( {
                 layout: 'column',
                 border: false,
@@ -68,29 +68,41 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             this.historico = 'no';
             this.tbarItems = ['-',{
-                text: 'Histórico',
-                enableToggle: true,
-                pressed: false,
-                toggleHandler: function(btn, pressed) {
+                    text: 'Histórico',
+                    enableToggle: true,
+                    pressed: false,
+                    toggleHandler: function(btn, pressed) {
 
-                    if(pressed){
-                        this.historico = 'si';
-                        //this.desBotoneshistorico();
-                    }
-                    else{
-                        this.historico = 'no'
-                    }
+                        if(pressed){
+                            this.historico = 'si';
+                            //this.desBotoneshistorico();
+                        }
+                        else{
+                            this.historico = 'no'
+                        }
 
-                    this.store.baseParams.historico = this.historico;
-                    this.reload();
-                },
-                scope: this
-            }];
+                        this.store.baseParams.historico = this.historico;
+                        this.reload();
+                    },
+                    scope: this
+                }
+            ];
             Phx.vista.PedidosAlmacen.superclass.constructor.call(this, config);
             this.store.baseParams = {tipo_interfaz: this.nombreVista};
             this.store.baseParams.pes_estado = 'pedido_al_pendiente';
             this.load({params: {start: 0, limit: this.tam_pag}});
             this.finCons = true;
+            this.addButton('btnpac',
+                {
+                    iconCls: 'bemail',
+                    text: 'Generar PAC',
+                    grupo:[3],
+                    disabled: true,
+                    handler: this.correoPac,
+                    tooltip: '<b>Envia Correo PAC</b>'
+                }
+            );
+
             this.getBoton('Report').setVisible(false);
 
         },
@@ -279,14 +291,14 @@ header("content-type: text/javascript; charset=UTF-8");
         font :function () {
             this.Atributos[this.getIndAtributo('tipo_falla')].grid=false;
             this.Atributos[this.getIndAtributo('tipo_reporte')].grid=false;
-            this.Atributos[this.getIndAtributo('mel')].grid=false;
+            this.Atributos[this.getIndAtributo('mel')].grid=true;
             this.Atributos[this.getIndAtributo('nro_no_rutina')].grid=false;
             this.Atributos[this.getIndAtributo('id_matricula')].grid=false;
             this.Atributos[this.getIndAtributo('nro_justificacion')].grid=false;
             this.Atributos[this.getIndAtributo('justificacion')].grid=false;
 
 
-            this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
+           // this.Atributos[this.getIndAtributo('nombre_estado_firma')].grid=true;
             this.Atributos[this.getIndAtributo('nro_po')].grid=true;
             this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;
             this.Atributos[this.getIndAtributo('fecha_cotizacion')].grid=true;

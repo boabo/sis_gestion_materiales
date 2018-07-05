@@ -6,12 +6,25 @@
  *@date 23-12-2016 13:12:58
  *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
  */
-
+include_once ('../../media/styles.php');
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
     Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
         nombreVista: 'Solicitud',
+        viewConfig: {
+            getRowClass: function(record) {
+                if(record.data.mel == 'C'){
+                    return 'prioridad_menor';
+                }else if(record.data.mel == 'B'){
+                    return 'prioridad_importanteB';
+                }else if(record.data.mel == 'AOG'){
+                    return 'prioridad_importanteA';
+                }else if(record.data.mel == 'A'){
+                    return 'prioridad_medio';
+                }
+            }
+        },
         constructor:function(config){
             this.idContenedor = config.idContenedor;
             this.maestro=config.maestro;
@@ -20,9 +33,27 @@ header("content-type: text/javascript; charset=UTF-8");
             this.init();
             this.store.baseParams = {tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'borrador';
-            this.load({params:{start:0, limit:this.tam_pag}});
-            this.finCons = true;
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+                params:{id_usuario:0},
+                success:function(resp){
+                    var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+
+                    this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                    this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
+                    console.log(reg.ROOT.datos.id_gestion);
+                    this.store.baseParams.id_gestion = reg.ROOT.datos.id_gestion;
+                    this.load({params:{start:0, limit:this.tam_pag}});
+
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+            this.cmbGestion.on('select',this.capturarEventos, this);
+            this.bbar.add(this.cmbGestion);
             this.controlCorreos=false;
+            this.finCons = true;
             this.mensaje='';
 
             this.addButton('ini_estado',{
@@ -59,7 +90,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 iconCls: 'bchecklist',
                 disabled: true,
                 handler: this.loadCheckDocumentosRecWf,
-                tooltip: '<b>Documentos del Reclamo</b><br/>Subir los documetos requeridos en el Reclamo seleccionado.'
+                tooltip: '<b>Documentos </b><br/>Subir los documetos requeridos.'
             });
             this.addButton('btnObs',{
                 grupo:[2,3,4],
@@ -77,19 +108,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler:diagramGantt,
                 tooltip: '<b>Diagrama Gantt de proceso macro</b>'
             });
-
-            this.addButton('btnpac',
-                {
-                    iconCls: 'bemail',
-                    text: 'Generar PAC',
-                    grupo:[3],
-                    disabled: true,
-                    handler: this.correoPac,
-                    tooltip: '<b>Envia Correo PAC</b>'
-                }
-            );
-
-
             this.addButton('btnproveedor',
                 {
                     iconCls: 'bemail',
@@ -119,16 +137,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler : this.onButtonReporte,
                 tooltip : '<b>Reporte Requerimiento de Materiale</b>'
             });
-            /*this.addButton('Control_aLmacene',{
-                grupo: [2,3],
-                text: 'Control Almacen',
-                iconCls: 'blist',
-                disabled: false,
-                handler: this.controlAlmacen,
-                tooltip: '<b>Control Almacen</b>',
-                scope:this
-            });*/
-
             this.addButton('Archivado_concluido',{
                 grupo: [2,3],
                 text: 'Archivado/Concluido',
@@ -162,8 +170,6 @@ header("content-type: text/javascript; charset=UTF-8");
             }
 
         },
-
-
         Atributos:[
             {
                 //configuracion del componente
@@ -198,20 +204,15 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_tramite',
-                    fieldLabel: 'Nro. Tramite',
+                    fieldLabel: 'Solicitud',
                     allowBlank: true,
                     anchor: '80%',
-                    gwidth: 150,
+                    gwidth: 200,
                     maxLength:100,
                     renderer: function(value, p, record) {
-                        if(record.data.tipo == 'clon'){
-                            return String.format('<div ext:qtip="Optimo"><b><font color="#8b008b">{0}</font></b><br></div>', value);
-                        }else{
-                            return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
-                        }
-
+                       return  '<div><p><b>Tramite: </b>'+record.data['nro_tramite']+'</p>' +
+                           '<p><b>Fecha Sol.: </b><font color="#1e90ff"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</b></font></div>';
                     }
-
                 },
                 type:'TextField',
                 filters:{pfiltro:'sol.nro_tramite',type:'string'},
@@ -220,54 +221,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:false,
                 bottom_filter:true
             },
-
             {
                 config:{
                     name: 'nombre_estado',
-                    //name: 'estado',
-                    fieldLabel: 'Estado',
+                    fieldLabel: 'Estados',
                     allowBlank: true,
                     anchor: '80%',
-                    gwidth: 200,
+                    gwidth: 150,
                     maxLength:100,
-                    renderer: function(value, p, record){
-                        if(record.data.contador_estados > 1 || value == 'Borrador' && record.data.contador_estados > 0 ) {
-
-                            return String.format('<div title="Número de revisiones: {1}"><b><font color="red">{0} - ({1})</font></b></div>', value, record.data.contador_estados );
-
+                    renderer: function(value, p, record) {
+                        var color ;
+                        if(record.data['contador_estados']  > 1 || record.data['nombre_estado'] == 'Borrador' && record.data['contador_estados'] > 0 ) {
+                            color = '<font color="red">';
                         }else{
-
-                            return String.format('<div title="Número de revisiones: {1}">{0} - ({1})</div>', value, record.data.contador_estados);
-
+                            color = '<font color="black">';
+                        }
+                        var colorf ;
+                        if(record.data['estado_firma']  == 'rechazado' ) {
+                            colorf = '<font color="red">';
+                        }else{
+                            colorf = '<font color="green">';
+                        }
+                        if(record.data['estado_firma'] != '' ) {
+                            return '<div><p><b>Estado: </b>' + color + '<b>' + record.data['nombre_estado'] + ' (' + record.data['contador_estados'] + ')</font></b></p>' +
+                                '<p><b>Estado VoBo: </b>' + colorf + '<b>' + record.data['nombre_estado_firma'] + '</font></b></p></div>';
+                        }else{
+                            return '<div><p><b>Estado: </b>' + color + '<b>' + record.data['nombre_estado'] + ' (' + record.data['contador_estados'] + ')</font></b></p></div>';
                         }
                     }
-
                 },
                 type:'TextField',
                 filters:{pfiltro:'ti.nombre_estado',type:'string'},
                 id_grupo:1,
                 grid:true,
                 form:false,
-                bottom_filter:true
-
-
-            },
-            {
-                config: {
-                    name: 'nombre_estado_firma',
-
-                    fieldLabel: 'Estado VoBo',
-                    allowBlank: true,
-                    anchor: '95%',
-                    gwidth: 150,
-                    maxLength: 100
-
-                },
-                type: 'TextField',
-                filters: {pfiltro: 'tip.nombre_estado', type: 'string'},
-                id_grupo: 1,
-                grid: true,
-                form: false,
                 bottom_filter:true
             },
             {
@@ -299,9 +286,39 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:true
             },
             {
+                config: {
+                    name: 'nombre_estado_firma',
+                    fieldLabel: 'Datos',
+                    allowBlank: true,
+                    anchor: '95%',
+                    gwidth: 180,
+                    maxLength: 100,
+                    renderer: function(value, p, record) {
+
+                        if (record.data['origen_pedido'] == 'Almacenes Consumibles o Rotables' ) {
+                            return '<div><p><b>De: </b><font color="green"><u>' + record.data['desc_funcionario1'] + '</u></font></p></div>';
+
+                        }else if( record.data['origen_pedido'] == 'Centro de Entrenamiento Aeronautico Civil') {
+                            return '<div><p><b>De: </b><font color="green"><u>' + record.data['desc_funcionario1'] + '</u></font></p></div>';
+                        }
+                        else{
+                            return '<div><p><b>Matricula: </b>' + record.data['matricula'] +
+                                    '</p><p><b>De: </b><font color="green"><u>' + record.data['desc_funcionario1'] + '</u></font></p></div>';
+                        }
+
+                    }
+                },
+                type: 'TextField',
+                filters: {pfiltro: 'tip.nombre_estado', type: 'string'},
+                id_grupo: 1,
+                grid: true,
+                form: false,
+                bottom_filter:true
+            },
+            {
                 config:{
                     name:'origen_pedido',
-                    fieldLabel:'Origen Pedido',
+                    fieldLabel:'Info. Sol.',
                     allowBlank:false,
                     emptyText:'Elija una opción...',
                     typeAhead: true,
@@ -309,15 +326,19 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    gwidth: 250,
+                    gwidth: 150,
                     store:['Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables','Centro de Entrenamiento Aeronautico Civil'],
                     renderer: function(value, p, record) {
-                        if(record.data.estado == 'almacen'){
-                            return String.format('<div ext:qtip="Optimo"><b><font color="blue">{0}</font></b><br></div>', value);
+                        var color;
+                        if (record.data['tipo_solicitud'] == 'Critico'){
+                            color = ' <font  color="red" >';
+                        } else if(record.data['tipo_solicitud'] == 'AOG'){
+                            color = '<font color="black" >';
                         }else{
-                            return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', value);
+                            color = '<font color="green">';
                         }
-
+                            return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
+                                '</font><p><b>Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></font></div>';
                     }
 
                 },
@@ -326,6 +347,49 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:true,
                 bottom_filter:true
+
+            },
+            {
+                config:{
+                    name: 'fecha_po',
+                    fieldLabel: 'Datos PO',
+                    allowBlank: false,
+                    anchor: '95%',
+                    gwidth: 150,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){
+                        if (record.data['fecha_po'] == null){
+                            return '<div><p><b>Nro. PO: </b>' + record.data['nro_po'] + '</p></div>';
+                        }else {
+                            return '<div><p><b>Nro. PO: </b>' + record.data['nro_po'] + '</p>' +
+                                '<p><b>Fecha PO: </b><font color="#dc143c"><b>' + record.data['fecha_po'].dateFormat('d/m/Y') + '</b></font></div>';
+                        }
+                    }
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_po',type:'date'},
+                id_grupo:2,
+                grid:false,
+                form:true
+            },
+            {
+                config:{
+                    name:'mel',
+                    fieldLabel:'Mel / Prioridad',
+                    allowBlank:true,
+                    emptyText:'Elija una opción...',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    lazyRender:true,
+                    mode: 'local',
+                    anchor: '100%',
+                    store:['A','B','C','No Aplica','AOG']
+
+                },
+                type:'ComboBox',
+                id_grupo:1,
+                grid:true,
+                form:true
 
             },
             {
@@ -376,26 +440,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboBox',
                 id_grupo: 0,
                 filters: {pfiltro:' f.desc_funcionario1', type:'string'},
-                grid: true,
+                grid: false,
                 form: true,
                 bottom_filter:true
-            },
-
-            {
-                config:{
-                    name: 'fecha_solicitud',
-                    fieldLabel: 'Fecha Solicitud',
-                    allowBlank: true,
-                    anchor: '95%',
-                    gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-                },
-                type:'DateField',
-                filters:{pfiltro:'sol.fecha_solicitud',type:'date'},
-                id_grupo:1,
-                grid:true,
-                form:true
             },
             {
                 config: {
@@ -438,9 +485,25 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboBox',
                 id_grupo: 0,
                 filters: {pfiltro: 'ot.desc_orden',type: 'string'},
-                grid: true,
+                grid: false,
                 form: true,
                 bottom_filter:true
+            },
+            {
+                config:{
+                    name: 'fecha_solicitud',
+                    fieldLabel: 'Fecha Solicitud',
+                    allowBlank: true,
+                    anchor: '95%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_solicitud',type:'date'},
+                id_grupo:1,
+                grid:false,
+                form:true
             },
             {
                 config:{
@@ -448,7 +511,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Motivo Solicitud',
                     allowBlank: false,
                     anchor: '100%',
-                    gwidth: 100,
+                    gwidth: 150,
                     maxLength:10000
                 },
                 type:'TextArea',
@@ -484,8 +547,16 @@ header("content-type: text/javascript; charset=UTF-8");
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
-                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existencia en Almacén','Otros']
-
+                    gwidth: 180,
+                    store:['Directriz de Aeronavegabilidad','Boletín de Servicio','Task Card','"0" Existencia en Almacén','Otros'],
+                    renderer: function(value, p, record) {
+                        if (record.data['nro_justificacion'] != "") {
+                            return '<tpl for="."><div><p><b>Justificacion: </b>' + record.data['justificacion'] +
+                                '<p><b>Nro. Justificación: </b><b>' + record.data['nro_justificacion'] + '</b></div></tpl>';
+                        }else{
+                            return '<tpl for="."><div><p><b>Justificacion: </b>' + record.data['justificacion']+'</p></div></tpl>';
+                        }
+                    }
                 },
                 type:'ComboBox',
                 id_grupo:1,
@@ -505,7 +576,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'TextField',
                 filters:{pfiltro:'sol.nro_justificacion',type:'string'},
                 id_grupo:1,
-                grid:true,
+                grid:false,
                 form:true,
                 bottom_filter:true
             },
@@ -515,21 +586,18 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel:'Tipo Solicitud',
                     allowBlank:false,
                     emptyText:'Elija una opción...',
-
                     typeAhead: true,
                     triggerAction: 'all',
                     lazyRender:true,
                     mode: 'local',
                     anchor: '100%',
                     store:['AOG','Critico','Normal','No Aplica']
-
                 },
                 type:'ComboBox',
                 id_grupo:1,
-                grid:true,
+                grid:false,
                 form:true,
                 bottom_filter:true
-
             },
             {
                 config:{
@@ -558,7 +626,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel:'Tipo de Reporte',
                     allowBlank:true,
                     emptyText:'Elija una opción...',
-
                     typeAhead: true,
                     triggerAction: 'all',
                     lazyRender:true,
@@ -573,28 +640,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:true
 
             },
-            {
-                config:{
-                    name:'mel',
-                    fieldLabel:'MEL',
-                    allowBlank:true,
-                    emptyText:'Elija una opción...',
-
-                    typeAhead: true,
-                    triggerAction: 'all',
-                    lazyRender:true,
-                    mode: 'local',
-                    anchor: '100%',
-                    store:['A','B','C','No Aplica','AOG']
-
-                },
-                type:'ComboBox',
-                id_grupo:1,
-                grid:true,
-                form:true
-
-            },
-
             {
                 config:{
                     name: 'nro_no_rutina',
@@ -613,7 +658,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'nro_po',
-                    fieldLabel: 'Nro. PO',
+                    fieldLabel: 'Nro PO',
                     allowBlank: false,
                     anchor: '95%',
                     gwidth: 100, maxLength:50
@@ -624,22 +669,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:false,
                 form:true,
                 bottom_filter:true
-            },
-            {
-                config:{
-                    name: 'fecha_po',
-                    fieldLabel: 'Fecha P.O',
-                    allowBlank: false,
-                    anchor: '95%',
-                    gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-                },
-                type:'DateField',
-                filters:{pfiltro:'sol.fecha_po',type:'date'},
-                id_grupo:2,
-                grid:false,
-                form:true
             },
             {
                 config: {
@@ -1054,7 +1083,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'lugar_entrega', type: 'string'},
             {name:'mensaje_correo', type: 'string'},
             {name:'tipo', type: 'string'},
-            {name:'id_cotizacion', type: 'numeric'}
+            {name:'id_cotizacion', type: 'numeric'},
+            {name:'monto_pac', type: 'numeric'},
+            {name:'moneda', type: 'string'}
 
 
 
@@ -1136,8 +1167,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('diagrama_gantt').enable();
             this.getBoton('btnObs').enable();
             this.getBoton('Report').enable();
-            this.getBoton('btnpac').enable();
-
         },
 
         liberaMenu:function(){
@@ -1150,7 +1179,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('btnObs').disable();
                 this.getBoton('ini_estado').disable();
                 this.getBoton('Report').disable();
-                this.getBoton('btnpac').disable();
+
 
 
 
@@ -1590,6 +1619,71 @@ header("content-type: text/javascript; charset=UTF-8");
                 closeAction: 'close'
             });
             VentanaInicio.show();
+        },
+        cmbGestion: new Ext.form.ComboBox({
+            name: 'gestion',
+            id: 'gestion_rev',
+            fieldLabel: 'Gestion',
+            allowBlank: true,
+            emptyText:'Gestion...',
+            blankText: 'Año',
+            store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_parametros/control/Gestion/listarGestion',
+                    id: 'id_gestion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'gestion',
+                        direction: 'DESC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_gestion','gestion'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'gestion'}
+                }),
+            valueField: 'gestion',
+            triggerAction: 'all',
+            displayField: 'gestion',
+            hiddenName: 'id_gestion',
+            mode:'remote',
+            pageSize:50,
+            queryDelay:500,
+            listWidth:'280',
+            hidden:false,
+            width:80
+        }),
+        capturarEventos: function () {
+            if(this.validarFiltros()){
+                this.capturaFiltros();
+            }
+        },
+
+        capturaFiltros:function(combo, record, index){
+            this.desbloquearOrdenamientoGrid();
+            this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+            this.load({params:{start:0, limit:this.tam_pag}});
+            //this.load();
+        },
+
+        validarFiltros:function(){
+            if(this.cmbGestion.isValid()){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+        },
+
+        onButtonAct:function(){
+            if(!this.validarFiltros()){
+                Ext.Msg.alert('ATENCION!!!','Especifique los filtros antes')
+            }
+            else{
+                this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+                Phx.vista.Solicitud.superclass.onButtonAct.call(this);
+            }
         }
 
 
