@@ -757,7 +757,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
-                    name: 'nro_parte',
+                    name: 'nro_partes',
                     fieldLabel: 'Nro. de Parte',
                     allowBlank: true,
                     anchor: '80%',
@@ -766,7 +766,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 },
                 type:'TextField',
-                filters:{pfiltro:'de.nro_parte',type:'string'},
+                filters:{pfiltro:'sol.nro_partes',type:'string'},
                 id_grupo:1,
                 grid:false,
                 form:false,
@@ -783,7 +783,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 },
                 type:'TextField',
-                filters:{pfiltro:'de.nro_parte_alterno',type:'string'},
+                filters:{pfiltro:'sol.nro_parte_alterno',type:'string'},
                 id_grupo:1,
                 grid:false,
                 form:false,
@@ -1062,7 +1062,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'mel', type: 'string'},
             {name:'nro_no_rutina', type: 'string'},
             {name:'desc_proveedor', type: 'string'},
-            {name:'nro_parte', type: 'string'},
+            {name:'nro_partes', type: 'string'},
             {name:'nro_justificacion', type: 'string'},
 
             {name:'fecha_cotizacion', type: 'date',dateFormat:'Y-m-d'},
