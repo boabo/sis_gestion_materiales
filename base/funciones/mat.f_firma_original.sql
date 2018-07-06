@@ -22,7 +22,8 @@ $body$
         into es_id_funcionario
 				from wf.testado_wf es 
 				where es.id_proceso_wf = p_id_proceso_wf
-				and es.id_funcionario=p_id_funcionario;
+				and es.id_funcionario=p_id_funcionario
+				order by es.fecha_reg;
                     
                     
 		select es.id_usuario_ai
