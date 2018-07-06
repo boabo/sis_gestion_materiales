@@ -76,7 +76,8 @@ BEGIN
               ts.lugar_entrega,
               ts.nro_tramite,
               tc.monto_total,
-              ts.id_estado_wf
+              ts.id_estado_wf,
+              ts.mel
             into
              v_registros_solicitud_mat
             from mat.tsolicitud ts
@@ -172,13 +173,13 @@ BEGIN
               proveedor_unico,
               id_proceso_wf,
               id_estado_wf,
-              estado
+              estado,
+              prioridad
             )
             VALUES (
               p_id_usuario,
               now(),
               'activo',
-
               370,
               9420,
 
@@ -204,8 +205,8 @@ BEGIN
               true,
               v_id_proceso_wf,
               v_id_estado_wf,
-              v_codigo_estado
-
+              v_codigo_estado,
+			  v_registros_solicitud_mat.mel	
             ) RETURNING id_solicitud into v_id_solicitud;
 
             --Obtenemos detalle de solicitud

@@ -141,6 +141,7 @@ DECLARE
      vv_id_det	integer;
      v_documento record;
       v_nro_cite_dce		varchar;
+      v_id_gestion  integer;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -291,6 +292,15 @@ END IF;
 			null,
 			null
             )RETURNING id_solicitud into v_id_solicitud;
+            
+            select g.id_gestion
+           	 		into v_id_gestion
+           			from param.tgestion g
+           			where g.gestion = EXTRACT(YEAR FROM current_date);
+                    
+            update mat.tsolicitud set
+         	id_gestion = v_id_gestion
+        	where id_solicitud = v_id_solicitud;
 
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud almacenado(a) con exito (id_solicitud'||v_id_solicitud||')');
