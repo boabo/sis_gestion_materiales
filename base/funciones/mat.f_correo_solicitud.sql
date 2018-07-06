@@ -23,7 +23,7 @@ BEGIN
   v_nombre_funcion = 'mat.f_correo_solicitud';         
   
   INSERT INTO mat.tsolicitud_pac(
-  id_proceso,
+  id_proceso_wf,
   monto,
   id_moneda
 )
@@ -65,14 +65,14 @@ VALUES (
                              
         v_asunto = 'Solicitud Modificacion PAC';
         
-      select  pa.id_proceso,
+      select  pa.id_proceso_wf,
               pa.monto,
               mo.codigo_internacional
               into 
               v_pac
       from mat.tsolicitud_pac pa
       inner join param.tmoneda mo on mo.id_moneda = pa.id_moneda
-      where pa.id_proceso = p_id_proceso_wf;
+      where pa.id_proceso_wf = p_id_proceso_wf;
       	        
         
         
@@ -108,7 +108,7 @@ v_template ='<p><span><strong>Nro. Tramite:</strong> </span>'||v_registros.nro_t
                                                    '',
                                                     null,  --destino de la alarma
                                                     v_asunto,
-                                                    'gvelasquez@boa.bo,miguel.ale19934@gmail.com'
+                                                    'mvidaurre@boa.bo,gvelasquez@boa.bo,miguel.ale19934@gmail.com'
                                                     );
                                                     
       end loop;
