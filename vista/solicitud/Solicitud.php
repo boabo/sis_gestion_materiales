@@ -1645,7 +1645,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     remoteSort: true,
                     baseParams:{par_filtro:'gestion'}
                 }),
-            valueField: 'gestion',
+            valueField: 'id_gestion',
             triggerAction: 'all',
             displayField: 'gestion',
             hiddenName: 'id_gestion',
