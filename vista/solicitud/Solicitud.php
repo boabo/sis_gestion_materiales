@@ -210,9 +210,15 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 200,
                     maxLength:100,
                     renderer: function(value, p, record) {
-                       return  '<div><p><b>Tramite: </b>'+record.data['nro_tramite']+'</p>' +
-                           '<p><b>Fecha Sol.: </b><font color="#1e90ff"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</b></font></div>';
-                    }
+                        if(record.data['tipo'] == 'clon'){
+                            return  '<div><p><b>Tramite: </b>'+record.data['nro_tramite']+' <font color="#dc143c">'+record.data['tipo']+'</font></p>' +
+                                '<p><b>Fecha Sol.: </b><font color="#1e90ff"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</b></font></div>';
+                        }else{
+                            return  '<div><p><b>Tramite: </b>'+record.data['nro_tramite']+'</p>' +
+                                '<p><b>Fecha Sol.: </b><font color="#1e90ff"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</b></font></div>';
+
+                        }
+                       }
                 },
                 type:'TextField',
                 filters:{pfiltro:'sol.nro_tramite',type:'string'},
