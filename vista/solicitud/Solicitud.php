@@ -1091,7 +1091,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tipo', type: 'string'},
             {name:'id_cotizacion', type: 'numeric'},
             {name:'monto_pac', type: 'numeric'},
-            {name:'moneda', type: 'string'}
+            {name:'moneda', type: 'string'},
+            {name:'tipo_mov', type: 'string'}
 
 
 
@@ -1548,7 +1549,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     typeAhead: true,
                     allowBlank:true,
                     triggerAction: 'all',
-                    emptyText:'Tipo...',
+                    emptyText:'Moneda...',
                     selectOnFocus:true,
                     mode:'local',
                     anchor: '90%',
@@ -1564,8 +1565,33 @@ header("content-type: text/javascript; charset=UTF-8");
                     value:'2'
                 });
 
+            var tipo = new Ext.form.ComboBox(
+                {
+                    name: 'tipo',
+                    msgTarget: 'title',
+                    fieldLabel: 'Tipo',
+                    typeAhead: true,
+                    allowBlank:false,
+                    triggerAction: 'all',
+                    emptyText:'Tipo...',
+                    selectOnFocus:true,
+                    mode:'local',
+                    anchor: '90%',
+                    store:new Ext.data.ArrayStore({
+                        fields: ['clave', 'valor'],
+                        data :	[
+                            ['bien','Bien'],
+                            ['servicio','Servicio']
+                        ]
+                    }),
+                    valueField:'clave',
+                    displayField:'valor',
+                    msgTarget: 'side',
+                    value: this.sm.getSelected().data['tipo_mov']
+                });
+
             var formularioInicio = new Ext.form.FormPanel({
-                items: [nro_tramite,importe,moneda],
+                items: [nro_tramite,importe,moneda, tipo],
                 padding: true,
                 bodyStyle:'padding:5px 5px 0',
                 border: false,
@@ -1591,16 +1617,18 @@ header("content-type: text/javascript; charset=UTF-8");
                                 this.nro_tramite = nro_tramite.getValue();
                                 this.importe = importe.getValue();
                                 this.moneda = moneda.getValue();
+                                this.tipo = tipo.getValue();
                                 VentanaInicio.close();
                                 m = this;
 
-                                console.log(m.sm.getSelected().data['id_proceso_wf'],this.importe,this.moneda);
+                                //console.log(m.sm.getSelected().data['id_proceso_wf'],this.importe,this.moneda);
                                 Phx.CP.loadingShow();
                                 Ext.Ajax.request({
                                     url:'../../sis_gestion_materiales/control/Solicitud/generarPAC',
                                     params:{id_proceso_wf: m.sm.getSelected().data['id_proceso_wf'],
                                         importe: this.importe,
-                                        moneda:this.moneda},
+                                        moneda:this.moneda,
+                                        tipo: this.tipo},
                                     success:function(resp){
                                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                                         console.log(reg);
