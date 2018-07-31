@@ -437,19 +437,11 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
         this.Cmp.id_moneda.setRawValue('Dolares Americanos');
 
     },
-   /*onButtonEdit:function () {
+   onButtonEdit:function () {
        var data = this.getSelectedData();
        Phx.vista.Cotizacion.superclass.onButtonNew.call(this);
-       this.Cmp.id_proveedor.store.baseParams ={id_solicitud:this.maestro.id_solicitud};
-       this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
-       this.Cmp.id_moneda.setValue(data['id_moneda']);
-       this.Cmp.id_moneda.setRawValue(data['desc_moneda']);
-       this.Cmp.id_proveedor.setValue(data['id_proveedor']);
-       this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
-       this.Cmp.nro_cotizacion.setValue(data['nro_cotizacion']);
-       this.Cmp.recomendacion.setValue(data['recomendacion']);
-       this.Cmp.obs.setValue(data['obs']);
-    },*/
+       this.Cmp.id_proveedor.store.baseParams ={id_solicitud:data['id_solicitud'],par_filtro: 'desc_proveedor'};
+   },
 
     oncellclick : function(grid, rowIndex, columnIndex, e) {
         var record = this.store.getAt(rowIndex),
