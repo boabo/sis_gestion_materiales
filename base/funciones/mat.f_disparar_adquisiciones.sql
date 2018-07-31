@@ -77,7 +77,8 @@ BEGIN
               ts.nro_tramite,
               tc.monto_total,
               ts.id_estado_wf,
-              ts.mel
+              ts.mel,
+              ts.list_proceso
             into
              v_registros_solicitud_mat
             from mat.tsolicitud ts
@@ -174,7 +175,8 @@ BEGIN
               id_proceso_wf,
               id_estado_wf,
               estado,
-              prioridad
+              prioridad,
+              list_proceso
             )
             VALUES (
               p_id_usuario,
@@ -206,7 +208,12 @@ BEGIN
               v_id_proceso_wf,
               v_id_estado_wf,
               v_codigo_estado,
-			  v_registros_solicitud_mat.mel	
+              case when v_registros_solicitud_mat.mel = 'AOG' then 383
+              	   when v_registros_solicitud_mat.mel = 'A'	then 384
+               	   when v_registros_solicitud_mat.mel = 'B' then 385
+                   when v_registros_solicitud_mat.mel = 'C' then 386
+                   when v_registros_solicitud_mat.mel = 'No Aplica' then 387 end,
+              v_registros_solicitud_mat.list_proceso
             ) RETURNING id_solicitud into v_id_solicitud;
 
             --Obtenemos detalle de solicitud

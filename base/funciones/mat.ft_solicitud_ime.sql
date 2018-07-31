@@ -142,6 +142,7 @@ DECLARE
      v_documento record;
       v_nro_cite_dce		varchar;
       v_id_gestion  integer;
+    v_cargar_list			boolean;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -292,12 +293,12 @@ END IF;
 			null,
 			null
             )RETURNING id_solicitud into v_id_solicitud;
-            
+
             select g.id_gestion
            	 		into v_id_gestion
            			from param.tgestion g
            			where g.gestion = EXTRACT(YEAR FROM current_date);
-                    
+
             update mat.tsolicitud set
          	id_gestion = v_id_gestion
         	where id_solicitud = v_id_solicitud;
@@ -735,7 +736,7 @@ END IF;
                                                              v_parametros_ad,
                                                              v_tipo_noti,
                                                              v_titulo);
-             
+
 
 
          		IF mat.f_procesar_estados_solicitud(p_id_usuario,
@@ -748,6 +749,7 @@ END IF;
          			RAISE NOTICE 'PASANDO DE ESTADO';
 
           		END IF;
+
                IF (v_codigo_estado_siguiente='revision')THEN
     			FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
 
@@ -1152,7 +1154,7 @@ END IF;
            from  wf.tproceso_macro pm
            inner join wf.ttipo_proceso tp on tp.id_proceso_macro = pm.id_proceso_macro
            where pm.codigo='GA-RM' and tp.estado_reg = 'activo' and tp.inicio = 'si' ;
-           
+
            elsif v_registros.origen_pedido ='Centro de Entrenamiento Aeronautico Civil'then
            	select    tp.codigo, pm.id_proceso_macro
            into v_codigo_tipo_proceso, v_id_proceso_macro
@@ -1198,10 +1200,10 @@ END IF;
 
 
         	FOR v_datos_solicitud in (  select *
-									from wf.testado_wf 
+									from wf.testado_wf
 									where id_proceso_wf = v_parametros.id_proceso_wf and id_estado_anterior is not null
                                     order by id_estado_wf ASC )LOOP
-       
+
         INSERT INTO wf.testado_wf(
         id_usuario_reg,
         fecha_reg,
@@ -1213,8 +1215,8 @@ END IF;
         id_depto,
         id_usuario_ai,
         usuario_ai,
-        obs    
-      	) 
+        obs
+      	)
       	VALUES (
         v_datos_solicitud.id_usuario_reg,
         v_datos_solicitud.fecha_reg,
@@ -1228,53 +1230,53 @@ END IF;
         NULL,
         v_datos_solicitud.obs
         )RETURNING id_estado_wf into v_id_estado_clon;
-        
+
         END LOOP;
-        
-        if v_registros.origen_pedido = 'Gerencia de Operaciones' 
+
+        if v_registros.origen_pedido = 'Gerencia de Operaciones'
         or v_registros.origen_pedido = 'Gerencia de Mantenimiento'then
-        
+
         if v_registros.origen_pedido ='Gerencia de Operaciones' THEN
         select ts.id_tipo_estado
-        into 
+        into
         v_id_estado_tipo
-        from wf.ttipo_estado ts 
+        from wf.ttipo_estado ts
         inner join wf.ttipo_proceso tp on tp.id_tipo_proceso = ts.id_tipo_proceso
         where ts.codigo = 'revision'and tp.nombre = 'Requerimiento Gerencia de Operaciones';
-         
+
          select fu.id_funcionario
         into
         vv_id_funcionario
         from orga.vfuncionario_cargo fu
         where fu.fecha_finalizacion is null and fu.nombre_cargo = 'Especialista Planificación Servicios';
-       
-        
+
+
         elsif v_registros.origen_pedido ='Gerencia de Mantenimiento'then
-        
+
         select ts.id_tipo_estado
-        into 
+        into
         v_id_estado_tipo
-        from wf.ttipo_estado ts 
+        from wf.ttipo_estado ts
         inner join wf.ttipo_proceso tp on tp.id_tipo_proceso = ts.id_tipo_proceso
         where ts.codigo = 'revision'and tp.nombre = 'Requerimiento Gerencia de Mantenimiento';
-        
+
         select fu.id_funcionario
         into
         vv_id_funcionario
         from orga.vfuncionario_cargo fu
         where fu.fecha_finalizacion is null and fu.nombre_cargo = 'Gerente Mantenimiento';
         end if;
-        
-        
-       
+
+
+
        select e.id_estado_wf
        into
        v_id
        from wf.testado_wf e
        where e.id_proceso_wf = v_id_proceso_wf and e.id_tipo_estado = v_id_estado_tipo;
-       
-      
-      
+
+
+
        SELECT	 			 ps_id_proceso_wf,
                              ps_id_estado_wf,
                              ps_codigo_estado
@@ -1286,20 +1288,20 @@ END IF;
                              v_registros.id_usuario_reg,
                              null,
                              null,
-                             v_id, 
-                             vv_id_funcionario, 
+                             v_id,
+                             vv_id_funcionario,
                              null,
                              'Firma ['||v_registros.nro_tramite||']',
-                             'FRD',    
+                             'FRD',
                              v_registros.nro_tramite);
-    
-    
-        
+
+
+
        FOR v_datos_solicitud in (  select *
-									from wf.testado_wf 
+									from wf.testado_wf
 									where id_proceso_wf = v_registros.id_proceso_wf_firma and id_estado_anterior is not null
                                     order by id_estado_wf ASC )LOOP
-       
+
         INSERT INTO wf.testado_wf(
         id_usuario_reg,
         fecha_reg,
@@ -1311,8 +1313,8 @@ END IF;
         id_depto,
         id_usuario_ai,
         usuario_ai,
-        obs    
-      	) 
+        obs
+      	)
       	VALUES (
         v_datos_solicitud.id_usuario_reg,
         v_datos_solicitud.fecha_reg,
@@ -1326,10 +1328,10 @@ END IF;
         NULL,
         v_datos_solicitud.obs
         )RETURNING id_estado_wf into v_id_estado_firma;
-        
+
         END LOOP;
-        
-    end if;    
+
+    end if;
 
           IF (substr(v_nro_tramite,1,2)='GM')THEN
           	v_nro_cite_dce = 'OB.DAB.DCE.GM.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
@@ -1340,7 +1342,7 @@ END IF;
              ELSIF (substr(v_nro_tramite,1,2)='GC')THEN
           	v_nro_cite_dce = 'OB.DAB.DCE.GC.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
           END IF;
-      
+
     FOR v_record_clon in ( 	select *
         						from mat.tsolicitud s
  								where s.id_proceso_wf = v_parametros.id_proceso_wf)
@@ -1352,7 +1354,7 @@ END IF;
                                 estado_reg,
                                 id_usuario_ai,
                                 usuario_ai,
-                              
+
                                 origen_pedido,
                                 id_funcionario_sol,
                                 nro_solicitud,
@@ -1405,7 +1407,7 @@ END IF;
                                 v_record_clon.estado_reg,
                                 v_record_clon.id_usuario_ai,
                                 v_record_clon.usuario_ai,
-                                
+
                                 v_record_clon.origen_pedido,
                                 v_record_clon.id_funcionario_sol,
                                 v_record_clon.nro_solicitud,
@@ -1451,8 +1453,17 @@ END IF;
                                 'clon',
                                 v_record_clon.id_solicitud
 								)RETURNING id_solicitud into v_id_solicitud ;
-                    
-                    
+                                  select g.id_gestion
+           	 		into v_id_gestion
+           			from param.tgestion g
+           			where g.gestion = EXTRACT(YEAR FROM current_date);
+
+            update mat.tsolicitud set
+         	id_gestion = v_id_gestion
+        	where id_solicitud = v_id_solicitud;
+
+        v_cargar_list = mat.f_cargar_list_proceso(v_record_clon.id_solicitud, v_id_solicitud);
+
     	for v_documento in (select *
         from wf.tdocumento_wf d
 				inner join wf.ttipo_documento t on t.id_tipo_documento = d.id_tipo_documento
@@ -1465,7 +1476,7 @@ END IF;
                     estado_reg,
                     id_usuario_ai,
                     usuario_ai,
-                   
+
                     id_tipo_documento,
                     id_proceso_wf,
                     num_tramite,
@@ -1499,7 +1510,7 @@ END IF;
                     v_documento.estado_reg,
                     v_documento.id_usuario_ai,
                     v_documento.usuario_ai,
-                    
+
                     v_documento.id_tipo_documento,
                     v_id_proceso_wf,
                     v_documento.num_tramite,
@@ -1526,10 +1537,10 @@ END IF;
                     v_documento.demanda
                   );
         end loop;
-                    
-                    
+
+
         		for v_detalle_clon in (	select *
-                						from mat.tdetalle_sol d 
+                						from mat.tdetalle_sol d
                                         where d.id_solicitud =v_record_clon.id_solicitud )
                 loop
                 insert into mat.tdetalle_sol( id_solicitud,
@@ -1565,12 +1576,12 @@ END IF;
                                               null,
                                               v_detalle_clon.tipo,
                                               v_detalle_clon.explicacion_detallada_part);
-                
+
                 end loop;
         for v_cotizacon in (select *
                             from mat.tcotizacion c
                             where c.id_solicitud = v_record_clon.id_solicitud )loop
-        
+
         INSERT INTO mat.tcotizacion ( id_usuario_reg,
                                       id_usuario_mod,
                                       fecha_reg,
@@ -1578,7 +1589,7 @@ END IF;
                                       estado_reg,
                                       id_usuario_ai,
                                       usuario_ai,
-                                    
+
                                       monto_total,
                                       fecha_cotizacion,
                                       nro_tramite,
@@ -1598,7 +1609,7 @@ END IF;
                                       v_cotizacon.estado_reg,
                                       v_cotizacon.id_usuario_ai,
                                       v_cotizacon.usuario_ai,
-                                   
+
                                       v_cotizacon.monto_total,
                                       v_cotizacon.fecha_cotizacion,
                                       v_cotizacon.nro_tramite,
@@ -1610,14 +1621,14 @@ END IF;
                                       v_cotizacon.recomendacion,
                                       v_cotizacon.obs,
                                       v_cotizacon.pie_pag
-        
+
                                       ) RETURNING id_cotizacion into vv_id_cot ;
                                       for v_cotizacion_det in (
         select *
         from mat.tcotizacion_detalle d
         where d.id_cotizacion = v_cotizacon.id_cotizacion
         ) loop
-        
+
     INSERT INTO  mat.tcotizacion_detalle (	id_usuario_reg,
                                             id_usuario_mod,
                                             fecha_reg,
@@ -1625,7 +1636,7 @@ END IF;
                                             estado_reg,
                                             id_usuario_ai,
                                             usuario_ai,
-                                          
+
                                             id_cotizacion,
                                             id_detalle,
                                             precio_unitario,
@@ -1651,7 +1662,7 @@ END IF;
                                         v_cotizacion_det.estado_reg,
                                         v_cotizacion_det.id_usuario_ai,
                                         v_cotizacion_det.usuario_ai,
-                                       
+
                                         vv_id_cot,
                                         v_cotizacion_det.id_detalle,
                                         v_cotizacion_det.precio_unitario,
@@ -1671,13 +1682,13 @@ END IF;
                                       );
          			end loop;
         	end loop;
-    	
-    	
-    
+
+
+
         end loop;
-        
-        
-        
+
+
+
         FOR v_mod in (	select *
 		 				from wf.testado_wf
 						where id_proceso_wf = v_id_proceso_wf) loop
@@ -1743,7 +1754,7 @@ END IF;
             --Devuelve la respuesta
             return v_resp;
          END;
-         
+
 	/*********************************
  	#TRANSACCION:  'MAT_PAC_IME'
  	#DESCRIPCION:	generar pac
@@ -1754,8 +1765,9 @@ END IF;
 	elsif(p_transaccion='MAT_PAC_IME')then
 
 		begin
-			 PERFORM mat.f_correo_solicitud(v_parametros.id_proceso_wf,v_parametros.importe,v_parametros.moneda);
-             
+			 --PERFORM mat.f_correo_solicitud(v_parametros.id_proceso_wf,v_parametros.importe,v_parametros.moneda);
+			 PERFORM mat.f_correo_reformulacion_pac(v_parametros.id_proceso_wf,v_parametros.importe,v_parametros.moneda, v_parametros.tipo);
+
              v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado');
          	 v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
 

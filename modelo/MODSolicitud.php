@@ -90,6 +90,7 @@ class MODSolicitud extends MODbase{
         $this->captura('id_cotizacion','varchar');
         $this->captura('monto_pac','numeric');
         $this->captura('moneda','varchar');
+        $this->captura('tipo_mov','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         //var_dump($this->consulta); exit;
@@ -996,6 +997,7 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
         $this->setParametro('importe','importe','int4');
         $this->setParametro('moneda','moneda','int4');
+        $this->setParametro('tipo','tipo','varchar');
         $this->armarConsulta();
         $this->ejecutarConsulta();
         //var_dump($this->respuesta); exit;

@@ -505,7 +505,8 @@ v_consulta:='select		sol.id_solicitud,
                                 from mat.tcotizacion c
                                 where c.id_solicitud = sol.id_solicitud and c.adjudicado = ''si'')::varchar as id_cotizacion,
                                 COALESCE(pa.monto,0) as monto_pac,
-                         		COALESCE(mo.codigo_internacional,'''') as moneda
+                         		COALESCE(mo.codigo_internacional,'''') as moneda,
+                                pa.tipo as tipo_mov
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
