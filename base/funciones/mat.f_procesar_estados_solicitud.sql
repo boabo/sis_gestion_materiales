@@ -42,18 +42,18 @@ group by c.adjudicado;
         v_record
         from mat.tdetalle_sol de
         group by de.id_solicitud;
-        
+
         update mat.tsolicitud set
         nro_partes = v_record.parte
         where id_solicitud = v_record.id_solicitud;
-        
+
         select de.id_solicitud,
         list(de.nro_parte_alterno) as alterna
         into
         v_record
         from mat.tdetalle_sol de
         group by de.id_solicitud;
-        
+
         update mat.tsolicitud set
         nro_parte_alterno = v_record.alterna
         where id_solicitud = v_record.id_solicitud;
@@ -92,12 +92,14 @@ group by c.adjudicado;
         ---
         elsif(p_codigo_estado in ('comite_unidad_abastecimientos')) then
     	begin
-   			if ((select COALESCE(p.monto,0)
+   			/*if ((select COALESCE(p.monto,0)
                 from mat.tsolicitud s
                 left join mat.tsolicitud_pac p on p.id_proceso_wf = s.id_proceso_wf
                 where s.id_proceso_wf = p_id_proceso_wf) = 0)then
                 raise exception 'Registre un importe en PAC para enviar el correo.';
-            end if;
+            end if;*/
+
+
     		update mat.tsolicitud s set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
