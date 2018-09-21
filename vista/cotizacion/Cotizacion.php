@@ -176,7 +176,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     type: 'ComboRec',
                     filters:{pfiltro:'pro.desc_proveedor',type:'string'},
                     id_grupo:0,
-                    grid: false,
+                    grid: true,
                     form: true,
                     bottom_filter:true
                 },

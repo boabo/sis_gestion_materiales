@@ -507,8 +507,10 @@ v_consulta:='select		sol.id_solicitud,
                                 COALESCE(pa.monto,0) as monto_pac,
                          		COALESCE(mo.codigo_internacional,'''') as moneda,
                                 pa.tipo as tipo_mov
+
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = tew.id_tipo_estado
@@ -817,6 +819,7 @@ v_consulta:='select		sol.id_solicitud,
 		v_consulta:='select count(sol.id_solicitud)
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = tew.id_tipo_estado
@@ -1680,14 +1683,16 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	elsif(p_transaccion='MAT_CONENV_REP')then
 
 		begin
-		           v_consulta:='select (select pxp.list(po.email::text)
+		           v_consulta:='select
+                   				MAX((select pxp.list(po.email::text)
                                 from param.vproveedor po
                                 join mat.tgestion_proveedores_new pr on pr.id_proveedor = po.id_proveedor
-                                where pr.id_solicitud = sol.id_solicitud)::varchar as lista_correos,
-           						sol.mensaje_correo::varchar,
-                                ala.fecha_reg::timestamp,
-                                array_to_string(pcorreo.correos, '','')::varchar as correos,
-                                ala.titulo_correo::varchar
+                                where pr.id_solicitud = sol.id_solicitud))::varchar as lista_correos,
+
+                                MAX(sol.mensaje_correo)::varchar,
+                                MAX(ala.fecha_reg)::timestamp,
+                                MAX(array_to_string(pcorreo.correos, '',''))::varchar as correos,
+                                MAX(ala.titulo_correo)::varchar
 
                                 from  mat.tsolicitud sol
                                 left join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
