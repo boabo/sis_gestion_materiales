@@ -247,7 +247,9 @@ BEGIN
                   precio_ga,
 
                   precio_sg,
-                  precio_sg_mb
+                  precio_sg_mb,
+
+                  id_orden_trabajo
 
                 )
                 VALUES (
@@ -262,7 +264,9 @@ BEGIN
                   COALESCE(v_record_det.precio_unitario_mb,0),
 
                   0,
-                  0
+                  0,
+
+                  '43'
 
 
                 );
