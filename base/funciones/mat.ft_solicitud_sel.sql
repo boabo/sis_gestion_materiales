@@ -55,52 +55,52 @@ DECLARE
     v_monto_ref		    record;
     --
     v_id_funcionario_qr integer;
-    v_id_funcionario_qr_oficial integer;    
-    v_id_funcionario_qr_rempla integer;    
+    v_id_funcionario_qr_oficial integer;
+    v_id_funcionario_qr_rempla integer;
     v_nombre_funcionario_qr varchar;
-    v_nombre_funcionario_qr_oficial varchar;    
-    v_nombre_funcionario_qr_rempla varchar;    
+    v_nombre_funcionario_qr_oficial varchar;
+    v_nombre_funcionario_qr_rempla varchar;
     v_fecha_firma_qr 		text;
-    v_fecha_firma_qr_oficial 		text;    
-    v_fecha_firma_qr_rempla 		text;    
+    v_fecha_firma_qr_oficial 		text;
+    v_fecha_firma_qr_rempla 		text;
 
     v_id_funcionario_dc_qr 		integer;
-    v_id_funcionario_dc_qr_oficial 		integer;    
-    v_id_funcionario_dc_qr_rempla 		integer;    
+    v_id_funcionario_dc_qr_oficial 		integer;
+    v_id_funcionario_dc_qr_rempla 		integer;
     v_nombre_funcionario_dc_qr 	varchar;
-    v_nombre_funcionario_dc_qr_oficial 	varchar;    
-    v_nombre_funcionario_dc_qr_rempla 	varchar;    
+    v_nombre_funcionario_dc_qr_oficial 	varchar;
+    v_nombre_funcionario_dc_qr_rempla 	varchar;
     v_fecha_firma_dc_qr 		text;
-    v_fecha_firma_dc_qr_oficial 		text;    
-    v_fecha_firma_dc_qr_rempla 		text;    
+    v_fecha_firma_dc_qr_oficial 		text;
+    v_fecha_firma_dc_qr_rempla 		text;
 
     v_id_funcionario_ag_qr 		integer;
-    v_id_funcionario_ag_qr_oficial 		integer;    
-    v_id_funcionario_ag_qr_rempla 		integer;    
+    v_id_funcionario_ag_qr_oficial 		integer;
+    v_id_funcionario_ag_qr_rempla 		integer;
     v_nombre_funcionario_ag_qr 	varchar;
-    v_nombre_funcionario_ag_qr_oficial 	varchar;    
-    v_nombre_funcionario_ag_qr_rempla 	varchar;    
+    v_nombre_funcionario_ag_qr_oficial 	varchar;
+    v_nombre_funcionario_ag_qr_rempla 	varchar;
     v_fecha_firma_ag_qr 		text;
-    v_fecha_firma_ag_qr_oficial 		text;    
-    v_fecha_firma_ag_qr_rempla 		text;    
-    
+    v_fecha_firma_ag_qr_oficial 		text;
+    v_fecha_firma_ag_qr_rempla 		text;
+
     v_id_funcionario_rev_qr_oficial integer;
    	v_nombre_funcionario_rev_qr 	varchar;
-   	v_nombre_funcionario_rev_qr_oficial 	varchar;    
-   	v_nombre_funcionario_rev_qr_rempla 	varchar;    
+   	v_nombre_funcionario_rev_qr_oficial 	varchar;
+   	v_nombre_funcionario_rev_qr_rempla 	varchar;
     v_fecha_firma_rev_qr 		text;
-    v_fecha_firma_rev_qr_oficial 		text;    
-    v_fecha_firma_rev_qr_rempla 		text;    
-    
+    v_fecha_firma_rev_qr_oficial 		text;
+    v_fecha_firma_rev_qr_rempla 		text;
+
     v_id_funcionario_abas_qr_oficial integer;
     v_nombre_funcionario_abas_qr 	varchar;
     v_nombre_funcionario_abas_qr_oficial 	varchar;
-    v_nombre_funcionario_af_qr_ocifial  varchar;    
-    v_nombre_funcionario_abas_qr_rempla 	varchar;    
+    v_nombre_funcionario_af_qr_ocifial  varchar;
+    v_nombre_funcionario_abas_qr_rempla 	varchar;
     v_fecha_firma_abas_qr 		text;
-    v_fecha_firma_abas_qr_oficial 		text;    
-    v_fecha_firma_abas_qr_rempla 		text;    
-    
+    v_fecha_firma_abas_qr_oficial 		text;
+    v_fecha_firma_abas_qr_rempla 		text;
+
 	v_id_proceso_wf_firma_cotizacion integer;
 
     v_id_despacho				integer;
@@ -120,7 +120,7 @@ DECLARE
 	v_id_funcionario_dc_rempla	integer;
 	v_id_funcionario_rev_rempla    integer;
 	v_id_funcionario_abas_rempla	integer;
-    
+
     v_id_funcionario_presu_qr_oficial integer;
     v_nombre_funcionario_presu_qr_oficial varchar;
     v_fecha_firma_presu_qr_oficial		text;
@@ -137,11 +137,17 @@ DECLARE
     v_id_usuario_af_ai				record;
     v_id_usuario_sol				record;
     v_funcionario_sol_oficial   varchar;
-    v_funcionario_oficial	varchar;           
-    
-    
+    v_funcionario_oficial	varchar;
+    v_fecha_firma_pru			text;
+    v_rango_fecha			text;
+    v_fecha_po				text;
+    v_fecha_solicitud		text;
+
+
 
 BEGIN
+
+	v_rango_fecha = '01/11/2018';
 
 	v_nombre_funcion = 'mat.ft_solicitud_sel';
     v_parametros = pxp.f_get_record(p_tabla);
@@ -165,8 +171,8 @@ BEGIN
                     FROM segu.tusuario tu
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
                     INNER JOIN orga.vfuncionario_cargo fun on fun.id_funcionario = tf.id_funcionario
-                    WHERE tu.id_usuario = p_id_usuario and fun.fecha_finalizacion is null;
-
+                    WHERE tu.id_usuario = p_id_usuario and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion);
+--raise exception 'v_record: %', v_record;
          	IF  pxp.f_existe_parametro(p_tabla,'historico') THEN
              v_historico =  v_parametros.historico;
             ELSE
@@ -176,7 +182,7 @@ BEGIN
 
 
 
-
+--raise exception 'cargo: %, interfaz: % ', v_record.nombre_cargo, v_parametros.tipo_interfaz;
 
         IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
@@ -197,9 +203,9 @@ BEGIN
 
 
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND ewb.estado_reg = ''activo'' AND ';
                 ELSE
-                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| ' AND ewb.estado_reg = ''activo'' AND ';
               END IF;
 
                 ELSIF(v_record.nombre_cargo ='Especialista Planificación Servicios') THEN
@@ -220,7 +226,7 @@ BEGIN
                 ELSE
                 v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
                 END IF;
-                ELSIF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
+                ELSIF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' OR  v_record.nombre_cargo ='Jefe Ingenieria Avionica / Sistemas') THEN
                   select  fun.id_funcionario,
               count(fun.id_funcionario)::varchar as cant_reg
                              into
@@ -228,13 +234,13 @@ BEGIN
                             from wf.testado_wf es
                             inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
                             inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
-                            where te.codigo = 'vobo_aeronavegabilidad' and fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua'
+                            where te.codigo = 'vobo_aeronavegabilidad' and (fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' or fun.nombre_cargo = 'Jefe Ingenieria Avionica / Sistemas')
                             group by fun.id_funcionario;
 
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND ewb.estado_reg = ''activo'' AND ';
                 ELSE
-                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| ' AND ewb.estado_reg = ''activo'' AND ';
                 END IF;
                 ELSIF(v_record.nombre_cargo ='Jefe Departamento Abastecimientos y Logistica') THEN
                 select  fu.id_funcionario,
@@ -249,9 +255,9 @@ BEGIN
                     WHERE   so.estado_firma = 'vobo_dpto_abastecimientos'
                     GROUP BY fu.id_funcionario;
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND ewb.estado_reg = ''activo'' AND ';
                 ELSE
-                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
+                v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| ' ewb.estado_reg = ''activo'' AND ';
               END IF;
               END IF;
                 ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
@@ -270,10 +276,10 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
-                        IF(v_record.nombre_cargo = 'Auxiliar Suministros' ) THEN
+                        IF(v_record.nombre_cargo = 'Auxiliar Suministros' or  v_record.nombre_cargo = 'Técnico Control Gestión y Desarrollo Organizacional') THEN
                          select u.id_usuario,
                         count(u.id_usuario)::varchar as cant_reg
                     into
@@ -288,10 +294,10 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
-                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' ) THEN
+                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' or v_record.nombre_cargo = 'Profesional Abastecimientos') THEN
                          select u.id_usuario,
                         count(u.id_usuario)::varchar as cant_reg
                     into
@@ -301,12 +307,12 @@ BEGIN
                                 inner join segu.tusuario u on u.id_persona = fu.id_persona
                                 inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
                                 inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Analista II Presupuestos'
+                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo in ('Analista II Presupuestos', 'Profesional Abastecimientos')
                                 GROUP BY u.id_usuario;
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303) OR tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303, 304) OR tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                         IF(v_record.nombre_cargo = 'Técnico Adquisiciones' ) THEN
@@ -324,13 +330,13 @@ BEGIN
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303)  OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303,304)  OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                ------
                ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComite') THEN
 
-              IF(v_record.nombre_cargo ='Jefe Abastecimientos y Suministros') THEN
+              IF(v_record.nombre_cargo = 'Jefe Abastecimientos y Suministros' or v_record.nombre_cargo = 'Jefe Departamento Abastecimientos') THEN
                   select  fun.id_funcionario,
                     count(fun.id_funcionario)::varchar as cant_reg
                           into
@@ -338,7 +344,7 @@ BEGIN
                         from wf.testado_wf es
                         inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
                         inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
-                        where te.codigo = 'comite_unidad_abastecimientos' and fun.nombre_cargo ='Jefe Abastecimientos y Suministros'
+                        where te.codigo = 'comite_unidad_abastecimientos' and fun.nombre_cargo in ('Jefe Abastecimientos y Suministros','Jefe Departamento Abastecimientos')
                         group by fun.id_funcionario;
 
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
@@ -348,7 +354,7 @@ BEGIN
                     END IF;
                END IF;
 
-               IF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
+               IF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' OR  v_record.nombre_cargo ='Jefe Ingenieria Avionica / Sistemas') THEN
 
                     select  fun.id_funcionario,
                     count(fun.id_funcionario)::varchar as cant_reg
@@ -357,7 +363,7 @@ BEGIN
                           from wf.testado_wf es
                           inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
                           inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
-                          where te.codigo = 'comite_aeronavegabilidad' and fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua'
+                          where te.codigo = 'comite_aeronavegabilidad' and (fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' or fun.nombre_cargo = 'Jefe Ingenieria Avionica / Sistemas')
                           group by fun.id_funcionario;
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
@@ -495,7 +501,7 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.tipo_evaluacion,
                                 sol.taller_asignado,
                                (select pxp.list(pr.id_proveedor::text)
-                                from mat.tgestion_proveedores_new pr 
+                                from mat.tgestion_proveedores_new pr
                                 where pr.id_solicitud = sol.id_solicitud)::varchar as lista_correos,
                                 sol.condicion,
                                 sol.lugar_entrega,
@@ -507,8 +513,10 @@ v_consulta:='select		sol.id_solicitud,
                                 COALESCE(pa.monto,0) as monto_pac,
                          		COALESCE(mo.codigo_internacional,'''') as moneda,
                                 pa.tipo as tipo_mov
+
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = tew.id_tipo_estado
@@ -604,7 +612,7 @@ v_consulta:='select		sol.id_solicitud,
                 ELSE
                 v_filtro = 'ewb.id_funcionario = '||v_id_usuario_rev.id_funcionario|| 'AND';
                 END IF;
-                ELSIF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
+                ELSIF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' OR  v_record.nombre_cargo ='Jefe Ingenieria Avionica / Sistemas') THEN
                   select  fun.id_funcionario,
               count(fun.id_funcionario)::varchar as cant_reg
                              into
@@ -612,7 +620,7 @@ v_consulta:='select		sol.id_solicitud,
                             from wf.testado_wf es
                             inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
                             inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
-                            where te.codigo = 'vobo_aeronavegabilidad' and fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua'
+                            where te.codigo = 'vobo_aeronavegabilidad' and (fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' OR  fun.nombre_cargo ='Jefe Ingenieria Avionica / Sistemas')
                             group by fun.id_funcionario;
 
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
@@ -654,10 +662,10 @@ v_consulta:='select		sol.id_solicitud,
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303, 304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
-                        IF(v_record.nombre_cargo = 'Auxiliar Suministros' ) THEN
+                        IF(v_record.nombre_cargo = 'Auxiliar Suministros' or  v_record.nombre_cargo = 'Técnico Control Gestión y Desarrollo Organizacional') THEN
                          select u.id_usuario,
                         count(u.id_usuario)::varchar as cant_reg
                     into
@@ -672,10 +680,10 @@ v_consulta:='select		sol.id_solicitud,
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303, 304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
-                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' ) THEN
+                        IF(v_record.nombre_cargo = 'Analista II Presupuestos' or v_record.nombre_cargo = 'Profesional Abastecimientos') THEN
                          select u.id_usuario,
                         count(u.id_usuario)::varchar as cant_reg
                     into
@@ -685,12 +693,12 @@ v_consulta:='select		sol.id_solicitud,
                                 inner join segu.tusuario u on u.id_persona = fu.id_persona
                                 inner join orga.vfuncionario_cargo fc on fc.id_funcionario =es.id_funcionario and fc.fecha_finalizacion is null
                                 inner JOIN mat.tsolicitud  so ON so.id_estado_wf = es.id_estado_wf
-                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo = 'Analista II Presupuestos'
+                                WHERE so.estado in('cotizacion','cotizacion_solicitada','cotizacion_sin_respuesta','compra') and fc.nombre_cargo in ('Analista II Presupuestos','Profesional Abastecimientos')
                                 GROUP BY u.id_usuario;
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303) OR tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303, 304) OR tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                         IF(v_record.nombre_cargo = 'Técnico Adquisiciones' ) THEN
@@ -708,7 +716,7 @@ v_consulta:='select		sol.id_solicitud,
                                   IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                       ELSE
-                        v_filtro = '(tew.id_funcionario in (1950,69,302,373,303)  OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        v_filtro = '(tew.id_funcionario in (1951, 1950,69,302,373,303, 304)  OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                       END IF;
                         END IF;
                ------
@@ -732,7 +740,7 @@ v_consulta:='select		sol.id_solicitud,
                     END IF;
                END IF;
 
-               IF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua') THEN
+               IF(v_record.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' OR  v_record.nombre_cargo ='Jefe Ingenieria Avionica / Sistemas') THEN
 
                     select  fun.id_funcionario,
                     count(fun.id_funcionario)::varchar as cant_reg
@@ -741,7 +749,7 @@ v_consulta:='select		sol.id_solicitud,
                           from wf.testado_wf es
                           inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
                           inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
-                          where te.codigo = 'comite_aeronavegabilidad' and fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua'
+                          where te.codigo = 'comite_aeronavegabilidad' and (fun.nombre_cargo ='Jefe Departamento Gestion Aeronavegabilidad Continua' or fun.nombre_cargo='Jefe Ingenieria Avionica / Sistemas')
                           group by fun.id_funcionario;
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
                         v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
@@ -817,6 +825,7 @@ v_consulta:='select		sol.id_solicitud,
 		v_consulta:='select count(sol.id_solicitud)
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = tew.id_tipo_estado
@@ -828,7 +837,7 @@ v_consulta:='select		sol.id_solicitud,
                                 left join wf.tproceso_wf pwfb on pwfb.id_proceso_wf = sol.id_proceso_wf_firma
                                 left join wf.ttipo_estado tip on tip.id_tipo_estado = ewb.id_tipo_estado
                                 left join mat.tsolicitud_pac pa on pa.id_proceso_wf = sol.id_proceso_wf
-                           		left join param.tmoneda mo on mo.id_moneda = pa.id_moneda                             
+                           		left join param.tmoneda mo on mo.id_moneda = pa.id_moneda
                                 where '||v_filtro;
 
 			--Definicion de la respuesta
@@ -952,9 +961,9 @@ v_consulta:='select		sol.id_solicitud,
 
 		begin
 
-    	  select sou.id_proceso_wf_firma
+    	  select sou.id_proceso_wf_firma, to_char(sou.fecha_solicitud, 'DD/MM/YYYY')as fechasol
             into
-                v_id_proceso_wf_firma
+                v_id_proceso_wf_firma, v_fecha_solicitud
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -970,7 +979,11 @@ v_consulta:='select		sol.id_solicitud,
           INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND te.codigo = 'vobo_area' GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg;
 
-remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_qr_oficial);
+	if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  		remplaso = mat.f_firma_modif(v_id_proceso_wf_firma,v_id_funcionario_qr_oficial,v_fecha_solicitud);
+  	else
+  		remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_qr_oficial);
+    end if;
 
       if(remplaso is null)THEN
 
@@ -979,7 +992,7 @@ remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_qr_ofici
       else
               v_nombre_funcionario_qr = remplaso.funcion;
 
-      end if;          
+      end if;
 
         SELECT    twf.id_funcionario,
               vf.desc_funcionario1,
@@ -993,9 +1006,11 @@ remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_qr_ofici
           INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND te.codigo = 'vobo_aeronavegabilidad' GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg;
 
-
-remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_dc_qr_oficial);
-
+	if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+		remplaso = mat.f_firma_modif(v_id_proceso_wf_firma,v_id_funcionario_dc_qr_oficial,v_fecha_solicitud);
+	else
+		remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_dc_qr_oficial);
+	end if;
       if(remplaso is null)THEN
 
               v_nombre_funcionario_dc_qr = v_nombre_funcionario_dc_qr_oficial;
@@ -1004,12 +1019,12 @@ remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_dc_qr_of
               v_nombre_funcionario_dc_qr = remplaso.funcion;
 
       end if;
-      
+
              SELECT  twf.id_funcionario,
               vf.desc_funcionario1,
                 to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
                     into
-              v_id_funcionario_ag_qr_oficial,      
+              v_id_funcionario_ag_qr_oficial,
               v_nombre_funcionario_ag_qr_oficial,
             v_fecha_firma_ag_qr
           FROM wf.testado_wf twf
@@ -1017,8 +1032,11 @@ remplaso = mat.f_firma_original(v_id_proceso_wf_firma, v_id_funcionario_dc_qr_of
           INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'revision' GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg;
 
-remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_qr_oficial);
-
+	if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+		remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_ag_qr_oficial,v_fecha_solicitud);
+	else
+		remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_qr_oficial);
+	end if;
       if(remplaso is null)THEN
 
               v_nombre_funcionario_ag_qr = v_nombre_funcionario_ag_qr_oficial;
@@ -1026,7 +1044,7 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
       else
               v_nombre_funcionario_ag_qr = remplaso.funcion;
 
-      end if; 
+      end if;
 
             v_consulta:='select 	s.origen_pedido,
                                     '''||COALESCE (initcap(v_nombre_funcionario_qr),' ') ||'''::varchar as visto_bueno,
@@ -1076,7 +1094,7 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
     	ELSE
          v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and ';
         END IF;
-        
+
         ELSIF(v_parametros.origen_pedido  = 'Centro de Entrenamiento Aeronautico Civil')THEN
 
           IF (v_parametros.estado_ro > 1::VARCHAR )THEN
@@ -1085,8 +1103,8 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
     	ELSE
          v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and ';
         END IF;
-        
-        
+
+
         ELSIF(v_parametros.origen_pedido  = 'Todos')THEN
          IF (v_parametros.estado > 1::VARCHAR )THEN
         v_filtro_repo = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin|| ''' and t.id_tipo_estado in('||v_parametros.estado||') and ';
@@ -1215,12 +1233,14 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
     elsif(p_transaccion='MAT_REPOR_SEL')then
 
 		begin
-         select sou.id_proceso_wf_firma
+         select sou.id_proceso_wf_firma, to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo, to_char(sou.fecha_sol,'DD/MM/YYYY')
         		into
-                v_id_proceso_wf_firma_cotizacion
+                v_id_proceso_wf_firma_cotizacion,
+                v_fecha_po,
+                v_fecha_solicitud
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
-              
+
 	SELECT			twf.id_funcionario,
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -1231,17 +1251,21 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
           FROM wf.testado_wf twf
           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND  te.codigo =  
+          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND  te.codigo =
           (case
           when (select s.origen_pedido
           		from mat.tsolicitud s
                 where s.id_proceso_wf = v_parametros.id_proceso_wf) = 'Centro de Entrenamiento Aeronautico Civil' then
           'departamento_ceac'
            else
-          'comite_aeronavegabilidad' 
-           end) and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+          'comite_aeronavegabilidad'
+           end) and vf.id_uo_funcionario=mat.f_position_end(twf.id_funcionario) GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
-  remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_dc_qr_oficial);
+  if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_dc_qr_oficial,v_fecha_po);
+  else
+  	remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_dc_qr_oficial);
+  end if;
 
       if(remplaso is null)THEN
 
@@ -1264,7 +1288,11 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_dpto_abastecimientos' and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
-  remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial);
+  if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial,v_fecha_po);
+  else
+  	remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial);
+  end if;
 
     if (remplaso is null)THEN
 
@@ -1273,8 +1301,8 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
     else
             v_nombre_funcionario_abas_qr = remplaso.desc_funcionario1;
 
-    end if;   
-    
+    end if;
+
   SELECT            twf.id_funcionario,
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -1287,7 +1315,11 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                     WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
-    remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial);
+    if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+    	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_po);
+    else
+    	remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial);
+    end if;
 
 
     if(remplaso is null)THEN
@@ -1296,8 +1328,8 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
     else
             v_nombre_funcionario_rev_qr = remplaso.desc_funcionario1;
 
-    end if;     
-    
+    end if;
+
 ----firma adq
 	WITH RECURSIVE firmas(id_estado_fw, id_estado_anterior,fecha_reg, codigo, id_funcionario) AS (
                               SELECT tew.id_estado_wf, tew.id_estado_anterior , tew.fecha_reg, te.codigo, tew.id_funcionario
@@ -1343,16 +1375,20 @@ remplaso = mat.f_firma_original(v_parametros.id_proceso_wf, v_id_funcionario_ag_
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
-    remplaso = mat.f_firma_original(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial);
-    
+    if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+    	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial,v_fecha_po);
+    else
+    	remplaso = mat.f_firma_original(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial);
+    end if;
+
       if(remplaso is null)THEN
 
               v_nombre_funcionario_presu_qr = v_nombre_funcionario_presu_qr_oficial;
       else
               v_nombre_funcionario_presu_qr = remplaso.desc_funcionario1;
 
-      end if; 
-   	
+      end if;
+
         select s.estado
         into
         v_codigo_pre
@@ -1495,9 +1531,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	***********************************/
     elsif(p_transaccion='MAT_REP_COMP_BYS_SEL')then
 		begin
-
-        SELECT ts.nro_cite_cobs, ts.nro_tramite
-        INTO v_nro_cite_dce, v_num_tramite
+--raise exception 'Los datos enviados proceso, fecha, id funcionarioson:';
+        SELECT ts.nro_cite_cobs, ts.nro_tramite, to_char(ts.fecha_solicitud, 'DD/MM/YYYY')as fechasol
+        INTO v_nro_cite_dce, v_num_tramite, v_fecha_solicitud
         FROM mat.tsolicitud ts
         WHERE ts.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -1518,17 +1554,23 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
           SELECT twf.id_funcionario,
           		 vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
-                  vf.desc_funcionario1
+                  vf.desc_funcionario1,
+                  to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
           INTO v_id_funcionario_oficial,
           		v_funcionario_sol_oficial,
-                v_funcionario_oficial
+                v_funcionario_oficial,
+                v_fecha_firma_pru
           FROM wf.testado_wf twf
           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision' and vf.fecha_finalizacion is null
-           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo;
+           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, fecha_firma;
 
-  remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_oficial);
+    if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  		remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud);
+    else
+  		remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_oficial);
+    end if;
 
       if(remplaso is null)THEN
 
@@ -1538,8 +1580,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               v_funcionario_sol = remplaso.desc_funcionario1;
               v_funcionario	    = remplaso.funcion;
 
-      end if; 
-      
+      end if;
+
           WITH RECURSIVE gerencia(id_uo, id_nivel_organizacional, nombre_unidad, nombre_cargo) AS (
               SELECT tu.id_uo, tu.id_nivel_organizacional, tu.nombre_unidad, tu.nombre_cargo
               FROM orga.tuo  tu
@@ -1602,7 +1644,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia'and vf.fecha_finalizacion is null
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
-  remplaso = mat.f_firma_original(v_id_proceso_wf_adq, v_id_funcionario_af_qr_oficial);
+  if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_af_qr_oficial,v_fecha_solicitud);
+  else
+  	remplaso = mat.f_firma_original(v_id_proceso_wf_adq, v_id_funcionario_af_qr_oficial);
+  end if;
 
       if(remplaso is null)THEN
 
@@ -1612,7 +1658,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               v_nombre_funcionario_af_qr = remplaso.desc_funcionario1;
 
       end if;
-      
+
         SELECT  twf.id_funcionario, vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
 		to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
         INTO
@@ -1626,7 +1672,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and vf.fecha_finalizacion is null
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
-  remplaso = mat.f_firma_original(v_id_proceso_wf_adq, v_id_funcionario_presu_qr_oficial);
+  if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial,v_fecha_solicitud);
+  else
+  	remplaso = mat.f_firma_original(v_id_proceso_wf_adq, v_id_funcionario_presu_qr_oficial);
+  end if;
 
       if(remplaso is null)THEN
 
@@ -1635,8 +1685,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
       else
               v_nombre_funcionario_presu_qr = remplaso.desc_funcionario1;
 
-      end if; 
-      
+      end if;
+
         select s.estado
         into
         v_codigo_pre
@@ -1669,6 +1719,44 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
 	end;
+
+     /*********************************
+ 	#TRANSACCION:  'MAT_CONENV_REP'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin
+ 	#FECHA:		15-08-2018 20:33:35
+	***********************************/
+
+	elsif(p_transaccion='MAT_CONENV_REP')then
+
+		begin
+		           v_consulta:='select
+                   				MAX((select pxp.list(po.email::text)
+                                from param.vproveedor po
+                                join mat.tgestion_proveedores_new pr on pr.id_proveedor = po.id_proveedor
+                                where pr.id_solicitud = sol.id_solicitud))::varchar as lista_correos,
+
+                                MAX(sol.mensaje_correo)::varchar,
+                                MAX(ala.fecha_reg)::timestamp,
+                                MAX(array_to_string(pcorreo.correos, '',''))::varchar as correos,
+                                MAX(ala.titulo_correo)::varchar
+
+                                from  mat.tsolicitud sol
+                                left join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+                                left join segu.vusuario u on u.id_usuario = sol.id_usuario_mod
+                                inner join param.talarma ala on ala.id_proceso_wf = sol.id_proceso_wf
+                                inner join wf.tplantilla_correo pcorreo on pcorreo.id_plantilla_correo = ala.id_plantilla_correo
+
+                                where sol.id_proceso_wf = '||v_parametros.id_proceso_wf;
+			--Devuelve la respuesta
+
+            raise notice 'consulta %',v_consulta;
+
+
+			return v_consulta;
+
+		end;
+
 
 
 else
