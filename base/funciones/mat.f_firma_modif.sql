@@ -16,11 +16,11 @@ $body$
  declare
   reg 						   		record;
   v_id_funcionario_rempla   		integer;
-  v_id_funcionario					integer;
-  es_id_cargo 				   		integer;
-  es_id_cargo_suplente 				integer;
-  es_id_usuario   					integer;
-  v_usuario_dc_ai			   		integer;
+  v_id_funcionario					    integer;
+  es_id_cargo 				   	      integer;
+  es_id_cargo_suplente 				  integer;
+  es_id_usuario   					    integer;
+  v_usuario_dc_ai			   		      integer;
   v_nombre_funcionario_dc_qr_rempla integer;
   v_fecha_firma_qr_reemp			text;
   es_fecha_po						text;

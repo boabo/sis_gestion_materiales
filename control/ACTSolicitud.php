@@ -17,6 +17,8 @@ require_once(dirname(__FILE__).'/../reportes/RDocContratacionExtPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RComparacionBySPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RRequerimientoMaterialesCeac.php');
 
+require_once(dirname(__FILE__).'/../reportes/RConstanciaEnvioInvitacion.php');
+
 
 class ACTSolicitud extends ACTbase{
 
@@ -59,7 +61,7 @@ class ACTSolicitud extends ACTbase{
         }
 
         if ($this->objParam->getParametro('tipo_interfaz') == 'VistoBueno' ) {
-             $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_dpto_abastecimientos'')");
+            $this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_dpto_abastecimientos'')");
         }
         if ($this->objParam->getParametro('tipo_interfaz') == 'SolicitudvoboComite') {
             $this->objParam->addFiltro("sol.estado  in (''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'',''departamento_ceac'')");
@@ -493,12 +495,12 @@ class ACTSolicitud extends ACTbase{
         $nombreArchivo=uniqid(md5(session_id()).$titulo);
 
         $nombreArchivo.='.xls';
-            $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
-            $this->objParam->addParametro('datos',$this->res->datos);
-            //Instancia la clase de excel
-            $this->objReporteFormato=new RControlAlmacenXLS($this->objParam);
-            $this->objReporteFormato->generarDatos();
-            $this->objReporteFormato->generarReporte();
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        $this->objParam->addParametro('datos',$this->res->datos);
+        //Instancia la clase de excel
+        $this->objReporteFormato=new RControlAlmacenXLS($this->objParam);
+        $this->objReporteFormato->generarDatos();
+        $this->objReporteFormato->generarReporte();
 
         $this->mensajeExito=new Mensaje();
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
@@ -507,12 +509,12 @@ class ACTSolicitud extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
     }
-   /* function cambiarRevision(){
-        $this->objFunc=$this->create('MODSolicitud');
-        $this->res=$this->objFunc->listarRevision($this->objParam);
-        $this->res->imprimirRespuesta($this->res->generarJson());
+    /* function cambiarRevision(){
+         $this->objFunc=$this->create('MODSolicitud');
+         $this->res=$this->objFunc->listarRevision($this->objParam);
+         $this->res->imprimirRespuesta($this->res->generarJson());
 
-    }*/
+     }*/
     function reporteSalidaAlmacen (){
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarRequerimiento($this->objParam);
@@ -722,7 +724,7 @@ class ACTSolicitud extends ACTbase{
     }
 
     function listarProveedor(){
-        
+
         $this->objParam->defecto('ordenacion','id_proveedor');
         $this->objParam->defecto('dir_ordenacion','asc');
 
@@ -786,6 +788,33 @@ class ACTSolicitud extends ACTbase{
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->generarPAC($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function ReporteConstanciaEnvioInvitacion(){
+
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->ReporteConstanciaEnvioInvitacion($this->objParam);
+//        $dataSource=$this->objFunc->ReporteConstanciaEnvioInvitacion();
+//        $this->dataSource=$dataSource->getDatos();
+
+        //obtener titulo del reporte
+        $titulo = 'Correo';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+
+        $this->objReporteFormato=new RConstanciaEnvioInvitacion($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+//var_dump($this->res);
     }
 
 

@@ -122,20 +122,20 @@ BEGIN
                       <p><strong>Fecha Requerida:</strong> '||v_registros.fecha_requerida||' <strong>Tipo de solicitus</strong>: '||v_registros.tipo_solicitud||'</p>
                       <p><span style="text-decoration: underline;"><strong>Detalle solicitud</strong></span></p>
 
-                      <table boder = "1">
-                          <tr>
-                            <th><span style="font-weight:bold">Tipo de Contratación</span></th>
+                      <table border cellpadding=10 cellspacing=0>
+                          <tr style="text-align: center;">
+                            <th><span style="font-weight:bold; ali">Tipo de Contratación</span></th>
                             <th><span style="font-weight:bold">Objeto de Contratación </span></th>
                             <th><span style="font-weight:bold">Mes Estimado</span></th>
                             <th><span style="font-weight:bold">Precio Referencial Bs.</span></th>
                             <th><span style="font-weight:bold">Precio Referencial $us.</span></th>
                           </tr>
                           <tr>
-                            <td>'||case when v_pac.tipo = 'bien' then 'Bien' else 'Servicio' end||'</td>
+                            <td style="text-align: center;">'||case when v_pac.tipo = 'bien' then 'Bien' else 'Servicio' end||'</td>
                             <td>'||v_objeto_contrato||'</td>
-                            <td>'||pxp.f_get_mes_of_fecha_es(v_registros.fecha_requerida::date)||'</td>
-                            <td>'||v_cambio_compra*v_pac.monto||' Bs.</td>
-                            <td>'||v_pac.monto||' $us.</td>
+                            <td style="text-align: center;">'||pxp.f_get_mes_of_fecha_es(v_registros.fecha_requerida::date)||'</td>
+                            <td style="text-align: center;">'||to_char((v_cambio_compra*v_pac.monto),'FM999,999,999.00')||' Bs.</td>
+                            <td style="text-align: center;">'||to_char(v_pac.monto,'FM999,999,999.00')||' $us.</td>
                           </tr>
                       </table>
 

@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION mat.f_correo_solicitud (
 RETURNS void AS
 $body$
 DECLARE
-  
+
 	v_nombre_funcion   	text;
 	v_resp				varchar;
     v_registros			record;
@@ -20,8 +20,13 @@ DECLARE
 	v_acceso_directo			varchar;
     v_pac						record;
 BEGIN
-  v_nombre_funcion = 'mat.f_correo_solicitud';         
-  
+  v_nombre_funcion = 'mat.f_correo_solicitud';
+
+
+  /*select
+  from mat.tsolicitud_pac sp
+  where sp.id_proceso_wf = p_id_proceso_wf;
+  */
   INSERT INTO mat.tsolicitud_pac(
   id_proceso_wf,
   monto,
@@ -32,9 +37,9 @@ VALUES (
   p_monto,
   p_id_moneda
 );
-  
-  
-   
+
+
+
   for v_registros in (select 	so.nro_tramite,
                                 so.origen_pedido,
                                 to_char( so.fecha_solicitud,'DD/MM/YYYY') as fecha_solicitud,
@@ -45,12 +50,12 @@ VALUES (
                                 so.tipo_falla,
                                 to_char( so.fecha_requerida,'DD/MM/YYYY') as fecha_requerida ,
 								so.tipo_solicitud
-                                from mat.tsolicitud so 
+                                from mat.tsolicitud so
                                 inner join mat.tdetalle_sol de on de.id_solicitud = so.id_solicitud
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = so.id_matricula
                                 inner join orga.vfuncionario fu on fu.id_funcionario = so.id_funcionario_sol
                                 where so.id_proceso_wf = p_id_proceso_wf
-                                group by 
+                                group by
                                 so.nro_tramite,
                                 so.origen_pedido,
                                 so.fecha_solicitud,
@@ -61,21 +66,21 @@ VALUES (
                                 so.tipo_falla,
                                 so.fecha_requerida,
 								so.tipo_solicitud )loop
-                                
-                             
+
+
         v_asunto = 'Solicitud Modificacion PAC';
-        
+
       select  pa.id_proceso_wf,
               pa.monto,
               mo.codigo_internacional
-              into 
+              into
               v_pac
       from mat.tsolicitud_pac pa
       inner join param.tmoneda mo on mo.id_moneda = pa.id_moneda
       where pa.id_proceso_wf = p_id_proceso_wf;
-      	        
-        
-        
+
+
+
 v_template ='<p><span><strong>Nro. Tramite:</strong> </span>'||v_registros.nro_tramite||'<br/>
                     <strong>Origen Pedido:</strong> '||v_registros.origen_pedido||'<br/>
                     <strong>Fechas solicitud</strong>: '||v_registros.fecha_solicitud||'
@@ -88,14 +93,14 @@ v_template ='<p><span><strong>Nro. Tramite:</strong> </span>'||v_registros.nro_t
                     <p>Importe: '||v_pac.monto||' '||v_pac.codigo_internacional||'</p>
                     <p><span style="text-decoration: underline;"><strong>Observaciones</strong></span></p>
                     <p>'||v_registros.observaciones_sol||'</p>';
-  
+
   --raise exception '-> %',v_template;
-		
+
          v_titulo = 'Solicitud Modificacion PAC';
          v_acceso_directo = '';
          v_clase = '';
          v_parametros_ad = '{}';
-      	
+
        	v_id_alarma[1]:=param.f_inserta_alarma(		null,
                                                     v_template ,    --descripcion alarmce
                                                     COALESCE(v_acceso_directo,''),--acceso directo
@@ -108,12 +113,12 @@ v_template ='<p><span><strong>Nro. Tramite:</strong> </span>'||v_registros.nro_t
                                                    '',
                                                     null,  --destino de la alarma
                                                     v_asunto,
-                                                    'mvidaurre@boa.bo,gvelasquez@boa.bo,miguel.ale19934@gmail.com'
+                                                    'mvidaurre@boa.bo,gvelasquez@boa.bo,miguel.ale19934@gmail.com,abastecimiento@boa.bo'
                                                     );
-                                                    
+
       end loop;
 
- 
+
 
 EXCEPTION
 	WHEN OTHERS THEN

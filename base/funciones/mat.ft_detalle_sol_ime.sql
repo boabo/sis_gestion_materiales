@@ -38,6 +38,9 @@ DECLARE
     v_msg_control				varchar;
     v_control_duplicidad 		record;
 
+    v_nro_parte					varchar;
+    v_nro_parte_alterno			varchar;
+
 
 
 BEGIN
@@ -92,6 +95,30 @@ BEGIN
             v_parametros.tipo,
             v_parametros.explicacion_detallada_part
             )RETURNING id_detalle into v_id_detalle;
+
+            --modificar nro_parte, nro_parte_alterno en tsolicitud
+            select list(ds.nro_parte)
+            into v_nro_parte
+            from mat.tdetalle_sol ds
+            where  ds.id_solicitud= v_parametros.id_solicitud
+            GROUP by ds.id_solicitud;
+
+            select list(ds.nro_parte_alterno)
+            into v_nro_parte_alterno
+            from mat.tdetalle_sol ds
+            where  ds.id_solicitud= v_parametros.id_solicitud
+            GROUP by ds.id_solicitud;
+
+             -- RAISE exception '%, %',v_nro_parte, v_nro_parte_alterno;
+
+              update mat.tsolicitud
+              set
+              nro_partes = v_nro_parte,
+              nro_parte_alterno =  v_nro_parte_alterno
+              where
+              mat.tsolicitud.id_solicitud = v_parametros.id_solicitud;
+
+
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Detalle_sol almacenado(a) con exito (id_detalle'||v_id_detalle||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_detalle',v_id_detalle::varchar);
@@ -140,6 +167,28 @@ BEGIN
             tipo = v_parametros.tipo,
             explicacion_detallada_part = v_parametros.explicacion_detallada_part
 			where id_detalle=v_parametros.id_detalle;
+
+     --modificar nro_parte, nro_parte_alterno en tsolicitud
+        select list(ds.nro_parte)
+        into v_nro_parte
+        from mat.tdetalle_sol ds
+        where  ds.id_solicitud= v_parametros.id_solicitud
+        GROUP by ds.id_solicitud;
+
+        select list(ds.nro_parte_alterno)
+        into v_nro_parte_alterno
+        from mat.tdetalle_sol ds
+        where  ds.id_solicitud= v_parametros.id_solicitud
+        GROUP by ds.id_solicitud;
+
+       -- RAISE exception '%, %',v_nro_parte, v_nro_parte_alterno;
+
+        update mat.tsolicitud
+        set
+        nro_partes = v_nro_parte,
+        nro_parte_alterno =  v_nro_parte_alterno
+        where
+        mat.tsolicitud.id_solicitud = v_parametros.id_solicitud;
 
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Detalle_sol modificado(a)');

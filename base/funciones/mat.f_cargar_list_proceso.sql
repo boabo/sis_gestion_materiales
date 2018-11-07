@@ -26,7 +26,7 @@ BEGIN
     else
     	v_id_procesos = array_append(v_record.list_proceso, p_id_solicitud_h);
     end if;
-    --raise exception 'v_id_procesos %', v_id_procesos;
+
     foreach v_id_proceso in array v_id_procesos loop
       select ts.list_proceso
       into v_record

@@ -218,7 +218,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 '<p><b>Fecha Sol.: </b><font color="#1e90ff"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</b></font></div>';
 
                         }
-                       }
+                    }
                 },
                 type:'TextField',
                 filters:{pfiltro:'sol.nro_tramite',type:'string'},
@@ -309,7 +309,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         }
                         else{
                             return '<div><p><b>Matricula: </b>' + record.data['matricula'] +
-                                    '</p><p><b>De: </b><font color="green"><u>' + record.data['desc_funcionario1'] + '</u></font></p></div>';
+                                '</p><p><b>De: </b><font color="green"><u>' + record.data['desc_funcionario1'] + '</u></font></p></div>';
                         }
 
                     }
@@ -343,8 +343,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         }else{
                             color = '<font color="green">';
                         }
-                            return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
-                                '</font><p><b>Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></font></div>';
+                        return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
+                            '</font><p><b>Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></font></div>';
                     }
 
                 },
@@ -693,7 +693,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboRec',
                 filters:{pfiltro:'pro.desc_proveedor',type:'string'},
                 id_grupo:2,
-                grid: false,
+                grid: true,
                 form: true,
                 bottom_filter:true
             },
@@ -795,6 +795,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:false,
                 bottom_filter:true
             },
+            // {
+            //     config:{
+            //         name: 'nro_parte_det',
+            //         fieldLabel: 'Nro. de Parte det.',
+            //         allowBlank: true,
+            //         anchor: '80%',
+            //         gwidth: 200,
+            //         maxLength:100
+            //
+            //     },
+            //     type:'TextField',
+            //     filters:{pfiltro:'dsol.nro_parte',type:'string'},
+            //     id_grupo:1,
+            //     grid:false,
+            //     form:false,
+            //     bottom_filter:true
+            // },
+            // {
+            //     config:{
+            //         name: 'nro_parte_alterno_det',
+            //         fieldLabel: 'Nro. de Parte Alterna det.',
+            //         allowBlank: true,
+            //         anchor: '80%',
+            //         gwidth: 200,
+            //         maxLength:100
+            //
+            //     },
+            //     type:'TextField',
+            //     filters:{pfiltro:'dsol.nro_parte_alterno',type:'string'},
+            //     id_grupo:1,
+            //     grid:false,
+            //     form:false,
+            //     bottom_filter:true
+            // },
             {
                 config:{
                     name:'tipo_evaluacion',
@@ -810,7 +844,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         data :	[
                             ['1','Compra'],
                             ['2','Reparacion'],
-                            ['3','Exchage']
+                            ['3','Exchage'],
+                            ['4','Flat Exchage']
                         ]
                     }),
                     valueField:'valor',
@@ -1092,7 +1127,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'id_cotizacion', type: 'numeric'},
             {name:'monto_pac', type: 'numeric'},
             {name:'moneda', type: 'string'},
-            {name:'tipo_mov', type: 'string'}
+            {name:'tipo_mov', type: 'string'} //,
+            //{name:'nro_parte_det', type: 'string'},
+            //{name:'nro_parte_alterno_det', type: 'string'}
 
 
 
@@ -1259,8 +1296,8 @@ header("content-type: text/javascript; charset=UTF-8");
                                 Ext.Msg.show({
                                     title: 'Alerta',
                                     msg: '<p>Estimado Usuario anteriormente definio a que proveedores  ' +
-                                    'enviara correo de cotización de materiales, de los cuales los siguientes proveedores no cuentan ' +
-                                    'con un correo de contacto:</p><br>'+this.mensaje+'<br>Le sugerimos completar este dato para que su cotización sea enviada exitosamente.',
+                                        'enviara correo de cotización de materiales, de los cuales los siguientes proveedores no cuentan ' +
+                                        'con un correo de contacto:</p><br>'+this.mensaje+'<br>Le sugerimos completar este dato para que su cotización sea enviada exitosamente.',
                                     buttons: Ext.Msg.OK,
                                     width: 512,
                                     icon: Ext.Msg.INFO
