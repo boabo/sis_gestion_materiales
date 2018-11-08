@@ -314,3 +314,160 @@ CREATE TABLE mat.tunidad_medida (
 WITH (oids = false);
 
 /***********************************F-SCP-MAM-MAT-0-12/01/2017****************************************/
+
+/***********************************I-SCP-FEA-MAT-1-7/11/2018****************************************/
+
+CREATE TABLE mat.tcotizacion (
+  id_cotizacion SERIAL,
+  monto_total NUMERIC(20,2),
+  fecha_cotizacion DATE,
+  nro_tramite VARCHAR(255),
+  adjudicado VARCHAR(20) DEFAULT 'no'::character varying,
+  id_proveedor INTEGER,
+  id_solicitud INTEGER,
+  id_moneda INTEGER,
+  nro_cotizacion VARCHAR(255),
+  recomendacion VARCHAR(1000),
+  obs VARCHAR(1000),
+  pie_pag VARCHAR(500),
+  CONSTRAINT tcotizacion_pkey PRIMARY KEY(id_cotizacion),
+  CONSTRAINT tcotizacion_fk1 FOREIGN KEY (id_moneda)
+    REFERENCES param.tmoneda(id_moneda)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE mat.tcotizacion
+  ALTER COLUMN id_cotizacion SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion
+  ALTER COLUMN monto_total SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion
+  ALTER COLUMN id_proveedor SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion
+  ALTER COLUMN id_solicitud SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion
+  ALTER COLUMN id_moneda SET STATISTICS 0;
+
+
+CREATE TABLE mat.tcotizacion_detalle (
+  id_cotizacion_det SERIAL,
+  id_cotizacion INTEGER,
+  id_detalle INTEGER,
+  precio_unitario NUMERIC(19,2),
+  precio_unitario_mb NUMERIC(19,2),
+  cantidad_det INTEGER,
+  id_solicitud INTEGER,
+  cd VARCHAR(200),
+  id_day_week INTEGER,
+  nro_parte_cot VARCHAR(1000),
+  nro_parte_alterno_cot VARCHAR(1000),
+  referencia_cot VARCHAR(1000),
+  descripcion_cot VARCHAR(1000),
+  explicacion_detallada_part_cot VARCHAR(1000),
+  tipo_cot VARCHAR(100),
+  id_unidad_medida_cot INTEGER,
+  revisado VARCHAR(2) DEFAULT 'no'::character varying,
+  CONSTRAINT tcotizacion_det_pkey PRIMARY KEY(id_cotizacion_det),
+  CONSTRAINT tcotizacion_det_fk FOREIGN KEY (id_cotizacion)
+    REFERENCES mat.tcotizacion(id_cotizacion)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE mat.tcotizacion_detalle
+  ALTER COLUMN id_cotizacion_det SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion_detalle
+  ALTER COLUMN id_cotizacion SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion_detalle
+  ALTER COLUMN id_detalle SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion_detalle
+  ALTER COLUMN precio_unitario SET STATISTICS 0;
+
+ALTER TABLE mat.tcotizacion_detalle
+  ALTER COLUMN cantidad_det SET STATISTICS 0;
+
+CREATE TABLE mat.tday_week (
+  id_day_week SERIAL,
+  codigo_tipo VARCHAR(250) NOT NULL,
+  CONSTRAINT tday_week_pkey PRIMARY KEY(id_day_week)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE mat.tday_week
+  ALTER COLUMN id_day_week SET STATISTICS 0;
+
+CREATE TABLE mat.tgestion_proveedores (
+  id_gestion_proveedores SERIAL,
+  id_solicitud INTEGER,
+  cotizacion_solicitadas INTEGER[][] [],
+  cotizacion_recibidas INTEGER[][] [],
+  adjudicado VARCHAR(100),
+  fecha_cotizacion DATE,
+  monto NUMERIC(20,2),
+  CONSTRAINT tgestion_proveedores_pkey PRIMARY KEY(id_gestion_proveedores),
+  CONSTRAINT tgestion_proveedores_fk FOREIGN KEY (id_solicitud)
+    REFERENCES mat.tsolicitud(id_solicitud)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE mat.tgestion_proveedores
+  ALTER COLUMN id_gestion_proveedores SET STATISTICS 0;
+
+ALTER TABLE mat.tgestion_proveedores
+  ALTER COLUMN cotizacion_solicitadas SET STATISTICS 0;
+
+CREATE TABLE mat.tgestion_proveedores_new (
+  id_gestion_proveedores SERIAL,
+  id_solicitud INTEGER,
+  id_proveedor INTEGER,
+  CONSTRAINT tgestion_proveedores_new_pkey PRIMARY KEY(id_gestion_proveedores)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE mat.tgestion_proveedores_new
+  ALTER COLUMN id_gestion_proveedores SET STATISTICS 0;
+
+CREATE TABLE mat.tsolicitud_pac (
+  id_solicitud_pac SERIAL,
+  id_proceso_wf INTEGER,
+  monto NUMERIC(18,2),
+  id_moneda INTEGER,
+  estado VARCHAR(50) DEFAULT 'pendiente'::character varying,
+  tipo VARCHAR(15),
+  CONSTRAINT tsolicitud_pac_pkey PRIMARY KEY(id_solicitud_pac)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE mat.tsolicitud_pac
+  ALTER COLUMN id_solicitud_pac SET STATISTICS 0;
+
+ALTER TABLE mat.tsolicitud_pac
+  ALTER COLUMN id_proceso_wf SET STATISTICS 0;
+
+ALTER TABLE mat.tsolicitud_pac
+  ALTER COLUMN monto SET STATISTICS 0;
+
+ALTER TABLE mat.tsolicitud_pac
+  ALTER COLUMN id_moneda SET STATISTICS 0;
+
+/***********************************F-SCP-FEA-MAT-0-7/11/2018****************************************/

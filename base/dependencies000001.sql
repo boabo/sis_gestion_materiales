@@ -1055,3 +1055,586 @@ select pxp.f_insert_trol_procedimiento_gui ('GM - Visto Bueno Solicitud', 'MAT_D
 select pxp.f_insert_trol_procedimiento_gui ('GM - Visto Bueno Solicitud', 'MAT_DET_SEL', 'VBS.1');
 
 /***********************************F-DEP-MAM-MAT-0-07/01/2017****************************************/
+
+/***********************************I-DEP-FEA-MAT-0-7/11/2018****************************************/
+CREATE VIEW mat.vaper (
+    desc_persona,
+    to_char,
+    pais,
+    estacion,
+    punto_venta,
+    obs_cierre,
+    arqueo_moneda_local,
+    arqueo_moneda_extranjera,
+    monto_inicial,
+    monto_inicial_moneda_extranjera,
+    tipo_cambio,
+    tiene_dos_monedas,
+    moneda_local,
+    moneda_extranjera,
+    cod_moneda_local,
+    cod_moneda_extranjera,
+    efectivo_boletos_ml,
+    efectivo_boletos_me,
+    tarjeta_boletos_ml,
+    tarjeta_boletos_me,
+    cuenta_corriente_boletos_ml,
+    cuenta_corriente_boletos_me,
+    mco_boletos_ml,
+    mco_boletos_me,
+    otro_boletos_ml,
+    otro_boletos_me,
+    efectivo_ventas_ml,
+    efectivo_ventas_me,
+    tarjeta_ventas_ml,
+    tarjeta_vetas_me,
+    cuenta_corriente_ventas_ml,
+    cuenta_corriente_ventas_me,
+    mco_ventas_ml,
+    mco_ventas_me,
+    otro_ventas_ml,
+    otro_ventas_me,
+    comisiones_ml,
+    comisiones_me,
+    monto_ca_recibo_ml,
+    monto_cc_recibo_ml)
+AS
+ WITH total_ventas AS (
+        ( WITH forma_pago AS (
+SELECT fp_1.id_forma_pago,
+                    fp_1.id_moneda,
+                        CASE
+                            WHEN fp_1.codigo::text ~~ 'CA%'::text THEN 'CASH'::text
+                            WHEN fp_1.codigo::text ~~ 'CC%'::text THEN 'CC'::text
+                            WHEN fp_1.codigo::text ~~ 'CT%'::text THEN 'CT'::text
+                            WHEN fp_1.codigo::text ~~ 'MCO%'::text THEN 'MCO'::text
+                            ELSE 'OTRO'::text
+                        END::character varying AS codigo
+FROM obingresos.tforma_pago fp_1
+                )
+    SELECT u.desc_persona::character varying AS desc_persona,
+            to_char(acc.fecha_apertura_cierre::timestamp with time zone,
+                'DD/MM/YYYY'::text)::character varying AS to_char,
+            COALESCE(ppv.codigo, ps.codigo) AS pais,
+            COALESCE(lpv.codigo, ls.codigo) AS estacion,
+            COALESCE(pv.codigo, s.codigo) AS punto_venta,
+            acc.obs_cierre::character varying AS obs_cierre,
+            acc.arqueo_moneda_local,
+            acc.arqueo_moneda_extranjera,
+            acc.monto_inicial,
+            acc.monto_inicial_moneda_extranjera,
+            6.960000 AS tipo_cambio,
+            'si'::character varying AS tiene_dos_monedas,
+            'Bolivianos (BOB)'::character varying AS moneda_local,
+            'Dolares Americanos (USD)'::character varying AS moneda_extranjera,
+            'BOB'::character varying AS cod_moneda_local,
+            'USD'::character varying AS cod_moneda_extranjera,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'CASH'::text AND fp.id_moneda = 1
+                        THEN bfp.importe
+                    ELSE 0::numeric
+                END) AS efectivo_boletos_ml,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'CASH'::text AND fp.id_moneda = 2
+                        THEN bfp.importe
+                    ELSE 0::numeric
+                END) AS efectivo_boletos_me,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'CC'::text AND fp.id_moneda = 1 THEN
+                        bfp.importe
+                    ELSE 0::numeric
+                END) AS tarjeta_boletos_ml,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'CC'::text AND fp.id_moneda = 2 THEN
+                        bfp.importe
+                    ELSE 0::numeric
+                END) AS tarjeta_boletos_me,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'CT'::text AND fp.id_moneda = 1 THEN
+                        bfp.importe
+                    ELSE 0::numeric
+                END) AS cuenta_corriente_boletos_ml,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'CT'::text AND fp.id_moneda = 2 THEN
+                        bfp.importe
+                    ELSE 0::numeric
+                END) AS cuenta_corriente_boletos_me,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'MCO'::text AND fp.id_moneda = 1
+                        THEN bfp.importe
+                    ELSE 0::numeric
+                END) AS mco_boletos_ml,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'MCO'::text AND fp.id_moneda = 2
+                        THEN bfp.importe
+                    ELSE 0::numeric
+                END) AS mco_boletos_me,
+            sum(
+                CASE
+                    WHEN fp.codigo::text = 'OTRO'::text AND fp.id_moneda = 1
+                        THEN bfp.importe
+                    ELSE 0::numeric
+                END) AS otro_boletos_ml,
+            sum(
+                CASE
+                    WHEN fp.codigo::text ~~ 'OTRO'::text AND fp.id_moneda = 2
+                        THEN bfp.importe
+                    ELSE 0::numeric
+                END) AS otro_boletos_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CASH'::text AND fp2.id_moneda = 1
+                        THEN vfp.monto_mb_efectivo
+                    ELSE 0::numeric
+                END) AS efectivo_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CASH'::text AND fp2.id_moneda = 2
+                        THEN vfp.monto_mb_efectivo / 6.960000
+                    ELSE 0::numeric
+                END) AS efectivo_ventas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CC'::text AND fp2.id_moneda = 1
+                        THEN vfp.monto_mb_efectivo
+                    ELSE 0::numeric
+                END) AS tarjeta_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CC'::text AND fp2.id_moneda = 2
+                        THEN vfp.monto_mb_efectivo / 6.960000
+                    ELSE 0::numeric
+                END) AS tarjeta_vetas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CT'::text AND fp2.id_moneda = 1
+                        THEN vfp.monto_mb_efectivo
+                    ELSE 0::numeric
+                END) AS cuenta_corriente_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CT'::text AND fp2.id_moneda = 2
+                        THEN vfp.monto_mb_efectivo / 6.960000
+                    ELSE 0::numeric
+                END) AS cuenta_corriente_ventas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'MCO'::text AND fp2.id_moneda = 1
+                        THEN vfp.monto_mb_efectivo
+                    ELSE 0::numeric
+                END) AS mco_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'MCO'::text AND fp2.id_moneda = 2
+                        THEN vfp.monto_mb_efectivo / 6.960000
+                    ELSE 0::numeric
+                END) AS mco_ventas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'OTRO'::text AND fp2.id_moneda = 1
+                        THEN vfp.monto_mb_efectivo
+                    ELSE 0::numeric
+                END) AS otro_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text ~~ 'OTRO'::text AND fp2.id_moneda = 2
+                        THEN vfp.monto_mb_efectivo / 6.960000
+                    ELSE 0::numeric
+                END) AS otro_ventas_me,
+            COALESCE((
+        SELECT sum(ven.comision) AS sum
+        FROM vef.tventa ven
+        WHERE COALESCE(ven.comision, 0::numeric) > 0::numeric AND ven.id_moneda
+            = 1 AND ven.fecha = acc.fecha_apertura_cierre AND ven.id_punto_venta = acc.id_punto_venta AND ven.id_usuario_cajero = acc.id_usuario_cajero AND ven.estado::text = 'finalizado'::text
+        ), 0::numeric) + COALESCE((
+        SELECT sum(bol.comision) AS sum
+        FROM obingresos.tboleto_amadeus bol
+        WHERE COALESCE(bol.comision, 0::numeric) > 0::numeric AND
+            bol.id_moneda_boleto = 1 AND bol.fecha_emision = acc.fecha_apertura_cierre AND bol.id_punto_venta = acc.id_punto_venta AND bol.id_usuario_cajero = acc.id_usuario_cajero AND bol.estado::text = 'revisado'::text
+        ), 0::numeric) AS comisiones_ml,
+            COALESCE((
+        SELECT sum(ven.comision) AS sum
+        FROM vef.tventa ven
+        WHERE COALESCE(ven.comision, 0::numeric) > 0::numeric AND ven.id_moneda
+            = 2 AND ven.fecha = acc.fecha_apertura_cierre AND ven.id_punto_venta = acc.id_punto_venta AND ven.id_usuario_cajero = acc.id_usuario_cajero AND ven.estado::text = 'finalizado'::text
+        ), 0::numeric) + COALESCE((
+        SELECT sum(bol.comision) AS sum
+        FROM obingresos.tboleto_amadeus bol
+        WHERE COALESCE(bol.comision, 0::numeric) > 0::numeric AND
+            bol.id_moneda_boleto = 2 AND bol.fecha_emision = acc.fecha_apertura_cierre AND bol.id_punto_venta = acc.id_punto_venta AND bol.id_usuario_cajero = acc.id_usuario_cajero AND bol.estado::text = 'revisado'::text
+        ), 0::numeric) AS comisiones_me,
+            acc.monto_ca_recibo_ml,
+            acc.monto_cc_recibo_ml
+    FROM vef.tapertura_cierre_caja acc
+             JOIN segu.vusuario u ON u.id_usuario = acc.id_usuario_cajero
+             LEFT JOIN vef.tsucursal s ON acc.id_sucursal = s.id_sucursal
+             LEFT JOIN vef.tpunto_venta pv ON pv.id_punto_venta = acc.id_punto_venta
+             LEFT JOIN vef.tsucursal spv ON spv.id_sucursal = pv.id_sucursal
+             LEFT JOIN param.tlugar lpv ON lpv.id_lugar = spv.id_lugar
+             LEFT JOIN param.tlugar ls ON ls.id_lugar = s.id_lugar
+             LEFT JOIN param.tlugar ppv ON ppv.id_lugar =
+                 param.f_get_id_lugar_pais(lpv.id_lugar)
+             LEFT JOIN param.tlugar ps ON ps.id_lugar =
+                 param.f_get_id_lugar_pais(ls.id_lugar)
+             LEFT JOIN obingresos.tboleto_amadeus b ON b.id_usuario_cajero =
+                 u.id_usuario AND b.fecha_emision = acc.fecha_apertura_cierre AND b.id_punto_venta = acc.id_punto_venta AND b.estado::text = 'revisado'::text AND b.voided::text = 'no'::text
+             LEFT JOIN obingresos.tboleto_amadeus_forma_pago bfp ON
+                 bfp.id_boleto_amadeus = b.id_boleto_amadeus
+             LEFT JOIN forma_pago fp ON fp.id_forma_pago = bfp.id_forma_pago
+             LEFT JOIN vef.tventa v ON v.id_usuario_cajero = u.id_usuario AND
+                 v.fecha = acc.fecha_apertura_cierre AND v.id_punto_venta = acc.id_punto_venta AND v.estado::text = 'finalizado'::text
+             LEFT JOIN vef.tventa_forma_pago vfp ON vfp.id_venta = v.id_venta
+             LEFT JOIN forma_pago fp2 ON fp2.id_forma_pago = vfp.id_forma_pago
+    WHERE acc.id_apertura_cierre_caja = ANY (ARRAY[3623])
+    GROUP BY u.desc_persona, acc.fecha_apertura_cierre, ppv.codigo, ps.codigo,
+        lpv.codigo, ls.codigo, pv.codigo, pv.nombre, s.codigo, s.nombre, acc.id_punto_venta, acc.id_usuario_cajero, acc.obs_cierre, acc.arqueo_moneda_local, acc.arqueo_moneda_extranjera, acc.monto_inicial, acc.monto_inicial_moneda_extranjera, acc.monto_ca_recibo_ml, acc.monto_cc_recibo_ml
+    )
+UNION ALL
+        ( WITH forma_pago AS (
+SELECT fp.id_forma_pago,
+                    fp.id_moneda,
+                        CASE
+                            WHEN fp.codigo::text ~~ 'CA%'::text THEN 'CASH'::text
+                            WHEN fp.codigo::text ~~ 'CC%'::text THEN 'CC'::text
+                            WHEN fp.codigo::text ~~ 'CT%'::text THEN 'CT'::text
+                            WHEN fp.codigo::text ~~ 'MCO%'::text THEN 'MCO'::text
+                            ELSE 'OTRO'::text
+                        END::character varying AS codigo
+FROM obingresos.tforma_pago fp
+                )
+    SELECT u.desc_persona::character varying AS desc_persona,
+            to_char(acc.fecha_apertura_cierre::timestamp with time zone,
+                'DD/MM/YYYY'::text)::character varying AS fecha_apertura_cierre,
+            v.pais,
+            v.estacion,
+            v.agt::character varying AS punto_venta,
+            acc.obs_cierre::character varying AS obs_cierre,
+            acc.arqueo_moneda_local,
+            acc.arqueo_moneda_extranjera,
+            acc.monto_inicial,
+            acc.monto_inicial_moneda_extranjera,
+            6.960000 AS tipo_cambio,
+            'si'::character varying AS tiene_dos_monedas,
+            'Bolivianos (BOB)'::character varying AS moneda_local,
+            'Dolares Americanos (USD)'::character varying AS moneda_extranjera,
+            'BOB'::character varying AS cod_moneda_local,
+            'USD'::character varying AS cod_moneda_extranjera,
+            0 AS efectivo_boletos_ml,
+            0 AS efectivo_boletos_me,
+            0 AS tarjeta_boletos_ml,
+            0 AS tarjeta_boletos_me,
+            0 AS cuenta_corriente_boletos_ml,
+            0 AS cuenta_corriente_boletos_me,
+            0 AS mco_boletos_ml,
+            0 AS mco_boletos_me,
+            0 AS otro_boletos_ml,
+            0 AS otro_boletos_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CASH'::text AND fp2.id_moneda = 1
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS efectivo_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CASH'::text AND fp2.id_moneda = 2
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS efectivo_ventas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CC'::text AND fp2.id_moneda = 1
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS tarjeta_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CC'::text AND fp2.id_moneda = 2
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS tarjeta_vetas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CT'::text AND fp2.id_moneda = 1
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS cuenta_corriente_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'CT'::text AND fp2.id_moneda = 2
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS cuenta_corriente_ventas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'MCO'::text AND fp2.id_moneda = 1
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS mco_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'MCO'::text AND fp2.id_moneda = 2
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS mco_ventas_me,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text = 'OTRO'::text AND fp2.id_moneda = 1
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS otro_ventas_ml,
+            sum(
+                CASE
+                    WHEN fp2.codigo::text ~~ 'OTRO'::text AND fp2.id_moneda = 2
+                        THEN vfp.importe_pago
+                    ELSE 0::numeric
+                END) AS otro_ventas_me,
+            0 AS comisiones_ml,
+            0 AS comisiones_me,
+            0 AS monto_ca_recibo_ml,
+            0 AS monto_cc_recibo_ml
+    FROM vef.tapertura_cierre_caja acc
+             JOIN vef.tpunto_venta pv ON pv.id_punto_venta = acc.id_punto_venta
+             JOIN segu.vusuario u ON u.id_usuario = acc.id_usuario_cajero
+             JOIN vef.tfactucom_endesis v ON v.fecha =
+                 acc.fecha_apertura_cierre AND v.estado_reg::text = 'emitida'::text AND v.usuario::text = u.cuenta::text AND v.agt::character varying::text = pv.codigo::text
+             JOIN vef.tfactucompag_endesis vfp ON vfp.id_factucom = v.id_factucom
+             JOIN forma_pago fp2 ON fp2.id_forma_pago = ((
+        SELECT fp.id_forma_pago
+        FROM obingresos.tforma_pago fp
+                     JOIN param.tmoneda mon ON mon.id_moneda = fp.id_moneda
+                     JOIN param.tlugar lug ON lug.id_lugar = fp.id_lugar
+        WHERE fp.codigo::text = vfp.forma::text AND
+            mon.codigo_internacional::text = vfp.moneda::text AND lug.codigo::text = vfp.pais::text
+        ))
+    WHERE (acc.id_apertura_cierre_caja = ANY (ARRAY[3623])) AND
+        v.sw_excluir::text = 'no'::text
+    GROUP BY u.desc_persona, acc.fecha_apertura_cierre, acc.id_punto_venta,
+        acc.id_usuario_cajero, acc.obs_cierre, acc.arqueo_moneda_local, acc.arqueo_moneda_extranjera, acc.monto_inicial, acc.monto_inicial_moneda_extranjera, v.pais, v.estacion, v.agt, v.razon_sucursal
+    )
+        )
+    SELECT total_ventas.desc_persona,
+    total_ventas.to_char,
+    total_ventas.pais,
+    total_ventas.estacion,
+    total_ventas.punto_venta,
+    total_ventas.obs_cierre,
+    total_ventas.arqueo_moneda_local,
+    total_ventas.arqueo_moneda_extranjera,
+    total_ventas.monto_inicial,
+    total_ventas.monto_inicial_moneda_extranjera,
+    total_ventas.tipo_cambio,
+    total_ventas.tiene_dos_monedas,
+    total_ventas.moneda_local,
+    total_ventas.moneda_extranjera,
+    total_ventas.cod_moneda_local,
+    total_ventas.cod_moneda_extranjera,
+    sum(total_ventas.efectivo_boletos_ml) AS efectivo_boletos_ml,
+    sum(total_ventas.efectivo_boletos_me) AS efectivo_boletos_me,
+    sum(total_ventas.tarjeta_boletos_ml) AS tarjeta_boletos_ml,
+    sum(total_ventas.tarjeta_boletos_me) AS tarjeta_boletos_me,
+    sum(total_ventas.cuenta_corriente_boletos_ml) AS cuenta_corriente_boletos_ml,
+    sum(total_ventas.cuenta_corriente_boletos_me) AS cuenta_corriente_boletos_me,
+    sum(total_ventas.mco_boletos_ml) AS mco_boletos_ml,
+    sum(total_ventas.mco_boletos_me) AS mco_boletos_me,
+    sum(total_ventas.otro_boletos_ml) AS otro_boletos_ml,
+    sum(total_ventas.otro_boletos_me) AS otro_boletos_me,
+    sum(total_ventas.efectivo_ventas_ml) AS efectivo_ventas_ml,
+    sum(total_ventas.efectivo_ventas_me) AS efectivo_ventas_me,
+    sum(total_ventas.tarjeta_ventas_ml) AS tarjeta_ventas_ml,
+    sum(total_ventas.tarjeta_vetas_me) AS tarjeta_vetas_me,
+    sum(total_ventas.cuenta_corriente_ventas_ml) AS cuenta_corriente_ventas_ml,
+    sum(total_ventas.cuenta_corriente_ventas_me) AS cuenta_corriente_ventas_me,
+    sum(total_ventas.mco_ventas_ml) AS mco_ventas_ml,
+    sum(total_ventas.mco_ventas_me) AS mco_ventas_me,
+    sum(total_ventas.otro_ventas_ml) AS otro_ventas_ml,
+    sum(total_ventas.otro_ventas_me) AS otro_ventas_me,
+    sum(total_ventas.comisiones_ml) AS comisiones_ml,
+    sum(total_ventas.comisiones_me) AS comisiones_me,
+    sum(total_ventas.monto_ca_recibo_ml) AS monto_ca_recibo_ml,
+    sum(total_ventas.monto_cc_recibo_ml) AS monto_cc_recibo_ml
+    FROM total_ventas
+    GROUP BY total_ventas.desc_persona, total_ventas.to_char,
+        total_ventas.pais, total_ventas.estacion, total_ventas.obs_cierre, total_ventas.arqueo_moneda_local, total_ventas.arqueo_moneda_extranjera, total_ventas.monto_inicial, total_ventas.monto_inicial_moneda_extranjera, total_ventas.punto_venta, total_ventas.tipo_cambio, total_ventas.tiene_dos_monedas, total_ventas.moneda_local, total_ventas.moneda_extranjera, total_ventas.cod_moneda_local, total_ventas.cod_moneda_extranjera;
+
+
+CREATE VIEW mat.vsolicitud (
+    id_solicitud,
+    fecha_solicitud,
+    motivo_orden,
+    matricula,
+    nro_tramite,
+    justificacion,
+    tipo_solicitud,
+    fecha_requerida,
+    motivo_solicitud,
+    observaciones_sol,
+    desc_funcionario1,
+    tipo_falla,
+    tipo_reporte,
+    mel,
+    estado,
+    detalle,
+    origen_pedido,
+    id_estado_wf,
+    id_proceso_wf,
+    nro_cotizacion,
+    f_recuperar_correos,
+    cotizacion_solicitadas,
+    mensaje_correo)
+AS
+SELECT sol.id_solicitud,
+    to_char(sol.fecha_solicitud::timestamp with time zone, 'DD/MM/YYYY'::text)
+        AS fecha_solicitud,
+    ot.motivo_orden,
+    "left"(ot.desc_orden::text, 20) AS matricula,
+    sol.nro_tramite,
+    sol.justificacion,
+    sol.tipo_solicitud,
+    COALESCE(to_char(sol.fecha_requerida::timestamp with time zone,
+        'DD/MM/YYYY'::text), ''::text) AS fecha_requerida,
+    sol.motivo_solicitud,
+    sol.observaciones_sol,
+    initcap(f.desc_funcionario1) AS desc_funcionario1,
+    sol.tipo_falla,
+    sol.tipo_reporte,
+    sol.mel,
+    ti.codigo AS estado,
+    mat.f_get_detalle_html(sol.id_solicitud)::text AS detalle,
+    sol.origen_pedido,
+    sol.id_estado_wf,
+    sol.id_proceso_wf,
+        CASE
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GM'::text THEN
+                'GM - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GA'::text THEN
+                'GA - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GO'::text THEN
+                'GO - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GC'::text THEN
+                'GC - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            ELSE 'SIN GERENCIA'::text
+        END AS nro_cotizacion,
+    mat.f_recuperar_correos((
+    SELECT pxp.aggarray(n.id_proveedor) AS aggarray
+    FROM mat.tgestion_proveedores_new n
+    WHERE n.id_solicitud = sol.id_solicitud
+    GROUP BY n.id_solicitud
+    )) AS f_recuperar_correos,
+    tgp.cotizacion_solicitadas,
+    sol.mensaje_correo
+FROM mat.tsolicitud sol
+     LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = sol.id_matricula
+     JOIN orga.vfuncionario f ON f.id_funcionario = sol.id_funcionario_sol
+     JOIN wf.testado_wf wof ON wof.id_estado_wf = sol.id_estado_wf
+     JOIN wf.ttipo_estado ti ON ti.id_tipo_estado = wof.id_tipo_estado
+     LEFT JOIN mat.tgestion_proveedores tgp ON tgp.id_solicitud = sol.id_solicitud;
+CREATE VIEW mat.vsolicitud_firma (
+    id_solicitud,
+    fecha_solicitud,
+    motivo_orden,
+    matricula,
+    nro_tramite,
+    nro_parte,
+    referencia,
+    descripcion,
+    cantidad_sol,
+    id_unidad_medida,
+    justificacion,
+    tipo_solicitud,
+    fecha_requerida,
+    motivo_solicitud,
+    observaciones_sol,
+    desc_funcionario1,
+    tipo_falla,
+    tipo_reporte,
+    mel,
+    estado,
+    detalle,
+    origen_pedido,
+    id_estado_wf,
+    id_proceso_wf)
+AS
+SELECT sol.id_solicitud,
+    to_char(sol.fecha_solicitud::timestamp with time zone, 'DD/MM/YYYY'::text)
+        AS fecha_solicitud,
+    ot.motivo_orden,
+    "left"(ot.desc_orden::text, 20) AS matricula,
+    sol.nro_tramite,
+    de.nro_parte,
+    de.referencia,
+    de.descripcion,
+    de.cantidad_sol,
+    de.id_unidad_medida,
+    sol.justificacion,
+    sol.tipo_solicitud,
+    COALESCE(to_char(sol.fecha_requerida::timestamp with time zone,
+        'DD/MM/YYYY'::text), ''::text) AS fecha_requerida,
+    sol.motivo_solicitud,
+    sol.observaciones_sol,
+    initcap(f.desc_funcionario1) AS desc_funcionario1,
+    sol.tipo_falla,
+    sol.tipo_reporte,
+    sol.mel,
+    ti.codigo AS estado,
+    ('<table border="1"><TR>
+   								<TH>Nro. Parte</TH>
+   								<TH>Referencia</TH>
+   								<TH>Descripción</TH>
+   								<TH>Cantidad</TH>
+   								<TH>Unidad de
+       Medida</TH>'::text || pxp.html_rows((((((((((('<td>'::text || COALESCE(de.nro_parte::text, '-'::text)) || '</td>
+       							<td>'::text) || COALESCE(de.referencia::text, '-'::text)) || '</td>
+           						<td>'::text) || COALESCE(de.descripcion::text, '-'::text)) || '</td>
+             					<td>'::text) || COALESCE(de.cantidad_sol::text, '-'::text)) || '</td>
+             					<td>'::text) || COALESCE(de.id_unidad_medida::text, '-'::text)) || '</td>'::character varying::text)::character varying)::text) || '</table>'::text AS detalle,
+    sol.origen_pedido,
+    sol.id_estado_wf,
+    sol.id_proceso_wf
+FROM mat.tsolicitud sol
+     JOIN mat.tdetalle_sol de ON de.id_solicitud = sol.id_solicitud
+     LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = sol.id_matricula
+     JOIN orga.vfuncionario f ON f.id_funcionario = sol.id_funcionario_sol
+     LEFT JOIN wf.testado_wf wof ON wof.id_estado_wf = sol.id_estado_wf_firma
+     JOIN wf.ttipo_estado ti ON ti.id_tipo_estado = wof.id_tipo_estado
+GROUP BY sol.id_solicitud, sol.fecha_solicitud, ot.motivo_orden, ot.desc_orden,
+    sol.nro_tramite, de.nro_parte, de.referencia, de.descripcion, de.cantidad_sol, de.id_unidad_medida, sol.justificacion, sol.tipo_solicitud, sol.fecha_requerida, sol.motivo_solicitud, sol.observaciones_sol, f.desc_funcionario1, sol.tipo_falla, sol.tipo_reporte, sol.mel, ti.codigo;
+
+CREATE VIEW mat.vsolicitud_mayor_500000 (
+    id_solicitud,
+    id_proceso_wf,
+    nro_tramite,
+    fecha_solicitud,
+    funcionario,
+    nro_po,
+    fecha_po,
+    proveedor,
+    monto_dolares,
+    monto_bolivianos)
+AS
+SELECT so.id_solicitud,
+    so.id_proceso_wf,
+    so.nro_tramite,
+    so.fecha_solicitud,
+    f.desc_funcionario1 AS funcionario,
+    so.nro_po,
+    so.fecha_po,
+    po.desc_proveedor AS proveedor,
+    co.monto_total AS monto_dolares,
+    co.monto_total * 6.96 AS monto_bolivianos
+FROM mat.tsolicitud so
+     JOIN orga.vfuncionario f ON f.id_funcionario = so.id_funcionario_sol
+     JOIN mat.tcotizacion co ON co.id_solicitud = so.id_solicitud AND
+         co.adjudicado::text = 'si'::text
+     JOIN param.vproveedor po ON po.id_proveedor = co.id_proveedor
+WHERE (co.monto_total * 6.96) > 50000::numeric
+ORDER BY so.nro_tramite;
+/***********************************F-DEP-FEA-MAT-0-7/11/2018****************************************/
