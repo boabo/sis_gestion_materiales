@@ -1233,13 +1233,13 @@ v_consulta:='select		sol.id_solicitud,
     elsif(p_transaccion='MAT_REPOR_SEL')then
 
 		begin
-         select sou.id_proceso_wf_firma, to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo, to_char(sou.fecha_sol,'DD/MM/YYYY')
-        		into
-                v_id_proceso_wf_firma_cotizacion,
-                v_fecha_po,
-                v_fecha_solicitud
+        select to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo, to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol
+     into
+        v_fecha_po,
+        v_fecha_solicitud
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
+
 
 	SELECT			twf.id_funcionario,
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
