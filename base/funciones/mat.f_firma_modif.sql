@@ -8,7 +8,7 @@ $body$
  /**************************************************************************
  SISTEMA:		Gestion de Materiales
  FUNCION: 		mat.f_firma_modif
- DESCRIPCION:   Funcion que tiene la funcion de cambiar firmas de acuerdo a un interinato registrado en base a su fecha
+ DESCRIPCION:   Funcion que realiza la accion de cambiar firmas de acuerdo a un interinato registrado en base a su fecha y añade el numero de tramite
  AUTOR: 		 RZABALA
  FECHA:	        01-11-2018 17:09:45
  COMENTARIOS:
@@ -24,10 +24,14 @@ $body$
   v_nombre_funcionario_dc_qr_rempla integer;
   v_fecha_firma_qr_reemp			text;
   es_fecha_po						text;
+  es_tramite						text;
   resul								record;
   resul1							record;
   es_id_funcionario					record;
  begin
+
+
+
  --raise exception 'Los datos enviados proceso, fecha, id funcionarioson: %', p_id_funcionario ;
  		select es.id_usuario_ai,es.id_estado_wf,es.id_estado_anterior
         into es_id_funcionario
@@ -41,6 +45,11 @@ $body$
         		from wf.testado_wf es
         		where es.id_estado_anterior=es_id_funcionario.id_estado_wf
         		and es.id_proceso_wf=p_id_proceso_wf;
+
+        select pwf.nro_tramite
+        into es_tramite
+        		from wf.tproceso_wf pwf
+        		where pwf.id_proceso_wf=p_id_proceso_wf;
 
         select fu.id_cargo
         into es_id_cargo
@@ -59,13 +68,14 @@ $body$
 
 
 
+
 IF(es_id_cargo_suplente is not null)then
 
 
      select
-    		f.desc_funcionario1||' | '||f.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+    		f.desc_funcionario1||' | '||f.nombre_cargo||' | '||es_tramite||'| Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
     		f.desc_funcionario1 as funcion
-    		--su.id_usuario
+
             into resul
 				from orga.vfuncionario_cargo f
 				inner join orga.tfuncionario fu on fu.id_funcionario=f.id_funcionario
@@ -75,10 +85,13 @@ IF(es_id_cargo_suplente is not null)then
 
 	return   resul;
 else
-	 select f.id_funcionario
+	 select f.id_funcionario,
+     f1.desc_funcionario1||' | '||f1.nombre_cargo||' | '||es_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+     f1.desc_funcionario1 as funcion
      into resul
           from segu.vusuario us
           inner join orga.tfuncionario f on f.id_persona=us.id_persona
+          inner join orga.vfuncionario_cargo f1 on f1.id_funcionario=f.id_funcionario
           where us.id_usuario=es_id_usuario;
 	return resul;
 end if;
