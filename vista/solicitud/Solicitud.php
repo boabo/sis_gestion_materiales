@@ -844,8 +844,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         data :	[
                             ['1','Compra'],
                             ['2','Reparacion'],
-                            ['3','Exchage'],
-                            ['4','Flat Exchage']
+                            ['3','Exchange'],
+                            ['4','Flat Exchange']
                         ]
                     }),
                     valueField:'valor',

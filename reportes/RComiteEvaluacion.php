@@ -41,18 +41,18 @@ class RComiteEvaluacion extends  ReportePDF
                 <th scope="col" width="193"> <b>Cotizaciones recibidas:</b></th>
                 <th scope="col" width="70"  align="center">'.$cotizacionReci.'</th>
               </tr>';
-        if ($tipo == 'Compra') {
+//        if ($tipo == 'Compra') {
             $tb .= '<tr>
                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
                     <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
-                    <th scope="col" width="100"  align="center"><b>Compra:</b></th>
-                    <th scope="col" width="32"   align="center" >SI</th>
-                    <th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
+                    <th scope="col" width="196"  align="center"><b>Tipo de Evaluacion:</b></th>
+                    <th scope="col" width="200"   align="center" >' . $tipo . '</th>
+                    <!--<th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
                     <th scope="col" width="32"   align="center" ></th>
                     <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>
+                    <th scope="col" width="32"   align="center" ></th>-->
                   </tr>';
-        }elseif ($tipo == 'Reparacion'){
+       /* }elseif ($tipo == 'Reparacion'){
             $tb .= '<tr>
                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
                     <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
@@ -74,7 +74,7 @@ class RComiteEvaluacion extends  ReportePDF
                     <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
                     <th scope="col" width="32"   align="center" >SI</th>
                   </tr>';
-        }
+        }*/
         $tb.=' <tr>
                         <th scope="col"  height="10"> <b>Empresa:</b></th>
                         <th scope="col" width="495"  align="justify"> '.$proveedor.'</th>
