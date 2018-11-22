@@ -32,6 +32,7 @@ class RComiteEvaluacion extends  ReportePDF
         $talleAsignado = $this->datos[0]['taller_asignado'];
         $obs = $this->datos[0]['obs'];
         $simbolo = $this->datos[0]['codigo'];
+        $mont = number_format($nomto, 2);
         $tb ='<table cellspacing="0" cellpadding="1" border="1">
               <tr>
                 <th scope="col" width="60" align="center" ><b>Fecha:</b></th>
@@ -41,40 +42,46 @@ class RComiteEvaluacion extends  ReportePDF
                 <th scope="col" width="193"> <b>Cotizaciones recibidas:</b></th>
                 <th scope="col" width="70"  align="center">'.$cotizacionReci.'</th>
               </tr>';
-//        if ($tipo == 'Compra') {
-            $tb .= '<tr>
+        $tb .= '<tr>
                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
                     <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
                     <th scope="col" width="196"  align="center"><b>Tipo de Evaluacion:</b></th>
                     <th scope="col" width="200"   align="center" >' . $tipo . '</th>
-                    <!--<th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>
-                    <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>-->
                   </tr>';
-       /* }elseif ($tipo == 'Reparacion'){
-            $tb .= '<tr>
-                    <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
-                    <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
-                    <th scope="col" width="100"  align="center"><b>Compra:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>
-                    <th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
-                    <th scope="col" width="32"   align="center" >SI</th>
-                    <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>
-                  </tr>';
-        }elseif ($tipo == 'Exchage'){
-            $tb .= '<tr>
-                    <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
-                    <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
-                    <th scope="col" width="100"  align="center"><b>Compra:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>
-                    <th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
-                    <th scope="col" width="32"   align="center" ></th>
-                    <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
-                    <th scope="col" width="32"   align="center" >SI</th>
-                  </tr>';
-        }*/
+        /*  if ($tipo == 'Compra') {
+             $tb .= '<tr>
+                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
+                     <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
+                     <th scope="col" width="196"  align="center"><b>Tipo de Evaluacion:</b></th>
+                     <th scope="col" width="200"   align="center" >' . $tipo . '</th>
+                     <th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
+                     <th scope="col" width="32"   align="center" ></th>
+                     <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
+                     <th scope="col" width="32"   align="center" ></th>
+                   </tr>';
+        }elseif ($tipo == 'Reparacion'){
+             $tb .= '<tr>
+                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
+                     <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
+                     <th scope="col" width="100"  align="center"><b>Compra:</b></th>
+                     <th scope="col" width="32"   align="center" ></th>
+                     <th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
+                     <th scope="col" width="32"   align="center" >SI</th>
+                     <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
+                     <th scope="col" width="32"   align="center" ></th>
+                   </tr>';
+         }elseif ($tipo == 'Exchage'){
+             $tb .= '<tr>
+                     <th scope="col" width="200" > <b>Cotizacion Seleccionada:</b></th>
+                     <th scope="col" width="98"   align="center" >' . $neo_cotizacion . '</th>
+                     <th scope="col" width="100"  align="center"><b>Compra:</b></th>
+                     <th scope="col" width="32"   align="center" ></th>
+                     <th scope="col" width="100"  align="center" ><b>Reparación:</b></th>
+                     <th scope="col" width="32"   align="center" ></th>
+                     <th scope="col" width="100"  align="center" ><b>Exchange:</b></th>
+                     <th scope="col" width="32"   align="center" >SI</th>
+                   </tr>';
+         }*/
         $tb.=' <tr>
                         <th scope="col"  height="10"> <b>Empresa:</b></th>
                         <th scope="col" width="495"  align="justify"> '.$proveedor.'</th>
@@ -96,7 +103,7 @@ class RComiteEvaluacion extends  ReportePDF
     <tr>
       <td width="150"><b>Comentario:</b></td>
       <td align="center" width="545" > El Comité de evaluación de acuerdo al cuadro comparativo adjunto y siendo la opción mas conveniente, recomienda la adjudicación al proveedor
-           <br> <b>'.$proveedor.'</b> por un importe de <b>'.$simbolo.' '.$nomto.'.</b></td>
+           <br> <b>'.$proveedor.'</b> por un importe de <b>'.$simbolo.' '.$mont.'.</b></td>
     </tr>
     <br>
  <table border="1">
@@ -106,7 +113,7 @@ class RComiteEvaluacion extends  ReportePDF
 <td align="center" ><b>Part Number </b></td>
 <td align="center" ><b>Descripción</b></td>
 <td align="center" ><b>Cantidad </b></td>
-<td align="center" ><b>Cndición</b></td>
+<td align="center" ><b>Condición</b></td>
 <td align="center" ><b>Tiempo Entrega</b></td>
 </tr>
 ';
@@ -134,7 +141,7 @@ foreach ($this->datos as $value){
     
     <table border="1">
     <tr>
-    <td width="695"> <b>Para compomentes reparados</b>
+    <td width="695"> <b>Para componentes reparados</b>
     <br> Las unidad(es) reparadas fueron enviadas a los talleres asignados? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$talleAsignado.'
     <br> <b>Observaciones:</b> '.$observaciones.'</td>
     </tr>
