@@ -284,7 +284,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.id_matricula.setDisabled(sw);
             this.Cmp.justificacion.setDisabled(sw);
             this.Cmp.nro_justificacion.setDisabled(sw);
-            this.Cmp.tipo_solicitud.setDisabled(sw);
+            // this.Cmp.tipo_solicitud.setDisabled(sw);
             this.Cmp.nro_no_rutina.setDisabled(sw);
         },
 
