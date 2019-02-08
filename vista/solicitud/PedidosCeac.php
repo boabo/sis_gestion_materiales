@@ -95,7 +95,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.addButton('btnpac',
                 {
                     iconCls: 'bemail',
-                    text: 'Generar PAC',
+                    text: 'Generar PAC Referencial',
                     grupo:[3],
                     disabled: true,
                     handler: this.correoPac,

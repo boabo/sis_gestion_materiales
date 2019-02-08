@@ -1570,7 +1570,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 {
                     name: 'importe',
                     msgTarget: 'title',
-                    fieldLabel: 'Importe Total',
+                    fieldLabel: 'Importe Total Referencial',
                     allowBlank: true,
                     anchor: '90%',
                     style: 'background-color: #F9BAB3; background-image: none;',
