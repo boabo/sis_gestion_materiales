@@ -202,6 +202,8 @@ class MODSolicitud extends MODbase
         $this->setParametro('lugar_entrega', 'lugar_entrega', 'varchar');
         $this->setParametro('mensaje_correo', 'mensaje_correo', 'varchar');
 
+        $this->setParametro('monto_pac', 'monto_pac', 'numeric');
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -995,7 +997,7 @@ class MODSolicitud extends MODbase
 
 
         $this->armarConsulta();
-        //var_dump ($this->consulta);exit;
+        //echo($this->consulta);exit;
         $this->ejecutarConsulta();
         //var_dump($this->respuesta); exit;
         //Devuelve la respuesta

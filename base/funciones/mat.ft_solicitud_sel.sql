@@ -1620,6 +1620,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           	v_nro_cite_dce = 'OB.DAB.GA.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
           ELSIF (substr(v_num_tramite,1,2)='GO')THEN
           	v_nro_cite_dce = 'OB.DAB.GO.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+           ELSIF (substr(v_num_tramite,1,2)='GC')THEN
+          	v_nro_cite_dce = 'OB.DAB.GC.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
           END IF;
 
           UPDATE mat.tsolicitud SET
@@ -1826,25 +1828,28 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
     end if;
 
+
           v_consulta='select
-           				  '''||v_nom_unidad[1]||'''::varchar AS unidad_sol,
+           				  '''||COALESCE(v_nom_unidad[1],'')||'''::varchar AS unidad_sol,
                           '''||COALESCE (v_nom_unidad[3],v_nom_unidad[2])||'''::varchar AS gerencia,
-                          '''||v_funcionario_sol||'''::varchar AS funcionario_sol,
+                          '''||COALESCE (v_funcionario_sol,'')||'''::varchar AS funcionario_sol,
                           '''||COALESCE(v_nombre_funcionario_af_qr,' ')||'''::varchar AS funcionario_adm,
                           '''||COALESCE(v_nombre_funcionario_presu_qr,' ')||'''::varchar AS funcionario_pres,
                           '''||COALESCE(v_codigo_pre,' ')||'''::varchar AS codigo_pres,
                           COALESCE(array_length(pxp.aggarray(det.nro_parte),1),0)::integer AS nro_items,
                           COALESCE(tgp.adjudicado,''POR COTIZAR'')::varchar AS adjudicado,
                           s.motivo_solicitud::varchar,
-                           array_to_string(pxp.aggarray(det.nro_parte),'','')::varchar as nro_partes,
-                           '''||v_nro_cite_dce||'''::varchar AS nro_cobs,
+                           --array_to_string(pxp.aggarray(det.nro_parte),'','')::varchar as nro_partes,
+                          coalesce(array_to_string(pxp.aggarray(det.nro_parte),'','')::varchar,''''::varchar) as nro_partes,
+                           '''||COALESCE(v_nro_cite_dce,'')||'''::varchar AS nro_cobs,
                           s.fecha_solicitud::date,
-                          tc.monto_total AS monto_ref,
-                           '''||v_funcionario||'''::varchar AS funcionario
+                          coalesce(sp.monto, tc.monto_total) AS monto_ref,
+                           '''||COALESCE(v_funcionario,'')||'''::varchar AS funcionario
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 						  left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = s.id_solicitud
-                          inner join  mat.tcotizacion tc ON tc.id_solicitud = s.id_solicitud AND tc.adjudicado = ''si''
+                          left join mat.tcotizacion tc ON tc.id_solicitud = s.id_solicitud AND tc.adjudicado = ''si''
+                          left join mat.tsolicitud_pac sp on sp.id_proceso_wf = s.id_proceso_wf
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
 

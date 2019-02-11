@@ -930,6 +930,21 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
+                    name: 'monto_pac',
+                    fieldLabel: 'Importe Total Referencial(PAC)',
+                    allowBlank: false,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:100
+                },
+                type:'NumberField',
+                filters:{pfiltro:'pa.monto_pac',type:'string'},
+                id_grupo:2,
+                grid:false,
+                form:true
+            },
+            {
+                config:{
                     name: 'mensaje_correo',
                     fieldLabel: 'Mensaje Correo',
                     allowBlank: false,
@@ -1127,9 +1142,10 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'id_cotizacion', type: 'numeric'},
             {name:'monto_pac', type: 'numeric'},
             {name:'moneda', type: 'string'},
-            {name:'tipo_mov', type: 'string'} //,
-            //{name:'nro_parte_det', type: 'string'},
+            {name:'tipo_mov', type: 'string'},
+            //{name:'nro_parte_det', type: 'string'}
             //{name:'nro_parte_alterno_det', type: 'string'}
+            {name:'monto', type: 'numeric'}
 
 
 
