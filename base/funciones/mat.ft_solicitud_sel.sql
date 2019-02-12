@@ -1843,7 +1843,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           coalesce(array_to_string(pxp.aggarray(det.nro_parte),'','')::varchar,''''::varchar) as nro_partes,
                            '''||COALESCE(v_nro_cite_dce,'')||'''::varchar AS nro_cobs,
                           s.fecha_solicitud::date,
-                          coalesce(sp.monto, tc.monto_total) AS monto_ref,
+                          (case
+                          		when sp.monto=0 then tc.monto_total
+                                when sp.monto is Null then tc.monto_total
+                                when sp.monto>0 then sp.monto
+                            end)AS monto_ref,
                            '''||COALESCE(v_funcionario,'')||'''::varchar AS funcionario
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
