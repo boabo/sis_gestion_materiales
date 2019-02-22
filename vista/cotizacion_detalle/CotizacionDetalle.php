@@ -311,7 +311,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                             ['13','SV'],
                             ['14','INSP'],
                             ['15','AS IS'],
-                            ['16','NS']
+                            ['16','NS'],
+                            ['17','I/T']
                         ]
                     }),
                     valueField:'valor',

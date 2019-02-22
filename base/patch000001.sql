@@ -471,3 +471,8 @@ ALTER TABLE mat.tsolicitud_pac
   ALTER COLUMN id_moneda SET STATISTICS 0;
 
 /***********************************F-SCP-FEA-MAT-0-7/11/2018****************************************/
+
+/***********************************I-SCP-MAY-MAT-0-18/02/2019****************************************/
+ALTER TABLE mat.tdetalle_sol
+  ALTER COLUMN nro_parte_alterno TYPE VARCHAR(250) COLLATE pg_catalog."default";
+/***********************************F-SCP-MAY-MAT-0-18/02/2019****************************************/
