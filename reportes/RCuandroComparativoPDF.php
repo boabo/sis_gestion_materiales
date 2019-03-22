@@ -86,7 +86,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         <td colspan="7"  align="center" style="width:100%;" ><b>' . $proveedor . '</b></td>
         </tr>
         <tr>
-          <td align="center" style="width:6%;"><b>N°</b></td> 
+          <td align="center" style="width:6%;"><b>N°</b></td>
           <td align="center" style="width:20%;"><b>Part Number</b></td>
           <td align="center" style="width:22%;"><b>Descripcion</b></td>
           <td align="center" style="width:8%;"><b>QTY</b></td>
@@ -94,8 +94,8 @@ class RCuandroComparativoPDF extends  ReportePDF
           <td align="center" style="width:12%;"><b>Precio ($us)</b></td>
           <td align="center" style="width:12%;"><b>Monto Total($us)</b></td>
           <td align="center" style="width:12%;"><b>Tiempo Entrega</b></td>
-          
-           
+
+
         </tr>
         ';
             foreach ($value as $jh => $value2) {
@@ -121,7 +121,7 @@ class RCuandroComparativoPDF extends  ReportePDF
                                     foreach ($value7 as $Precio => $value8) {
                                         $tbl2 .= '<td align="right" style="width:12%;">' . $Precio . '</td>';
                                         foreach ($value8 as $Monto => $value9) {
-                                            $tbl2 .= '<td align="right" style="width:12%;">' . number_format($Monto, 2, ",", ".") . '</td>';
+                                            $tbl2 .= '<td align="right" style="width:12%;">' . $Monto . '</td>';
                                             foreach ($value9 as $dia => $value10) {
                                                 $tbl2 .= '<td align="center" style="width:12%;">' . $dia . '</td>';
                                                 $tbl2 .= '</tr>';
@@ -145,8 +145,8 @@ class RCuandroComparativoPDF extends  ReportePDF
             $tbl2 .= '<tr>
                            <td align="center" style="width:26%;"><b>TOTALES</b></td>
                             <td align="center"style="width:50%;" ></td>
-                            <td align="right" style="width:12%; color: red" ><b>' . number_format($total, 2, ",", ".") . '</b></td>
-                             
+                            <td align="right" style="width:12%; color: red" ><b>' . $total . '</b></td>
+
                         </tr>
                         <tr>
                         <td align="justify" style="width:100%;"><b> RECOMENDACION:</b> ' . $rec . '</td>
@@ -198,7 +198,7 @@ class RCuandroComparativoPDF extends  ReportePDF
 
         $tbl =' <table border="2">
          <tbody>
-        <tr>    
+        <tr>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Elaborado por</b><br>'.$fun_sol[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Abastecimientos y suministros</b><br>'.$fun_rev[0].'</td>
         </tr>
@@ -216,7 +216,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $fun_presu = explode('|', $aero);
         $tbl1 = ' <table border="2">
          <tbody>
-        <tr>    
+        <tr>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe Dpto Abastecimiento y Logistica</b><br>'.$fun_abas[0].'</td>
         </tr>

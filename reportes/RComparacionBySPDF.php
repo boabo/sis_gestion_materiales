@@ -12,11 +12,11 @@ class RComparacionBySPDF extends  ReportePDF{
 
         $html = <<<EOF
 		<style>
-		table, th, td {		
+		table, th, td {
    			font-family: "Calibri";
-   			font-size: 9pt;	
+   			font-size: 9pt;
 		}
-		
+
 		</style>
 		<body>
 		<table border="1" cellpadding="2" cellspacing = "0">
@@ -28,7 +28,7 @@ class RComparacionBySPDF extends  ReportePDF{
             	<th style="width: 20%;" align="center" colspan="2"><div style="padding:10px 10px 10px 10px;"  >$nro_cite_cobs</div></th>
         	</tr>
         	<tr>
-        	    <td align="center" valign="middle"> 
+        	    <td align="center" valign="middle">
         	        <div style="vertical-align:middle;">FECHA:</div>
         	    </td>
         	    <td align="center" valign="middle">
@@ -39,7 +39,7 @@ class RComparacionBySPDF extends  ReportePDF{
 EOF;
 
         $this->writeHTML ($html);
-        
+
         /*$tbl = '<table border="1">
                 <tr>
                 <td style="width: 30%"><img src="'.$url_imagen.'" ></td>
@@ -88,7 +88,7 @@ EOF;
         $unidad_sol = $this->datos[0]["unidad_sol"];
         $gerencia = $this->datos[0]["gerencia"];
         $funcionario = $this->datos[0]["funcionario"];
-        if($this->datos[0]["codigo_pres"] != 'borrador') {
+        if($this->datos[0]["codigo_pres"] = 'borrador') {
             $funcionario_sol = $this->datos[0]["funcionario_sol"];
             $qr = $this->generarImagen($funcionario_sol);
             $fun_sol = explode('|', $funcionario_sol);
@@ -162,7 +162,7 @@ EOF;
                     <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
                 </tr>
                 <tr>
-                    <td align="center" style="font-family: Calibri; font-size: 9px;"> 
+                    <td align="center" style="font-family: Calibri; font-size: 9px;">
                         <br><br>
                         <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
                         <br>'.$fun_sol[0].' <b>Solicitante</b>
@@ -178,10 +178,10 @@ EOF;
                 </tr>
                  <tr>
                     <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
-                    <br><br> 
+                    <br><br>
                     <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
                      <br>'.$fun_presu[0].' <b>RPCE</b>
-                    
+
                     </td>
                 </tr>
                 </table>
