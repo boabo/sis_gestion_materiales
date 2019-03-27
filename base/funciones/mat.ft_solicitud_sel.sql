@@ -144,7 +144,8 @@ DECLARE
     v_fecha_solicitud		text;
 
 
-
+	v_codigo_rpc			varchar='';
+    v_cod_tramite			varchar;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -1046,6 +1047,26 @@ v_consulta:='select		sol.id_solicitud,
 
       end if;
 
+      SELECT
+      substr (s.nro_tramite,1,2)
+      into v_cod_tramite
+      FROM mat.tsolicitud s
+      WHERE s.id_proceso_wf = v_parametros.id_proceso_wf;
+
+      IF(v_cod_tramite = 'GC') then
+		SELECT
+          		  vf.desc_funcionario1
+                  into v_nombre_funcionario_ag_qr
+          FROM wf.testado_wf twf
+          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+          INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = twf.id_funcionario
+          WHERE twf.id_tipo_estado = 992
+          GROUP BY twf.id_funcionario, vf.desc_funcionario1;
+       end if;
+
+
+
+
             v_consulta:='select 	s.origen_pedido,
                                     '''||COALESCE (initcap(v_nombre_funcionario_qr),' ') ||'''::varchar as visto_bueno,
                                     '''||COALESCE (v_fecha_firma_qr,' ')||'''::text as fecha_visto_bueno,
@@ -1423,19 +1444,26 @@ v_consulta:='select		sol.id_solicitud,
 
     		SELECT 	twf.id_funcionario,
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
-					to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+					to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma,
+                    te.codigo
 
         	INTO
         			v_id_funcionario_presu_qr_oficial,
         			v_nombre_funcionario_presu_qr_oficial,
-        			v_fecha_firma_presu_qr
+        			v_fecha_firma_presu_qr,
+                    v_codigo_rpc
         	FROM wf.testado_wf twf
         		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
         		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
+        		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc' and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
         		GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
-
+                /*IF(v_codigo_rpc = 'vbrpc') then
+					RAISE EXCEPTION 'a: %, b: %, c: %, d: %',v_id_funcionario_presu_qr_oficial,
+        			v_nombre_funcionario_presu_qr_oficial,
+        			v_fecha_firma_presu_qr,
+                    v_fecha_po;
+                end if;*/
     	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial,v_fecha_po);
     else
 
