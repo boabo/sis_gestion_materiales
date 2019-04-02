@@ -12,6 +12,7 @@ class RComiteEvaluacion extends  ReportePDF
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 12, 15, 36);
     }
     function ReporteComiteEvaluacion(){
+        $this->AddPage();
         $fechaPo= $this->datos[0]['fecha_po'];
         $fcotizaciones = $this->datos[0]['cotizacion_solicitadas'];
         $cotizacionReci = $this->datos[0]['proveedores_resp'];
@@ -95,10 +96,10 @@ class RComiteEvaluacion extends  ReportePDF
                             border-collapse:collapse;
                         }
                             table.conborde th,
-                            table.conborde td { border = 0; 
+                            table.conborde td { border = 0;
                         }
       </style>
-    
+
     <table class="conborde">
     <tr>
       <td width="150"><b>Comentario:</b></td>
@@ -124,7 +125,7 @@ foreach ($this->datos as $value){
     $tb .= '<td align="center" >'.$value['cantidad_det'].'</td>';
     $tb .= '<td align="center" >'.$value['cd'].'</td>';
     $tb .= '<td align="center" >'.$value['codigo_tipo'].'</td>
- 
+
  </tr>';
 }
         $tb .= '
@@ -134,11 +135,11 @@ foreach ($this->datos as $value){
       <td width="150"><b>Observaciones:</b></td>
       <td align="justify" width="545" >'.$obs.'<br></td>
     </tr>
-  
+
 
 
     </table>
-    
+
     <table border="1">
     <tr>
     <td width="695"> <b>Para componentes reparados</b>
@@ -177,7 +178,7 @@ foreach ($this->datos as $value){
         $firmas ='
        <table border="2">
          <tbody>
-        <tr>    
+        <tr>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Jefe de Unidad del Dpto. Abastecimiento y logística</b><br>'.$fun_rev[0].'</td>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>Representante del Dpto. Abastecimiento y logística</b><br>'.$fun_abas[0].'</td>
         </tr>
@@ -193,17 +194,54 @@ foreach ($this->datos as $value){
         $firmas2 ='
        <table border="2">
          <tbody>
-        <tr>    
+        <tr>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>RPCE</b><br>'.$fun_rpcs[0].'</td>
+
         </tr>
         <tr>
                 <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"></td>
-                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $CuartaFirma . '" alt="Logo"><br></td>
+
          </tr>
          </tbody>
         </table>
         ';
+        // $pie='<table border="1">
+        //     <tr>';
+        // if ($this->datos[0]["codigo_pres"] == 'vbrpc' or $this->datos[0]["codigo_pres"] == 'suppresu'or $this->datos[0]["codigo_pres"] == 'vbgaf' or $this->datos[0]["codigo_pres"] == 'vbpresupuestos') {
+        //     $pie .= '  <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td><br>
+        //     ';
+        // }else{
+        //     $pie .= ' <td align="center" >ACEPTACION [&nbsp;&nbsp;&nbsp;X&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RECHAZA [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</td><br>
+        //     ';
+        // }
+        // $pie.=' </tr>
+        //     <tr>
+        //       <td align="justify"><b>Instruciones RPCE:</b> Adjudiquese el proceso de contratación de '.strtolower($itemSeleccionados).' items  a la empresa '.$proveedor.', de acuerdo con la recomendación del comite de evaluacion de compra y selección de proveedor. Debiendo notificarse via Purchase Order a la empresa adjudicada.</td>
+        //     </tr>
+        //     <tr>
+        //     <td style="font-family: Calibri;font-size: 11px"align="center"><b>RPCE</b><br>'.$fun_rpcs[0].'</td>
+        //     </tr>
+        //     <tr>
+        //     <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $CuartaFirma . '" alt="Logo"><br></td>
+        //     </tr>
+        //     </table>';
+        $this->writeHTML($tb);
+        $this->writeHTML($firmas);
+        $this->writeHTML($firmas2);
+        $this->writeHTML($pie);
+
+    }
+    function ReporteComiteEvaluacion2(){
+        $this->AddPage();
+        if($this->datos[0]["codigo_pres"] != 'vbrpc'and $this->datos[0]["estado_materiales"] != 'comite_dpto_abastecimientos' and $this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos' and $this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad' and $this->datos[0]["estado_materiales"] != 'compra'  ) {
+            $rpce = $this->datos[0]['funcionario_pres'];
+            $CuartaFirma = $this->codigoQr($rpce, 'cuarto');
+            $fun_rpcs = explode('|', $rpce);
+        }
+        //if ($this->datos[0]["codigo_pres"] != 'vbrpc' or $this->datos[0]["codigo_pres"] != 'suppresu'or $this->datos[0]["codigo_pres"] != 'vbgaf' ){
+        $var = 'X';
+        //}
+
         $pie='<table border="1">
             <tr>';
         if ($this->datos[0]["codigo_pres"] == 'vbrpc' or $this->datos[0]["codigo_pres"] == 'suppresu'or $this->datos[0]["codigo_pres"] == 'vbgaf' or $this->datos[0]["codigo_pres"] == 'vbpresupuestos') {
@@ -217,11 +255,18 @@ foreach ($this->datos as $value){
             <tr>
               <td align="justify"><b>Instruciones RPCE:</b> Adjudiquese el proceso de contratación de '.strtolower($itemSeleccionados).' items  a la empresa '.$proveedor.', de acuerdo con la recomendación del comite de evaluacion de compra y selección de proveedor. Debiendo notificarse via Purchase Order a la empresa adjudicada.</td>
             </tr>
+            <tr>
+            <td style="font-family: Calibri;font-size: 11px"align="center"><b>RPCE</b><br>'.$fun_rpcs[0].'</td>
+            </tr>
+            <tr>
+            <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $CuartaFirma . '" alt="Logo"><br></td>
+            </tr>
             </table>';
         $this->writeHTML($tb);
         $this->writeHTML($firmas);
         $this->writeHTML($firmas2);
         $this->writeHTML($pie);
+
     }
     function  codigoQr ($cadena,$ruta){
         $barcodeobj = new TCPDF2DBarcode($cadena, 'QRCODE,M');
@@ -245,9 +290,10 @@ foreach ($this->datos as $value){
     function generarReporte() {
         $this->SetMargins(10,40,10);
         $this->setFontSubsetting(false);
-        $this->AddPage();
+        //$this->AddPage();
         $this->SetMargins(10,40,10);
         $this->ReporteComiteEvaluacion();
+        $this->ReporteComiteEvaluacion2();
         //$this->revisarfinPagina();
     }
 }

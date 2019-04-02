@@ -46,17 +46,19 @@ $body$
         		where es.id_estado_anterior=es_id_funcionario.id_estado_wf
         		and es.id_proceso_wf=p_id_proceso_wf;
 
+
         select pwf.nro_tramite
         into es_tramite
         		from wf.tproceso_wf pwf
         		where pwf.id_proceso_wf=p_id_proceso_wf;
-
+--raise exception '%',p_id_funcionario;
         select fu.id_cargo
         into es_id_cargo
 				from orga.vfuncionario_cargo fu
 				where fu.id_funcionario=p_id_funcionario --370
 				order by fu.fecha_finalizacion desc
 				limit 1;
+
 
 
 
@@ -92,7 +94,8 @@ else
           from segu.vusuario us
           inner join orga.tfuncionario f on f.id_persona=us.id_persona
           inner join orga.vfuncionario_cargo f1 on f1.id_funcionario=f.id_funcionario
-          where us.id_usuario=es_id_usuario;
+          --where us.id_usuario=es_id_usuario;
+          where f.id_funcionario=p_id_funcionario;
 	return resul;
 end if;
 
