@@ -919,7 +919,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     forceSelection: true,
                     triggerAction:'all',
                     mode:'local',
-                    store:[ 'EXCHANGE','NEW','OVER HALL','PROPUESTA'],
+                    store:[ 'NE - NUEVO','OH - OVER HALL', 'SV - SERVICIABLE','REP - REPARADO','SV - OH', 'OH - NE', 'FLAT EXCHANGE', 'PROPUESTA'],
                     style:'text-transform:uppercase;'
                 },
                 type: 'ComboBox',
