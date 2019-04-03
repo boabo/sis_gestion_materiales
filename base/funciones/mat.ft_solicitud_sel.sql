@@ -938,7 +938,9 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.nro_justificacion,
                                 de.nro_parte_alterno,
                                 de.tipo,
-                                sol.nro_no_rutina
+                                sol.nro_no_rutina,
+                                sol.condicion,
+                                sol.fecha_solicitud as fecha_soli
 
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''

@@ -54,6 +54,19 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
 
     }
     function reporteRequerimiento(){
+        $fecha = date_create($this->datos[0]['fecha_soli']);
+        $fecha_base = date_create('01-04-2019');
+        if ($fecha >= $fecha_base) {
+        $tabla = '<td > <b>Condición:</b>' .$this->datos[0]['condicion'].'</td>';
+        $solicitud = '<td >';
+        $solicitud_cierre = '</td>';
+      }else{
+        $solicitud = '<th colspan="2" style="text-align:justify">';
+        $solicitud_cierre = '</th>';
+      }
+
+
+
         $this->SetFont('times', 'B', 12);
         $this->Cell(0, 7, ' Datos Generales', 1, 0, 'L', 0, '', 0);
         $this->ln();
@@ -68,7 +81,8 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
             <td > <b>Fecha Requerida:</b> '.$this->datos[0]['fecha_requerida'].'</td>
             </tr>
             <tr>
-            <th colspan="2" style="text-align:justify"> <b>Tipo de Solicitud:</b> '.$this->datos[0]['tipo_solicitud'].'</th>
+            '.$solicitud.' <b>Tipo de Solicitud:</b> '.$this->datos[0]['tipo_solicitud'].$solicitud_cierre
+            .$tabla.'
             </tr>
             <tr>
             <th colspan="2" style="text-align:justify"><b>Motivo de la Solicitud:</b> '.$this->datos[0]['motivo_solicitud'].'</th>
@@ -78,6 +92,9 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
         $this->SetFont('', '', 12);
         $this->writeHTML($htmlCabe);
         $this->SetFont('', 'B', 12);
+        if ($fecha >= $fecha_base) {
+        $this->Cell(0, 0, 'Especificación Técnica Material a Solicitar', 1, 1, 'L', 0, '', 0);
+        }
         $this->Cell(10, 0, 'N°', 1, 0, 'C', 0, '', 0);
         $this->Cell(35, 0, 'Número de Parte', 1, 0, 'C', 0, '', 0);
         $this->Cell(35, 0, 'Referencia', 1, 0, 'C', 0, '', 0);
@@ -106,7 +123,7 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
         <td width="46" align="center">$cantidad</td>
         <td width="42" align="center">$unidad</td>
     </tr>
-  
+
 
 </table>
 EOD;
@@ -148,14 +165,14 @@ EOD;
             $fe_ab = $fecha_ab;
         }
         $tbl = <<<EOD
-        
+
         <table cellspacing="0" cellpadding="1" border="1">
         <tr>
         <td align="center" > <b>Solicitado Por</b></td>
         <td align="center" ><b>Revisado Por</b> </td>
         </tr>
         <tr>
-           <td align="center" > 
+           <td align="center" >
            $fun
             <br><br>
             <img  style="width: 100px;" src="$qr1" alt="Logo">
@@ -165,12 +182,12 @@ EOD;
         $fab
         <br><br>
             <img  style="width: 100px;" src="$qr4" alt="Logo">
-            
+
          </td>
          </tr>
-       
+
         </table>
-        
+
 EOD;
         $this->SetFont('times', '', 12);
         $this->writeHTML($tbl, true, false, false, false, '');

@@ -68,7 +68,23 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->Cell(75, 0, 'Matrícula: '.$this->datos[0]['matri'], 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 0, 'Pedido N°: '.$this->datos[0]['nro_tramite'], 1, 1, 'C', 0, '', 0);
         $this->SetFont('times', 'B', 11);
-        $this->Cell(0, 7, ' Material a Solicitar', 1, 0, 'L', 0, '', 0);
+
+        $fecha = date_create($this->datos[0]['fecha_soli']);
+        $fecha_base = date_create('01-04-2019');
+
+        if ($fecha >= $fecha_base) {
+        $this->Cell(0, 7, 'Especificación Técnica Material a Solicitar', 1, 0, 'L', 0, '', 0);
+        $tabla='<td width="130"  align="center"><b>Condición</b></td>';
+        $condicion = $this->datos[0]['condicion'];
+        $condicion_base='<td width="130"  align="center">'.$condicion.'</td>';
+        $ancho1='<td width="130"  align="center">';
+        $ancho2='<td width="178"  align="center">';
+      }else{
+        $this->Cell(0, 7, 'Material a Solicitar', 1, 0, 'L', 0, '', 0);
+        $ancho1='<td width="220"  align="center">';
+        $ancho2='<td width="220"  align="center">';
+      }
+
         $this->ln();
         $this->SetFont('', 'B', 11);
         $this->Cell(15, 0, 'N°', 1, 0, 'C', 0, '', 0);
@@ -110,26 +126,29 @@ EOD;
         $fecha_requerida= $this->datos[0]['fecha_requerida'];
         $observaciones_sol = $this->datos[0]['observaciones_sol'];
 
+
         $html = <<<EOD
  <table cellspacing="0" cellpadding="1" border="1">
   <tr>
-    <th colspan="2" > <b>Motivo de la Solicitud</b></th>
+    <td colspan="2" > <b>Motivo de la Solicitud</b></td>
   </tr>
   <tr>
     <th colspan="2" style="text-align:justify">$motivo</th>
   </tr>
   <tr>
     <td width="220"  align="center" ><b>Justificación de Necesidad</b></td>
-    <td width="220"  align="center"><b>Tipo de Solicitud</b></td>
-    <td width="220"  align="center"><b>Fecha Requerida de Llegada</b></td>
+    $ancho1 <b>Tipo de Solicitud</b></td>
+    $tabla
+    $ancho2 <b>Fecha Requerida de Llegada</b></td>
   </tr>
   <tr>
     <td width="220"  align="center" >$justificacion</td>
-    <td width="220"  align="center">$tipo_solicitud</td>
-    <td width="220"  align="center">$fecha_requerida</td>
+    $ancho1 $tipo_solicitud</td>
+    $condicion_base
+    $ancho2 $fecha_requerida</td>
   </tr>
   <tr>
-    <th colspan="3" style="text-align:justify"><b>Observaciones:</b> $observaciones_sol</th>
+    <th colspan="4" style="text-align:justify"><b>Observaciones:</b> $observaciones_sol</th>
   </tr>
 </table>
 EOD;
@@ -172,14 +191,14 @@ EOD;
             $fe_ab = $fecha_ab;
         }
         $tbl = <<<EOD
-        
+
         <table cellspacing="0" cellpadding="1" border="1">
         <tr>
         <td align="center" > <b>Solicitado Por:</b> $fun</td>
         <td align="center" > <b>V.B. Encargado Materiales:</b> $frev</td>
         </tr>
         <tr>
-           <td align="center" > 
+           <td align="center" >
             <br><br>
             <img  style="width: 100px;" src="$qr1" alt="Logo">
             <br>
@@ -187,25 +206,25 @@ EOD;
         <td align="center" >
         <br><br>
             <img  style="width: 100px;" src="$qr2" alt="Logo">
-          
+
          </td>
          </tr>
          <tr>
-            	<td align="justify"  colspan="2"><b> Evaluado y Analizado por AOC - 121</b> 
+            	<td align="justify"  colspan="2"><b> Evaluado y Analizado por AOC - 121</b>
             	</td>
         </tr>
         </table>
-        
+
 EOD;
         $tbl2 = <<<EOD
-      
+
         <table cellspacing="0" cellpadding="1" border="1">
          <tr>
         <td align="center" > <b>V.B. DAC:</b> $dac</td>
         <td align="center" > <b>Recibido:</b> $fab</td>
         </tr>
         <tr>
-        <td align="center" > 
+        <td align="center" >
             <br><br>
             <img  style="width: 100px;" src="$qr3" alt="Logo">
             <br>
@@ -213,12 +232,12 @@ EOD;
         <td align="center" >
         <br><br>
             <img  style="width: 100px;" src="$qr4" alt="Logo">
-          
+
          </td>
          </tr>
-        
+
         </table>
-        
+
 EOD;
 
        /* if ($pagina >= 20 ){

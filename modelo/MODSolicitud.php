@@ -501,6 +501,8 @@ class MODSolicitud extends MODbase
         $this->captura('nro_parte_alterno', 'varchar');
         $this->captura('tipo', 'varchar');
         $this->captura('nro_no_rutina', 'varchar');
+        $this->captura('condicion', 'varchar');
+        $this->captura('fecha_soli', 'date');
 
 
         //Ejecuta la instruccion

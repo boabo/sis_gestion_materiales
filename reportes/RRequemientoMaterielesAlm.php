@@ -9,7 +9,14 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->Cell(70, $height, '', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $this->SetFontSize(15);
         $this->SetFont('', 'B');
-        $this->MultiCell(105, $height,  'ALMACENES CONSUMIBLES O ROTABLES', 0, 'C', 0, '', '');
+        $fecha = date_create($this->datos[0]['fecha_soli']);
+        $fecha_base = date_create('01-04-2019');
+        if ($fecha >= $fecha_base) {
+        $this->MultiCell(105, $height,  "ALMACENES CONSUMIBLES O ROTABLES\n(ESPECIFICACIÓN TÉCNICA)", 0, 'C', 0, '', '');
+      }else{
+        $this->MultiCell(105, $height,  "ALMACENES CONSUMIBLES O ROTABLES", 0, 'C', 0, '', '');
+      }
+
         $this->Image(dirname(__FILE__) . '/../../pxp/lib' . $_SESSION['_DIR_LOGO'], 17, 10, 36);
     }
     function Footer() {
@@ -51,6 +58,8 @@ class RRequemientoMaterielesAlm extends  ReportePDF
     }
     function reporteRequerimiento()
     {
+      $fecha = date_create($this->datos[0]['fecha_soli']);
+      $fecha_base = date_create('01-04-2019');
         $this->SetFont('times', 'B', 11);
         $this->Cell(0, 7, ' Restocking Request', 1, 0, 'L', 0, '', 0);
         $this->ln();
@@ -76,14 +85,23 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->Cell(0, 0, $this->datos[0]['desc_funcionario1'], 1, 1, 'C', 0, '', 0);
         $this->ln(2);
         $this->SetFont('times', '', 11);
+        if ($fecha >= $fecha_base) {
+        $this->Cell(0, 6, ' Condición:'.' '.$this->datos[0]['condicion'], 1, 1, 'L', 0, '', 0);
+        $this->ln();
+        }
         $this->MultiCell(0, 10, ' Motivo: ' . $this->datos[0]['motivo_solicitud'] . "\n", 1, 'J', 0, '', '');
         $this->ln();
         $this->SetFont('times', '', 11);
-
         $this->MultiCell(0, 10, ' Observaciones: ' . $this->datos[0]['observaciones_sol'] . "\n", 1, 'J', 0, '', '');
         $this->ln(13);
         $this->SetFont('times', 'B', 11);
+
+
+        if ($fecha >= $fecha_base) {
+        $this->Cell(0, 6, ' Especificación Técnica Material a Solicitar', 1, 1, 'L', 0, '', 0);
+      }else{
         $this->Cell(0, 6, ' Detalle', 1, 1, 'L', 0, '', 0);
+      }
         $this->ln(0.10);
         $this->SetFont('', 'B', 10);
 
@@ -142,14 +160,14 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             $frev =  $this->datos2[0]['visto_ag'];
         }
         $tbl = <<<EOD
-        
+
         <table>
         <tr>
         <td align="center" > Solicitado Por: $fun</td>
         <td align="center" > Revisado Por: $frev </td>
         </tr>
         <tr>
-           <td align="center" >     
+           <td align="center" >
             <br><br>
             <img  style="width: 95px;" src="$qr1" alt="Logo">
             <br><br>
@@ -159,9 +177,9 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             <img  style="width: 95px;" src="$qr2" alt="Logo">
             <br><br>
          </td>
-         </tr> 
+         </tr>
         </table>
-        
+
 EOD;
         $this->writeHTML($tbl, true, false, false, false, '');
         $this->ln();

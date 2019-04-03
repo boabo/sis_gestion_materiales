@@ -60,6 +60,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         $this->Cell(0, 7, $this->datos[0]['nro_tramite'], 1, 0, 'C', 0, '', 0);
         $this->ln();
         $this->SetFont('times', '', 12);
+        $this->SetFont('times', 'B', 12);
         $this->Cell(15, 7, ' Fecha', 1, 0, 'C', 0, '', 0);
         $this->Cell(60, 7,  $this->datos[0]['fecha_solicitud'], 1, 0, 'C', 0, '', 0);
         if($this->datos[0]['flota'] == 'FLOTA') {
@@ -72,7 +73,22 @@ class RRequemientoMaterielesMan extends  ReportePDF
         }else{
             $this->Cell(0, 7, $this->datos[0]['matricula'], 1, 0, 'C', 0, '', 0);
         }
-        $this->ln();
+
+        $fecha = date_create($this->datos[0]['fecha_soli']);
+        $fecha_base = date_create('01-04-2019');
+
+        //var_dump($prueba);
+
+        if ($fecha >= $fecha_base) {
+          $condicion = $this->datos[0]['condicion'];
+          $condicion_tabla='<tr><th colspan="2" ><b>Condición:</b>'.' '.$condicion.'</th></tr>';
+          $this->ln();
+          $this->Cell(0, 7, ' Especificación Técnica Material a Solicitar', 1, 1, 'L', 0, '', 0);
+        } else {
+          $this->ln();
+        }
+        //$this->ln();
+        //$this->ln();
         $this->SetFont('times', '', 12);
         $this->SetFont('', 'B', 12);
         $this->Cell(15, 0, 'N°', 1, 0, 'C', 0, '', 0);
@@ -100,7 +116,7 @@ class RRequemientoMaterielesMan extends  ReportePDF
         <td width="70" align="center">$cantidad</td>
         <td width="70" align="center">$unidad</td>
     </tr>
-  
+
 
 </table>
 EOD;
@@ -119,6 +135,7 @@ EOD;
 
         $html = <<<EOD
  <table cellspacing="0" cellpadding="1" border="1">
+  $condicion_tabla
   <tr>
     <th colspan="2" > <b>Motivo de la Solicitud</b></th>
   </tr>
@@ -183,14 +200,14 @@ EOD;
             $fe_ab = $fecha_ab;
         }
         $tbl = <<<EOD
-        
+
         <table cellspacing="0" cellpadding="1" border="1">
         <tr>
         <td align="center" > <b>Unidad C & S/Control Producción</b></td>
         <td align="center" ><b>Gerencia de Mantenimiento</b> </td>
         </tr>
         <tr>
-           <td align="center" > 
+           <td align="center" >
            $fun
             <br><br>
             <img  style="width: 100px;" src="$qr1" alt="Logo">
@@ -200,11 +217,11 @@ EOD;
         $frev
         <br><br>
             <img  style="width: 100px;" src="$qr2" alt="Logo">
-            
+
          </td>
          </tr>
          <tr>
-            	<td align="justify"  colspan="2"><b>Evaluado y Analizado por AOC - 121</b> 
+            	<td align="justify"  colspan="2"><b>Evaluado y Analizado por AOC - 121</b>
             	<br></td>
         </tr>
          <tr>
@@ -212,7 +229,7 @@ EOD;
         <td align="center" >  <b>Recibido:</b> $fab</td>
         </tr>
         <tr>
-        <td align="center" > 
+        <td align="center" >
             <br><br>
             <img  style="width: 100px;" src="$qr3" alt="Logo">
             <br>
@@ -220,12 +237,12 @@ EOD;
         <td align="center" >
         <br><br>
             <img  style="width: 100px;" src="$qr4" alt="Logo">
-          
+
          </td>
          </tr>
-      
+
         </table>
-        
+
 EOD;
         $this->SetFont('times', '', 12);
         $this->writeHTML($tbl, true, false, false, false, '');
