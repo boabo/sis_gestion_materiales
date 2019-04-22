@@ -919,7 +919,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     forceSelection: true,
                     triggerAction:'all',
                     mode:'local',
-                    store:[ 'NE - NUEVO','OH - OVERHAUL', 'SV - SERVICEABLE','REP - REPARADO','SV - OH', 'OH - NE', 'FLAT EXCHANGE', 'PROPUESTA', 'FN - FACTORY NEW', 'NS - NEW SURPLUS', 'NEW - NUEVO'],
+                    store:[ 'NE - NEW','OH - OVERHAUL', 'SV - SERVICEABLE','FN - FACTORY NEW', 'NS - NEW SURPLUS', 'REP - REPAIR','SV/OH - SERVICEABLE/OVERHAUL', 'OH/NE - OVERHAUL/NEW', 'FLAT EXCHANGE', 'PROPUESTA'],
                     style:'text-transform:uppercase;'
                 },
                 type: 'ComboBox',
