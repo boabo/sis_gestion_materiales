@@ -110,6 +110,7 @@ EOF;
         $monto_ref = $this->datos[0]["monto_ref"];
         //$codigo = $this->datos[0]["codigo"];
         $nro_partes = explode(',',$this->datos[0]["nro_partes"]);
+        $obs = $this->datos[0]["observaciones"];
 
         $this->Ln(5);
         $tbl = '<table border="1">
@@ -124,7 +125,7 @@ EOF;
                     <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Proveedor:</b><br><span style="text-align: center;">'.$adjudicado.'</span> </td>
                 </tr>
                 <tr style="font-size: 9pt; text-align: justify;">
-                     <td colspan="3"><b>Nota:</b> El monto solicitado para el presente requerimiento, fue establecido por la unidad solicitante considerando criterios de economía y &nbsp;&nbsp;condiciones del mercado actual.<br></td>
+                     <td colspan="3"><b>Nota:</b><span>'.$obs.'</span></td>
                 </tr>
                 <tr style="font-size: 9pt;">
                     <td colspan="2"><b>Sello y firma de la Unidad de Almacenes de no EXISTENCIA(Cuando Corresponda)</b></td>

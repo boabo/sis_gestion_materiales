@@ -221,7 +221,7 @@ BEGIN
                               where s.id_proceso_wf ='||v_parametros.id_proceso_wf||' and ';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-            v_consulta:=v_consulta||'ORDER BY parte, c.adjudicado DESC';
+            v_consulta:=v_consulta||'ORDER BY d.precio_unitario DESC, c.adjudicado DESC';
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
@@ -495,6 +495,7 @@ BEGIN
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
             v_consulta:=v_consulta||'group by c.obs';
+            raise notice 'v_consulta: %', v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
@@ -578,4 +579,8 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
+
+ALTER FUNCTION mat.ft_cotizacion_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

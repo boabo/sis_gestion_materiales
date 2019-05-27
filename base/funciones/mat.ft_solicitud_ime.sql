@@ -372,23 +372,27 @@ END IF;
    from mat.tsolicitud so
    where so.id_solicitud = v_parametros.id_solicitud;
 
+
    --RAISE exception '%',v_id_proceso_wf_so;
            if(select 1
               from mat.tsolicitud_pac
               where id_proceso_wf = v_id_proceso_wf_so)then
 
               update mat.tsolicitud_pac set
-                  monto = v_parametros.monto_pac
+                  monto = v_parametros.monto_pac,
+                  observaciones = v_parametros.obs_pac
               where id_proceso_wf = v_id_proceso_wf_so;
 
            ELSE
               INSERT INTO mat.tsolicitud_pac(
                 id_proceso_wf,
-                monto
+                monto,
+                observaciones
               )
               VALUES (
                 v_id_proceso_wf_so,
-                v_parametros.monto_pac
+                v_parametros.monto_pac,
+                v_parametros.obs_pac
               );
             END IF;
      -----
@@ -1827,4 +1831,8 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
+
+ALTER FUNCTION mat.ft_solicitud_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

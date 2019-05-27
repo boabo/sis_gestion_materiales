@@ -94,6 +94,8 @@ class MODSolicitud extends MODbase
         $this->captura('monto_pac', 'numeric');
         $this->captura('moneda', 'varchar');
         $this->captura('tipo_mov', 'varchar');
+
+        $this->captura('obs_pac', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         //var_dump($this->consulta); exit;
@@ -203,6 +205,7 @@ class MODSolicitud extends MODbase
         $this->setParametro('mensaje_correo', 'mensaje_correo', 'varchar');
 
         $this->setParametro('monto_pac', 'monto_pac', 'numeric');
+        $this->setParametro('obs_pac', 'obs_pac', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -995,6 +998,8 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_solicitud', 'date');
         $this->captura('monto_ref', 'numeric');
         $this->captura('funcionario', 'varchar');
+
+        $this->captura('observaciones', 'varchar');
         //$this->captura('codigo','varchar');
 
 

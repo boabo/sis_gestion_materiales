@@ -945,6 +945,21 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
+                    name: 'obs_pac',
+                    fieldLabel: 'Obs. Importe Referencial',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 200,
+                    maxLength:10000
+                },
+                type:'TextArea',
+                filters:{pfiltro:'pa.obs_pac',type:'string'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
                     name: 'mensaje_correo',
                     fieldLabel: 'Mensaje Correo',
                     allowBlank: false,
@@ -1145,7 +1160,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tipo_mov', type: 'string'},
             //{name:'nro_parte_det', type: 'string'}
             //{name:'nro_parte_alterno_det', type: 'string'}
-            {name:'monto', type: 'numeric'}
+            {name:'monto', type: 'numeric'},
+
+            {name:'obs_pac', type: 'string'}
 
 
 

@@ -476,3 +476,8 @@ ALTER TABLE mat.tsolicitud_pac
 ALTER TABLE mat.tdetalle_sol
   ALTER COLUMN nro_parte_alterno TYPE VARCHAR(250) COLLATE pg_catalog."default";
 /***********************************F-SCP-MAY-MAT-0-18/02/2019****************************************/
+
+/***********************************I-SCP-MAY-MAT-0-24/05/2019****************************************/
+ALTER TABLE mat.tsolicitud_pac
+  ADD COLUMN observaciones VARCHAR(1000) DEFAULT 'El monto solicitado para el presente requerimiento, fue establecido por la unidad solicitante considerando criterios de economía y condiciones del mercado actual.'::character varying NOT NULL;
+/***********************************F-SCP-MAY-MAT-0-24/05/2019****************************************/

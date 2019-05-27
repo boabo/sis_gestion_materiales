@@ -101,14 +101,14 @@ class RCuandroComparativoPDF extends  ReportePDF
             foreach ($value as $jh => $value2) {
                 foreach ($value2 as $tipo => $value3) {
                     $tbl2 .= '<tr>';
-                    /*if ($tipo == 'Otros Cargos') {
+                    if ($tipo == 'Otros Cargos') {
                         $cont = $cont = '';
                     } elseif ($tipo == 'NA') {
-                        $cont = $cont = '';
-                    }*/
-                    if ($tipo == 'NA') {
-                        $cont = $cont = '';
+                        $cont = '';
                     }
+//                    if ($tipo == 'NA') {
+//                        $cont = $cont = '';
+//                    }
                     $tbl2 .= '<td rowspan="1"  align="center" style="width:6%;">' . $cont . '</td> ';
                     foreach ($value3 as $parte => $value4) {
                         $tbl2 .= ' <td rowspan="1"  align="center" style="width:20%;">' . $parte . '</td> ';

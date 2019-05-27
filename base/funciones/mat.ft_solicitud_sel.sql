@@ -513,11 +513,11 @@ v_consulta:='select		sol.id_solicitud,
                                 where c.id_solicitud = sol.id_solicitud and c.adjudicado = ''si'')::varchar as id_cotizacion,
                                 COALESCE(pa.monto,0) as monto_pac,
                          		COALESCE(mo.codigo_internacional,'''') as moneda,
-                                pa.tipo as tipo_mov
+                                pa.tipo as tipo_mov,
+                                pa.observaciones as obs_pac
 
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
-
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf tew on tew.id_estado_wf = sol.id_estado_wf
                                 inner join wf.ttipo_estado ti on ti.id_tipo_estado = tew.id_tipo_estado
@@ -926,8 +926,8 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.justificacion,
                                 sol.tipo_solicitud,
                                 to_char( sol.fecha_requerida,''DD/MM/YYYY'') as fecha_requerida,
-                                LEFT(UPPER(sol.motivo_solicitud),1) || RIGHT(LOWER(sol.motivo_solicitud),CHAR_LENGTH(sol.motivo_solicitud)-1)::text as motivo_solicitud,
-                               	LEFT(UPPER(sol.observaciones_sol),1) || RIGHT(LOWER(sol.observaciones_sol),CHAR_LENGTH(sol.observaciones_sol)-1)::text as observaciones_sol,
+                                sol.motivo_solicitud::text as motivo_solicitud,
+                               	sol.observaciones_sol::text as observaciones_sol,
         						initcap( f.desc_funcionario1)as desc_funcionario1,
                                 sol.tipo_falla,
         						sol.tipo_reporte,
@@ -1878,7 +1878,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 when sp.monto is Null then tc.monto_total
                                 when sp.monto>0 then sp.monto
                             end)AS monto_ref,
-                           '''||COALESCE(v_funcionario,'')||'''::varchar AS funcionario
+                           '''||COALESCE(v_funcionario,'')||'''::varchar AS funcionario,
+                           sp.observaciones
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 						  left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = s.id_solicitud
@@ -1887,7 +1888,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
 
-          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref';
+          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones';
         	--Devuelve la respuesta
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
@@ -1952,4 +1953,8 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
+
+ALTER FUNCTION mat.ft_solicitud_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;
