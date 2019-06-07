@@ -871,10 +871,15 @@ class MODSolicitud extends MODbase
         $this->captura('cantidad_det', 'int4');
         $this->captura('cd', 'varchar');
         $this->captura('codigo_tipo', 'varchar');
+
+        $this->captura('funcionario_resp', 'varchar');
+        $this->captura('fecha_resp', 'text');
+        $this->captura('fecha_solicitud', 'date');
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-        //var_dump($this->respuesta); exit;
+//        var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }

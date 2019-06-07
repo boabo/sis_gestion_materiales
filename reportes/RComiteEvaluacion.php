@@ -172,6 +172,23 @@ foreach ($this->datos as $value){
             $CuartaFirma = $this->codigoQr($rpce, 'cuarto');
             $fun_rpcs = explode('|', $rpce);
         }
+        //if(  $this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad' and $this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos') {
+//      var_dump('llega' , $this->datos[0]['fecha_solicitud']);exit;
+//      inicia desde el 01-06-2019 para nueva firma del funcionario responsable del tramite
+         if($this->datos[0]['fecha_solicitud'] >= '2019-06-01'){
+             $resp = $this->datos[0]['funcionario_resp'];
+             $quintaFirma = $this->codigoQr($resp, 'quinto');
+             $fun_resp = explode('|', $resp);
+
+             $v_tit ='<td style="font-family: Calibri;font-size: 11px"align="center"><b>Técnico Adquisiciones</b><br>'.$fun_resp[0].'</td>';
+             $v_firma = '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $quintaFirma . '" alt="Logo"><br></td>';
+
+         }else{
+             $v_tit ='';
+             $v_firma ='';
+         }
+//
+        //}
         //if ($this->datos[0]["codigo_pres"] != 'vbrpc' or $this->datos[0]["codigo_pres"] != 'suppresu'or $this->datos[0]["codigo_pres"] != 'vbgaf' ){
         $var = 'X';
         //}
@@ -196,11 +213,11 @@ foreach ($this->datos as $value){
          <tbody>
         <tr>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
-
+                '.$v_tit.'
         </tr>
         <tr>
                 <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"></td>
-
+                '.$v_firma.'
          </tr>
          </tbody>
         </table>

@@ -56,6 +56,7 @@ $body$
         into es_id_cargo
 				from orga.vfuncionario_cargo fu
 				where fu.id_funcionario=p_id_funcionario --370
+                AND( fu.fecha_finalizacion is null or fu.fecha_finalizacion >= now())
 				order by fu.fecha_finalizacion desc
 				limit 1;
 
@@ -95,7 +96,8 @@ else
           inner join orga.tfuncionario f on f.id_persona=us.id_persona
           inner join orga.vfuncionario_cargo f1 on f1.id_funcionario=f.id_funcionario
           --where us.id_usuario=es_id_usuario;
-          where f.id_funcionario=p_id_funcionario;
+          where f.id_funcionario=p_id_funcionario
+          AND( f1.fecha_finalizacion is null or f1.fecha_finalizacion >= now());
 	return resul;
 end if;
 
@@ -106,4 +108,8 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
+
+ALTER FUNCTION mat.f_firma_modif (p_id_proceso_wf integer, p_id_funcionario integer, p_fecha text)
+  OWNER TO postgres;
