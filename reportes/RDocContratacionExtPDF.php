@@ -8,8 +8,7 @@ class RDocContratacionExtPDF extends  ReportePDF{
     {
         $this->Ln(15);
         $url_imagen = dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png';
-
-
+        
         $f_actual = date_format(date_create($this->datos[0]["fecha_solicitud"]), 'd/m/Y');
         $nro_cite_dce = $this->datos[0]["nro_cite_dce"];
 
@@ -17,7 +16,7 @@ class RDocContratacionExtPDF extends  ReportePDF{
 		<style>
 		table, th, td {
    			border: 1px solid black;
-   			border-collapse: collapse;
+            border-collapse: collapse;            
    			font-family: "Calibri";
    			font-size: 10pt;
 		}
@@ -27,7 +26,7 @@ class RDocContratacionExtPDF extends  ReportePDF{
         	<tr>
             	<th style="width: 20%" align="center" rowspan="3"><img src="$url_imagen" ></th>
             	<th style="width: 50%" align="center" rowspan="3"><br><h3>DOCUMENTO DE CONTRATACIÓN DEL EXTERIOR</h3></th>
-            	<th style="width: 30%" align="center" colspan="2">R-GG-2017</th>
+            	<th style="width: 31.5%" align="center" colspan="2">R-GG-2017</th>
         	</tr>
         	<tr>
         	    <td colspan="2" align="center">
@@ -58,19 +57,19 @@ EOF;
     {
 
         $this->AddPage();
-        $this->SetMargins(17, 40, 15);
+        $this->SetMargins(17, 40, 16);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-        $tbl = '<table border="1">
+        $tbl = '<table border="1" cellpadding="2">
                 <tr style="font-size: 8pt; text-align: center;">
                     <td style="width:3%;"><b>N°</b></td>
                     <td style="width:12%;"><b>PART NUMBER</b></td>
                     <td style="width:17%;"><b>PART NUMBER ALTERNO</b></td>
-                    <td style="width:24%;"><b>DESCRIPCION</b></td>
+                    <td style="width:25%;"><b>DESCRIPCION</b></td>
                     <td style="width:7%;"><b>CANT.</b></td>
                     <td style="width:8%;"><b>UNIDAD</b></td>
-                    <td style="width:17%;"><b>LUGAR DE ENTREGA</b></td>
-                    <td style="width:12%;"><b>CONDICION</b></td>
+                    <td style="width:14%;"><b>LUGAR DE ENTREGA</b></td>
+                    <td style="width:16%;"><b>CONDICION</b></td>
                 </tr>
                 ';
         //var_dump($this->datos);exit;

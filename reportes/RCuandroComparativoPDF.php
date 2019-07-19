@@ -19,6 +19,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->MultiCell(0, 5, '(Decreto Supremo N° 26688) Versión I', 0, 'C', 0, '', '');
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 17, 15, 36);
     }
+    
     function Footer() {
         $this->Ln();
         // $this->setY(-15);
@@ -35,12 +36,12 @@ class RCuandroComparativoPDF extends  ReportePDF
         $pagenumtxt = 'Página'.' '.$this->getAliasNumPage().' de '.$this->getAliasNbPages();
         $this->Cell($ancho, 0, $pagenumtxt, '', 0, 'C');
         //$this->Cell($ancho, 0, $_SESSION['_REP_NOMBRE_SISTEMA'], '', 0, 'R');
-        $this->Ln();
+        /*$this->Ln();
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
             }
-        }
+        }*/
     }
 
     function reporteCuadroComparativo(){
@@ -242,6 +243,14 @@ class RCuandroComparativoPDF extends  ReportePDF
                 if ($Key['fecha_po'] != null) {
                     $this->MultiCell(0, 5, 'Cochabamba ' . $this->fechaLiteral($Key['fecha_po']) . "\n", 0, 'C', 0, '', '');
                 }
+            }
+        }
+        $this->Ln();
+        $this->Ln();
+        $this->Ln();
+        foreach ($this->datos as $Key) {
+            if($Key['adjudicado'] == 'si') {
+                $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
             }
         }
 
