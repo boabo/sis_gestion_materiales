@@ -648,7 +648,7 @@ class ACTSolicitud extends ACTbase{
         $this->dataSource=$dataSource->getDatos();
 
         $nombreArchivo = uniqid(md5(session_id()).'[Reporte-DocContratacionExt]').'.pdf';
-        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('orientacion','L');
         $this->objParam->addParametro('tamano','LETTER');
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 
