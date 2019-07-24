@@ -263,10 +263,9 @@ EOD;
         return $url;
     }
 
-    function setDatos($datos,$datos2,$datos3) {
+    function setDatos($datos,$datos2) {
         $this->datos = $datos;
-        $this->datos2 = $datos2;
-        $this->datos3 = $datos3;
+        $this->datos2 = $datos2;        
     }
     function generarReporte() {
         $this->SetMargins(15,40,15);
