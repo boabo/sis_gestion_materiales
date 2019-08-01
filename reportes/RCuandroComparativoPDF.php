@@ -241,10 +241,17 @@ class RCuandroComparativoPDF extends  ReportePDF
         foreach ($this->datos as $Key) {
             if($Key['adjudicado'] == 'si') {
                 if ($Key['fecha_po'] != null) {
-                    $this->MultiCell(0, 5, 'Cochabamba ' . $this->fechaLiteral($Key['fecha_po']) . "\n", 0, 'C', 0, '', '');
+                    $this->MultiCell(0, 5, $Key['pie_pag']."\n"."\n"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"
+                    ."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"
+                    ."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"
+                    ."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"
+                    ."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t"."\t".'Cochabamba ' . $this->fechaLiteral($Key['fecha_po']) . "\n", 0, 'J', 0, '', '');
+                }else{
+                    $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
                 }
             }
         }
+        /*
         $this->Ln();
         $this->Ln();
         $this->Ln();
@@ -252,7 +259,7 @@ class RCuandroComparativoPDF extends  ReportePDF
             if($Key['adjudicado'] == 'si') {
                 $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
             }
-        }
+        }*/
 
 
 
