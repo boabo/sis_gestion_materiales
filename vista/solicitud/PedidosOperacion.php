@@ -43,6 +43,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             {
                                 xtype: 'fieldset',
                                 title: ' Datos Adquisiciones ',
+                                width: 420,
                                 autoHeight: true,
                                 items: [],
                                 id_grupo: 2

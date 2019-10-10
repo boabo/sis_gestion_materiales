@@ -919,8 +919,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     forceSelection: true,
                     triggerAction:'all',
                     mode:'local',
-                    store:[ 'NE - NEW','OH - OVERHAUL', 'SV - SERVICEABLE','FN - FACTORY NEW', 'NS - NEW SURPLUS', 'REP - REPAIR','SV/OH - SERVICEABLE/OVERHAUL', 'OH/NE - OVERHAUL/NEW', 'FLAT EXCHANGE', 'PROPUESTA - (NE, NEW, NS, NF, OH, SV, AR y otros)'],
-                    style:'text-transform:uppercase;'
+                    store:[ 'NE - NEW','OH - OVERHAUL', 'SV - SERVICEABLE','FN - FACTORY NEW', 'NS - NEW SURPLUS', 'REP - REPAIR','SV/OH - SERVICEABLE/OVERHAUL', 'OH/NE - OVERHAUL/NEW', 'FLAT EXCHANGE', 'PROPUESTA - (NE, NEW, NS, FN, OH, SV, AR y otros)','(NEW, NE y FN)','(NEW, NE, FN y NS)'],
+    style:'text-transform:uppercase;'
                 },
                 type: 'ComboBox',
                 filters: {pfiltro: 'sol.condicion', type: 'string'},
