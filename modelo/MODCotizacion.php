@@ -291,6 +291,7 @@ class MODCotizacion extends MODbase{
         $this->captura('cantidad_det','int4');
         $this->captura('precio_unitario','numeric');
         $this->captura('precio_unitario_mb','numeric');
+		$this->captura('nro_po','varchar');								   
 
         //Ejecuta la instruccion
         $this->armarConsulta();
