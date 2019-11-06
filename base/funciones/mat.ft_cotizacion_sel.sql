@@ -542,7 +542,8 @@ BEGIN
                                  d.explicacion_detallada_part_cot,
                                  d.cantidad_det,
                                  d.precio_unitario,
-                                 d.precio_unitario_mb
+                                 d.precio_unitario_mb,
+                                 s.nro_po
                                  from mat.tsolicitud s
                                  inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
@@ -552,7 +553,7 @@ BEGIN
                                  inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
           						 left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
                                  where '||v_fill||'
-                                 order by origen_pedido ';
+                                 order by origen_pedido, s.nro_tramite ';
 
 			return v_consulta;
 		end;
