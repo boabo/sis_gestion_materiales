@@ -1831,7 +1831,7 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
-PARALLEL UNSAFE
+
 COST 100;
 
 ALTER FUNCTION mat.ft_solicitud_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)

@@ -108,7 +108,6 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
-PARALLEL UNSAFE
 COST 100;
 
 ALTER FUNCTION mat.f_firma_modif (p_id_proceso_wf integer, p_id_funcionario integer, p_fecha text)

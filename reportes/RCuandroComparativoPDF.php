@@ -84,7 +84,7 @@ class RCuandroComparativoPDF extends  ReportePDF
             $tbl2 = '
         <table border="1">
         <tr>
-        <td colspan="7"  align="center" style="width:100%;" ><b>' . $proveedor . '</b></td>
+        <td colspan="8"  align="center" style="width:100%;" ><b>' . $proveedor . '</b></td>
         </tr>
         <tr>
           <td align="center" style="width:6%;"><b>N°</b></td>
@@ -144,19 +144,20 @@ class RCuandroComparativoPDF extends  ReportePDF
             }
             $cont = 1;
             $tbl2 .= '<tr>
-                           <td align="center" style="width:26%;"><b>TOTALES</b></td>
-                            <td align="center"style="width:50%;" ></td>
-                            <td align="right" style="width:12%; color: red" ><b>' . $total . '</b></td>
-
+                           <td align="center" colspan="2"><b>TOTALES</b></td>
+                            <td align="center" colspan="4"></td>
+                            <td align="right" style="color: red;" ><b>' . $total . '</b></td>
+                            <td></td>
                         </tr>
                         <tr>
-                        <td align="justify" style="width:100%;"><b> RECOMENDACION:</b> ' . $rec . '</td>
+                        <td align="justify" colspan="8" ><b> RECOMENDACION:</b> ' .htmlentities($rec) . '</td>
                         </tr>';
 
             $tbl2 .= '</table>';
-            $this->SetFont('times', '', 10);
-            $this->writeHTML($tbl2);
 
+            $this->SetFont('times', '', 10);
+
+            $this->writeHTML($tbl2);
         }
         }
         foreach ($this->datos as $Key) {
@@ -290,7 +291,10 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->datos2 = $datos2;
         $this->datos3 = $datos3;
         $this->datos4 = $datos4;
-
+/*var_dump($datos);
+var_dump($datos2);
+var_dump($datos3);
+var_dump($datos4);exit;*/
     }
     function generarReporte() {
         $this->SetMargins(15,35,15);
