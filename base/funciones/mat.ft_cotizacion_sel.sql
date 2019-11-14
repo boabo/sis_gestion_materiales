@@ -544,7 +544,9 @@ BEGIN
                                  d.precio_unitario,
                                  d.precio_unitario_mb,
                                  s.nro_po,
-                                 vu.desc_persona::varchar as aux_abas		 
+                                 vu.desc_persona::varchar as aux_abas,
+                                 (cc.ep || '' - '' || cc.nombre_uo)::varchar as centro_costo,
+                                 (pp.codigo || '' - '' || pp.nombre_partida)::varchar as partida
                                  from mat.tsolicitud s
                                  inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
@@ -553,7 +555,10 @@ BEGIN
                                  inner join wf.testado_wf e on e.id_estado_wf = s.id_estado_wf
                                  inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado
           						 left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
-								 left join segu.vusuario vu on vu.id_usuario = c.id_usuario_reg  
+								 left join segu.vusuario vu on c.id_usuario_reg = vu.id_usuario
+                                 left join adq.tsolicitud_det sd on d.id_cotizacion_det = sd.id_cotizacion_det
+                                 left join param.vcentro_costo cc on  sd.id_centro_costo = cc.id_centro_costo
+                                 left join pre.tpartida pp on sd.id_partida = pp.id_partida
                                  where '||v_fill||'
                                  order by origen_pedido, s.nro_tramite ';
 

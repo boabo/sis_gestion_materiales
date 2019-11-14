@@ -228,8 +228,8 @@ BEGIN
                                             d.precio_unitario_mb,
                                             d.descripcion_cot,
                                             d.explicacion_detallada_part_cot,
-                                            d.tipo_cot
-
+                                            d.tipo_cot,
+											d.id_cotizacion_det
                                   from mat.tcotizacion c
                                   inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
                                   where c.id_solicitud =  p_id_solicitud and c.adjudicado = 'si'  )LOOP
@@ -249,8 +249,8 @@ BEGIN
                   precio_sg,
                   precio_sg_mb,
 
-                  id_orden_trabajo
-
+                  id_orden_trabajo,
+				  id_cotizacion_det
                 )
                 VALUES (
                   p_id_usuario,
@@ -266,8 +266,8 @@ BEGIN
                   0,
                   0,
 
-                  '43'
-
+                  '43',
+				  v_record_det.id_cotizacion_det
 
                 );
             END LOOP;

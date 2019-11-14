@@ -293,6 +293,8 @@ class MODCotizacion extends MODbase{
         $this->captura('precio_unitario_mb','numeric');
 		$this->captura('nro_po','varchar');								   
 		$this->captura('aux_abas','varchar');
+		$this->captura('centro_costo','varchar');
+        $this->captura('partida','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -123,16 +123,16 @@ class RControlParteCotizacion
         //modificacionw
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,2,'PART NUMBER ADJUDICADAS' );
-        $this->docexcel->getActiveSheet()->getStyle('A2:Y2')->applyFromArray($styleTitulos1);
-        $this->docexcel->getActiveSheet()->mergeCells('A2:Y2');
+        $this->docexcel->getActiveSheet()->getStyle('A2:AA2')->applyFromArray($styleTitulos1);
+        $this->docexcel->getActiveSheet()->mergeCells('A2:AA2');
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,3,'Origen Pedido: '.$this->objParam->getParametro('origen_pedido'));
-        $this->docexcel->getActiveSheet()->getStyle('A3:Y3')->applyFromArray($styleTitulos3);
-        $this->docexcel->getActiveSheet()->mergeCells('A3:Y3');
+        $this->docexcel->getActiveSheet()->getStyle('A3:AA3')->applyFromArray($styleTitulos3);
+        $this->docexcel->getActiveSheet()->mergeCells('A3:AA3');
 
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0,4,'Del: '.  $this->objParam->getParametro('fecha_ini').'   Al: '.  $this->objParam->getParametro('fecha_fin') );
-        $this->docexcel->getActiveSheet()->getStyle('A4:Y4')->applyFromArray($styleTitulos3);
-        $this->docexcel->getActiveSheet()->mergeCells('A4:Y4');
+        $this->docexcel->getActiveSheet()->getStyle('A4:AA4')->applyFromArray($styleTitulos3);
+        $this->docexcel->getActiveSheet()->mergeCells('A4:AA4');
 
         $this->docexcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
@@ -159,10 +159,12 @@ class RControlParteCotizacion
         $this->docexcel->getActiveSheet()->getColumnDimension('W')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('X')->setWidth(20);
         $this->docexcel->getActiveSheet()->getColumnDimension('Y')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('Z')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getColumnDimension('AA')->setWidth(20);
 
-        $this->docexcel->getActiveSheet()->getStyle('A5:Y5')->getAlignment()->setWrapText(true);
+        $this->docexcel->getActiveSheet()->getStyle('A5:AA5')->getAlignment()->setWrapText(true);
         $this->docexcel->getActiveSheet()->getStyle('A5:I5')->applyFromArray($styleTitulos2);
-        $this->docexcel->getActiveSheet()->getStyle('J5:Y5')->applyFromArray($styleTitulos5);
+        $this->docexcel->getActiveSheet()->getStyle('J5:AA5')->applyFromArray($styleTitulos5);
         $this->docexcel->getActiveSheet()->getRowDimension('5')->setRowHeight(40);
 
 
@@ -185,16 +187,18 @@ class RControlParteCotizacion
 
         $this->docexcel->getActiveSheet()->setCellValue('O5','PRECIO TOTAL');
 
-        $this->docexcel->getActiveSheet()->setCellValue('P5','MATRICULA');
-        $this->docexcel->getActiveSheet()->setCellValue('Q5','MOTIVO SOLICITUD');
-        $this->docexcel->getActiveSheet()->setCellValue('R5','OBSERVACIONES');
-        $this->docexcel->getActiveSheet()->setCellValue('S5','JUSTIFICACION');
-        $this->docexcel->getActiveSheet()->setCellValue('T5','N° JUSTIFICACION');
-        $this->docexcel->getActiveSheet()->setCellValue('U5','TIPO SOLICITUD');
-        $this->docexcel->getActiveSheet()->setCellValue('V5','TIPO FALLA');
-        $this->docexcel->getActiveSheet()->setCellValue('W5','TIPO REPORTE');
-        $this->docexcel->getActiveSheet()->setCellValue('X5','MEL');
-        $this->docexcel->getActiveSheet()->setCellValue('Y5','N° NO RUTINA');
+        $this->docexcel->getActiveSheet()->setCellValue('P5','CENTRO COSTO');
+        $this->docexcel->getActiveSheet()->setCellValue('Q5','PARTIDA');
+        $this->docexcel->getActiveSheet()->setCellValue('R5','MATRICULA');
+        $this->docexcel->getActiveSheet()->setCellValue('S5','MOTIVO SOLICITUD');
+        $this->docexcel->getActiveSheet()->setCellValue('T5','OBSERVACIONES');
+        $this->docexcel->getActiveSheet()->setCellValue('U5','JUSTIFICACION');
+        $this->docexcel->getActiveSheet()->setCellValue('V5','N° JUSTIFICACION');
+        $this->docexcel->getActiveSheet()->setCellValue('W5','TIPO SOLICITUD');
+        $this->docexcel->getActiveSheet()->setCellValue('X5','TIPO FALLA');
+        $this->docexcel->getActiveSheet()->setCellValue('Y5','TIPO REPORTE');
+        $this->docexcel->getActiveSheet()->setCellValue('Z5','MEL');
+        $this->docexcel->getActiveSheet()->setCellValue('AA5','N° NO RUTINA');
 
     }
     function generarDatos()
@@ -218,7 +222,13 @@ class RControlParteCotizacion
                 'bold'  => true,
                 'size'  => 11,
                 'name'  => 'Calibri'
-            ));
+            ),
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            ),
+            'code' => PHPExcel_Style_NumberFormat::FORMAT_NUMBER,
+        );
         $styleTitulos4 = array(
             'font'  => array(
                 'bold'  => true,
@@ -242,20 +252,31 @@ class RControlParteCotizacion
         $tmp_ini = $datos[0];
         $tmp_rec = $datos[0];
         $sumatoria_monto = 0;
-        foreach ($datos as $value) {
+        $last_key = end(array_keys($datos));
+        $getTitle=false;
+        foreach ($datos as $key => $value) {
             if ($value['origen_pedido'] != $ger) {
                 $this->docexcel->getActiveSheet()->getStyle("A$fila:A$fila")->applyFromArray($styleTitulos4);
                 $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $value['origen_pedido']);
-                $this->docexcel->setActiveSheetIndex(0)->mergeCells("A$fila:X$fila");
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("A$fila:AA$fila");
                 $ger = $value['origen_pedido'];
+                $getTitle=true;
                 $fila++;
-                $fila_ini++;
-                $fila_fin++;
+            }else{
+                $getTitle=false;
             }
-            if($tmp_rec['nro_tramite'] != $value['nro_tramite']){
-                $fila_fin = $fila-1;
 
-                $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila_ini, round ($sumatoria_monto,2));
+            if($tmp_rec['nro_tramite'] != $value['nro_tramite']){
+                if($fila_ini == 6){
+                    $fila_ini++;
+                }
+                if($getTitle and $key != 0){
+                    $fila_fin = $fila-2;
+                }else{
+                    $fila_fin = $fila-1;
+                }
+
+                $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila_ini,$sumatoria_monto);
 
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("A".($fila_ini).":A".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("B".($fila_ini).":B".($fila_fin));
@@ -267,8 +288,6 @@ class RControlParteCotizacion
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("H".($fila_ini).":H".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("I".($fila_ini).":I".($fila_fin));
 
-                $this->docexcel->setActiveSheetIndex(0)->mergeCells("P".($fila_ini).":P".($fila_fin));
-                $this->docexcel->setActiveSheetIndex(0)->mergeCells("Q".($fila_ini).":Q".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("R".($fila_ini).":R".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("S".($fila_ini).":S".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("T".($fila_ini).":T".($fila_fin));
@@ -277,10 +296,42 @@ class RControlParteCotizacion
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("W".($fila_ini).":W".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("X".($fila_ini).":X".($fila_fin));
                 $this->docexcel->setActiveSheetIndex(0)->mergeCells("Y".($fila_ini).":Y".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("Z".($fila_ini).":Z".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("AA".($fila_ini).":AA".($fila_fin));
 
 
                 $sumatoria_monto = 0;
                 $fila_ini = $fila;
+            }
+            if($key == $last_key){
+                $fila_fin = $fila;
+                $sumatoria_monto = $sumatoria_monto + $value['precio_unitario_mb'];
+
+                $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila_ini, $sumatoria_monto);
+
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("A".($fila_ini).":A".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("B".($fila_ini).":B".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("C".($fila_ini).":C".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("D".($fila_ini).":D".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("E".($fila_ini).":E".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("F".($fila_ini).":F".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("G".($fila_ini).":G".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("H".($fila_ini).":H".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("I".($fila_ini).":I".($fila_fin));
+
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("R".($fila_ini).":R".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("S".($fila_ini).":S".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("T".($fila_ini).":T".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("U".($fila_ini).":U".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("V".($fila_ini).":V".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("W".($fila_ini).":W".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("X".($fila_ini).":X".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("Y".($fila_ini).":Y".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("Z".($fila_ini).":Z".($fila_fin));
+                $this->docexcel->setActiveSheetIndex(0)->mergeCells("AA".($fila_ini).":AA".($fila_fin));
+
+
+                $sumatoria_monto = 0;
             }
 
             if (($tmp_rec['nro_tramite'] != $value['nro_tramite']) or ($tmp_ini['nro_tramite'] == $value['nro_tramite'])) {
@@ -301,27 +352,32 @@ class RControlParteCotizacion
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(13, $fila, $value['precio_unitario']);
             $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(14, $fila, $value['precio_unitario_mb']);
 
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(15, $fila, $value['matricula']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(16, $fila, $value['motivo_solicitud']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(17, $fila, $value['observaciones_sol']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(18, $fila, $value['justificacion']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(19, $fila, $value['nro_justificacion']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(20, $fila, $value['tipo_solicitud']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(21, $fila, $value['tipo_falla']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(22, $fila, $value['tipo_reporte']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(23, $fila, $value['mel']);
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(24, $fila, $value['nro_no_rutina']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(15, $fila, $value['centro_costo']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(16, $fila, $value['partida']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(17, $fila, $value['matricula']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(18, $fila, $value['motivo_solicitud']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(19, $fila, $value['observaciones_sol']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(20, $fila, $value['justificacion']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(21, $fila, $value['nro_justificacion']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(22, $fila, $value['tipo_solicitud']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(23, $fila, $value['tipo_falla']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(24, $fila, $value['tipo_reporte']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(25, $fila, $value['mel']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(26, $fila, $value['nro_no_rutina']);
 
 
+            $this->docexcel->getActiveSheet()->getStyle("A$fila:F$fila")->applyFromArray($styleTitulos3);
+            $this->docexcel->getActiveSheet()->getStyle("H$fila:I$fila")->applyFromArray($styleTitulos3);
+            $this->docexcel->getActiveSheet()->getStyle("R$fila:AA$fila")->applyFromArray($styleTitulos3);
 
-
-
-            $this->docexcel->getActiveSheet()->getStyle("A$fila:I$fila")->applyFromArray($styleTitulos3);
-            $this->docexcel->getActiveSheet()->getStyle("P$fila:Y$fila")->applyFromArray($styleTitulos3);
-
-            $this->docexcel->getActiveSheet()->getStyle("E$fila:E$fila")->applyFromArray($styleTitulos);
-            $this->docexcel->getActiveSheet()->getStyle("A$fila:Y$fila")->applyFromArray($styleArray);
+            //$this->docexcel->getActiveSheet()->getStyle("E$fila:E$fila")->applyFromArray($styleTitulos);
+            $this->docexcel->getActiveSheet()->getStyle("A$fila:AA$fila")->applyFromArray($styleArray);
             $this->docexcel->getActiveSheet()->getStyle("M$fila:O$fila")->applyFromArray($styleTitulos);
+            $this->docexcel->getActiveSheet()->getStyle("G$fila:G$fila")->applyFromArray($styleTitulos);
+            //$this->docexcel->getActiveSheet()->getStyle("M$fila:O$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00);
+            $this->docexcel->getActiveSheet()->getStyle("G$fila:G$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
+            $this->docexcel->getActiveSheet()->getStyle("M$fila:O$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
+
             if (($tmp_rec['nro_tramite'] != $value['nro_tramite']) or ($tmp_ini['nro_tramite'] == $value['nro_tramite'])){
                 $this->numero++;
             }
@@ -329,6 +385,7 @@ class RControlParteCotizacion
             $sumatoria_monto = $sumatoria_monto + $value['precio_unitario_mb'];
 
             $fila++;
+            $num++;
             $tmp_rec = $value;
         }
 
