@@ -150,7 +150,10 @@ DECLARE
     v_nombre_funcionario_resp_qr_oficial varchar;
     v_fecha_firma_resp_qr				 text;
     v_nombre_funcionario_resp_qr		 varchar;
-
+    --agregado (breydi.vasquez) 28/11/2019
+    v_vbgerencia						 record;
+    v_vbrpc								 record;
+    v_revision							 record;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -1723,6 +1726,20 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           WHERE id_proceso_wf = v_parametros.id_proceso_wf;
         END IF;
 
+    -- modificado, funcionario cargo respecto al visto bueno en el workflow (breydi.vasquez) 28/11/2019
+      SELECT  twf.id_funcionario,              
+              twf.fecha_reg
+            into  v_revision 
+      FROM wf.testado_wf twf
+      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+      INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+      WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  
+      AND te.codigo = 'revision'
+	  GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
+      
+	-- fin modif 28/11/2019 
+
+
     if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
     	SELECT 	twf.id_funcionario,
           		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -1736,7 +1753,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
           INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision' and vf.fecha_finalizacion is null
+          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision' 
+          --and vf.fecha_finalizacion is null          
+          and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())           
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, fecha_firma;
 
   		remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud);
@@ -1752,7 +1771,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           FROM wf.testado_wf twf
           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision' and vf.fecha_finalizacion is null
+          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision' 
+          --and vf.fecha_finalizacion is null
+          and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())           
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, fecha_firma;
 
 
@@ -1820,6 +1841,19 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	where  pwf.id_estado_wf_prev = v_id_despacho;
 
 
+    -- modificado, funcionario cargo respecto al visto bueno en el workflow (breydi.vasquez) 28/11/2019
+      SELECT  twf.id_funcionario,              
+              twf.fecha_reg
+            into  v_vbgerencia 
+      FROM wf.testado_wf twf
+      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+      INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+      WHERE twf.id_proceso_wf = v_id_proceso_wf_adq  
+      AND te.codigo = 'vbgerencia'
+	  GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
+      
+	-- fin modif 28/11/2019 
+
   if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
   	 SELECT 	twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -1832,7 +1866,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
         INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia'and vf.fecha_finalizacion is null
+        WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia' 
+        --and vf.fecha_finalizacion is null
+              and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())                    
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
 
 
@@ -1847,7 +1883,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     FROM wf.testado_wf twf
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
         INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia'and vf.fecha_finalizacion is null
+        WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia' 
+        --and vf.fecha_finalizacion is null
+        and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())                    
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
   	remplaso = mat.f_firma_original(v_id_proceso_wf_adq, v_id_funcionario_af_qr_oficial);
@@ -1862,6 +1900,18 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
       end if;
 
+    -- modificado, funcionario cargo respecto al visto bueno en el workflow (breydi.vasquez) 28/11/2019
+      SELECT  twf.id_funcionario,              
+              twf.fecha_reg
+            into  v_vbrpc 
+      FROM wf.testado_wf twf
+      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+      INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+      WHERE twf.id_proceso_wf = v_id_proceso_wf_adq  
+      AND te.codigo = 'vbrpc'
+	  GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
+      
+	-- fin modif 28/11/2019 
 
 
   if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
@@ -1877,7 +1927,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
         	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        	WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and vf.fecha_finalizacion is null
+        	WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'
+            --and vf.fecha_finalizacion is null
+            and v_vbrpc.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())            
         	GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
 
   	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial,v_fecha_solicitud);
@@ -1893,7 +1945,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     	FROM wf.testado_wf twf
         	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
         	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        	WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and vf.fecha_finalizacion is null
+        	WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc' 
+            --and vf.fecha_finalizacion is null
+            and v_vbrpc.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())            
         	GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
   	remplaso = mat.f_firma_original(v_id_proceso_wf_adq, v_id_funcionario_presu_qr_oficial);
