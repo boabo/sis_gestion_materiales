@@ -12,6 +12,15 @@ class RDocContratacionExtPDF extends  ReportePDF{
         $f_actual = date_format(date_create($this->datos[0]["fecha_solicitud"]), 'd/m/Y');
         $nro_cite_dce = $this->datos[0]["nro_cite_dce"];
 
+		$titulos = "";
+        $date1 = $this->datos[0]["fecha_solicitud"];
+        $date2 = "2019-09-01";
+        if (strtotime($date1) > strtotime($date2)) {
+            $titulos = "DETALLE ITEMS REQUERIDOS";
+        }else{
+            $titulos = "DOCUMENTO DE CONTRATACIÓN DEL EXTERIOR";
+        }
+
         $html = <<<EOF
 		<style>
 		table, th, td {
@@ -25,7 +34,7 @@ class RDocContratacionExtPDF extends  ReportePDF{
 		<table border="1" cellpadding="1">
         	<tr>
             	<th style="width: 20%" align="center" rowspan="3"><img src="$url_imagen" ></th>
-            	<th style="width: 50%" align="center" rowspan="3"><br><h3>DOCUMENTO DE CONTRATACIÓN DEL EXTERIOR</h3></th>
+            	<th style="width: 50%" align="center" rowspan="3"><br><h3>$titulos</h3></th>
             	<th style="width: 31.5%" align="center" colspan="2">R-GG-2017</th>
         	</tr>
         	<tr>

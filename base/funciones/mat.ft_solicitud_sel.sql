@@ -154,6 +154,7 @@ DECLARE
     v_vbgerencia						 record;
     v_vbrpc								 record;
     v_revision							 record;
+	v_fecha_ini							 date;						
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -1638,8 +1639,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     elsif(p_transaccion='MAT_RDOC_CON_EXT_SEL')then
 		begin
 
-        SELECT ts.nro_cite_dce, ts.nro_tramite
-        INTO v_nro_cite_dce, v_num_tramite
+        SELECT ts.nro_cite_dce, ts.nro_tramite, ts.fecha_solicitud
+        INTO v_nro_cite_dce, v_num_tramite, v_fecha_ini
         FROM mat.tsolicitud ts
         WHERE ts.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -1660,6 +1661,10 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           nro_cite_dce = v_nro_cite_dce
           WHERE id_proceso_wf = v_parametros.id_proceso_wf;
          END IF;
+		 
+		IF v_fecha_ini > to_date('20190901','YYYYMMDD') THEN 
+          	v_nro_cite_dce = REPLACE(v_nro_cite_dce,'.DCE.','.');
+        END IF;
           v_consulta:='select
                           det.descripcion,
                           det.estado_reg,
