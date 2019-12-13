@@ -84,6 +84,11 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->Cell(45, 0, 'Solicitante:', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 0, $this->datos[0]['desc_funcionario1'], 1, 1, 'C', 0, '', 0);
         $this->ln(2);
+        $tamano_letra = 11;
+        $cantidad_caracteres = strlen($this->datos[0]['observaciones_sol']);        
+        if ($cantidad_caracteres >= 747) {            
+            $tamano_letra = 8;
+        }        
         $this->SetFont('times', '', 11);
         if ($fecha >= $fecha_base) {
         $this->Cell(0, 6, ' Condición:'.' '.$this->datos[0]['condicion'], 1, 1, 'L', 0, '', 0);
@@ -91,15 +96,29 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         }
         $this->MultiCell(0, 10, ' Motivo: ' . $this->datos[0]['motivo_solicitud'] . "\n", 1, 'J', 0, '', '');
         $this->ln();
-        $this->SetFont('times', '', 11);
+        $this->SetFont('times', '', $tamano_letra);
         $this->MultiCell(0, 10, ' Observaciones: ' . $this->datos[0]['observaciones_sol'] . "\n", 1, 'J', 0, '', '');
         $this->ln(13);
         $this->SetFont('times', 'B', 11);
+        
+        $salto='';        
+        if ($cantidad_caracteres >= 200 && $cantidad_caracteres < 300){
+            $salto= $this->Ln(4);
+        }elseif($cantidad_caracteres >= 300 && $cantidad_caracteres < 500){
+            $salto = $this->Ln(10);                
+        }elseif ($cantidad_caracteres >= 500  && $cantidad_caracteres < 600 ) {            
+            $salto = $this->Ln(15);
+        }elseif ($cantidad_caracteres >= 600  && $cantidad_caracteres < 747 ) {
+            $salto = $this->Ln(19);
+        }elseif ($cantidad_caracteres >= 747 ) {
+            $salto = $this->Ln(17);
+        }
 
-
-        if ($fecha >= $fecha_base) {
+        if ($fecha >= $fecha_base) { 
+            $salto;         
         $this->Cell(0, 6, ' Especificación Técnica Material a Solicitar', 1, 1, 'L', 0, '', 0);
       }else{
+        $salto;  
         $this->Cell(0, 6, ' Detalle', 1, 1, 'L', 0, '', 0);
       }
         $this->ln(0.10);
