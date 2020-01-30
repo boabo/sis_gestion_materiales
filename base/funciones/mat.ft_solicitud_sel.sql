@@ -209,6 +209,7 @@ BEGIN
                             inner join orga.vfuncionario_cargo fun on fun.id_funcionario = es.id_funcionario
                             inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
                             where te.codigo = 'vobo_area' and fun.nombre_cargo ='Gerente Mantenimiento'
+                            and now() between fun.fecha_asignacion and coalesce(fun.fecha_finalizacion, now())
                             group by fun.id_funcionario;
 
 
