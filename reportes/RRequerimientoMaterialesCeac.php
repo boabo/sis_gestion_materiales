@@ -95,17 +95,20 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
         if ($fecha >= $fecha_base) {
         $this->Cell(0, 0, 'Especificación Técnica Material a Solicitar', 1, 1, 'L', 0, '', 0);
         }
-        $this->Cell(10, 0, 'N°', 1, 0, 'C', 0, '', 0);
-        $this->Cell(35, 0, 'Número de Parte', 1, 0, 'C', 0, '', 0);
-        $this->Cell(35, 0, 'Referencia', 1, 0, 'C', 0, '', 0);
-        $this->Cell(56, 0, 'Descripcion', 1, 0, 'C', 0, '', 0);
+        $this->SetFont('', 'B', 9);
+        $this->Cell(5, 0, 'N°', 1, 0, 'C', 0, '', 0);
+        $this->Cell(28, 0, 'Número de Parte', 1, 0, 'C', 0, '', 0);
+        $this->Cell(31, 0, 'Núm. de Parte Alterno', 1, 0, 'C', 0, '', 0);
+        $this->Cell(19, 0, 'Referencia', 1, 0, 'C', 0, '', 0);
+        $this->Cell(55, 0, 'Descripcion', 1, 0, 'C', 0, '', 0);
         $this->Cell(25, 0, 'Tipo', 1, 0, 'C', 0, '', 0);
-        $this->Cell(13, 0, 'QTY', 1, 0, 'C', 0, '', 0);
+        $this->Cell(11, 0, 'QTY', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 0, 'U/M', 1, 0, 'C', 0, '', 0);
         $this->ln();
         $numero = 1;
         foreach ($this->datos as $Row) {
             $parte = $Row['nro_parte'];
+            $parte_alterno = $Row['nro_parte_alterno'];
             $referencia = $Row['referencia'];
             $descripcion = $Row['descripcion'];
             $tipo= $Row['tipo'];
@@ -115,13 +118,14 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
             $tbl = <<<EOD
 <table cellspacing="0" cellpadding="1" border="1">
     <tr>
-        <td width="35'" align="center">$numero</td>
-        <td width="124" align="center">$parte</td>
-        <td width="124" align="center">$referencia</td>
-        <td width="199" align="justify"> $descripcion</td>
+        <td width="18'" align="center">$numero</td>
+        <td width="98" align="center">$parte</td>
+        <td width="111" align="center">$parte_alterno</td>
+        <td width="68" align="center">$referencia</td>
+        <td width="195" align="justify">$descripcion</td>
          <td width="88" align="center">$tipo</td>
-        <td width="46" align="center">$cantidad</td>
-        <td width="42" align="center">$unidad</td>
+        <td width="40" align="center">$cantidad</td>
+        <td width="41" align="center">$unidad</td>
     </tr>
 
 
