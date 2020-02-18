@@ -65,6 +65,39 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
         },
+        cmbGestion: new Ext.form.ComboBox({
+            name: 'gestion',
+            id: 'g_comite',
+            fieldLabel: 'Gestion',
+            allowBlank: true,
+            emptyText:'Gestion...',
+            blankText: 'Año',
+            store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_parametros/control/Gestion/listarGestion',
+                    id: 'id_gestion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'gestion',
+                        direction: 'DESC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_gestion','gestion'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'gestion'}
+                }),
+            valueField: 'id_gestion',
+            triggerAction: 'all',
+            displayField: 'gestion',
+            hiddenName: 'id_gestion',
+            mode:'remote',
+            pageSize:50,
+            queryDelay:500,
+            listWidth:'280',
+            hidden:false,
+            width:80
+        }),
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();

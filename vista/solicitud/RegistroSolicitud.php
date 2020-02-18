@@ -46,6 +46,39 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.lugar_entrega);
 
         },
+        cmbGestion: new Ext.form.ComboBox({
+            name: 'gestion',
+            id: 'g_registro',
+            fieldLabel: 'Gestion',
+            allowBlank: true,
+            emptyText:'Gestion...',
+            blankText: 'Año',
+            store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_parametros/control/Gestion/listarGestion',
+                    id: 'id_gestion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'gestion',
+                        direction: 'DESC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_gestion','gestion'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'gestion'}
+                }),
+            valueField: 'id_gestion',
+            triggerAction: 'all',
+            displayField: 'gestion',
+            hiddenName: 'id_gestion',
+            mode:'remote',
+            pageSize:50,
+            queryDelay:500,
+            listWidth:'280',
+            hidden:false,
+            width:80
+        }),
         gruposBarraTareas:[
             {name:'borrador_reg',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borrador</h1>',grupo:0,height:0},
             {name:'vobo_area_reg',title:'<H1 "center"><i class="fa fa-eye"></i>Visto Bueno</h1>',grupo:1,height:0},
