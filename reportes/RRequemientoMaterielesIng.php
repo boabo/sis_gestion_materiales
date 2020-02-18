@@ -86,18 +86,20 @@ class RRequemientoMaterielesIng extends  ReportePDF {
       }
 
         $this->ln();
-        $this->SetFont('', 'B', 11);
-        $this->Cell(15, 0, 'N°', 1, 0, 'C', 0, '', 0);
-        $this->Cell(35, 0, 'Número de Parte', 1, 0, 'C', 0, '', 0);
-        $this->Cell(35, 0, 'Referencia', 1, 0, 'C', 0, '', 0);
-        $this->Cell(61, 0, 'Descripcion', 1, 0, 'C', 0, '', 0);
-        $this->Cell(20, 0, 'Cantidad', 1, 0, 'C', 0, '', 0);
+        $this->SetFont('', 'B', 9);
+        $this->Cell(5, 0, 'N°', 1, 0, 'C', 0, '', 0);
+        $this->Cell(31, 0, 'Número de Parte', 1, 0, 'C', 0, '', 0);
+        $this->Cell(31, 0, 'Núm. de Parte Alterno', 1, 0, 'C', 0, '', 0);
+        $this->Cell(22, 0, 'Referencia', 1, 0, 'C', 0, '', 0);
+        $this->Cell(61, 0, 'Descripción', 1, 0, 'C', 0, '', 0);
+        $this->Cell(16, 0, 'Cantidad', 1, 0, 'C', 0, '', 0);
         $this->Cell(0, 0, 'U/M', 1, 0, 'C', 0, '', 0);
         $this->ln();
         $numero = 1;
         $pagina = 0;
         foreach ($this->datos as $Row) {
             $parte = $Row['nro_parte'];
+            $parte_alterno = $Row['nro_parte_alterno'];
             $referencia = $Row['referencia'];
             $descripcion = $Row['descripcion'];
             $cantidad = $Row['cantidad_sol'];
@@ -105,11 +107,12 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $tbl = <<<EOD
 <table cellspacing="0" cellpadding="1" border="1" >
     <tr>
-        <td width="54"  align="center">$numero</td>
-        <td width="123" align="center">$parte</td>
-        <td width="124" align="center">$referencia</td>
-        <td width="218" align="justify">$descripcion</td>
-        <td width="70"  align="center">$cantidad</td>
+        <td width="19"  align="center">$numero</td>
+        <td width="109" align="center">$parte</td>
+        <td width="109" align="center">$parte_alterno</td>
+        <td width="79" align="center">$referencia</td>
+        <td width="216" align="justify">$descripcion</td>
+        <td width="57"  align="center">$cantidad</td>
         <td width="70"  align="center">$unidad</td>
     </tr>
 </table>
