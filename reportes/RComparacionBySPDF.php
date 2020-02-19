@@ -110,6 +110,7 @@ EOF;
         $monto_ref = $this->datos[0]["monto_ref"];
         //$codigo = $this->datos[0]["codigo"];
         $nro_partes = explode(',',$this->datos[0]["nro_partes"]);
+        $nro_partes_alternos = explode(',',$this->datos[0]["nro_partes_alternos"]);
         $obs = $this->datos[0]["observaciones"];
 
         $this->Ln(5);
@@ -146,18 +147,44 @@ EOF;
                         NOTA.- SE ELIGIRA LA OPCIÓN MAS CONVENIENTE.<br>
                     </td>
                 </tr>
+                
                 <tr style="font-size: 9pt; text-align: left;" >
                      <td colspan="2"><b>&nbsp;&nbsp;Descripción del Bien o Servicio (Incluir y detallar servicios adicionales como transporte):<br><br>
                        SEGÚN LISTA DE ESPECIFICACIONES TECNICAS ADJUNTO:
-                     </b>
-                     <ol>';
-        foreach ($nro_partes as $partes){
-            $tbl.='<li>'.$partes.'</li>';
-        }
-        $tbl.=      '</ol>
-                     <br>
-                     </td>
+                                    </b>
+                   <br><br>
+                  
+                         <table cellspacing="0" cellpadding="1" border="1" >
+                            <tr>
+                                <td width="80" align="center"><b>N°</b></td>
+                                <td width="280" align="center"><b>Número de Parte</b></td>
+                                <td width="280" align="center"><b>Número de Parte Alterno</b></td>
+                            </tr>
+                         </table>
+                          ';
+                            $numero = 1;
+                            foreach ($nro_partes as $indice=>$partes){
+
+                            $tbl.= ' 
+                                
+                                <table cellspacing="0" cellpadding="1" border="1" >
+                                    <tr>
+                                        <td width="80" align="center"><li>'.$numero.'</li></td>
+                                        <td width="280" align="center"><li>'.$partes.'</li></td>
+                                        <td width="280" align="center"><li>'.$nro_partes_alternos[$indice].'</li></td>
+                                    </tr>
+                                </table>
+                                
+                            
+                                    ';
+                                $numero++;
+                             }
+
+$tbl.=      ' <br>
+                  </td>      
+                     
                 </tr>
+                
                 <tr>
                     <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
                     <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>

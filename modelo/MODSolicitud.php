@@ -999,6 +999,7 @@ class MODSolicitud extends MODbase
         $this->captura('adjudicado', 'varchar');
         $this->captura('motivo_solicitud', 'varchar');
         $this->captura('nro_partes', 'varchar');
+        $this->captura('nro_partes_alternos', 'varchar');
         $this->captura('nro_cobs', 'varchar');
         $this->captura('fecha_solicitud', 'date');
         $this->captura('monto_ref', 'numeric');
