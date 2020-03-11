@@ -181,6 +181,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.justificacion);
                     this.mostrarComponente(this.Cmp.id_matricula);
                     this.Cmp.nro_justificacion.reset();
+                    this.Cmp.motivo_solicitud.reset();
                  }
 
                  if(this.isInArray(rec.json, this.arrayStore['Gerencia de Mantenimiento']) || this.isInArray(rec.json, this.arrayStore['Gerencia de Operaciones DGAC'])){
@@ -194,6 +195,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.justificacion);
                     this.mostrarComponente(this.Cmp.id_matricula);
                     this.Cmp.nro_justificacion.reset();
+                    this.Cmp.motivo_solicitud.reset();
 
                 }
 
@@ -208,6 +210,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.justificacion);
                     this.ocultarComponente(this.Cmp.id_matricula);
                     this.Cmp.id_matricula.setValue(null);
+                    this.Cmp.motivo_solicitud.setValue('Compra a fin de proceder con la reposición de stock mínimo considerando los puntos mínimos según reporte de sistema ALKYM, a fin de atender requerimientos para el mantenimiento de la flota de aviones de BoA');
 
                 }
                 if( this.isInArray(rec.json, this.arrayStore['Centro de Entrenamiento Aeronautico Civil'])){
@@ -220,8 +223,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.nro_justificacion);
                     this.ocultarComponente(this.Cmp.justificacion);
                     this.ocultarComponente(this.Cmp.id_matricula);
-                    
+
                     this.Cmp.id_matricula.setValue(null);
+                    this.Cmp.motivo_solicitud.reset();
 
                 }
                 this.Cmp.nro_justificacion.reset();
@@ -951,6 +955,3 @@ header("content-type: text/javascript; charset=UTF-8");
         }
     })
 </script>
-
-
-
