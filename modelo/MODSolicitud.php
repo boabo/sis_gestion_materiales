@@ -1006,6 +1006,7 @@ class MODSolicitud extends MODbase
         $this->captura('funcionario', 'varchar');
 
         $this->captura('observaciones', 'varchar');
+        $this->captura('tipo_proceso', 'varchar');
         //$this->captura('codigo','varchar');
 
 
