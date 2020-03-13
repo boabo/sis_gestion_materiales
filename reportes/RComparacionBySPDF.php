@@ -80,7 +80,6 @@ EOF;
 
     function  generarReporte()
     {
-
         $this->AddPage();
         $this->SetMargins(17, 40, 15);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
@@ -114,27 +113,70 @@ EOF;
         $obs = $this->datos[0]["observaciones"];
 
         $this->Ln(5);
-        $tbl = '<table border="1">
-                <tr style="font-size: 9pt; text-align: left;">
-                    <td style="width:34%; padding: 2em;"><b>&nbsp;&nbsp;Unidad Solicitante:</b><br><span style="text-align: center;">'.$unidad_sol.'</span><br></td>
-                    <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Gerencia de Area:</b><br><span style="text-align: center;">'.$gerencia.'</span></td>
-                    <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Funcionario Solicitante:</b><br><span style="text-align: center;">'.$funcionario.'</span></td>
-                </tr>
-                <tr style="font-size: 9pt; text-align: left;">
-                    <td style="width:34%; padding: 5px;"><b>&nbsp;&nbsp;Monto Referencial:</b><br><span style="text-align: center;"> $us&nbsp; '.$monto_ref.'</span><br></td>
-                    <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Nro. de Items:</b><br><span style="text-align: center;">'.$nro_items.'</span></td>
-                    <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Proveedor:</b><br><span style="text-align: center;">'.$adjudicado.'</span> </td>
-                </tr>
-                <tr style="font-size: 9pt; text-align: justify;">
-                     <td colspan="3"><b>Nota:</b><span>'.$obs.'</span></td>
-                </tr>
-                <tr style="font-size: 9pt;">
-                    <td colspan="2"><b>Sello y firma de la Unidad de Almacenes de no EXISTENCIA(Cuando Corresponda)</b></td>
-                    <td >&nbsp;<b>En caso de existir saldo indicar cantidad:</b><br><br></td>
-                </tr>
-                </table>
-                ';
-
+        /*Aumenntando esta condicion para mostrar en el reporte (Ismael Valdivia)*/
+        if ($this->datos[0]["fecha_solicitud"] >= '2020-03-01' && ($this->datos[0]["tipo_proceso"] == 'GA' || $this->datos[0]["tipo_proceso"] == 'GM' || $this->datos[0]["tipo_proceso"] == 'GO')) {
+          $tbl = '<table border="1">
+          <tr style="font-size: 9pt; text-align: left;">
+          <td style="width:34%; padding: 2em;"><b>&nbsp;&nbsp;Unidad Solicitante:</b><br><span style="text-align: center;">'.$unidad_sol.'</span><br></td>
+          <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Gerencia de Area:</b><br><span style="text-align: center;">'.$gerencia.'</span></td>
+          <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Funcionario Solicitante:</b><br><span style="text-align: center;">'.$funcionario.'</span></td>
+          </tr>
+          <tr style="font-size: 9pt; text-align: left;">
+          <td style="width:34%; padding: 5px;"><b>&nbsp;&nbsp;Monto Referencial:</b><br><span style="text-align: center;"> $us&nbsp; '.$monto_ref.'</span><br></td>
+          <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Nro. de Items:</b><br><span style="text-align: center;">'.$nro_items.'</span></td>
+          <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Proveedor:</b><br><span style="text-align: center;">'.$adjudicado.'</span> </td>
+          </tr>
+          <tr style="font-size: 9pt; text-align: justify;">
+          <td colspan="3"><b>Nota:</b><span>'.$obs.'</span></td>
+          </tr>
+          <tr style="font-size: 9pt;">
+          <td colspan="2"><b>Sello y firma de la Unidad de Almacenes de no EXISTENCIA(Cuando Corresponda)</b></td>
+          <td >&nbsp;<b>En caso de existir saldo indicar cantidad:</b><br><br></td>
+          </tr>
+          </table>
+          ';
+        } else {
+          if ($this->datos[0]["tipo_proceso"] == 'GC') {
+              $tbl = '<table border="1">
+              <tr style="font-size: 9pt; text-align: left;">
+              <td style="width:34%; padding: 2em;"><b>&nbsp;&nbsp;Unidad Solicitante:</b><br><span style="text-align: center;">'.$unidad_sol.'</span><br></td>
+              <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Gerencia de Area:</b><br><span style="text-align: center;">'.$gerencia.'</span></td>
+              <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Funcionario Solicitante:</b><br><span style="text-align: center;">'.$funcionario.'</span></td>
+              </tr>
+              <tr style="font-size: 9pt; text-align: left;">
+              <td style="width:34%; padding: 5px;"><b>&nbsp;&nbsp;Monto Referencial:</b><br><span style="text-align: center;"> $us&nbsp; '.$monto_ref.'</span><br></td>
+              <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Nro. de Items:</b><br><span style="text-align: center;">'.$nro_items.'</span></td>
+              <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Proveedor:</b><br><span style="text-align: center;">'.$adjudicado.'</span> </td>
+              </tr>
+              <tr style="font-size: 9pt; text-align: justify;">
+              <td colspan="3"><b>Nota:</b><span>'.$obs.'</span></td>
+              </tr>
+              <tr style="font-size: 9pt;">
+              <td colspan="2"><b>Sello y firma de la Unidad de Almacenes de no EXISTENCIA(Cuando Corresponda)</b></td>
+              <td >&nbsp;<b>En caso de existir saldo indicar cantidad:</b><br><br></td>
+              </tr>
+              </table>
+              ';
+            } else {
+              $tbl = '<table border="1">
+              <tr style="font-size: 9pt; text-align: left;">
+              <td style="width:34%; padding: 2em;"><b>&nbsp;&nbsp;Unidad Solicitante:</b><br><span style="text-align: center;">'.$unidad_sol.'</span><br></td>
+              <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Gerencia de Area:</b><br><span style="text-align: center;">'.$gerencia.'</span></td>
+              <td style="width:33%; padding: 2em;"><b>&nbsp;&nbsp;Funcionario Solicitante:</b><br><span style="text-align: center;">'.$funcionario.'</span></td>
+              </tr>
+              <tr style="font-size: 9pt; text-align: left;">
+              <td style="width:34%; padding: 5px;"><b>&nbsp;&nbsp;Monto Referencial:</b><br><span style="text-align: center;"> $us&nbsp; '.$monto_ref.'</span><br></td>
+              <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Nro. de Items:</b><br><span style="text-align: center;">'.$nro_items.'</span></td>
+              <td style="width:33%; padding: 5px;"><b>&nbsp;&nbsp;Proveedor:</b><br><span style="text-align: center;">'.$adjudicado.'</span> </td>
+              </tr>
+              <tr style="font-size: 9pt; text-align: justify;">
+              <td colspan="3"><b>Nota:</b><span>'.$obs.'</span></td>
+              </tr>
+              </table>
+              ';
+            }
+        }
+        /******************************************************************************************************************/
         $this->writeHTML($tbl, true, false, false, false, '');
 
         $tbl = '<table border="1">
@@ -147,13 +189,13 @@ EOF;
                         NOTA.- SE ELIGIRA LA OPCIÓN MAS CONVENIENTE.<br>
                     </td>
                 </tr>
-                
+
                 <tr style="font-size: 9pt; text-align: left;" >
                      <td colspan="2"><b>&nbsp;&nbsp;Descripción del Bien o Servicio (Incluir y detallar servicios adicionales como transporte):<br><br>
                        SEGÚN LISTA DE ESPECIFICACIONES TECNICAS ADJUNTO:
                                     </b>
                    <br><br>
-                  
+
                          <table cellspacing="0" cellpadding="1" border="1" >
                             <tr>
                                 <td width="80" align="center"><b>N°</b></td>
@@ -165,8 +207,8 @@ EOF;
                             $numero = 1;
                             foreach ($nro_partes as $indice=>$partes){
 
-                            $tbl.= ' 
-                                
+                            $tbl.= '
+
                                 <table cellspacing="0" cellpadding="1" border="1" >
                                     <tr>
                                         <td width="80" align="center"><li>'.$numero.'</li></td>
@@ -174,17 +216,17 @@ EOF;
                                         <td width="280" align="center"><li>'.$nro_partes_alternos[$indice].'</li></td>
                                     </tr>
                                 </table>
-                                
-                            
+
+
                                     ';
                                 $numero++;
                              }
 
 $tbl.=      ' <br>
-                  </td>      
-                     
+                  </td>
+
                 </tr>
-                
+
                 <tr>
                     <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
                     <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
