@@ -114,7 +114,7 @@ EOF;
 
         $this->Ln(5);
         /*Aumenntando esta condicion para mostrar en el reporte (Ismael Valdivia)*/
-        if ($this->datos[0]["fecha_solicitud"] >= '2020-03-01' && ($this->datos[0]["tipo_proceso"] == 'GA' || $this->datos[0]["tipo_proceso"] == 'GM' || $this->datos[0]["tipo_proceso"] == 'GO')) {
+        if ($this->datos[0]["fecha_solicitud"] <= '2020-03-01' && ($this->datos[0]["tipo_proceso"] == 'GA' || $this->datos[0]["tipo_proceso"] == 'GM' || $this->datos[0]["tipo_proceso"] == 'GO')) {
           $tbl = '<table border="1">
           <tr style="font-size: 9pt; text-align: left;">
           <td style="width:34%; padding: 2em;"><b>&nbsp;&nbsp;Unidad Solicitante:</b><br><span style="text-align: center;">'.$unidad_sol.'</span><br></td>
