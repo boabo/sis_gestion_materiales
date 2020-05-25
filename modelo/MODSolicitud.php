@@ -950,6 +950,8 @@ class MODSolicitud extends MODbase
         $this->captura('pais', 'varchar');
         $this->captura('rotulo_comercial', 'varchar');
         $this->captura('email', 'varchar');
+        $this->captura('num_proveedor', 'varchar');
+        $this->captura('condicion', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
