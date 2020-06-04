@@ -1135,9 +1135,11 @@ class MODSolicitud extends MODbase
             $message = 'Falla al Guardar';
             $description = 'Se tubo problemas al crear el directorio para el archivo '.$file_name;
         }
+
+        $path_download = 'erp.obairlines.bo/uploaded_files/sis_workflow/DocumentoWf'.$path.$file_name;
         $this->respuesta = new Mensaje();
         $this->respuesta->setMensaje($status?'EXITO':'ERROR',"",$message,$description,'modelo',"","","","");
-        $this->respuesta->setDatos(array('path_erp'=>$path_absolute));
+        $this->respuesta->setDatos(array('path_erp'=>$path_absolute, 'path_download'=>$path_download));
         //Devuelve la respuesta
         return $this->respuesta;
     }
