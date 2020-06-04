@@ -1093,6 +1093,54 @@ class MODSolicitud extends MODbase
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    //{developer:franklin.espinoza date: 04/06/2020}
+    function upload_file_mantenimiento_erp(){
+
+        $file_name = $this->objParam->getParametro('file_name');
+
+        $file_bytes = $this->objParam->getParametro('file_bytes');
+        $file_bytes = base64_decode($file_bytes);
+
+        $path = $this->objParam->getParametro('path');
+
+        if('/' != $path[0]){
+            $path = '/'.$path;
+        }
+        if('/' != $path[strlen($path)-1]){
+            $path = $path.'/';
+        }
+
+        $path_relative = "./../../../uploaded_files/sis_workflow/DocumentoWf".$path;
+
+        if(!file_exists($path_relative)){
+            mkdir($path_relative, 0744, true);
+        }
+        $path_absolute = $path_relative.$file_name;
+
+        if(!file_exists($path_absolute)){
+            $status = file_put_contents($path_absolute,$file_bytes);
+            $exists = false;
+        }else{
+            $status = file_put_contents($path_absolute,$file_bytes);
+            $exists = true;
+        }
+
+        if($status && !$exists){
+            $message = 'Guardado Exitoso';
+            $description = 'Se guardo el archivo '.$file_name.' con exito';
+        }else if($exists){
+            $message = 'Reemplazo Exitoso';
+            $description = 'Se ha cambiado el archivo '.$file_name.' con exito';
+        }else{
+            $message = 'Falla al Guardar';
+            $description = 'Se tubo problemas al crear el directorio para el archivo '.$file_name;
+        }
+        $this->respuesta = new Mensaje();
+        $this->respuesta->setMensaje($status?'EXITO':'ERROR',"",$message,$description,'modelo',"","","","");
+        $this->respuesta->setDatos(array('path_erp'=>$path_absolute));
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 }
 
 ?>

@@ -817,6 +817,13 @@ class ACTSolicitud extends ACTbase{
 //var_dump($this->res);
     }
 
+    //{developer:franklin.espinoza date: 04/06/2020}
+    function upload_file_mantenimiento_erp(){
+        $this->objFunc=$this->create('MODSolicitud');
+        $this->res=$this->objFunc->upload_file_mantenimiento_erp($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 
 
 
