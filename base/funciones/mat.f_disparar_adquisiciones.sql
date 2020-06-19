@@ -189,7 +189,7 @@ BEGIN
               2,
               21,
               v_id_gestion,
-              160,
+              2711, --160, MAYORGA , 2711 DELGADILLO
               2,
               v_num_sol,
               'no',
