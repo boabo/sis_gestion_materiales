@@ -194,58 +194,52 @@ BEGIN
 
 --raise exception 'cargo: %, interfaz: % ', v_record.nombre_cargo, v_parametros.tipo_interfaz;
 
-        IF 	p_administrador THEN
-				v_filtro = ' 0=0 AND ';
-            ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
+            IF 	p_administrador THEN
+                    v_filtro = ' 0=0 AND ';
+                ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
 
-            	 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND tew.estado_reg = ''activo'' AND ';
-
-
-                ELSIF (v_parametros.tipo_interfaz = 'PedidoRepuesto' or v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
-
-                        IF (v_parametros.pes_estado = 'pedido_ma_compra' or v_parametros.pes_estado = 'pedido_ma_concluido') then
-                        	v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-                        ELSIF v_parametros.pes_estado = 'pedido_re_comite' THEN
-                    		v_filtro = '';
-                	    ELSE
-                        	v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-                        END IF;
-
-               ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComite') THEN
-               		v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND tew.estado_reg = ''activo'' AND ';
+                    v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND ewb.estado_reg = ''activo'' AND ';
 
 
-               ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComiteAeronavegabilidad') THEN
-                      v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND ewb.estado_reg = ''activo'' AND ';
+                    ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
+                            IF (v_parametros.pes_estado = 'pedido_ma_compra' or v_parametros.pes_estado = 'pedido_ma_concluido') then
+                                v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                            ELSIF v_parametros.pes_estado = 'pedido_re_comite' THEN
+                                v_filtro = '';
+                            ELSE
+                                v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                            END IF;
+                   ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComite') THEN
 
-    				ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
-          					v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
-                    		v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND tew.estado_reg = ''activo'' AND ';
-                    ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
-                        v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
-                        v_filtro = '';
-                    ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
-                        v_filtro = '';
+                  v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND tew.estado_reg = ''activo'' AND ';
+                        ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
+                                v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
+                            v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
+                            v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
+                            v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
+                            v_filtro = '';
 
-                    ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
-                    v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'and ';
+                        ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
+                        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'and ';
 
-                    ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
-                     v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
+                        ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
+                         v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
 
-                    ELSIF v_parametros.pes_estado = 'revision_reg' THEN
-                    v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
+                        ELSIF v_parametros.pes_estado = 'revision_reg' THEN
+                        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
 
-                    ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
-                    v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
-                            ' AND';
-                    ELSE
-                    v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
-            END IF;
+                        ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
+                        v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
+                                ' AND';
+                        ELSE
+                        v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
+                END IF;
 
-v_consulta:='select		sol.id_solicitud,
+					v_consulta:='select		sol.id_solicitud,
                                 sol.id_funcionario_sol,
                                 sol.id_proveedor,
                                 sol.id_proceso_wf,
