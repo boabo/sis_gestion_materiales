@@ -12,14 +12,24 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->MultiCell(35, $height, '', 0, 'C', 0, '', '');
         $this->SetFontSize(11);
         $this->SetFont('', 'B');
-        $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES Y SERVICIOS EN EL EXTRANJERO', 0, 'C', 0, '', '');
-        $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
-        $this->ln(15);
-        $this->SetFont('times', '', 10);
-        $this->MultiCell(0, 5, '(Decreto Supremo N° 26688) Versión I', 0, 'C', 0, '', '');
+        /*Aumentando la condicion para que se muestre el nuevo titulo a partir del 01/04/2020 */
+        if ($this->datos[0]['fecha_solicitud'] >= '01/04/2020') {
+          $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES OBRAS Y SERVICIOS ESPECIALIZADOS'."\n".'EN EL EXTRANJERO', 0, 'C', 0, '', '');
+          $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
+          $this->ln(19);
+          $this->SetFont('times', '', 10);
+          $this->MultiCell(0, 5, '(Decreto Supremo N° 26688 y Decreto Supremos N° 3935) Versión II', 0, 'C', 0, '', '');
+        } else {
+          $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES Y SERVICIOS EN EL EXTRANJERO', 0, 'C', 0, '', '');
+          $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
+          $this->ln(15);
+          $this->SetFont('times', '', 10);
+          $this->MultiCell(0, 5, '(Decreto Supremo N° 26688) Versión I', 0, 'C', 0, '', '');
+        }
+        /****************************************************************************************/
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 17, 15, 36);
     }
-    
+
     function Footer() {
         $this->Ln();
         // $this->setY(-15);

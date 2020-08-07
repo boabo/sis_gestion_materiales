@@ -212,7 +212,8 @@ BEGIN
                               )::varchar as lista_proveedor,
                               c.pie_pag,
                               s.estado,
-                               c.nro_cotizacion
+                               c.nro_cotizacion,
+                               to_char(s.fecha_solicitud,''DD/MM/YYYY'')::varchar as fecha_solicitud
 							  from mat.tsolicitud s
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion

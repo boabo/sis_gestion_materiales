@@ -8,11 +8,11 @@
 */
 
 class MODCotizacion extends MODbase{
-	
+
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
-			
+
 	function listarCotizacion(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='mat.ft_cotizacion_sel';
@@ -44,21 +44,21 @@ class MODCotizacion extends MODbase{
 		$this->captura('recomendacion','varchar');
 		$this->captura('obs','varchar');
 		$this->captura('pie_pag','varchar');
-		
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function insertarCotizacion(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='mat.ft_cotizacion_ime';
 		$this->transaccion='MAT_CTS_INS';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_solicitud','id_solicitud','int4');
 		$this->setParametro('id_moneda','id_moneda','int4');
@@ -77,13 +77,13 @@ class MODCotizacion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function modificarCotizacion(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='mat.ft_cotizacion_ime';
 		$this->transaccion='MAT_CTS_MOD';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 		$this->setParametro('id_solicitud','id_solicitud','int4');
@@ -103,13 +103,13 @@ class MODCotizacion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function eliminarCotizacion(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='mat.ft_cotizacion_ime';
 		$this->transaccion='MAT_CTS_ELI';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 
@@ -127,7 +127,7 @@ class MODCotizacion extends MODbase{
         $this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setCount(false);
         $this->setParametro('id_solicitud','id_solicitud','int4');
-        
+
         $this->captura('id_solicitud','int4');
         $this->captura('id_gestion_proveedores','int4');
         $this->captura('id_prov','int4');
@@ -189,6 +189,7 @@ class MODCotizacion extends MODbase{
         $this->captura('pie_pag','varchar');
         $this->captura('estado','varchar');
         $this->captura('nro_cotizacion','varchar');
+				$this->captura('fecha_solicitud','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -291,7 +292,7 @@ class MODCotizacion extends MODbase{
         $this->captura('cantidad_det','int4');
         $this->captura('precio_unitario','numeric');
         $this->captura('precio_unitario_mb','numeric');
-		$this->captura('nro_po','varchar');								   
+		$this->captura('nro_po','varchar');
 		$this->captura('aux_abas','varchar');
 		$this->captura('centro_costo','varchar');
         $this->captura('partida','varchar');
