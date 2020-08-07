@@ -212,9 +212,8 @@ BEGIN
                               )::varchar as lista_proveedor,
                               c.pie_pag,
                               s.estado,
-                               c.nro_cotizacion,
-                               to_char(s.fecha_solicitud,''DD/MM/YYYY'')::varchar as fecha_solicitud
-							  from mat.tsolicitud s
+                               c.nro_cotizacion
+							                from mat.tsolicitud s
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
                               inner join param.vproveedor pr on pr.id_proveedor = c.id_proveedor
@@ -226,6 +225,25 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
+
+    /*********************************
+ 	#TRANSACCION:  'MAT_SOLI_FEC'
+ 	#DESCRIPCION:	Fecha de la solicitud para nuevo formato
+ 	#AUTOR:		Ismael Valdivia
+ 	#FECHA:		07-08-2020
+	***********************************/
+
+	elsif(p_transaccion='MAT_SOLI_FEC')then
+    	begin
+
+			 v_consulta:='select s.fecha_solicitud
+							  from mat.tsolicitud s
+                              where s.id_proceso_wf ='||v_parametros.id_proceso_wf||'';
+
+
+			--Devuelve la respuesta
+			return v_consulta;
+		end;    
         /*********************************
  	#TRANSACCION:  'MAT_CTS_QR'
  	#DESCRIPCION:	Control de firmas  qr

@@ -8,8 +8,8 @@
 */
 require_once(dirname(__FILE__).'/../reportes/RCuandroComparativoPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RControlParteCotizacion.php');
-class ACTCotizacion extends ACTbase{    
-			
+class ACTCotizacion extends ACTbase{
+
 	function listarCotizacion(){
 		$this->objParam->defecto('ordenacion','id_cotizacion');
 
@@ -19,22 +19,22 @@ class ACTCotizacion extends ACTbase{
 			$this->res = $this->objReporte->generarReporteListado('MODCotizacion','listarCotizacion');
 		} else{
 			$this->objFunc=$this->create('MODCotizacion');
-			
+
 			$this->res=$this->objFunc->listarCotizacion($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-				
+
 	function insertarCotizacion(){
-		$this->objFunc=$this->create('MODCotizacion');	
+		$this->objFunc=$this->create('MODCotizacion');
 		if($this->objParam->insertar('id_cotizacion')){
-			$this->res=$this->objFunc->insertarCotizacion($this->objParam);			
-		} else{			
+			$this->res=$this->objFunc->insertarCotizacion($this->objParam);
+		} else{
 			$this->res=$this->objFunc->modificarCotizacion($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-						
+
 	function eliminarCotizacion(){
         $this->objFunc=$this->create('MODCotizacion');
 		$this->res=$this->objFunc->eliminarCotizacion($this->objParam);
@@ -58,7 +58,7 @@ class ACTCotizacion extends ACTbase{
     }
 
     function cuadroComparativo(){
-        
+
         $this->objFunc=$this->create('MODCotizacion');
         $this->res=$this->objFunc->cuadroComparativo($this->objParam);
         $this->objFunc=$this->create('MODCotizacion');
@@ -68,6 +68,11 @@ class ACTCotizacion extends ACTbase{
 
         $this->objFunc=$this->create('MODCotizacion');
         $this->res4=$this->objFunc->listaProveedor($this->objParam);
+
+				/*Aumentamos para recuperar la fecha de solicitud debido a los inner join*/
+				$this->objFunc=$this->create('MODCotizacion');
+        $this->solicitud=$this->objFunc->listaSolicitudFecha($this->objParam);
+				/************************************************************************/
 
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
@@ -80,7 +85,7 @@ class ACTCotizacion extends ACTbase{
         //Instancia la clase de pdf
 
         $this->objReporteFormato=new RCuandroComparativoPDF($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos,$this->res4->datos);
+        $this->objReporteFormato->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos,$this->res4->datos,$this->solicitud->datos);
         $this->objReporteFormato->generarReporte();
         $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 
@@ -116,7 +121,7 @@ class ACTCotizacion extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
     }
-			
+
 }
 
 ?>

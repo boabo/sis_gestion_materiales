@@ -189,7 +189,6 @@ class MODCotizacion extends MODbase{
         $this->captura('pie_pag','varchar');
         $this->captura('estado','varchar');
         $this->captura('nro_cotizacion','varchar');
-				$this->captura('fecha_solicitud','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -198,6 +197,24 @@ class MODCotizacion extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+		/*Aumentando esta para para la fecha de la solicitud*/
+		function listaSolicitudFecha(){
+        $this->procedimiento ='mat.ft_cotizacion_sel';
+        $this->transaccion='MAT_SOLI_FEC';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+        $this->captura('fecha_solicitud','date');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+		/***************************************************/
+		
     function listasFrimas(){
         $this->procedimiento ='mat.ft_cotizacion_sel';
         $this->transaccion='MAT_CTS_QR';

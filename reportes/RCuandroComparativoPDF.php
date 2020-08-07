@@ -12,8 +12,10 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->MultiCell(35, $height, '', 0, 'C', 0, '', '');
         $this->SetFontSize(11);
         $this->SetFont('', 'B');
+        $fecha_condicion = date("2020-04-01");
+        $fecha_solicitud = date($this->solicitud[0]['fecha_solicitud']);
         /*Aumentando la condicion para que se muestre el nuevo titulo a partir del 01/04/2020 */
-        if ($this->datos[0]['fecha_solicitud'] >= '01/04/2020') {
+        if ($fecha_solicitud >= $fecha_condicion) {
           $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES OBRAS Y SERVICIOS ESPECIALIZADOS'."\n".'EN EL EXTRANJERO', 0, 'C', 0, '', '');
           $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
           $this->ln(19);
@@ -296,11 +298,13 @@ class RCuandroComparativoPDF extends  ReportePDF
         return $fecha;
     }
 
-    function setDatos($datos,$datos2,$datos3,$datos4) {
+    function setDatos($datos,$datos2,$datos3,$datos4,$solicitud) {
         $this->datos = $datos;
         $this->datos2 = $datos2;
         $this->datos3 = $datos3;
         $this->datos4 = $datos4;
+        $this->datos4 = $datos4;
+        $this->solicitud = $solicitud;
 /*var_dump($datos);
 var_dump($datos2);
 var_dump($datos3);
