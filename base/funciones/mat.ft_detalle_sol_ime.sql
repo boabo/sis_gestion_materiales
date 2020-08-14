@@ -79,12 +79,12 @@ BEGIN
             explicacion_detallada_part
           	) values(
 			v_parametros.id_solicitud,
-			v_parametros.descripcion,
+			regexp_replace(v_parametros.descripcion,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
 			'activo',
 			v_parametros.id_unidad_medida,
-			v_parametros.nro_parte,
-			v_parametros.referencia,
-			v_parametros.nro_parte_alterno,
+            regexp_replace(v_parametros.nro_parte,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
+            regexp_replace(v_parametros.referencia,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
+            regexp_replace(v_parametros.nro_parte_alterno,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
 			v_parametros.cantidad_sol,
 			p_id_usuario,
 			v_parametros._nombre_usuario_ai,
@@ -93,7 +93,7 @@ BEGIN
 			null,
 			null,
             v_parametros.tipo,
-            v_parametros.explicacion_detallada_part
+            regexp_replace(v_parametros.explicacion_detallada_part,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g')
             )RETURNING id_detalle into v_id_detalle;
 
             --modificar nro_parte, nro_parte_alterno en tsolicitud
@@ -155,9 +155,9 @@ BEGIN
 			id_solicitud = v_parametros.id_solicitud,
 			descripcion = v_parametros.descripcion,
 			id_unidad_medida = v_parametros.id_unidad_medida,
-			nro_parte = v_parametros.nro_parte,
-			referencia = v_parametros.referencia,
-			nro_parte_alterno = v_parametros.nro_parte_alterno,
+			nro_parte = regexp_replace(v_parametros.nro_parte,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
+			referencia = regexp_replace(v_parametros.referencia,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
+			nro_parte_alterno = regexp_replace(v_parametros.nro_parte_alterno,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g'),
 			cantidad_sol = v_parametros.cantidad_sol,
 			id_usuario_mod = p_id_usuario,
 			fecha_mod = now(),
@@ -165,7 +165,7 @@ BEGIN
 			usuario_ai = v_parametros._nombre_usuario_ai,
             revisado = v_revisado,
             tipo = v_parametros.tipo,
-            explicacion_detallada_part = v_parametros.explicacion_detallada_part
+            explicacion_detallada_part = regexp_replace(v_parametros.explicacion_detallada_part,'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&= ]+', '-','g')
 			where id_detalle=v_parametros.id_detalle;
 
      --modificar nro_parte, nro_parte_alterno en tsolicitud
@@ -278,3 +278,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION mat.ft_detalle_sol_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;
