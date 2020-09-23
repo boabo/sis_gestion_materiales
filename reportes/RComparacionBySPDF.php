@@ -108,8 +108,8 @@ EOF;
         $motivo_solicitud = $this->datos[0]["motivo_solicitud"];
         $monto_ref = $this->datos[0]["monto_ref"];
         //$codigo = $this->datos[0]["codigo"];
-        $nro_partes = explode(',',$this->datos[0]["nro_partes"]);
-        $nro_partes_alternos = explode(',',$this->datos[0]["nro_partes_alternos"]);
+        $nro_partes = explode('|',$this->datos[0]["nro_partes"]);
+        $nro_partes_alternos = explode('|',$this->datos[0]["nro_partes_alternos"]);
         $obs = $this->datos[0]["observaciones"];
 
         $this->Ln(5);

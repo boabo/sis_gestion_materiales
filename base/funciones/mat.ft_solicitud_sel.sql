@@ -1785,8 +1785,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           COALESCE(tgp.adjudicado,''POR COTIZAR'')::varchar AS adjudicado,
                           s.motivo_solicitud::varchar,
                            --array_to_string(pxp.aggarray(det.nro_parte),'','')::varchar as nro_partes,
-                          coalesce(array_to_string(pxp.aggarray(det.nro_parte),'','')::varchar,''''::varchar) as nro_partes,
-                          coalesce(array_to_string(pxp.aggarray(det.nro_parte_alterno),'','')::varchar,''''::varchar) as nro_partes_alternos,
+                          coalesce(array_to_string(pxp.aggarray(det.nro_parte),''|'')::varchar,''''::varchar) as nro_partes,
+                          coalesce(array_to_string(pxp.aggarray(det.nro_parte_alterno),''|'')::varchar,''''::varchar) as nro_partes_alternos,
                             '''||COALESCE(v_nro_cite_dce,'')||'''::varchar AS nro_cobs,
                           s.fecha_solicitud::date,
                           (case
