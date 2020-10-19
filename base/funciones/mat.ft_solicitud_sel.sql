@@ -1419,7 +1419,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                d.cd,
 							   da.codigo_tipo,
                            	   c.id_cotizacion,
-                               s.fecha_solicitud';
+                               s.fecha_solicitud,
+                               d.id_detalle';
 			return v_consulta;
 
 		end;
