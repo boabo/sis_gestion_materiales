@@ -10,7 +10,7 @@ class RComparacionBySPDF extends  ReportePDF{
         $f_actual = date_format(date_create($this->datos[0]["fecha_solicitud"]), 'd/m/Y');
         $nro_cite_cobs = $this->datos[0]["nro_cobs"];
 
-        if ($f_actual >= '01/10/2020') {
+        if ($this->datos[0]["fecha_solicitud"] >= '2020-10-01') {
           $titulo = '<h4>PROCESO DE CONTRATACIÓN MEDIANTE<br>COMPARACIÓN DE OFERTAS DE BIENES, OBRAS Y SERVICIOS ESPECIALIZADOS EN EL EXTRANJERO<br>(Decreto Supremo N° 26688 y Decreto Supremos N° 3935) <br>Versión II</h4>';
         } else {
           $titulo = '<h4>PROCESO DE CONTRATACIÓN MEDIANTE<br>COMPARACIÓN  DE OFERTA DE BIENES Y SERVICIOS<br>(Decreto Supremo N° 26688) Versión I</h4>';
