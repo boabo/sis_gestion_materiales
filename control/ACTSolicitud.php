@@ -728,9 +728,16 @@ class ACTSolicitud extends ACTbase{
         $this->objParam->defecto('ordenacion','id_proveedor');
         $this->objParam->defecto('dir_ordenacion','asc');
 
+      
         if ($this->objParam->getParametro('tipo') != '') {
-            $this->objParam->addFiltro("provee.tipo  = ''". $this->objParam->getParametro('tipo')."''");
+          if ($this->objParam->getParametro('tipo') == 'todos') {
+            $this->objParam->addFiltro("(provee.tipo  = ''abastecimiento'' OR provee.tipo  = ''broker_repues_abas'' OR provee.tipo  = ''taller_repues_abas'')");
+          } else {
+            $this->objParam->addFiltro("provee.tipo  = ''abastecimiento''");
+          }
+
         }
+
         $this->objFunc=$this->create('MODSolicitud');
         $this->res=$this->objFunc->listarProveedor();
 

@@ -39,9 +39,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     tinit: false,
-                   
+
                     tasignacion: false,
-                    
+
                     name: 'lista_correos',
                     fieldLabel: 'Lista de Posibles Proveedores',
                     allowBlank: true,
@@ -60,7 +60,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields: ['id_proveedor','desc_proveedor','codigo','nit','rotulo_comercial','lugar','email'],
                         // turn on remote sorting
                         remoteSort: true,
-                        baseParams:{par_filtro:'desc_proveedor#codigo#nit#rotulo_comercial',tipo:'abastecimiento',_adicionar:'si'}
+                        baseParams:{par_filtro:'desc_proveedor#codigo#nit#rotulo_comercial',tipo:'todos',_adicionar:'si'}
 
                     }),
                     valueField: 'id_proveedor',
