@@ -180,7 +180,7 @@ BEGIN
                     v_record
                     FROM segu.tusuario tu
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
-                    INNER JOIN orga.vfuncionario_cargo fun on fun.id_funcionario = tf.id_funcionario
+                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = tf.id_funcionario
                     WHERE tu.id_usuario = p_id_usuario and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion);
 --raise exception 'v_record: %', v_record;
          	IF  pxp.f_existe_parametro(p_tabla,'historico') THEN
@@ -236,7 +236,7 @@ BEGIN
                         v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
                                 ' AND';
                         ELSE
-                        v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
+                        v_filtro = 'tew.id_funcionario ='||p_id_usuario||' OR ewb.id_funcionario ='||p_id_usuario||' and ';
                 END IF;
 
 					v_consulta:='select		sol.id_solicitud,
@@ -359,7 +359,7 @@ BEGIN
                     v_record
                     FROM segu.tusuario tu
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
-                    INNER JOIN orga.vfuncionario_cargo fun on fun.id_funcionario = tf.id_funcionario
+                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = tf.id_funcionario
                     WHERE tu.id_usuario = p_id_usuario and fun.fecha_finalizacion is null;
 
          	IF  pxp.f_existe_parametro(p_tabla,'historico') THEN
@@ -373,9 +373,9 @@ BEGIN
 
 
 
-        IF 	p_administrador THEN
+        /*IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
-            ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
+        ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
 
                IF(v_record.nombre_cargo ='Gerente Mantenimiento') THEN
 
@@ -623,7 +623,52 @@ BEGIN
                             ' AND';
                     ELSE
                     v_filtro = 'tew.id_funcionario ='||p_id_usuario||'OR ewb.id_funcionario ='||p_id_usuario||'and';
-            END IF;
+            END IF;*/
+
+            IF 	p_administrador THEN
+                    v_filtro = ' 0=0 AND ';
+                ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
+
+                    v_filtro = 'ewb.id_funcionario = '||v_record.id_funcionario||' AND ewb.estado_reg = ''activo'' AND ';
+
+
+                    ELSIF (v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
+                            IF (v_parametros.pes_estado = 'pedido_ma_compra' or v_parametros.pes_estado = 'pedido_ma_concluido') then
+                                v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                            ELSIF v_parametros.pes_estado = 'pedido_re_comite' THEN
+                                v_filtro = '';
+                            ELSE
+                                v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                            END IF;
+                   ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComite') THEN
+
+                  v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND tew.estado_reg = ''activo'' AND ';
+                        ELSIF  (v_parametros.tipo_interfaz = 'ProcesoCompra')THEN
+                                v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'Almacen')THEN
+                            v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'SolArchivado')THEN
+                            v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'SolicitudFec')THEN
+                            v_filtro = '';
+                        ELSIF  (v_parametros.tipo_interfaz = 'ConsultaRequerimientos')THEN
+                            v_filtro = '';
+
+                        ELSIF v_parametros.pes_estado = 'borrador_reg' THEN
+                        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'and ';
+
+                        ELSIF v_parametros.pes_estado = 'vobo_area_reg'   THEN
+                         v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
+
+                        ELSIF v_parametros.pes_estado = 'revision_reg' THEN
+                        v_filtro = 'sol.id_usuario_reg = '||p_id_usuario||'AND';
+
+                        ELSIF v_parametros.pes_estado = 'finalizado_reg' THEN
+                        v_filtro = 'sol.id_usuario_reg ='||p_id_usuario||
+                                ' AND';
+                        ELSE
+                        v_filtro = 'tew.id_funcionario ='||p_id_usuario||' OR ewb.id_funcionario ='||p_id_usuario||' and ';
+                END IF;
 
 		v_consulta:='select count(sol.id_solicitud)
                                 from mat.tsolicitud sol
