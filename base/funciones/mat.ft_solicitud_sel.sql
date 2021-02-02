@@ -1357,6 +1357,8 @@ BEGIN
 
     if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
 
+            --(may) 02-02-2021 se aumento el limit para que agarre el ultimo registro de quien aprobo la cotizacion
+
   			SELECT		twf.id_funcionario,
         				vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           				to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -1371,10 +1373,13 @@ BEGIN
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	  AND  te.codigo = 'cotizacion'
                   AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
-           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite;
+           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
+            ORDER BY  twf.fecha_reg DESC
+			LIMIT 1;
 
   	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_resp_qr_oficial,v_fecha_po);
   else
+            --(may) 02-02-2021 se aumento el limit para que agarre el ultimo registro de quien aprobo la cotizacion
 
   			SELECT		twf.id_funcionario,
         				vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Pública Nacional Estratégica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -1389,7 +1394,9 @@ BEGIN
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	 AND  te.codigo ='cotizacion'
                  AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
-           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
+           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo
+            ORDER BY  twf.fecha_reg DESC
+			LIMIT 1;
 
   	remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_resp_qr_oficial);
   end if;
