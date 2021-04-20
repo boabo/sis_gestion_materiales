@@ -358,7 +358,7 @@ BEGIN
 	elsif(p_transaccion='MAT_SOL_CONT')then
 
 		begin
-            SELECT		tf.id_funcionario,
+           /* SELECT		tf.id_funcionario,
  					fun.desc_funcionario1,
                     fun.nombre_cargo
                     INTO
@@ -366,7 +366,18 @@ BEGIN
                     FROM segu.tusuario tu
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
                     INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = tf.id_funcionario
-                    WHERE tu.id_usuario = p_id_usuario and fun.fecha_finalizacion is null;
+                    WHERE tu.id_usuario = p_id_usuario and fun.fecha_finalizacion is null;*/
+
+        	SELECT		tf.id_funcionario,
+ 					fun.desc_funcionario1,
+                    fun.nombre_cargo
+                    INTO
+                    v_record
+                    FROM segu.tusuario tu
+                    INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
+                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = tf.id_funcionario
+                    WHERE tu.id_usuario = p_id_usuario and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion);
+
 
          	IF  pxp.f_existe_parametro(p_tabla,'historico') THEN
              v_historico =  v_parametros.historico;
