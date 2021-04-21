@@ -1628,7 +1628,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
           --and vf.fecha_finalizacion is null
-          and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+          --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
+          and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(now(), vf.fecha_finalizacion)
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, fecha_firma;
 
   		remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud);
@@ -1646,7 +1647,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
           --and vf.fecha_finalizacion is null
-          and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+          --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
+          and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(now(), vf.fecha_finalizacion)
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, fecha_firma;
 
 
