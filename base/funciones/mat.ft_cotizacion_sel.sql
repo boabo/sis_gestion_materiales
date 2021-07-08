@@ -363,6 +363,7 @@ BEGIN
       end if;
 
   if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+  		-- 08-07-2021 (may) modificacion de codigo te.codigo = 'compra' a cotizacion_solicitada
   		SELECT		twf.id_funcionario,
         			vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
           			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -375,7 +376,7 @@ BEGIN
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
             INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
-            	AND te.codigo = 'compra'
+            	AND te.codigo = 'cotizacion_solicitada'
                 and vf.fecha_asignacion <= v_fecha_solicitud::date AND
     				(vf.fecha_finalizacion is null OR vf.fecha_finalizacion >= v_fecha_solicitud::date)
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo, pro.nro_tramite;
