@@ -1435,7 +1435,7 @@ BEGIN
         from adq.tsolicitud s
         where s.id_proceso_wf = v_id_proceso_wf_adq;
 
-        --24-08-2021 (may) modificacion d.cantidad_de para que cuente el totalde los registros de cotizacion_det
+		--24-08-2021 (may) modificacion d.cantidad_de para que cuente el totalde los registros de cotizacion_det
 
 
 			v_consulta:='select s.id_solicitud,
@@ -1475,7 +1475,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 s.estado as estado_materiales,
                                d.nro_parte_cot::varchar,
                                d.descripcion_cot::varchar,
-                               count(d.cantidad_det)::INTEGER as cantidad_det,
+                               d.cantidad_det,
                                d.cd,
 							   da.codigo_tipo,
                                '''||COALESCE (initcap(v_nombre_funcionario_resp_qr),' ')||'''::varchar as funcionario_resp,
@@ -1497,7 +1497,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 			--Devuelve la respuesta
             v_consulta:=v_consulta||'GROUP BY s.id_solicitud,ge.cotizacion_solicitadas,c.nro_cotizacion,c.monto_total,p.desc_proveedor,c.obs,c.recomendacion,mo.codigo,  d.nro_parte_cot,
                                d.descripcion_cot,
-                               --d.cantidad_det,
+                               d.cantidad_det,
                                d.cd,
 							   da.codigo_tipo,
                            	   c.id_cotizacion,
@@ -1677,7 +1677,10 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               SELECT tu.id_uo, tu.id_nivel_organizacional, tu.nombre_unidad, tu.nombre_cargo
               FROM orga.tuo  tu
               INNER JOIN orga.tuo_funcionario tf ON tf.id_uo = tu.id_uo
-              WHERE tf.id_funcionario = v_id_funcionario_oficial and tu.estado_reg = 'activo'
+              WHERE tf.id_funcionario = v_id_funcionario_oficial
+              /*Se adiciono la fecha para tomar en cuenta en caso que el funcionario este inactivo*/
+              AND v_fecha_solicitud::date between tf.fecha_asignacion and tf.fecha_finalizacion
+              --and tu.estado_reg = 'activo'
 
               UNION ALL
 
