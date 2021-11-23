@@ -1679,7 +1679,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               INNER JOIN orga.tuo_funcionario tf ON tf.id_uo = tu.id_uo
               WHERE tf.id_funcionario = v_id_funcionario_oficial
               /*Se adiciono la fecha para tomar en cuenta en caso que el funcionario este inactivo*/
-              AND v_fecha_solicitud::date between tf.fecha_asignacion and tf.fecha_finalizacion
+              AND ((v_fecha_solicitud::date between tf.fecha_asignacion and tf.fecha_finalizacion)
+              OR (v_fecha_solicitud::date >= tf.fecha_asignacion and tf.fecha_finalizacion is null))
               --and tu.estado_reg = 'activo'
 
               UNION ALL
