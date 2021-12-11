@@ -30,19 +30,41 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Grupos.push( {
                 layout: 'column',
                 border: false,
+                xtype: 'fieldset',
+                autoScroll: false,
                 defaults: {
                     border: false
                 },
-
+                style:{
+                      background:'#548DCA',
+                      // height:'245px',
+                      autoHeight: true,
+                      // border:'2px solid red',
+                      marginTop:'-26px',
+                      // marginLeft: '50%'
+                     },
                 items: [
 
                     {
-                        bodyStyle: 'padding-right:10px;',
+                      xtype: 'fieldset',
+                      autoScroll: false,
+                      style:{
+                            background:'#FFB09C',
+                            width:'330px',
+                            height:'350px',
+                            border:'1px solid black',
+                            borderRadius:'2px',
+                           },
                         items: [
                             {
                                 xtype: 'fieldset',
+                                border: false,
+                                autoScroll: false,
                                 title: ' Datos Adquisiciones ',
                                 autoHeight: true,
+                                style:{
+                                      background:'#FFB09C'
+                                     },
                                 items: [],
                                 id_grupo: 2
                             }
@@ -50,12 +72,27 @@ header("content-type: text/javascript; charset=UTF-8");
                         ]
                     },
                     {
-                        bodyStyle: 'padding-left:10px;',
+                      xtype: 'fieldset',
+                      style:{
+                            background:'#81D3FF',
+                            width:'330px',
+                            height:'350px',
+                            marginLeft:'2px',
+                            border:'1px solid black',
+                            borderRadius:'2px'
+                           },
                         items: [
                             {
                                 xtype: 'fieldset',
                                 title: ' Datos Comité de Evaluación ',
                                 autoHeight: true,
+                                border: false,
+                                autoScroll: false,
+                                style:{
+                                      background:'#81D3FF',
+                                      //border:'2px solid green',
+                                      //width : '100%',
+                                     },
                                 items: [],
                                 id_grupo: 5
                             }
@@ -106,6 +143,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
 
         },
+
         cmbGestion: new Ext.form.ComboBox({
             name: 'gestion',
             id: 'g_ceac',
@@ -139,13 +177,14 @@ header("content-type: text/javascript; charset=UTF-8");
             hidden:false,
             width:80
         }),
+
         gruposBarraTareas:[
-            {name:'pedido_dgac_pendiente',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Pendientes</h1>',grupo:3,height:0},
-            {name:'pedido_dgac_solicitada',title:'<H1 align="center"><i class="fa fa-file"></i> Solicitadas</h1>',grupo:3,height:0},
-            {name:'pedido_dgac_sin_resp',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
-            {name:'pedido_dgac_comite',title:'<H1 align="center"><i class="fa fa-minus-circle"></i> Vobo Comite</h1>',grupo:5,height:0},
-            {name:'pedido_dgac_compra',title:'<H1 align="center"><i class="fa fa-money"></i> Compra</h1>',grupo:3,height:0},
-            {name:'pedido_dgac_concluido',title:'<H1 align="center" ><i class="fa fa-folder" ></i> Concluido</h1>',grupo:5,height:0}
+            {name:'pedido_dgac_pendiente',title:'<H1 align="center" style="color:#E85C00; font-size:12px;"><i style="font-size:15px;" class="fa fa-pencil-square"></i> Pendientes</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_solicitada',title:'<H1 align="center" style="color:#00AD1F; font-size:12px;"><i style="font-size:15px;" class="fa fa-check-circle"></i> Solicitadas</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_sin_resp',title:'<H1 align="center" style="color:red; font-size:12px;"><i style="font-size:15px;" class="fa fa-times-circle"></i> Sin Respuestas</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_comite',title:'<H1 align="center" style="color:#007615; font-size:12px;"><i style="font-size:15px;" class="fa fa-thumbs-up"></i> Vobo Comité</h1>',grupo:5,height:0},
+            {name:'pedido_dgac_compra',title:'<H1 align="center" style="color:#0038D8; font-size:12px;"><i style="font-size:15px;" class="fa fa-shopping-cart"></i> Compra</h1>',grupo:3,height:0},
+            {name:'pedido_dgac_concluido',title:'<H1 align="center" style="color:#00B377; font-size:12px;"><i style="font-size:15px;" class="fa fa fa-th-list"></i> Concluido</h1>',grupo:5,height:0}
         ],
 
         actualizarSegunTab: function(name, indice){
@@ -154,18 +193,21 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.store.baseParams.pes_estado = name;
 
                 if(name == 'pedido_dgac_solicitada'){
-                    this.getBoton('btnproveedor').setVisible(true);
+                    //this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
                     this.getBoton('btnpac').setVisible(true);
+                    this.getBoton('ant_estado').setVisible(true);
                 }else if (name == 'pedido_dgac_pendiente' || name == 'pedido_dgac_compra'){
-                    this.getBoton('btnproveedor').setVisible(true);
+                    //this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
                     this.getBoton('btnpac').setVisible(false);
+                    this.getBoton('ant_estado').setVisible(false);
                 } else{
-                    this.getBoton('btnproveedor').setVisible(false);
+                    //this.getBoton('btnproveedor').setVisible(false);
                     this.getBoton('btnpac').setVisible(false);
                     this.getBoton('Cotizacion').setVisible(false);
                     this.getBoton('btnpac').setVisible(false);
+                    this.getBoton('ant_estado').setVisible(true);
                 }
 
                 this.load({params:{start:0, limit:this.tam_pag}});
@@ -177,6 +219,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bactGroups:  [0,1,2,3,5],
         btestGroups: [0],
         bexcelGroups: [0,1,2,3,5],
+        bganttGroups: [0,1,2,3,5],
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){
                 this.TabPanelSouth.get(0).enable();
@@ -195,9 +238,81 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb =this.tbar;
             Phx.vista.PedidosCeac.superclass.preparaMenu.call(this,n);
 
-            this.getBoton('btnproveedor').enable();
+            //this.getBoton('btnproveedor').enable();
             this.getBoton('Cotizacion').enable();
             this.getBoton('btnpac').enable();
+
+            /*Aqui pondremos para verificar los docuementos*/
+            if (this.store.baseParams.pes_estado == 'pedido_dgac_solicitada') {
+              Ext.Ajax.request({
+                  url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                  params:{id_proceso_wf: data.id_proceso_wf,
+                          estado_sig: 'comite_unidad_abastecimientos'},
+                  success:function(resp){
+                      var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                      if (reg.ROOT.datos.v_chekeado == 'no') {
+                          this.getBoton('sig_estado').disable();
+                          this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
+                      } else {
+                        this.getBoton('sig_estado').enable();
+                        this.noti_documentos.setText('');
+                        //this.reload();
+                      }
+                    /************************************************************************************/
+
+                  },
+                  failure: this.conexionFailure,
+                  timeout:this.timeout,
+                  scope:this
+              });
+            }
+            if (this.store.baseParams.pes_estado == 'pedido_dgac_compra') {
+              if (this.store.baseParams.monto_pac > 20000) {
+                Ext.Ajax.request({
+                      url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                      params:{id_proceso_wf: data.id_proceso_wf,
+                              estado_sig: 'despachado'},
+                      success:function(resp){
+                          var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                          if (reg.ROOT.datos.v_chekeado == 'no') {
+                              this.getBoton('sig_estado').disable();
+                              this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
+                          } else {
+                            this.getBoton('sig_estado').enable();
+                            this.noti_documentos.setText('');
+                            //this.reload();
+                          }
+                        /************************************************************************************/
+
+                      },
+                      failure: this.conexionFailure,
+                      timeout:this.timeout,
+                      scope:this
+                  });
+              } else {
+                this.getBoton('sig_estado').enable();
+                this.noti_documentos.setText('');
+                /*Recuperando la fecha cuando autoriza Jaime Lazarte para compra*/
+                Ext.Ajax.request({
+                      url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                      params:{id_proceso_wf: data.id_proceso_wf,
+                              estado_sig: 'compra'},
+                      success:function(resp){
+                          var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                          this.store.baseParams.fecha_po_automatico = reg.ROOT.datos.fecha_po_automatico;
+                        /************************************************************************************/
+
+                      },
+                      failure: this.conexionFailure,
+                      timeout:this.timeout,
+                      scope:this
+                  });
+                  /****************************************************************/
+
+                //this.reload();
+              }
+            }
+            /***********************************************/
 
 
             if( data['estado'] ==  'cotizacion'){
@@ -231,7 +346,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.getBoton('sig_estado').disable();
                 this.getBoton('btnpac').disable();
-                this.getBoton('btnproveedor').disable();
+                //this.getBoton('btnproveedor').disable();
                 this.getBoton('Archivado_concluido').enable();
                 this.getBoton('Cotizacion').disable();
                 this.getBoton('ini_estado').disable();
@@ -242,7 +357,19 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonEdit: function() {
             this.iniciarEvento();
             Phx.vista.PedidosCeac.superclass.onButtonEdit.call(this);
-            this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
+            this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
+
+            if (this.Cmp.tipo_de_adjudicacion.getValue() == '') {
+              this.Cmp.tipo_de_adjudicacion.setValue('Ninguno');
+            }
+
+            if (this.Cmp.nro_po.getValue()) {
+              this.Cmp.fecha_po.setDisabled(true);
+              this.Cmp.fecha_entrega.setDisabled(true);
+            } else {
+              this.Cmp.fecha_po.setDisabled(false);
+              this.Cmp.fecha_entrega.setDisabled(false);
+            }
             this.ocultarComponente(this.Cmp.taller_asignado);
             this.ocultarComponente(this.Cmp.observacion_nota);
             this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
@@ -263,7 +390,21 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         iniciarEvento:function () {
             var data = this.getSelectedData();
-            if (data['origen_pedido'] == 'Almacenes Consumibles o Rotables' && this.historico == 'si') {
+            if (data.estado == 'cotizacion') {
+                this.Cmp.lista_correos.reset();
+                this.Cmp.condicion.reset();
+            }
+            /*Aumentamos la condicion para mostrar el nuevo Campo MELOBSERVACION Ismael Valdivia 01/10/2020*/
+            if(data.mel == 'A' || data.mel == 'Otro' || data.mel == 'otro' || data.mel == 'OTRO'){
+              this.mostrarComponente(this.Cmp.mel_observacion);
+            } else {
+              this.ocultarComponente(this.Cmp.mel_observacion);
+            }
+            /***********************************************************************************************/
+
+
+
+            if (data['origen_pedido'] == 'Centro de Entrenamiento Aeronautico Civil' && this.historico == 'si') {
 
                 this.ocultarComponente(this.Cmp.mel);
                 this.ocultarComponente(this.Cmp.tipo_reporte);
@@ -274,10 +415,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
                 this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
                 this.ocultarComponente(this.Cmp.fecha_en_almacen);
-
+                this.ocultarComponente(this.Cmp.nro_no_rutina);
+                this.Cmp.nro_no_rutina.allowBlank = true;
                 this.mostrarComponente(this.Cmp.fecha_cotizacion);
                 this.mostrarComponente(this.Cmp.id_proveedor);
-                this.mostrarComponente(this.Cmp.nro_po);
+                this.ocultarComponente(this.Cmp.nro_po);
                 this.mostrarComponente(this.Cmp.fecha_po);
                 this.CampoBloqueado(true);
             }else{
@@ -295,16 +437,78 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.ocultarComponente(this.Cmp.nro_po);
                 this.ocultarComponente(this.Cmp.fecha_po);
+                this.ocultarComponente(this.Cmp.nro_no_rutina);
+                this.Cmp.nro_no_rutina.allowBlank = true;
+                this.Cmp.nro_po.allowBlank = false;
+                this.Cmp.fecha_po.allowBlank = true;
                 this.CampoBloqueado(true);
+
+                this.mostrarComponente(this.Cmp.tiempo_entrega);
+                this.Cmp.tiempo_entrega.allowBlank=false;
+
+                /*Aqui poner condcion para ocultar el campo de dias de entrega para el reporte de invitacion (Ismael Valdivia)*/
+                if (data['estado'] ==  'cotizacion') {
+
+                  //this.ocultarComponente(this.Cmp.tiempo_entrega);
+                  //this.Cmp.tiempo_entrega.allowBlank=true;
+
+                  this.mostrarComponente(this.Cmp.metodo_de_adjudicación);
+                  this.Cmp.metodo_de_adjudicación.allowBlank=false;
+
+                  this.mostrarComponente(this.Cmp.tipo_de_adjudicacion);
+                  this.Cmp.tipo_de_adjudicacion.allowBlank=false;
+
+                }else {
+                  // this.ocultarComponente(this.Cmp.tiempo_entrega);
+                  // this.Cmp.tiempo_entrega.allowBlank=true;
+
+                  this.ocultarComponente(this.Cmp.metodo_de_adjudicación);
+                  this.Cmp.metodo_de_adjudicación.allowBlank=true;
+
+                  this.ocultarComponente(this.Cmp.tipo_de_adjudicacion);
+                  this.Cmp.tipo_de_adjudicacion.allowBlank=true;
+                }
+                /*************************************************************************************************************/
 
                 if(data['estado'] ==  'compra' || data['estado'] ==  'despachado' || data['estado'] ==  'arribo' || data['estado'] ==  'desaduanizado' )  {
                     this.mostrarComponente(this.Cmp.fecha_cotizacion);
                     this.mostrarComponente(this.Cmp.id_proveedor);
-                    this.mostrarComponente(this.Cmp.nro_po);
+                    //this.mostrarComponente(this.Cmp.nro_po);
                     this.mostrarComponente(this.Cmp.fecha_po);
+                    this.mostrarComponente(this.Cmp.fecha_entrega);
+
+                    // this.Cmp.observaciones_sol.setDisabled(true);
+                    // this.Cmp.tiempo_entrega.setDisabled(true);
+                    // this.Cmp.mensaje_correo.setDisabled(true);
+                    // this.Cmp.lugar_entrega.setDisabled(true);
+                    // this.Cmp.condicion.setDisabled(true);
+                    // this.Cmp.fecha_cotizacion.setDisabled(true);
+                    // this.Cmp.id_proveedor.setDisabled(true);
+                    // this.Cmp.obs_pac.setDisabled(true);
+
+                    this.Cmp.fecha_po.on('select', function (c,r,i) {
+                      /*Aumentamos la fecha 30 dias mas*/
+                      var fecha_po = new Date(this.Cmp.fecha_po.getValue());
+                      fecha_po.setDate(fecha_po.getDate() + 15);
+                      var fecha_formateada = fecha_po.format('d/m/Y');
+                      /*********************************/
+                      this.Cmp.fecha_entrega.setValue(fecha_formateada);
+                    },this);
+
                     this.Cmp.id_proveedor.setValue(data['id_proveedor']);
                     this.Cmp.id_proveedor.setRawValue(data['desc_proveedor']);
                     this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
+                }
+                else {
+                  this.ocultarComponente(this.Cmp.fecha_entrega);
+                  // this.Cmp.observaciones_sol.setDisabled(false);
+                  // this.Cmp.tiempo_entrega.setDisabled(false);
+                  // this.Cmp.mensaje_correo.setDisabled(false);
+                  // this.Cmp.lugar_entrega.setDisabled(false);
+                  // this.Cmp.condicion.setDisabled(false);
+                  // this.Cmp.fecha_cotizacion.setDisabled(false);
+                  // this.Cmp.id_proveedor.setDisabled(false);
+                  // this.Cmp.obs_pac.setDisabled(false);
                 }
 
             }
@@ -316,6 +520,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.id_matricula.setDisabled(sw);
             // this.Cmp.tipo_solicitud.setDisabled(sw);
             this.Cmp.nro_no_rutina.setDisabled(sw);
+            this.Cmp.tipo_solicitud.setDisabled(sw);
 
         },
 
@@ -342,13 +547,11 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos[this.getIndAtributo('condicion')].grid=true;
 
 
-        }
+        },
 
-
-
-
-
-
-
+        successSave:function(resp){
+          Phx.vista.PedidosCeac.superclass.successSave.call(this,resp);
+          this.confirmarEstado();
+        },
     }
 </script>

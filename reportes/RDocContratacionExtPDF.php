@@ -8,7 +8,7 @@ class RDocContratacionExtPDF extends  ReportePDF{
     {
         $this->Ln(15);
         $url_imagen = dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png';
-        
+
         $f_actual = date_format(date_create($this->datos[0]["fecha_solicitud"]), 'd/m/Y');
         $nro_cite_dce = $this->datos[0]["nro_cite_dce"];
 
@@ -25,7 +25,7 @@ class RDocContratacionExtPDF extends  ReportePDF{
 		<style>
 		table, th, td {
    			border: 1px solid black;
-            border-collapse: collapse;            
+            border-collapse: collapse;
    			font-family: "Calibri";
    			font-size: 10pt;
 		}
@@ -91,7 +91,9 @@ EOF;
 
         $this->Ln(19);
         $this->writeHTML($tbl);
-
+        if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
+          $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) después de la invitación."', 0, 'L', 0, 1, '', '');          
+        }
         $this->SetFont('', 'B',9);
         $this->MultiCell(200, 5, "\n" . 'FAVOR ENVIAR SU COTIZACIÓN AL CORREO abastecimiento@boa.bo', 0, 'L', 0, '', '');
 

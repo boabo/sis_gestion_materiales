@@ -12,53 +12,84 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         bnew: true,
-        fheight: '45%',
-        fwidth: '75%',
+        fheight: 450, 
+        fwidth: 900,
         constructor: function (config) {
-
             this.Grupos = [
                 {
-                    layout: 'column',
-                    border: false,
-                    autoHeight : true,
-                    defaults: {
-                        border: false,
-                        autoHeight: false,
-                        bodyStyle: 'padding-right:4px'
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldset',
-                            columnWidth: 0.5,
-                            defaults: {
-                                anchor: '-20' // leave room for error icon
-                            },
-                            title: 'Datos Part Number',
-                            items: [],
-                            id_grupo: 0,
-                            flex:1,
-                            autoHeight : true,
-                            margins:'2 2 2 2'
-                        },
+                  layout: 'column',
+                  border: false,
+                  xtype: 'fieldset',
+                  defaults: {
+                      border: false
+                  },
+                  style:{
+                        background:'#548DCA',
+                       },
+                       items: [
+                           {
+                             xtype: 'fieldset',
+                             style:{
+                                   background:'#FFD97A',
+                                   width:'400px',
+                                   height:'330px',
+                                   border:'1px solid black',
+                                   borderRadius:'2px'
+                                  },
+                               items: [
 
-                        {
-                            xtype: 'fieldset',
-                            columnWidth: 0.5,
-                            title: 'Datos Cotización',
-                            items: [],
-                            margins:'2 10 2 2',
-                            id_grupo:1,
-                            autoHeight : true,
-                            flex:1
-                        }
-                    ]
+                                   {
+                                       xtype: 'fieldset',
+                                       title: '  Datos Part Number ',
+                                       border: false,
+                                       //autoHeight: true,
+                                       style:{
+                                             background:'#FFD97A',
+                                            },
+
+                                       items: [/*this.compositeFields()*/],
+                                       id_grupo: 0
+                                   }
+
+                               ]
+                           },
+                           {
+                             xtype: 'fieldset',
+                             style:{
+                                   background:'#77E9CA',
+                                   width:'400px',
+                                   height:'330px',
+                                   marginLeft:'2px',
+                                   border:'1px solid black',
+                                   borderRadius:'2px'
+                                  },
+                               items: [
+                                   {
+                                       xtype: 'fieldset',
+                                       title: ' Datos Cotizacion ',
+                                       //autoHeight: true,
+                                       border: false,
+                                       style:{
+                                             background:'#77E9CA',
+                                             //border:'2px solid green',
+                                             width : '100%',
+                                            },
+                                       items: [],
+                                       id_grupo: 1
+                                   }
+
+
+                               ]
+                           }
+                       ]
                 }];
 
 
-
             this.maestro = config.maestro;
+
             //llama al constructor de la clase padre
             Phx.vista.CotizacionDetalle.superclass.constructor.call(this, config);
+            this.tipoTramite = Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite;
             this.init();
             this.grid.addListener('cellclick', this.oncellclick,this);
             this.grid.on('rowcontextmenu', function(grid, rowIndex, e) {
@@ -68,17 +99,33 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     selModel.selectRow(rowIndex);
                     this.fireEvent('rowclick', this, rowIndex, e);
                 }
-                this.ctxMenu.showAt(e.getXY())
+
+                //Descomentar para no agregar detalles en la cotizacion
+                //if (this.tipoTramite != 'GM') {
+                this.ctxMenu.showAt(e.getXY());
+                  //}
             }, this);
-            this.ctxMenu = new Ext.menu.Menu({
-                items: [{
-                    handler: this.clonarDetalle,
-                    icon: '../../../lib/imagenes/arrow-down.gif',
-                    text: 'Clonar Nro. de Parte',
-                    scope: this
-                }],
-                scope: this
-            });
+
+
+
+
+              this.ctxMenu = new Ext.menu.Menu({
+                  items: [{
+                      handler: this.clonarDetalle,
+                      icon: '../../../lib/imagenes/arrow-down.gif',
+                      text: 'Clonar Nro. de Parte',
+                      scope: this
+                  }],
+                  scope: this
+              });
+
+
+
+
+            this.bbar.el.dom.style.background='#80D7FF';
+            this.tbar.el.dom.style.background='#80D7FF';
+            this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#B7E8FF';
+            this.grid.body.dom.firstChild.firstChild.lastChild.style.background='#D8F9FF';
         },
 
         Atributos: [
@@ -127,7 +174,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'revisado',
                     fieldLabel: 'Cotizado',
                     allowBlank: true,
-                    anchor: '50%',
+                    width: 200,
                     gwidth: 80,
                     maxLength:3,
                     renderer: function (value){
@@ -148,11 +195,36 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 form: false
             },
             {
+                config:{
+                    name: 'referencial',
+                    fieldLabel: 'Referencial',
+                    allowBlank: true,
+                    width: 200,
+                    gwidth: 80,
+                    maxLength:3,
+                    renderer: function (value){
+                        //check or un check row
+                        var checked = '',
+                            momento = 'No';
+                        if(value == 'Si'){
+                            checked = 'checked';;
+                        }else if(value==''){
+                            return value;
+                        }
+                        return  String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:37px;width:37px;" type="checkbox"  {0}></div>',checked);
+
+                    }
+                },
+                type: 'TextField',
+                grid: true,
+                form: false
+            },
+            {
                 config: {
                     name: 'nro_parte_cot',
                     fieldLabel: 'Nro. Parte',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 150,
                     maxLength: 50
 
@@ -169,7 +241,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'nro_parte_alterno_cot',
                     fieldLabel: 'Nro. Parte Alterno',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 150,
                     maxLength: 50
                 },
@@ -185,9 +257,28 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'referencia_cot',
                     fieldLabel: 'Referencia',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 200,
                     maxLength: 100
+                  },
+                type: 'TextField',
+                filters: {pfiltro: 'cde.referencia_cot', type: 'string'},
+                id_grupo: 0,
+                grid: true,
+                egrid: true,
+                form: true
+            },
+            {
+                config: {
+                    name: 'serial',
+                    fieldLabel: 'Serial',
+                    allowBlank: true,
+                    width: 200,
+                    gwidth: 200,
+                    maxLength: 100,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['referencia_cot']);
+                    }
                 },
                 type: 'TextField',
                 filters: {pfiltro: 'cde.referencia_cot', type: 'string'},
@@ -201,7 +292,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'descripcion_cot',
                     fieldLabel: 'Descripcion',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 200,
                     maxLength: 100
                 },
@@ -215,13 +306,13 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             {
                 config: {
                     name: 'explicacion_detallada_part_cot',
-                    fieldLabel: 'Explicacion Detallada P/N',
+                    fieldLabel: 'P/N Cotización',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 200,
                     maxLength: 100
                 },
-                type: 'TextArea',
+                type: 'TextField',
                 filters: {pfiltro: 'cde.explicacion_detallada_part_cot', type: 'string'},
                 id_grupo: 0,
                 grid: true,
@@ -229,33 +320,97 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 form: true
             },
             {
-                config: {
-                    name: 'tipo_cot',
-                    fieldLabel: 'Tipo',
-                    allowBlank: false,
-                    emptyText: 'Elija una opción...',
-                    typeAhead: true,
-                    triggerAction: 'all',
-                    lazyRender: true,
-                    mode: 'local',
-                    anchor: '50%',
-                    gwidth: 80,
-                    store: ['Consumible', 'Rotable','Herramienta','Otros Cargos','NA']
-
-                },
-                type: 'ComboBox',
-                id_grupo: 0,
-                grid: true,
-                egrid: true,
-                form: true
-
-            },
+  					 config : {
+  						 name : 'tipo_cot',
+  						 fieldLabel : 'Tipo',
+  						 width: 200,
+  						 allowBlank : false,
+  						 emptyText : 'Tipo...',
+  						 store : new Ext.data.JsonStore({
+  							 url : '../../sis_parametros/control/Catalogo/listarCatalogoCombo',
+  							 id : 'id_catalogo',
+  							 root : 'datos',
+  							 sortInfo : {
+  								 field : 'codigo',
+  								 direction : 'ASC'
+  							 },
+  							 totalProperty : 'total',
+  							 fields: ['codigo','descripcion'],
+  							 remoteSort : true,
+  							 baseParams:{
+  								par_filtro: 'cat.descripcion',
+  								cod_subsistema:'MAT',
+  								catalogo_tipo:'tdetalle_sol'
+  							},
+  						 }),
+  						 valueField : 'descripcion',
+  						 displayField : 'descripcion',
+  						 gdisplayField : 'tipo_cot',
+  						 hiddenName : 'tipo_cot',
+  						 forceSelection : true,
+  						 typeAhead : false,
+  						 tpl: new Ext.XTemplate([
+  								 '<tpl for=".">',
+  								 '<div class="x-combo-list-item">',
+  								 '<p><b><span style="color: black; height:15px;">{descripcion}</span></b></p>',
+  								 '</div></tpl>'
+  						 ]),
+  						 triggerAction : 'all',
+  						 lazyRender : true,
+  						 mode : 'remote',
+  						 pageSize : 25,
+  						 listWidth:'450',
+  						 maxHeight : 450,
+  						 queryDelay : 1000,
+  						 tasignacion : true,
+  						 tdata:{},
+  						 tcls:'Proveedor',
+  						 gwidth : 170,
+  						 minChars : 2,
+  						 resizable:true,
+  						 // renderer: function(value, p, record) {
+               //     console.log("aqui llega el dato",record.data);
+  							// 	 if(record.data.revisado == 'no'&& record.data.estado == 'almacen'){
+  							// 			 return String.format('<div ext:qtip="Optimo"><b><font color="red">{0}</font></b><br></div>', record.data.tipo);
+  							// 	 }else{
+  							// 			 return String.format('<div ext:qtip="Optimo"><b><font color="black">{0}</font></b><br></div>', record.data.tipo);
+  							// 	 }
+               //
+  						 // }
+  					 },
+  					 type : 'AwesomeCombo',
+  					 id_grupo : 0,
+  					 grid: true,
+  					 form: true
+  				 },
+            // {
+            //     config: {
+            //         name: 'tipo_cot',
+            //         fieldLabel: 'Tipo',
+            //         allowBlank: false,
+            //         emptyText: 'Elija una opción...',
+            //         typeAhead: true,
+            //         triggerAction: 'all',
+            //         lazyRender: true,
+            //         mode: 'local',
+            //         width: 200,
+            //         gwidth: 80,
+            //         store: ['Consumible', 'Rotable','Herramienta','Otros Cargos','NA']
+            //
+            //     },
+            //     type: 'ComboBox',
+            //     id_grupo: 0,
+            //     grid: true,
+            //     egrid: true,
+            //     form: true
+            //
+            // },
             {
                 config: {
                     name: 'codigo',
                     fieldLabel: 'Unidad Medida',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 150,
                     maxLength: 50
 
@@ -271,61 +426,17 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'cantidad_det',
                     fieldLabel: 'Cantidad Total',
                     allowBlank: true,
-                    width: 120,
+                    width: 200,
                     gwidth: 120,
                     maxLength: 1000,
                     style: 'background-color: #9BF592; background-image: none;'
                 },
                 type: 'NumberField',
                 filters: {pfiltro: 'cde.cantidad_det', type: 'numeric'},
-                id_grupo: 0,
+                id_grupo: 1,
                 grid: true,
                 egrid: true,
                 form: true
-            },
-            {
-                config:{
-                    name:'cd',
-                    fieldLabel:'CD',
-                    typeAhead: true,
-                    allowBlank:true,
-                    triggerAction: 'all',
-                    emptyText:'Tipo...',
-                    selectOnFocus:true,
-                    mode:'local',
-                    store:new Ext.data.ArrayStore({
-                        fields: ['ID', 'valor'],
-                        data :	[
-                            ['1','AR'],
-                            ['2','OH'],
-                            ['3','EXC'],
-                            ['4','NEW'],
-                            ['5','NE'],
-                            ['6','NSV'],
-                            ['7','SVC'],
-                            ['8','SCR'],
-                            ['9','BER'],
-                            ['10','RP'],
-                            ['11','FN'],
-                            ['12','RTC'],
-                            ['13','SV'],
-                            ['14','INSP'],
-                            ['15','AS IS'],
-                            ['16','NS'],
-                            ['17','I/T']
-                        ]
-                    }),
-                    valueField:'valor',
-                    displayField:'valor',
-                    anchor: '50%',
-                    gwidth:100
-
-                },
-                type:'ComboBox',
-                id_grupo:1,
-                grid:true,
-                egrid: true,
-                form:true
             },
             {
                 config: {
@@ -333,7 +444,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     fieldLabel: 'Precio Unitario',
                     currencyChar: ' ',
                     allowBlank: true,
-                    width: 120,
+                    width: 200,
                     gwidth: 120,
                     disabled: false,
                     maxLength: 1245186,
@@ -352,7 +463,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     fieldLabel: 'Precio Total',
                     currencyChar: ' ',
                     allowBlank: true,
-                    width: 100,
+                    width: 200,
                     gwidth: 120,
                     disabled: true,
                     maxLength: 1245186
@@ -363,6 +474,109 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 grid: true,
                 form: false
             },
+            {
+             config : {
+               name : 'cd',
+               fieldLabel : 'CD',
+               width:200,
+               allowBlank : false,
+               emptyText : 'Condicion...',
+               store : new Ext.data.JsonStore({
+                 url : '../../sis_parametros/control/Catalogo/listarCatalogoCombo',
+                 id : 'id_catalogo',
+                 root : 'datos',
+                 sortInfo : {
+                   field : 'codigo',
+                   direction : 'ASC'
+                 },
+                 totalProperty : 'total',
+                 fields: ['codigo','descripcion'],
+                 remoteSort : true,
+                 baseParams:{
+                  cod_subsistema:'MAT',
+                  catalogo_tipo:'tsolicitud'
+                },
+               }),
+               valueField : 'codigo',
+               displayField : 'codigo',
+               gdisplayField : 'codigo',
+               hiddenName : 'codigo',
+               forceSelection : true,
+               typeAhead : false,
+               tpl: new Ext.XTemplate([
+                   '<tpl for=".">',
+                   '<div class="x-combo-list-item">',
+                   '<div>',
+                   '<p><b>Codigo: <span style="color: red;">{codigo}</span></b></p>',
+                   '</div><p><b>Descripción:</b> <span style="color: green;">{descripcion}</span></p>',
+                   '</div></tpl>'
+               ]),
+               triggerAction : 'all',
+               lazyRender : true,
+               mode : 'remote',
+               pageSize : 25,
+               listWidth:'450',
+               maxHeight : 450,
+               queryDelay : 1000,
+               tasignacion : true,
+               tname : 'id_proveedor',
+               tdata:{},
+               tcls:'Proveedor',
+               gwidth : 170,
+               minChars : 2,
+               resizable:true
+             },
+             type : 'ComboBox',
+             id_grupo : 1,
+             grid: true,
+             form: true
+           },
+           {
+               config: {
+                   name: 'id_unidad_medida_cot',
+                   fieldLabel: 'Unidad de medida',
+                   allowBlank: true,
+                   emptyText: 'U/M..',
+                   store: new Ext.data.JsonStore({
+                       url: '../../sis_gestion_materiales/control/DetalleSol/unidadMedia',
+                       id: 'id_unidad_medida',
+                       root: 'datos',
+                       sortInfo: {
+                           field: 'codigo',
+                           direction: 'ASC'
+                       },
+
+                       totalProperty: 'total',
+                       fields: ['id_unidad_medida','codigo','descripcion','tipo_unidad_medida'],
+                       remoteSort: true,
+                       baseParams: {par_filtro: ' un.codigo# un.descripcion'}
+                   }),
+                   valueField: 'id_unidad_medida',
+                   displayField: 'codigo',
+                   gdisplayField: 'codigo',
+                   tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p style="color: blue">{descripcion}</p></div></tpl>',
+                   hiddenName: 'id_unidad_medida',
+                   forceSelection: true,
+                   typeAhead: false,
+                   triggerAction: 'all',
+                   lazyRender: true,
+                   mode: 'remote',
+                   pageSize: 100,
+                   queryDelay: 100,
+                   width: 200,
+                   gwidth: 200,
+                   minChars: 2,
+                   renderer : function(value, p, record) {
+                       return String.format('{0}', record.data['codigo']);
+                   }
+               },
+               type: 'ComboBox',
+               id_grupo: 1,
+               filters: {pfiltro:' u.codigo', type:'string'},
+               grid: false,
+               form: true
+
+           },
             {
                 config: {
                     name: 'id_day_week',
@@ -393,7 +607,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     mode: 'remote',
                     pageSize: 500,
                     queryDelay: 1000,
-                    anchor: '50%',
+                    width: 200,
                     gwidth: 100,
                     minChars: 2,
                     renderer : function(value, p, record) {
@@ -413,7 +627,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'estado_reg',
                     fieldLabel: 'Estado Reg.',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     maxLength: 10
                 },
@@ -428,7 +642,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'id_usuario_ai',
                     fieldLabel: '',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     maxLength: 4
                 },
@@ -443,7 +657,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'usr_reg',
                     fieldLabel: 'Creado por',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     maxLength: 4
                 },
@@ -458,7 +672,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'usuario_ai',
                     fieldLabel: 'Funcionaro AI',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     maxLength: 300
                 },
@@ -473,7 +687,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'fecha_reg',
                     fieldLabel: 'Fecha creación',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer: function (value, p, record) {
@@ -491,7 +705,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'fecha_mod',
                     fieldLabel: 'Fecha Modif.',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer: function (value, p, record) {
@@ -509,7 +723,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                     name: 'usr_mod',
                     fieldLabel: 'Modificado por',
                     allowBlank: true,
-                    anchor: '80%',
+                    width: 200,
                     gwidth: 100,
                     maxLength: 4
                 },
@@ -553,7 +767,10 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             {name: 'cd', type: 'string'},
             {name: 'codigo', type: 'string'},
             {name: 'revisado', type: 'string'},
-            {name: 'desc_codigo_tipo', type: 'string'}
+            {name: 'desc_codigo_tipo', type: 'string'},
+            {name: 'referencial', type: 'string'},
+            {name: 'id_unidad_medida_cot', type: 'numeric'}
+
 
         ],
         sortInfo: {
@@ -562,9 +779,25 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         },
         bdel: true,
         bsave: true,
+
         onReloadPage: function (m) {
             this.maestro = m;
             this.store.baseParams = {id_cotizacion: this.maestro.id_cotizacion};
+
+            var tipoTramite = Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite;
+
+            if (tipoTramite == 'GR') {
+              this.cm.setHidden(6, false);
+  						this.cm.setHidden(5, true);
+            } else {
+              this.cm.setHidden(5, false);
+  						this.cm.setHidden(6, true);
+            }
+
+
+          //  Phx.CP.getPagina(this.idContenedorPadre).maestro
+              //console.log("llega carga pagina deta",Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite);
+              //this.changeFieldLabel('referencia_cot', '<b style="font-size:12px;"><i class="fa fa-pencil" aria-hidden="true"></i></b> Serial');
             this.load({params: {start: 0, limit: 50}});
 
         },
@@ -589,7 +822,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             var rec=this.sm.getSelected();
             Ext.Ajax.request({
                 url:'../../sis_gestion_materiales/control/CotizacionDetalle/clonarDetalle',
-                params:{'id_detalle':rec.data.id_cotizacion_det},
+                params:{'id_detalle':rec.data.id_cotizacion_det,
+                        'id_solicitud':this.maestro.id_solicitud},
                 success:this.succeClonSinc,
                 failure: this.conexionFailure,
                 timeout:this.timeout,
@@ -607,6 +841,11 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
 
         if(fieldName == 'revisado') {
             this.cambiarRevision(record);
+        }
+
+        if(fieldName == 'referencial') {
+            this.cambiarReferencia(record);
+            this.evento();
         }
     },
     cambiarRevision: function(record){
@@ -627,8 +866,114 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
     successRevision: function(resp){
         Phx.CP.loadingHide();
         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-    }
+    },
+
+    cambiarReferencia: function(record){
+        Phx.CP.loadingShow();
+        var d = record.data;
+        console.log("aqui para cambiar el estado",d);
+        Ext.Ajax.request({
+            url:'../../sis_gestion_materiales/control/CotizacionDetalle/cambiarReferencia',
+            params:{ id_cotizacion_det: d.id_cotizacion_det,
+                referencial: d.referencial
+            },
+            success: this.successReferencia,
+            failure: this.conexionFailure,
+            timeout: this.timeout,
+            scope: this
+        });
+        this.reload();
+    },
+    successReferencia: function(resp){
+        Phx.CP.loadingHide();
+        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+    },
+    evento:function () {
+        Phx.CP.getPagina(this.idContenedorPadre).reload();
+    },
+    onButtonEdit:function () {
+        Phx.vista.CotizacionDetalle.superclass.onButtonEdit.call(this);
+        var tipo_tramite = Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite;
+        this.window.items.items[0].body.dom.style.background = '#548DCA';
+        this.window.mask.dom.style.background = '#000000';
+        this.window.mask.dom.style.opacity = '0.9';
+        if (tipo_tramite == 'GR') {
+          this.Cmp.serial.setValue(this.Cmp.referencia_cot.getValue());
+          this.ocultarComponente(this.Cmp.referencia_cot);
+          this.ocultarComponente(this.Cmp.id_day_week);
+          this.mostrarComponente(this.Cmp.serial);
+          this.Cmp.id_day_week.allowBlank = true;
+          this.Cmp.serial.on('change',function(field,newValue,oldValue){
+    				this.Cmp.referencia_cot.setValue(this.Cmp.serial.getValue());
+    			},this);
+        } else {
+          this.mostrarComponente(this.Cmp.referencia_cot);
+          this.ocultarComponente(this.Cmp.serial);
+          this.mostrarComponente(this.Cmp.id_day_week);
+          this.Cmp.id_day_week.allowBlank = false;
+        }
+
+    },
+    onButtonNew:function () {
+        Phx.vista.CotizacionDetalle.superclass.onButtonNew.call(this);
+        var tipo_tramite = Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite;
+        this.window.items.items[0].body.dom.style.background = '#548DCA';
+        this.window.mask.dom.style.background = '#000000';
+        this.window.mask.dom.style.opacity = '0.9';
+        this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
+        if (tipo_tramite == 'GR') {
+          this.Cmp.serial.setValue(this.Cmp.referencia_cot.getValue());
+          this.ocultarComponente(this.Cmp.referencia_cot);
+          this.ocultarComponente(this.Cmp.id_day_week);
+          this.mostrarComponente(this.Cmp.serial);
+          this.Cmp.id_day_week.allowBlank = true;
+          this.Cmp.serial.on('change',function(field,newValue,oldValue){
+            this.Cmp.referencia_cot.setValue(this.Cmp.serial.getValue());
+          },this);
+        } else {
+          this.mostrarComponente(this.Cmp.referencia_cot);
+          this.ocultarComponente(this.Cmp.serial);
+          this.mostrarComponente(this.Cmp.id_day_week);
+          this.Cmp.id_day_week.allowBlank = false;
+
+          /*Aqui aumentando para los gastos extrar en la cotizacion (Ismael Valdivia 09/10/2020)*/
+          this.Cmp.tipo_cot.store.load({params:{start:0,limit:50},
+  					 callback : function (r) {
+                  this.Cmp.tipo_cot.setValue('Fletes - Otros');
+                  this.Cmp.tipo_cot.fireEvent('select', this.Cmp.tipo_cot,'Fletes - Otros',0);
+  						}, scope : this
+  				});
+          /*********************************************************/
+
+          this.Cmp.tipo_cot.on('select',function(c,r,i) {
+            if (this.Cmp.tipo_cot.getValue() == 'Fletes - Otros') {
+                this.ocultarComponente(this.Cmp.cd);
+                this.ocultarComponente(this.Cmp.id_unidad_medida_cot);
+                this.ocultarComponente(this.Cmp.id_day_week);
+                this.ocultarComponente(this.Cmp.explicacion_detallada_part_cot);
+                this.Cmp.cd.allowBlank = true;
+                this.Cmp.id_unidad_medida_cot.allowBlank = true;
+                this.Cmp.id_day_week.allowBlank = true;
+                this.Cmp.explicacion_detallada_part_cot.allowBlank = true;
+                this.Cmp.precio_unitario.allowBlank = false;
+
+                this.Cmp.tipo_cot.setDisabled(true);
+
+                this.Cmp.nro_parte_cot.setValue('HAZMAT');
+                this.Cmp.nro_parte_alterno_cot.setValue('HAZMAT');
+                this.Cmp.referencia_cot.setValue('HAZMAT');
+                this.Cmp.serial.setValue('HAZMAT');
+                this.Cmp.descripcion_cot.setValue('HAZMAT');
+                this.Cmp.cantidad_det.setValue('1');
+
+
+            }
+          },this);
+
+
+
+
+        }
+    },
     })
 </script>
-		
-		

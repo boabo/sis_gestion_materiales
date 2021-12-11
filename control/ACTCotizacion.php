@@ -65,15 +65,13 @@ class ACTCotizacion extends ACTbase{
         $this->res2=$this->objFunc->listasFrimas($this->objParam);
         $this->objFunc=$this->create('MODCotizacion');
         $this->res3=$this->objFunc->listaPartes($this->objParam);
-
         $this->objFunc=$this->create('MODCotizacion');
         $this->res4=$this->objFunc->listaProveedor($this->objParam);
 
 				/*Aumentamos para recuperar la fecha de solicitud debido a los inner join*/
 				$this->objFunc=$this->create('MODCotizacion');
         $this->solicitud=$this->objFunc->listaSolicitudFecha($this->objParam);
-				/************************************************************************/
-
+				/*************************************************************************/
         //obtener titulo del reporte
         $titulo = 'Requerimiento de Materiales';
         //Genera el nombre del archivo (aleatorio + titulo)
@@ -121,6 +119,36 @@ class ACTCotizacion extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
     }
+
+		function recuperarDetalleCotizacion(){
+			$this->objFunc=$this->create('MODCotizacion');
+			$this->res=$this->objFunc->recuperarDetalleCotizacion($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());
+		}
+
+		function insertarCotizacionCompleta(){
+				$this->objFunc=$this->create('MODCotizacion');
+				if($this->objParam->insertar('id_cotizacion')){
+						$this->res=$this->objFunc->insertarCotizacionCompleta($this->objParam);
+				}
+				$this->res->imprimirRespuesta($this->res->generarJson());
+		}
+
+		/*Aumentando para seleccionar el contacto del proveedor*/
+		function listarContactos(){
+
+			if ($this->objParam->getParametro('id_proveedor') != '') {
+						 $this->objParam->addFiltro(" cont.id_proveedor = ".$this->objParam->getParametro('id_proveedor'));
+			}
+
+
+
+	    $this->objFunc=$this->create('MODCotizacion');
+			$this->res=$this->objFunc->listarContactos($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());
+		}
+		/*******************************************************/
+
 
 }
 

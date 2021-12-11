@@ -12,20 +12,20 @@ header("content-type: text/css; charset=UTF-8");
 <style type="text/css" rel="stylesheet">
 
     .prioridad_menor {
-        background-color: #bdffb2;//#e2ffe2
+        background-color: #3EB82A;//#e2ffe2
     color: #090;
 
     }
 
     .prioridad_medio {
-        background-color: #F7DC6F;
+        background-color: #FFF0B4;
         color: #090;
     }
 
     .prioridad_importanteA{
 
-        background-color: #EAA8A8;//#ffe2e2
-    color: #900;
+        background-color: #FFDADA;//#ffe2e2
+        color: #900;
     }
 
     .prioridad_importanteB{
@@ -40,8 +40,12 @@ header("content-type: text/css; charset=UTF-8");
     .y-grid3-different-row {
         color: #f20726 !important;
     }
-
-
+    .seleccionado{
+       background-color: #A0FAA4 !important;
+    }
+    .selector:hover{
+      background-color: #A0FAA4 !important;
+    }
 
 
 </style>

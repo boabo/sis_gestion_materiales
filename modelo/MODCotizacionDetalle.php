@@ -8,11 +8,11 @@
 */
 
 class MODCotizacionDetalle extends MODbase{
-	
+
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
-			
+ 
 	function listarCotizacionDetalle(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='mat.ft_cotizacion_detalle_sel';
@@ -50,6 +50,8 @@ class MODCotizacionDetalle extends MODbase{
 		$this->captura('codigo','varchar');
         $this->captura('revisado','varchar');
         $this->captura('desc_codigo_tipo','varchar');
+				$this->captura('referencial','varchar');
+				$this->captura('id_unidad_medida_cot','int4');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -57,13 +59,13 @@ class MODCotizacionDetalle extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function insertarCotizacionDetalle(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='mat.ft_cotizacion_detalle_ime';
 		$this->transaccion='MAT_CDE_INS';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 		$this->setParametro('id_detalle','id_detalle','int4');
@@ -79,7 +81,8 @@ class MODCotizacionDetalle extends MODbase{
         $this->setParametro('referencia_cot','referencia_cot','varchar');
         $this->setParametro('descripcion_cot','descripcion_cot','varchar');
         $this->setParametro('explicacion_detallada_part_cot','explicacion_detallada_part_cot','varchar');
-        $this->setParametro('tipo_cot','tipo_cot','varchar');
+				$this->setParametro('tipo_cot','tipo_cot','varchar');
+        $this->setParametro('id_unidad_medida_cot','id_unidad_medida_cot','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -88,13 +91,13 @@ class MODCotizacionDetalle extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function modificarCotizacionDetalle(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='mat.ft_cotizacion_detalle_ime';
 		$this->transaccion='MAT_CDE_MOD';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
@@ -122,13 +125,13 @@ class MODCotizacionDetalle extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function eliminarCotizacionDetalle(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='mat.ft_cotizacion_detalle_ime';
 		$this->transaccion='MAT_CDE_ELI';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
 
@@ -161,7 +164,8 @@ class MODCotizacionDetalle extends MODbase{
         $this->transaccion='MAT_CDE_CLO';
         $this->tipo_procedimiento='IME';
 
-        $this->setParametro('id_detalle','id_detalle','int4');
+				$this->setParametro('id_detalle','id_detalle','int4');
+        $this->setParametro('id_solicitud','id_solicitud','int4');
 
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -178,6 +182,24 @@ class MODCotizacionDetalle extends MODbase{
 
         //Define los parametros para la funcion
         $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+		function cambiarReferencia(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.ft_cotizacion_detalle_ime';
+        $this->transaccion='MAT_CDE_REFE';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+				$this->setParametro('referencial','referencial','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -14,7 +14,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->SetFont('', 'B');
         $fecha_condicion = date("2020-04-01");
         $fecha_solicitud = date($this->solicitud[0]['fecha_solicitud']);
-        /*Aumentando la condicion para que se muestre el nuevo titulo a partir del 01/04/2020 */
+
         if ($fecha_solicitud >= $fecha_condicion) {
           $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES OBRAS Y SERVICIOS ESPECIALIZADOS'."\n".'EN EL EXTRANJERO', 0, 'C', 0, '', '');
           $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
@@ -28,7 +28,6 @@ class RCuandroComparativoPDF extends  ReportePDF
           $this->SetFont('times', '', 10);
           $this->MultiCell(0, 5, '(Decreto Supremo N° 26688) Versión I', 0, 'C', 0, '', '');
         }
-        /****************************************************************************************/
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 17, 15, 36);
     }
 
@@ -107,14 +106,12 @@ class RCuandroComparativoPDF extends  ReportePDF
           <td align="center" style="width:12%;"><b>Precio ($us)</b></td>
           <td align="center" style="width:12%;"><b>Monto Total($us)</b></td>
           <td align="center" style="width:12%;"><b>Tiempo Entrega</b></td>
-
-
         </tr>
         ';
             foreach ($value as $jh => $value2) {
                 foreach ($value2 as $tipo => $value3) {
                     $tbl2 .= '<tr>';
-                    if ($tipo == 'Otros Cargos') {
+                    if ($tipo == 'Otros Cargos' || $tipo == 'Fletes - Otros') {
                         $cont = $cont = '';
                     } elseif ($tipo == 'NA') {
                         $cont = '';
@@ -179,6 +176,142 @@ class RCuandroComparativoPDF extends  ReportePDF
         }
         $this->writeHTML('<p align="justify"> OBSERVACIONES:  ' . $obse . '</p> <br>', true, false, false, false, '');
         $this->Ln();
+
+        if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
+          
+        if ( $this->datos[0]['estado'] != 'cotizacion') {
+            $elaborado = $this->datos2[0]['visto_ag'];
+            $fecha_elaborado = $this->datos2[0]['fecha_ag'];
+
+        }else{
+            $elaborado = ' ';
+            $fecha_elaborado = ' ';
+        }
+        if ($this->datos[0]['estado'] != 'comite_unidad_abastecimientos') {
+            $revision = $this->datos2[0]['visto_rev'];
+            $fecha_rev = $this->datos2[0]['fecha_rev'];
+        }else{
+            $revision= ' ';
+        }
+
+        if ($this->datos2[0]['estado_firma'] != 'comite_aeronavegabilidad') {
+            $aero = $this->datos2[0]['aero'];
+            $fecha_aero = $this->datos2[0]['fecha_aero'];
+        }else{
+            $aero = ' ';
+        }
+        if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
+            $abastecimiento = $this->datos2[0]['visto_abas'];
+            $fecha_abas= $this->datos2[0]['fecha_abas'];
+        }else{
+            $abastecimiento = ' ';
+        }
+
+        $fun_sol = explode('|',$elaborado);
+        $fun_rev = explode('|',$revision);
+        $fun_aero = explode('|',$aero);
+        $fun_abas= explode('|',$abastecimiento);
+
+        if ($fun_sol[0] == ' ') {
+          $nombre_fun_elaborado = '';
+          $cargo_fun_elaborado = '';
+          $nro_tramite_fun_elaborado = '';
+          $institucion_fun_elaborado = '';
+          $primeraFirma='';
+        } else {
+          $nombre_fun_elaborado = $fun_sol[0];
+          $cargo_fun_elaborado = $fun_sol[1];
+          $nro_tramite_fun_elaborado = $fun_sol[2];
+          $institucion_fun_elaborado = $fun_sol[3];
+          $primeraFirma=$this->codigoQr('Funcionario: '.$nombre_fun_elaborado."\n".'Cargo: '.$cargo_fun_elaborado."\n".'Nro Trámite: '.$nro_tramite_fun_elaborado."\n".'Institución: '.$institucion_fun_elaborado."\n".'Fecha: '.$fecha_elaborado,'primer');
+        }
+
+        if ($fun_rev[0] == ' ') {
+          $nombre_fun_rev = '';
+          $cargo_fun_rev = '';
+          $nro_tramite_fun_rev = '';
+          $institucion_fun_rev = '';
+          $segundaFirma='';
+        } else {
+          $nombre_fun_rev = $fun_rev[0];
+          $cargo_fun_rev = $fun_rev[1];
+          $nro_tramite_fun_rev = $fun_rev[2];
+          $institucion_fun_rev = $fun_rev[3];
+          $segundaFirma=$this->codigoQr('Funcionario: '.$nombre_fun_rev."\n".'Cargo: '.$cargo_fun_rev."\n".'Nro Trámite: '.$nro_tramite_fun_rev."\n".'Institución: '.$institucion_fun_rev."\n".'Fecha: '.$fecha_rev,'segundo');
+        }
+
+        if ($fun_aero[0] == ' ') {
+          $nombre_fun_aero = '';
+          $cargo_fun_aero = '';
+          $nro_tramite_fun_aero = '';
+          $institucion_fun_aero = '';
+          $terceraFirma='';
+        } else {
+          $nombre_fun_aero = $fun_aero[0];
+          $cargo_fun_aero = $fun_aero[1];
+          $nro_tramite_fun_aero = $fun_aero[2];
+          $institucion_fun_aero = $fun_aero[3];
+          $terceraFirma=$this->codigoQr('Funcionario: '.$nombre_fun_aero."\n".'Cargo: '.$cargo_fun_aero."\n".'Nro Trámite: '.$nro_tramite_fun_aero."\n".'Institución: '.$institucion_fun_aero."\n".'Fecha: '.$fecha_aero,'tercer');
+
+        }
+
+        if ($fun_abas[0] == ' ') {
+          $nombre_fun_abas = '';
+          $cargo_fun_abas = '';
+          $nro_tramite_fun_abas = '';
+          $institucion_fun_abas = '';
+          $cuartaFirma='';
+
+        } else {
+          $nombre_fun_abas = $fun_abas[0];
+          $cargo_fun_abas = $fun_abas[1];
+          $nro_tramite_fun_abas = $fun_abas[2];
+          $institucion_fun_abas = $fun_abas[3];
+          $cuartaFirma=$this->codigoQr('Funcionario: '.$nombre_fun_abas."\n".'Cargo: '.$cargo_fun_abas."\n".'Nro Trámite: '.$nro_tramite_fun_abas."\n".'Institución: '.$institucion_fun_abas."\n".'Fecha: '.$fecha_abas,'cuarta');
+
+        }
+
+
+
+
+        $tbl =' <table border="2">
+         <tbody>
+        <tr>
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>Elaborado por</b><br>'.$fun_sol[0].'</td>
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_rev[1].'</b><br>'.$fun_rev[0].'</td>
+        </tr>
+        <tr>';
+        if ( $this->datos[0]['estado'] != 'cotizacion') {
+            $tbl .= '
+                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $primeraFirma . '" alt="Logo"><br></td>';
+        }
+        if ($this->datos[0]['estado'] != 'comite_unidad_abastecimientos') {
+            $tbl .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $segundaFirma . '" alt="Logo"><br> </td>';
+        }
+        $tbl .= ' </tr>
+         </tbody>
+        </table>';
+        $fun_presu = explode('|', $aero);
+        $tbl1 = ' <table border="2">
+         <tbody>
+        <tr>
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
+              <!--  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td> -->
+        </tr>
+        <tr>';
+
+        if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad'|| $this->datos[0]['estado'] != 'departamento_ceac') {
+            $tbl1 .= '<td align="center"><br><br>';
+            $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
+            $tbl1 .= '<br></td>';
+        }
+        /*if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
+            $tbl1 .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>';
+        }*/
+        $tbl1 .= '</tr>
+         </tbody>
+        </table>';
+      }else{
         if ( $this->datos[0]['estado'] != 'cotizacion') {
             $elaborado = $this->datos2[0]['visto_ag'];
         }else{
@@ -247,7 +380,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $tbl1 .= '</tr>
          </tbody>
         </table>';
-
+      }
         $this->writeHTML($tbl);
         $this->writeHTML($tbl1);
         $this->ln();
@@ -302,7 +435,6 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->datos = $datos;
         $this->datos2 = $datos2;
         $this->datos3 = $datos3;
-        $this->datos4 = $datos4;
         $this->datos4 = $datos4;
         $this->solicitud = $solicitud;
 /*var_dump($datos);

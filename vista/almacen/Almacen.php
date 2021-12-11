@@ -19,7 +19,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',
                 title:'Detalle',
                 height:'50%',
-                cls:'DetalleNoEdit'
+                cls:'DetalleNoEdit' 
             }
         ],
 
@@ -37,50 +37,16 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Archivado_concluido').setVisible(false);
             //this.getBoton('Consulta_desaduanizacion').setVisible(false);
             //this.getBoton('Control_aLmacene').setVisible(false);
-            this.getBoton('btnproveedor').setVisible(false);
+            //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
 
         },
-
-        cmbGestion: new Ext.form.ComboBox({
-            name: 'gestion',
-            id: 'g_alma',
-            fieldLabel: 'Gestion',
-            allowBlank: true,
-            emptyText:'Gestion...',
-            blankText: 'Año',
-            store:new Ext.data.JsonStore(
-                {
-                    url: '../../sis_parametros/control/Gestion/listarGestion',
-                    id: 'id_gestion',
-                    root: 'datos',
-                    sortInfo:{
-                        field: 'gestion',
-                        direction: 'DESC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_gestion','gestion'],
-                    // turn on remote sorting
-                    remoteSort: true,
-                    baseParams:{par_filtro:'gestion'}
-                }),
-            valueField: 'id_gestion',
-            triggerAction: 'all',
-            displayField: 'gestion',
-            hiddenName: 'id_gestion',
-            mode:'remote',
-            pageSize:50,
-            queryDelay:500,
-            listWidth:'280',
-            hidden:false,
-            width:80
-        }),
-
         gruposBarraTareas:[
-            {name:'almacen',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Operaciones</h1>',grupo:4,height:0, width: 100},
-            {name:'origen_al_man',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Mantenimiento</h1>',grupo:4,height:0, width: 100},
-            {name:'origen_al_ab',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Abastecimientos</h1>',grupo:4,height:0, width: 150}
-
+            {name:'almacen',title:'<H1 align="center" style="color:#E78800; font-size:11px;"><i style="font-size:12px;" class="fa fa-truck" aria-hidden="true"></i> Operaciones</h1>',grupo:4,height:0, width: 100},
+            {name:'origen_al_man',title:'<H1 align="center" style="color:#007AD9; font-size:11px;"><i style="font-size:12px;" class="fa fa-wrench" aria-hidden="true"></i> Mantenimiento</h1>',grupo:4,height:0, width: 100},
+            {name:'origen_al_ab',title:'<H1 align="center" style="color:#00A530; font-size:11px;"><i style="font-size:12px;" class="fa fa-retweet" aria-hidden="true"></i> Abastecimientos</h1>',grupo:4,height:0, width: 150},
+            {name:'origen_al_ceac',title:'<H1 align="center" style="color:#FF0000; font-size:11px;"><i style="font-size:12px;" class="fa fa-plane" aria-hidden="true"></i> Ope. CEAC</h1>',grupo:4,height:0, width: 200},
+            {name:'origen_al_repu',title:'<H1 align="center" style="color:#7100BB; font-size:11px;"><i style="font-size:12px;" class="fa fa-cogs" aria-hidden="true"></i> Repuestos</h1>',grupo:2,height:0, width: 200}
         ],
         tam_pag:50,
         actualizarSegunTab: function(name, indice){

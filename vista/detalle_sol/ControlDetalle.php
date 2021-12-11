@@ -13,7 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
         require: '../../../sis_gestion_materiales/vista/detalle_sol/DetalleSol.php',
         requireclase: 'Phx.vista.DetalleSol',
         title: 'Solicitud',
-        nombreVista: 'Control',
+        nombreVista: 'Control', 
         constructor: function (config) {
 
             this.Atributos.unshift({
@@ -29,8 +29,10 @@ header("content-type: text/javascript; charset=UTF-8");
                             //check or un check row
                             var checked = '',
                                 momento = 'no';
-                            if (value == 'si') {
-                                checked = 'checked';
+                            if(value == 'si'){
+                                checked = 'checked';;
+                            }else if(value==''){
+                                return value;
                             }
                             return String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:20px;width:20px;" type="checkbox"  {0}></div>', checked);
 

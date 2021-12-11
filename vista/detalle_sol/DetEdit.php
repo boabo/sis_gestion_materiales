@@ -24,12 +24,12 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(this.maestro.estado == 'borrador'){
                 this.getBoton('del').enable();
-                this.getBoton('new').enable();
+                //this.getBoton('new').enable();
                 this.getBoton('edit').enable();
             }
             else{
                 this.getBoton('del').disable();
-                this.getBoton('new').disable();
+                //this.getBoton('new').disable();
                 this.getBoton('edit').disable();
             }
             return tb;
@@ -39,9 +39,9 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb = Phx.vista.DetEdit.superclass.liberaMenu.call(this);
             if(tb){
                 if(this.maestro.estado == 'borrador'){
-                    this.getBoton('new').enable();
+                    //this.getBoton('new').enable();
                 }else{
-                    this.getBoton('new').disable();
+                    //this.getBoton('new').disable();
                 }
                 this.getBoton('del').disable();
                 this.getBoton('edit').disable();

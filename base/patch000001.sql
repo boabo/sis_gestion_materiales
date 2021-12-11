@@ -486,3 +486,338 @@ ALTER TABLE mat.tsolicitud_pac
 ALTER TABLE mat.tunidad_medida
   ADD COLUMN id_alkym INTEGER;
 /***********************************F-SCP-IRVA-MAT-0-27/02/2020****************************************/
+
+
+/***********************************I-SCP-IRVA-MAT-0-11/12/2021****************************************/
+CREATE VIEW mat.vsolicitud (
+    id_solicitud,
+    fecha_solicitud,
+    motivo_orden,
+    matricula,
+    nro_tramite,
+    justificacion,
+    tipo_solicitud,
+    fecha_requerida,
+    motivo_solicitud,
+    observaciones_sol,
+    desc_funcionario1,
+    tipo_falla,
+    tipo_reporte,
+    mel,
+    estado,
+    detalle,
+    origen_pedido,
+    id_estado_wf,
+    id_proceso_wf,
+    nro_cotizacion,
+    f_recuperar_correos,
+    cotizacion_solicitadas,
+    mensaje_correo,
+    mensaje_tiempo_entrega,
+    leyenda)
+AS
+SELECT sol.id_solicitud,
+    to_char(sol.fecha_solicitud::timestamp with time zone, 'DD/MM/YYYY'::text)
+        AS fecha_solicitud,
+    ot.motivo_orden,
+    "left"(ot.desc_orden::text, 20) AS matricula,
+    sol.nro_tramite,
+    sol.justificacion,
+    sol.tipo_solicitud,
+    COALESCE(to_char(sol.fecha_requerida::timestamp with time zone,
+        'DD/MM/YYYY'::text), ''::text) AS fecha_requerida,
+    sol.motivo_solicitud,
+    sol.observaciones_sol,
+    initcap(f.desc_funcionario1) AS desc_funcionario1,
+    sol.tipo_falla,
+    sol.tipo_reporte,
+    sol.mel,
+    ti.codigo AS estado,
+    mat.f_get_detalle_html(sol.id_solicitud)::text AS detalle,
+    sol.origen_pedido,
+    sol.id_estado_wf,
+    sol.id_proceso_wf,
+        CASE
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GM'::text THEN
+                'GM - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GA'::text THEN
+                'GA - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GO'::text THEN
+                'GO - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GC'::text THEN
+                'GC - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            WHEN substr(sol.nro_tramite::text, 1, 2) = 'GR'::text THEN
+                'GR - '::text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+            ELSE 'SIN GERENCIA'::text
+        END AS nro_cotizacion,
+    mat.f_recuperar_correos((
+    SELECT pxp.aggarray(n.id_proveedor) AS aggarray
+    FROM mat.tgestion_proveedores_new n
+    WHERE n.id_solicitud = sol.id_solicitud
+    GROUP BY n.id_solicitud
+    )) AS f_recuperar_correos,
+    tgp.cotizacion_solicitadas,
+    sol.mensaje_correo,
+        CASE
+            WHEN COALESCE(sol.tiempo_entrega, 0::numeric) > 0::numeric THEN
+                ('"Plazo de entrega de propuesta hasta '::text || sol.tiempo_entrega) || ' día(s) después de la invitación."'::text
+            ELSE ''::text
+        END AS mensaje_tiempo_entrega,
+    (('Método de adjudicación: '::text || sol."metodo_de_adjudicación"::text)
+        || ' Tipo de Adjudicación: '::text) || sol.tipo_de_adjudicacion::text AS leyenda
+FROM mat.tsolicitud sol
+     LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = sol.id_matricula
+     JOIN orga.vfuncionario f ON f.id_funcionario = sol.id_funcionario_sol
+     JOIN wf.testado_wf wof ON wof.id_estado_wf = sol.id_estado_wf
+     JOIN wf.ttipo_estado ti ON ti.id_tipo_estado = wof.id_tipo_estado
+     LEFT JOIN mat.tgestion_proveedores tgp ON tgp.id_solicitud = sol.id_solicitud;
+
+ALTER VIEW mat.vsolicitud
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-0-11/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-1-11/12/2021****************************************/
+CREATE TYPE mat.detalle_solicitud_mantenimiento AS (
+  id_solicitud INTEGER,
+  descripcion VARCHAR(1000),
+  id_unidad_medida INTEGER,
+  nro_parte VARCHAR(100),
+  referencia VARCHAR(100),
+  nro_parte_alterno VARCHAR(250),
+  cantidad_sol NUMERIC(19,0),
+  tipo VARCHAR(100),
+  explicacion_detallada_part VARCHAR(500)
+);
+
+ALTER TYPE mat.detalle_solicitud_mantenimiento
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-1-11/12/2021****************************************/
+/***********************************I-SCP-IRVA-MAT-2-11/12/2021****************************************/
+ALTER TABLE mat.tcotizacion_detalle
+  ADD COLUMN referencial VARCHAR(5);
+
+ALTER TABLE mat.tcotizacion_detalle
+  ALTER COLUMN referencial SET DEFAULT 'No';
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN condicion_det VARCHAR(100);
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_centro_costo INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_concepto_ingas INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_orden_trabajo INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_partida INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_auxiliar INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_cuenta INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN precio_total NUMERIC(18,2);
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_partida_ejecucion INTEGER;
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN precio_unitario NUMERIC(18,2);
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN id_producto_alkym INTEGER;
+
+COMMENT ON COLUMN mat.tdetalle_sol.id_producto_alkym
+  IS 'campo donde se alamacena el id_producto_alkym';
+
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_depto INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_poa VARCHAR(24);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN tipo_cambio NUMERIC(7,2);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_moneda INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_funcionario_solicitante INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN presu_comprometido VARCHAR(5);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN presupuesto_aprobado VARCHAR(20);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN dias_estado INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN revisado_presupuesto VARCHAR(2);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_po_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN nro_lote INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_condicion_entrega_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_forma_pago_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_modo_envio_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_puntos_entrega_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_tipo_transaccion_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_orden_destino_alkym INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_condicion_entrega_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_forma_pago_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_modo_envio_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_puntos_entrega_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_tipo_transaccion_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN codigo_orden_destino_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN direccion_punto_entrega_alkym VARCHAR(200);
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN fecha_entrega DATE;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN mel_observacion TEXT;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN origen_solicitud TEXT;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN tiempo_entrega INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN tiempo_entrega_estimado INTEGER;
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN metodo_de_adjudicación VARCHAR(100);
+
+COMMENT ON COLUMN mat.tsolicitud.metodo_de_adjudicación
+IS 'Campo para almacenar el metodo de adjudicacion y mostrar en la leyenda del correo';
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN tipo_de_adjudicacion VARCHAR(100);
+
+COMMENT ON COLUMN mat.tsolicitud.tipo_de_adjudicacion
+IS 'Campo para almacenar el tipo de adjudicacion para mostrar en la leyenda';
+
+ALTER TABLE mat.tcotizacion
+  ADD COLUMN id_proveedor_contacto INTEGER;
+
+/***********************************F-SCP-IRVA-MAT-2-11/12/2021****************************************/
+/***********************************I-SCP-IRVA-MAT-3-11/12/2021****************************************/
+CREATE TABLE mat.tacta_conformidad_final (
+  fecha_conformidad DATE,
+  conformidad_final TEXT,
+  fecha_inicio DATE,
+  fecha_final DATE,
+  observaciones TEXT,
+  id_solicitud INTEGER,
+  id_funcionario_firma INTEGER,
+  CONSTRAINT tacta_conformidad_final_id_funcionario_fk FOREIGN KEY (id_funcionario_firma)
+    REFERENCES orga.tfuncionario(id_funcionario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tacta_conformidad_final_id_solicitud_fk FOREIGN KEY (id_solicitud)
+    REFERENCES mat.tsolicitud(id_solicitud)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+COMMENT ON COLUMN mat.tacta_conformidad_final.fecha_conformidad
+IS 'Fecha de la conformidad';
+
+COMMENT ON COLUMN mat.tacta_conformidad_final.conformidad_final
+IS 'Descripcion donde se detallara la conformidad';
+
+COMMENT ON COLUMN mat.tacta_conformidad_final.fecha_inicio
+IS 'fecha inical si requiere';
+
+COMMENT ON COLUMN mat.tacta_conformidad_final.fecha_final
+IS 'fecha final si requiere';
+
+COMMENT ON COLUMN mat.tacta_conformidad_final.observaciones
+IS 'Observaciones si requiere detallar';
+
+COMMENT ON COLUMN mat.tacta_conformidad_final.id_solicitud
+IS 'Hace la relacion con el id_solicitud de la tabla mat.tsolicitud';
+
+ALTER TABLE mat.tacta_conformidad_final
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-3-11/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-4-11/12/2021****************************************/
+CREATE TABLE mat.tasginacion_automatica_abastecimiento (
+  id_asignacion SERIAL,
+  id_solicitud INTEGER,
+  nro_tramite VARCHAR(500),
+  id_funcionario_asignado INTEGER,
+  id_tipo_estado INTEGER,
+  id_funcionario_rpc INTEGER,
+  ultima_asignacion VARCHAR(10),
+  CONSTRAINT tasginacion_automatica_abastecimiento_pkey PRIMARY KEY(id_asignacion)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+COMMENT ON TABLE mat.tasginacion_automatica_abastecimiento
+IS 'Tabla donde Almacenara los funcionarios que han sido asignados automaticamente para repartir los tramites.';
+
+COMMENT ON COLUMN mat.tasginacion_automatica_abastecimiento.id_solicitud
+IS 'Hace la relacion con la solicitud de la tabla mat.tsolicitud';
+
+COMMENT ON COLUMN mat.tasginacion_automatica_abastecimiento.id_tipo_estado
+IS 'Hace referencia a la tabla wf.ttipo_estado';
+
+COMMENT ON COLUMN mat.tasginacion_automatica_abastecimiento.id_funcionario_rpc
+IS 'Para saber que es lo que el encargado de Rpc ha autorizado y sacar en los reportes';
+
+COMMENT ON COLUMN mat.tasginacion_automatica_abastecimiento.ultima_asignacion
+IS 'La bandera para tener el ultimo funcionario Asignado y derivar al siguiente';
+
+ALTER TABLE mat.tasginacion_automatica_abastecimiento
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-4-11/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-5-11/12/2021****************************************/
+ALTER TABLE mat.tsolicitud
+  ALTER COLUMN condicion TYPE VARCHAR(600) COLLATE pg_catalog."default";
+/***********************************F-SCP-IRVA-MAT-5-11/12/2021****************************************/

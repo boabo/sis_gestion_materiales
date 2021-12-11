@@ -54,6 +54,67 @@ BEGIN
        			fecha_mod=now()
     		where id_proceso_wf_firma = p_id_proceso_wf;
     	end;
+     /*Aumentamos el estado para que pase por el dpto_administrativo (Ismael Valdivia 19/02/2020)*/
+
+     elsif(p_codigo_estado in ('vb_dpto_administrativo')) then
+    	begin
+       		update mat.tsolicitud s set
+       			id_estado_wf_firma =  p_id_estado_wf,
+      			estado_firma = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf_firma = p_id_proceso_wf;
+    	end;
+
+     elsif(p_codigo_estado in ('vb_rpcd')) then
+    	begin
+       		update mat.tsolicitud s set
+       			id_estado_wf_firma =  p_id_estado_wf,
+      			estado_firma = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf_firma = p_id_proceso_wf;
+    	end;
+
+     elsif(p_codigo_estado in ('revisado')) then
+    	begin
+       		update mat.tsolicitud s set
+       			id_estado_wf_firma =  p_id_estado_wf,
+      			estado_firma = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf_firma = p_id_proceso_wf;
+    	end;
+     elsif(p_codigo_estado in ('comite_aeronavegabilidad')) then
+    	begin
+       		update mat.tsolicitud s set
+       			id_estado_wf_firma =  p_id_estado_wf,
+      			estado_firma = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf_firma = p_id_proceso_wf;
+    	end;
+      elsif(p_codigo_estado in ('autorizado')) then
+    	begin
+       		update mat.tsolicitud s set
+       			id_estado_wf_firma =  p_id_estado_wf,
+      			estado_firma = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf_firma = p_id_proceso_wf;
+    	end;
+
+     /********************************************************************************************/
      elsif(p_codigo_estado in ('aprobado')) then
     	begin
        		update mat.tsolicitud s set
@@ -92,5 +153,8 @@ $body$
 LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
-SECURITY INVOKER
+SECURITY INVOKER 
 COST 100;
+
+ALTER FUNCTION mat.f_procesar_estados_firmas (p_id_usuario integer, p_id_usuario_ai integer, p_usuario_ai varchar, p_id_estado_wf integer, p_id_proceso_wf integer, p_codigo_estado varchar)
+  OWNER TO postgres;

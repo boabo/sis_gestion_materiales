@@ -18,7 +18,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config;
             Phx.vista.CorreoProveedores.superclass.constructor.call(this,config);
             this.init();
-            console.log('maestro correo',this.maestro);
             this.id_solicitud = this.maestro.id_solicitud;
 
             //var rec = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
@@ -26,7 +25,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         Atributos:[
-            {
+            { 
                 config:{
                     labelSeparator: '',
                     name: 'id_solicitud',
@@ -39,9 +38,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     tinit: false,
-                   
+
                     tasignacion: false,
-                    
+
                     name: 'lista_correos',
                     fieldLabel: 'Lista de Posibles Proveedores',
                     allowBlank: true,
@@ -60,7 +59,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields: ['id_proveedor','desc_proveedor','codigo','nit','rotulo_comercial','lugar','email'],
                         // turn on remote sorting
                         remoteSort: true,
-                        baseParams:{par_filtro:'desc_proveedor#codigo#nit#rotulo_comercial',tipo:'abastecimiento',_adicionar:'si'}
+                        baseParams:{par_filtro:'provee.desc_proveedor#provee.codigo#provee.nit#provee.rotulo_comercial',tipo:'abastecimiento',_adicionar:'si'}
 
                     }),
                     valueField: 'id_proveedor',
@@ -124,9 +123,6 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.CP.loadingHide();
             Phx.CP.getPagina(this.idContenedorPadre).reload();
             this.close();
-            //console.log('tigre',Phx.CP.getPagina(this.idContenedorPadre));
-            //Phx.CP.getPagina(this.idContenedorPadre).sigEstado();
-
 
         },
 

@@ -7,8 +7,8 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 
-class ACTCotizacionDetalle extends ACTbase{    
-			
+class ACTCotizacionDetalle extends ACTbase{
+ 
 	function listarCotizacionDetalle(){
 		$this->objParam->defecto('ordenacion','id_cotizacion_det');
 		$this->objParam->defecto('dir_ordenacion','asc');
@@ -17,7 +17,7 @@ class ACTCotizacionDetalle extends ACTbase{
 			$this->res = $this->objReporte->generarReporteListado('MODCotizacionDetalle','listarCotizacionDetalle');
 		} else{
 			$this->objFunc=$this->create('MODCotizacionDetalle');
-			
+
 			$this->res=$this->objFunc->listarCotizacionDetalle($this->objParam);
 		}
         $temp = Array();
@@ -32,17 +32,17 @@ class ACTCotizacionDetalle extends ACTbase{
         $this->res->addLastRecDatos($temp);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-				
+
 	function insertarCotizacionDetalle(){
-		$this->objFunc=$this->create('MODCotizacionDetalle');	
+		$this->objFunc=$this->create('MODCotizacionDetalle');
 		if($this->objParam->insertar('id_cotizacion_det')){
-			$this->res=$this->objFunc->insertarCotizacionDetalle($this->objParam);			
-		} else{			
+			$this->res=$this->objFunc->insertarCotizacionDetalle($this->objParam);
+		} else{
 			$this->res=$this->objFunc->modificarCotizacionDetalle($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-						
+
 	function eliminarCotizacionDetalle(){
         $this->objFunc=$this->create('MODCotizacionDetalle');
 		$this->res=$this->objFunc->eliminarCotizacionDetalle($this->objParam);
@@ -61,6 +61,13 @@ class ACTCotizacionDetalle extends ACTbase{
     function cambiarRevision(){
         $this->objFunc=$this->create('MODCotizacionDetalle');
         $this->res=$this->objFunc->cambiarRevision($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+
+    }
+
+		function cambiarReferencia(){
+        $this->objFunc=$this->create('MODCotizacionDetalle');
+        $this->res=$this->objFunc->cambiarReferencia($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
 
     }

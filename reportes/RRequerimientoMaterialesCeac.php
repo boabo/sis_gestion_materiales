@@ -70,25 +70,77 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
         $this->SetFont('times', 'B', 12);
         $this->Cell(0, 7, ' Datos Generales', 1, 0, 'L', 0, '', 0);
         $this->ln();
-        $htmlCabe = '<table border="1">
-            <tbody>
-            <tr>
-            <td> <b>Número Tramite:</b> '.$this->datos[0]['nro_tramite'].'</td>
-            <td> <b>Fecha Solicitud:</b> '. $this->datos[0]['fecha_solicitud'].'</td>
-            </tr>
-            <tr>
-            <td > <b>Nro. No Rutina:</b> '.$this->datos[0]['nro_no_rutina'].'</td>
-            <td > <b>Fecha Requerida:</b> '.$this->datos[0]['fecha_requerida'].'</td>
-            </tr>
-            <tr>
-            '.$solicitud.' <b>Tipo de Solicitud:</b> '.$this->datos[0]['tipo_solicitud'].$solicitud_cierre
-            .$tabla.'
-            </tr>
-            <tr>
-            <th colspan="2" style="text-align:justify"><b>Motivo de la Solicitud:</b> '.$this->datos[0]['motivo_solicitud'].'</th>
-            </tr>
-            </tbody>
-            </table>';
+
+        if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
+              if ($this->datos[0]['tipo_de_adjudicacion'] == 'Ninguno') {
+                $htmlCabe = '<table border="1">
+                    <tbody>
+                    <tr>
+                    <td> <b>Número Tramite:</b> '.$this->datos[0]['nro_tramite'].'</td>
+                    <td> <b>Fecha Solicitud:</b> '. $this->datos[0]['fecha_solicitud'].'</td>
+                    </tr>
+                    <tr>
+                    <td > <b>Nro. No Rutina:</b> '.$this->datos[0]['nro_no_rutina'].'</td>
+                    <td > <b>Fecha Requerida:</b> '.$this->datos[0]['fecha_requerida'].'</td>
+                    </tr>
+                    <tr>
+                    '.$solicitud.' <b>Tipo de Solicitud:</b> '.$this->datos[0]['tipo_solicitud'].$solicitud_cierre
+                    .$tabla.'
+                    </tr>
+                    <tr>
+                    <th colspan="2" style="text-align:justify"><b>Motivo de la Solicitud:</b> '.$this->datos[0]['motivo_solicitud'].'</th>
+                    </tr>
+                    <tr>
+                    <th colspan="2" style="text-align:justify"><b>Método de selección de adjudicación: </b> '.$this->datos[0]['metodo_de_adjudicación'].'</th>
+                    </tr>
+                    </tbody>
+                    </table>';
+              } else {
+                $htmlCabe = '<table border="1">
+                    <tbody>
+                    <tr>
+                    <td> <b>Número Tramite:</b> '.$this->datos[0]['nro_tramite'].'</td>
+                    <td> <b>Fecha Solicitud:</b> '. $this->datos[0]['fecha_solicitud'].'</td>
+                    </tr>
+                    <tr>
+                    <td > <b>Nro. No Rutina:</b> '.$this->datos[0]['nro_no_rutina'].'</td>
+                    <td > <b>Fecha Requerida:</b> '.$this->datos[0]['fecha_requerida'].'</td>
+                    </tr>
+                    <tr>
+                    '.$solicitud.' <b>Tipo de Solicitud:</b> '.$this->datos[0]['tipo_solicitud'].$solicitud_cierre
+                    .$tabla.'
+                    </tr>
+                    <tr>
+                    <th colspan="2" style="text-align:justify"><b>Motivo de la Solicitud:</b> '.$this->datos[0]['motivo_solicitud'].'</th>
+                    </tr>
+                    <tr>
+                    <th colspan="2" style="text-align:justify"><b>Método de selección de adjudicación: </b> '.$this->datos[0]['metodo_de_adjudicación'].' <b>Tipo de adjudicación: </b>'.$this->datos[0]['tipo_de_adjudicacion'].'</th>
+                    </tr>
+                    </tbody>
+                    </table>';
+              }
+            } else {
+              $htmlCabe = '<table border="1">
+                  <tbody>
+                  <tr>
+                  <td> <b>Número Tramite:</b> '.$this->datos[0]['nro_tramite'].'</td>
+                  <td> <b>Fecha Solicitud:</b> '. $this->datos[0]['fecha_solicitud'].'</td>
+                  </tr>
+                  <tr>
+                  <td > <b>Nro. No Rutina:</b> '.$this->datos[0]['nro_no_rutina'].'</td>
+                  <td > <b>Fecha Requerida:</b> '.$this->datos[0]['fecha_requerida'].'</td>
+                  </tr>
+                  <tr>
+                  '.$solicitud.' <b>Tipo de Solicitud:</b> '.$this->datos[0]['tipo_solicitud'].$solicitud_cierre
+                  .$tabla.'
+                  </tr>
+                  <tr>
+                  <th colspan="2" style="text-align:justify"><b>Motivo de la Solicitud:</b> '.$this->datos[0]['motivo_solicitud'].'</th>
+                  </tr>                  
+                  </tbody>
+                  </table>';
+            }
+
         $this->SetFont('', '', 12);
         $this->writeHTML($htmlCabe);
         $this->SetFont('', 'B', 12);
@@ -118,7 +170,7 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
             $tbl = <<<EOD
 <table cellspacing="0" cellpadding="1" border="1">
     <tr>
-        <td width="18'" align="center">$numero</td>
+        <td width="18" align="center">$numero</td>
         <td width="98" align="center">$parte</td>
         <td width="111" align="center">$parte_alterno</td>
         <td width="68" align="center">$referencia</td>
@@ -214,7 +266,7 @@ EOD;
 
     function setDatos($datos,$datos2) {
         $this->datos = $datos;
-        $this->datos2 = $datos2;        
+        $this->datos2 = $datos2;
     }
     function generarReporte() {
         $this->SetMargins(15,40,15);

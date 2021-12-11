@@ -10,7 +10,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
     Phx.vista.AlmacenMin={
-
+ 
         require: '../../../sis_gestion_materiales/vista/almacen/Almacen.php',
         requireclase: 'Phx.vista.Almacen',
         title: 'Almacen',
@@ -23,7 +23,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'almacen';
             this.load({params:{start:0, limit:this.tam_pag}});
-            this.getBoton('btnproveedor').setVisible(false);
+            //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
         },
         gruposBarraTareas:[
@@ -48,4 +48,3 @@ header("content-type: text/javascript; charset=UTF-8");
 
     }
 </script>
-

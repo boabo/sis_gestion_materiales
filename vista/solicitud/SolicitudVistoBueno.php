@@ -23,8 +23,8 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         ],
         constructor: function (config) {
-
-            this.Atributos[this.getIndAtributo('nombre_estado')].grid=false;
+ 
+            //this.Atributos[this.getIndAtributo('nombre_estado')].grid=false;
             this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=false;
             this.Atributos[this.getIndAtributo('taller_asignado')].grid=false;
             this.Atributos[this.getIndAtributo('observacion_nota')].grid=false;
@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             Phx.vista.SolicitudVistoBueno.superclass.constructor.call(this, config);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
-           // this.store.baseParams.pes_estado = 'visto_bueno';
+            this.store.baseParams.pes_estado = 'visto_bueno';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
             this.getBoton('Report').setVisible(false);
@@ -44,12 +44,13 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('clonar_solicitud').setVisible(false);
            // this.getBoton('Consulta_desaduanizacion').setVisible(false);
             //.getBoton('Control_aLmacene').setVisible(false);
-            this.getBoton('btnproveedor').setVisible(false);
+            //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
         },
+
         cmbGestion: new Ext.form.ComboBox({
             name: 'gestion',
-            id: 'g_visto',
+            id: 'g_mantemiento',
             fieldLabel: 'Gestion',
             allowBlank: true,
             emptyText:'Gestion...',
@@ -80,7 +81,6 @@ header("content-type: text/javascript; charset=UTF-8");
             hidden:false,
             width:80
         }),
-
 
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
@@ -139,39 +139,107 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             return tb;
         },
-
+        /*Comentando esta parte para que directamente cambiemos el estado de las Solicitudes
+        vb_rpcd y vb_dpto_abastecimientos Ismael Valdivia (03/02/2020)*/
+        //Comentando esta parte para pasar los estados siguientes de vobo vb_dpto_administrativo y vobo_rpcd
         sigEstado: function(){
             var rec = this.sm.getSelected();
-                this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
-                    'Estado de Wf',
-                    {
-                        modal: true,
-                        width: 700,
-                        height: 450
-                    },
-                    {
-                        data: {
-                            id_estado_wf: rec.data.id_estado_wf_firma,
-                            id_proceso_wf: rec.data.id_proceso_wf_firma
+            var tramite = rec.data['nro_tramite'];
+            var tipo_tramite = tramite.substring(0,2);
 
+             /*Aumentamos condiciones para que mande cambiar estado de firmas o estado del proceso*/
+             if (rec.data.estado == 'vb_rpcd' && rec.data.estado == 'control_mantenimiento') {
+                       this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+                        'Estado de Wf',
+                        {
+                            modal: true,
+                            width: 700,
+                            height: 450
+                        },
+                        {
+                            data: {
+                                id_estado_wf: rec.data.id_estado_wf,
+                                id_proceso_wf: rec.data.id_proceso_wf,
+                                /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                                id_solicitud: rec.data.id_solicitud,
+                                nro_tramite:rec.data.nro_tramite
+                                /********************************************************************************************/
+                                }
+                        }, this.idContenedor, 'FormEstadoWf',
+
+                        {
+                            config: [{
+                                event: 'beforesave',
+                                delegate: this.onCambiarEstadoProcesoServicio
+                                //delegate: this.onCambiarEstadoProceso
+                            }],
+                            scope: this
                         }
-                    }, this.idContenedor, 'FormEstadoWf',
-                    {
-                        config: [{
-                            event: 'beforesave',
-                            delegate: this.onSaveWizard
-                        }],
-                        scope: this
-                    }
-                );
+                    );
 
+                  }else {
+                    this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+                     'Estado de Wf',
+                     {
+                         modal: true,
+                         width: 700,
+                         height: 450
+                     },
+                     {
+                         data: {
+                             id_estado_wf: rec.data.id_estado_wf,
+                             id_proceso_wf: rec.data.id_proceso_wf,
+                             /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                             id_solicitud: rec.data.id_solicitud,
+                             /********************************************************************************************/
+                             }
+                     }, this.idContenedor, 'FormEstadoWf',
+
+                     {
+                         config: [{
+                             event: 'beforesave',
+                             delegate: this.onCambiarEstadoProceso
+                         }],
+                         scope: this
+                     }
+                 );
+            }
 
         },
-        onSaveWizard:function(wizard,resp){
+        // sigEstado:function () {
+        //     var rec = this.sm.getSelected();
+        //     this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+        //         'Estado de Wf',
+        //         {
+        //             modal: true,
+        //             width: 700,
+        //             height: 450
+        //         },
+        //         {
+        //             data: {
+        //                 id_estado_wf: rec.data.id_estado_wf,
+        //                 id_proceso_wf: rec.data.id_proceso_wf,
+        //                 /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+        //                 id_solicitud: rec.data.id_solicitud,
+        //                 /********************************************************************************************/
+        //                 }
+        //         }, this.idContenedor, 'FormEstadoWf',
+        //
+        //         {
+        //             config: [{
+        //                 event: 'beforesave',
+        //                 delegate: this.onSaveWizard
+        //             }],
+        //             scope: this
+        //         }
+        //     );
+        // },
+        onCambiarEstadoProceso:function(wizard,resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             Phx.CP.loadingShow();
             Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/siguienteDisparo',
+                //url:'../../sis_gestion_materiales/control/Solicitud/siguienteDisparo',
+                url:'../../sis_gestion_materiales/control/Solicitud/siguienteEstadoSolicitud',
                 params:{
 
                     id_proceso_wf_act:  resp.id_proceso_wf_act,
@@ -180,7 +248,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     id_funcionario_wf:  resp.id_funcionario_wf,
                     id_depto_wf:        resp.id_depto_wf,
                     obs:                resp.obs,
-                    json_procesos:      Ext.util.JSON.encode(resp.procesos)
+                    json_procesos:      Ext.util.JSON.encode(resp.procesos),
+                    /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                    id_solicitud:       wizard.data.id_solicitud,
+                    /********************************************************************************************/
                 },
                 success:this.successWizard,
                 failure: this.conexionFailure,
@@ -190,6 +261,36 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
         },
+
+        onCambiarEstadoProcesoServicio:function(wizard,resp){
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                //url:'../../sis_gestion_materiales/control/Solicitud/siguienteDisparo',
+                url:'../../sis_gestion_materiales/control/Solicitud/siguienteEstadoSolicitudServicio',
+                params:{
+
+                    id_proceso_wf_act:  resp.id_proceso_wf_act,
+                    id_estado_wf_act:   resp.id_estado_wf_act,
+                    id_tipo_estado:     resp.id_tipo_estado,
+                    id_funcionario_wf:  resp.id_funcionario_wf,
+                    id_depto_wf:        resp.id_depto_wf,
+                    obs:                resp.obs,
+                    json_procesos:      Ext.util.JSON.encode(resp.procesos),
+                    /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                    id_solicitud:       wizard.data.id_solicitud,
+                    nro_tramite:        wizard.data.nro_tramite
+                    /********************************************************************************************/
+                },
+                success:this.successWizard,
+                failure: this.conexionFailure,
+                argument:{wizard:wizard},
+                timeout:this.timeout,
+                scope:this
+            });
+
+        },
+
         successWizard:function(resp){
             Phx.CP.loadingHide();
             resp.argument.wizard.panel.destroy();
@@ -200,31 +301,36 @@ header("content-type: text/javascript; charset=UTF-8");
         antEstado:function(res){
 
             var rec=this.sm.getSelected();
-            Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
-                'Estado de Wf',
-                {
-                    modal:true,
-                    width:450,
-                    height:250
-                }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
-                {
-                    config:[{
-                        event:'beforesave',
-                        delegate: this.onAntEstado
-                    }
-                    ],
-                    scope:this
-                })
+              Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+                  'Estado de Wf',
+                  {
+                      modal:true,
+                      width:450,
+                      height:250
+                  }, { data:rec.data, estado_destino: res.argument.estado}, this.idContenedor,'AntFormEstadoWf',
+                  {
+                      config:[{
+                          event:'beforesave',
+                          delegate: this.onAntEstadoProceso
+                      }
+                      ],
+                      scope:this
+                  })
+
+
         },
 
-        onAntEstado: function(wizard,resp){
+        onAntEstadoProceso: function(wizard,resp){
             Phx.CP.loadingShow();
             var rec = this.sm.getSelected();
             Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/anteriorDisparo',
+                //url:'../../sis_gestion_materiales/control/Solicitud/anteriorDisparo',
+                url:'../../sis_gestion_materiales/control/Solicitud/anteriorEstadoSolicitud',
                 params:{
-                    id_proceso_wf_firma: rec.data.id_proceso_wf_firma,
-                    id_estado_wf_firma:  rec.data.id_estado_wf_firma,
+                    //id_proceso_wf_firma: rec.data.id_proceso_wf_firma,
+                    //id_estado_wf_firma:  rec.data.id_estado_wf_firma,
+                     id_proceso_wf: resp.id_proceso_wf,
+                     id_estado_wf:  resp.id_estado_wf,
                     obs: resp.obs,
                     estado_destino: resp.estado_destino
                 },
@@ -284,7 +390,8 @@ header("content-type: text/javascript; charset=UTF-8");
             var operacion = 'cambiar';
             operacion =  resp.estado_destino == 'inicio'?'inicio':operacion;
             Ext.Ajax.request({
-                url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitudDisparo',
+              //  url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitudDisparo',
+                url:'../../sis_gestion_materiales/control/Solicitud/inicioEstadoSolicitud',
                 params:{
                     id_proceso_wf: resp.id_proceso_wf,
                     id_estado_wf:  resp.id_estado_wf,

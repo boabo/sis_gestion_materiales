@@ -15,6 +15,10 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config.maestro;
             Phx.vista.DetalleComite.superclass.constructor.call(this, config);
             this.init();
+            this.bbar.el.dom.style.background='#03A27C';
+    				this.tbar.el.dom.style.background='#03A27C';
+    				this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#E9E9E9';
+    				this.grid.body.dom.firstChild.firstChild.lastChild.style.background='#F6F6F6';
         },
 
         Atributos: [
@@ -485,5 +489,3 @@ header("content-type: text/javascript; charset=UTF-8");
         bdel:false
     })
 </script>
-
-

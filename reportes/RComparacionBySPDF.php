@@ -9,8 +9,7 @@ class RComparacionBySPDF extends  ReportePDF{
 
         $f_actual = date_format(date_create($this->datos[0]["fecha_solicitud"]), 'd/m/Y');
         $nro_cite_cobs = $this->datos[0]["nro_cobs"];
-
-        if ($this->datos[0]["fecha_solicitud"] >= '2020-10-01') {
+        if ($f_actual >= '01/10/2020') {
           $titulo = '<h4>PROCESO DE CONTRATACIÓN MEDIANTE<br>COMPARACIÓN DE OFERTAS DE BIENES, OBRAS Y SERVICIOS ESPECIALIZADOS EN EL EXTRANJERO<br>(Decreto Supremo N° 26688 y Decreto Supremos N° 3935) <br>Versión II</h4>';
         } else {
           $titulo = '<h4>PROCESO DE CONTRATACIÓN MEDIANTE<br>COMPARACIÓN  DE OFERTA DE BIENES Y SERVICIOS<br>(Decreto Supremo N° 26688) Versión I</h4>';
@@ -22,7 +21,6 @@ class RComparacionBySPDF extends  ReportePDF{
    			font-family: "Calibri";
    			font-size: 9pt;
 		}
-
 		</style>
 		<body>
 		<table border="1" cellpadding="2" cellspacing = "0">
@@ -65,12 +63,10 @@ EOF;
                         <td>FECHA:</td>
                         <td>12/06/2017</td>
                     </tr>
-
                     </table>
                 </td>
                 </tr>
                 </table>
-
             ';
         $this->Ln(5);
         $this->writeHTML($tbl, true, false, false, false, '');*/
@@ -91,20 +87,47 @@ EOF;
         $unidad_sol = $this->datos[0]["unidad_sol"];
         $gerencia = $this->datos[0]["gerencia"];
         $funcionario = $this->datos[0]["funcionario"];
-        if($this->datos[0]["codigo_pres"] = 'borrador') {
+
+        /*Aqui ponemos condicion para que la firma se muestre despues del estado de revision*/
+        if($this->datos[0]["estado_actual"] == 'revision') {
+            $funcionario_sol = ' ';
+            $qr = '';
+            $fun_sol = explode('|', $funcionario_sol);
+            $solicitante = '';
+        } else {
             $funcionario_sol = $this->datos[0]["funcionario_sol"];
-            $qr = $this->generarImagen($funcionario_sol);
+            if ($funcionario_sol == '') {
+              $qr = $this->generarImagen('Na');
+              $solicitante = '';
+            } else {
+              $qr = $this->generarImagen($funcionario_sol);
+              $solicitante = 'SOLICITANTE';
+            }
             $fun_sol = explode('|', $funcionario_sol);
         }
+        /************************************************************************************/
+
         if($this->datos[0]["codigo_pres"] != 'vbgerencia') {
             $funcionario_adm = $this->datos[0]["funcionario_adm"];
             $qr2 = $this->generarImagen($funcionario_adm);
             $fun_admi = explode('|', $funcionario_adm);
         }
+
         if($this->datos[0]["codigo_pres"] != 'vbrpc') {
+
+          if ($this->datos[0]["funcionario_pres"] == ' ') {
+            $funcionario_presu = '';
+            $qr3 =  '';
+            $fun_presu = '';
+            $RPCE = '';
+          } else {
             $funcionario_presu = $this->datos[0]["funcionario_pres"];
             $qr3 =  $this->generarImagen($funcionario_presu);
             $fun_presu = explode('|', $funcionario_presu);
+            $RPCE = 'RPCE';
+          }
+
+
         }
 
         $nro_items = $this->datos[0]["nro_items"];
@@ -193,13 +216,11 @@ EOF;
                         NOTA.- SE ELIGIRA LA OPCIÓN MAS CONVENIENTE.<br>
                     </td>
                 </tr>
-
                 <tr style="font-size: 9pt; text-align: left;" >
                      <td colspan="2"><b>&nbsp;&nbsp;Descripción del Bien o Servicio (Incluir y detallar servicios adicionales como transporte):<br><br>
                        SEGÚN LISTA DE ESPECIFICACIONES TECNICAS ADJUNTO:
                                     </b>
                    <br><br>
-
                          <table cellspacing="0" cellpadding="1" border="1" >
                             <tr>
                                 <td width="80" align="center"><b>N°</b></td>
@@ -209,57 +230,111 @@ EOF;
                          </table>
                           ';
                             $numero = 1;
+
                             foreach ($nro_partes as $indice=>$partes){
 
-                            $tbl.= '
+                            if($partes == 'HAZMAT') {
+                              $tbl.= '
+                                  <table cellspacing="0" cellpadding="1" border="1" >
+                                      <tr>
+                                          <td width="80" align="center"><li> </li></td>
+                                          <td width="280" align="center"><li>'.$partes.'</li></td>
+                                          <td width="280" align="center"><li>'.$nro_partes_alternos[$indice].'</li></td>
+                                      </tr>
+                                  </table>
+                                      ';
+                            } else {
+                              $tbl.= '
+                                  <table cellspacing="0" cellpadding="1" border="1" >
+                                      <tr>
+                                          <td width="80" align="center"><li>'.$numero.'</li></td>
+                                          <td width="280" align="center"><li>'.$partes.'</li></td>
+                                          <td width="280" align="center"><li>'.$nro_partes_alternos[$indice].'</li></td>
+                                      </tr>
+                                  </table>
+                                      ';
+                               $numero++;
+                            }
 
-                                <table cellspacing="0" cellpadding="1" border="1" >
-                                    <tr>
-                                        <td width="80" align="center"><li>'.$numero.'</li></td>
-                                        <td width="280" align="center"><li>'.$partes.'</li></td>
-                                        <td width="280" align="center"><li>'.$nro_partes_alternos[$indice].'</li></td>
-                                    </tr>
-                                </table>
 
-
-                                    ';
-                                $numero++;
                              }
 
-$tbl.=      ' <br>
-                  </td>
+                if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {                
+                  $tbl.=      ' <br>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                      <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
+                                      <!--<td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>-->
+                                      <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                                  </tr>
+                                  <tr>
+                                      <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                          <br><br>
+                                          <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
+                                          <br>'.$fun_sol[0].' <b>'.$solicitante.'</b>
+                                      </td>
+                                      <!--<td align="center" style="font-family: Calibri; font-size: 9px;">
+                                          <br><br>
+                                          <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
+                                          <br>'.$fun_admi[0].' <b>Vo.Bo</b>
+                                      </td>-->
+                                      <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                      <br><br>
+                                      <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                       <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
+                                      </td>
+                                   </tr>
+                                   <!--<tr>
+                                      <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                                  </tr>
+                                   <tr>
+                                      <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                      <br><br>
+                                      <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                       <br>'.$fun_presu[0].' <b>RPCE</b>
+                                      </td>
+                                  </tr>-->
+                                  </table>
+                                  ';
+                } else {
+                  $tbl.=      ' <br>
+                                  </td>
 
-                </tr>
+                                </tr>
 
-                <tr>
-                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
-                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
-                </tr>
-                <tr>
-                    <td align="center" style="font-family: Calibri; font-size: 9px;">
-                        <br><br>
-                        <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
-                        <br>'.$fun_sol[0].' <b>Solicitante</b>
-                    </td>
-                    <td align="center" style="font-family: Calibri; font-size: 9px;">
-                        <br><br>
-                        <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
-                        <br>'.$fun_admi[0].' <b>Vo.Bo</b>
-                    </td>
-                 </tr>
-                 <tr>
-                    <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
-                </tr>
-                 <tr>
-                    <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
-                    <br><br>
-                    <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
-                     <br>'.$fun_presu[0].' <b>RPCE</b>
+                                <tr>
+                                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
+                                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                        <br><br>
+                                        <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
+                                        <br>'.$fun_sol[0].' <b>Solicitante</b>
+                                    </td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                        <br><br>
+                                        <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
+                                        <br>'.$fun_admi[0].' <b>Vo.Bo</b>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                                </tr>
+                                 <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                    <br><br>
+                                    <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                     <br>'.$fun_presu[0].' <b>RPCE</b>
 
-                    </td>
-                </tr>
-                </table>
-                ';
+                                    </td>
+                                </tr>
+                                </table>
+                                ';
+                }
+
+
 
         $this->writeHTML($tbl, true, false, false, false, '');
 
@@ -269,10 +344,8 @@ $tbl.=      ' <br>
             $cont++;
         }
         $tbl.='</table>';
-
         $this->Ln(19);
         $this->writeHTML($tbl);
-
         $this->SetFont('', 'B',9);
         $this->MultiCell(200, 5, "\n" . 'FAVOR ENVIAR SU COTIZACIÓN AL CORREO abastecimiento@boa.bo', 0, 'L', 0, '', '');*/
 
@@ -282,21 +355,25 @@ $tbl.=      ' <br>
     }
 
     function generarImagen( $nac){
-        $cadena_nac = explode('|', $nac);
-        $cadena_nac = str_replace('-','_', $cadena_nac[2] );
-        $cadena_qr =  'Funcionario: '.$nac ;
+        $separando_infor = explode('|', $nac);
+        $funcionario_qr =  'Funcionario: '.$separando_infor[0]. "\n";
+        $cargo_qr =  'Cargo: '.$separando_infor[1]. "\n";
+        $tramite_qr =  'Tramite: '.strtoupper($separando_infor[2]). "\n";
+        $fecha_firma_qr =  'Fecha: '.str_replace("-","/",$separando_infor[3]). "\n";
+        $empresa_qr =  'Empresa: '.$separando_infor[4]. "\n";
+        $cadena_qr = $funcionario_qr.$cargo_qr.$tramite_qr.$fecha_firma_qr.$empresa_qr;
         $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
         $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
         $im = imagecreatefromstring($png);
         if ($im !== false) {
             header('Content-Type: image/png');
-            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $cadena_nac . ".png");
+            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $nac . ".png");
             imagedestroy($im);
 
         } else {
             echo 'A ocurrido un Error.';
         }
-        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $cadena_nac . ".png"; //$this->objParam->getParametro('nombre_archivo')
+        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $nac . ".png"; //$this->objParam->getParametro('nombre_archivo')
 
         return $url_archivo;
     }

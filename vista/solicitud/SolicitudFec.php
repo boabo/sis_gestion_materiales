@@ -19,7 +19,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/ControlDetalle.php',
                 title:'Detalle',
                 height:'50%',
-                cls:'ControlDetalle'
+                cls:'ControlDetalle' 
             }
         ],
 
@@ -31,14 +31,27 @@ header("content-type: text/javascript; charset=UTF-8");
                 defaults: {
                     border: false
                 },
+                xtype: 'fieldset',
+                style:{
+                      background:'#548DCA',
+                      marginTop:'-26px',
+                     },
 
                 items: [
 
                     {
-                        bodyStyle: 'padding-right:10px;',
+                      xtype: 'fieldset',
+                      style:{
+                            background:'#FFB09C',
+                            width:'330px',
+                            //height:'330px',
+                            border:'1px solid black',
+                            borderRadius:'2px'
+                           },
                         items: [
                             {
                                 xtype: 'fieldset',
+                                border: false,
                                 title: ' Datos Adquisiciones ',
                                 autoHeight: true,
                                 items: [],
@@ -80,49 +93,17 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ini_estado').setVisible(false);
             this.getBoton('Report').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
-            this.getBoton('btnproveedor').setVisible(false);
-            this.getBoton('btnproveedor').setVisible(false);
+            // this.getBoton('btnproveedor').setVisible(false);
+            // this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('clonar_solicitud').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
         },
-        cmbGestion: new Ext.form.ComboBox({
-            name: 'gestion',
-            id: 'g_fec',
-            fieldLabel: 'Gestion',
-            allowBlank: true,
-            emptyText:'Gestion...',
-            blankText: 'Año',
-            store:new Ext.data.JsonStore(
-                {
-                    url: '../../sis_parametros/control/Gestion/listarGestion',
-                    id: 'id_gestion',
-                    root: 'datos',
-                    sortInfo:{
-                        field: 'gestion',
-                        direction: 'DESC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_gestion','gestion'],
-                    // turn on remote sorting
-                    remoteSort: true,
-                    baseParams:{par_filtro:'gestion'}
-                }),
-            valueField: 'id_gestion',
-            triggerAction: 'all',
-            displayField: 'gestion',
-            hiddenName: 'id_gestion',
-            mode:'remote',
-            pageSize:50,
-            queryDelay:500,
-            listWidth:'280',
-            hidden:false,
-            width:80
-        }),
         gruposBarraTareas:[
-             {name:'ab_origen_ing_n',title:'<H1 align="center"><i></i> Operaciones</h1>',grupo:4,height:0, width: 100},
-             {name:'ab_origen_man_n',title:'<H1 align="center"><i></i> Mantenimiento</h1>',grupo:4,height:0, width: 100},
-             {name:'ab_origen_alm_n',title:'<H1 align="center"><i></i> Abastecimientos</h1>',grupo:4,height:0, width: 150},
-            {name:'ab_origen_alm_ceac',title:'<H1 align="center"><i></i> Operaciones CEAC</h1>',grupo:4,height:0, width: 150}
+             {name:'ab_origen_ing_n',title:'<H1 align="center" style="color:#E78800; font-size:11px;"><i style="font-size:12px;" class="fa fa-truck" aria-hidden="true"></i> Operaciones</h1>',grupo:4,height:0, width: 100},
+             {name:'ab_origen_man_n',title:'<H1 align="center" style="color:#007AD9; font-size:11px;"><i style="font-size:12px;" class="fa fa-wrench" aria-hidden="true"></i> Mantenimiento</h1>',grupo:4,height:0, width: 100},
+             {name:'ab_origen_alm_n',title:'<H1 align="center" style="color:#00A530; font-size:11px;"><i style="font-size:12px;" class="fa fa-retweet" aria-hidden="true"></i> Abastecimientos</h1>',grupo:4,height:0, width: 150},
+             {name:'ab_origen_alm_ceac',title:'<H1 align="center" style="color:#FF0000; font-size:11px;"><i style="font-size:12px;" class="fa fa-plane" aria-hidden="true"></i> Ope. CEAC</h1>',grupo:4,height:0, width: 150},
+             {name:'ab_origen_rep_n',title:'<H1 align="center" style="color:#7100BB; font-size:11px;"><i style="font-size:12px;" class="fa fa-cogs" aria-hidden="true"></i> Repuestos</h1>',grupo:4,height:0, width: 150}
 
          ],
         tam_pag:50,
@@ -197,7 +178,6 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             if (this.store.baseParams.pes_estado == 'ab_origen_ing_n') {
                 if (this.historico == 'si') {
-                    console.log('hisotico', this.historico);
                     this.ocultarComponente(this.Cmp.mel);
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.tipo_falla);
@@ -219,7 +199,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.fecha_en_almacen);
                     this.CampoBloqueado(true);
                 } else {
-                    console.log('hisotico', this.historico);
                     this.ocultarComponente(this.Cmp.mel);
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.tipo_falla);
@@ -309,13 +288,19 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 if( this.historico == 'si' ){
 
+                    /*Aqui ponemos la condicion para que en rep y ceac se muestre la justificacion*/
+                    this.mostrarComponente(this.Cmp.justificacion);
+                    this.mostrarComponente(this.Cmp.nro_justificacion);
+                    this.ocultarComponente(this.Cmp.nro_no_rutina);
+                    /******************************************************************************/
+
                     this.ocultarComponente(this.Cmp.mel);
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.tipo_falla);
 
-                    this.ocultarComponente(this.Cmp.justificacion);
+                    //this.ocultarComponente(this.Cmp.justificacion);
                     this.ocultarComponente(this.Cmp.id_matricula);
-                    this.ocultarComponente(this.Cmp.nro_justificacion);
+                    //this.ocultarComponente(this.Cmp.nro_justificacion);
 
                     this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
                     this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
@@ -335,13 +320,20 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.fecha_en_almacen);
                     this.CampoBloqueado(true);
                 }else{
+
+                  /*Aqui ponemos la condicion para que en rep y ceac se muestre la justificacion*/
+                  this.mostrarComponente(this.Cmp.justificacion);
+                  this.mostrarComponente(this.Cmp.nro_justificacion);
+                  this.ocultarComponente(this.Cmp.nro_no_rutina);
+                  /******************************************************************************/
+
                     this.ocultarComponente(this.Cmp.mel);
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.tipo_falla);
 
-                    this.ocultarComponente(this.Cmp.justificacion);
+                    //this.ocultarComponente(this.Cmp.justificacion);
                     this.ocultarComponente(this.Cmp.id_matricula);
-                    this.ocultarComponente(this.Cmp.nro_justificacion);
+                    //this.ocultarComponente(this.Cmp.nro_justificacion);
 
                     this.ocultarComponente(this.Cmp.fecha_arribado_bolivia);
                     this.ocultarComponente(this.Cmp.fecha_desaduanizacion);
@@ -394,6 +386,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.Cmp.fecha_requerida.setDisabled(sw);
             this.Cmp.fecha_solicitud.setDisabled(sw);
+            this.Cmp.tiempo_entrega.setDisabled(sw);
+            this.Cmp.mel_observacion.setDisabled(sw);
         },
 
 
@@ -416,4 +410,3 @@ header("content-type: text/javascript; charset=UTF-8");
     }
 
 </script>
-

@@ -53,6 +53,19 @@ DECLARE
 
     v_id_estado_wf_firma	integer;
 
+    /*Aumentando Variables Ismael Valdivia (02/03/2020)*/
+    v_estado_actual	varchar;
+    v_datos_solicitud	record;
+    v_id_tipo_proceso_wf integer;
+    v_id_tipo_estado_siguiente integer;
+    v_codigo_estado_siguiente_auto varchar;
+    v_acceso_directo_automatico varchar;
+   	v_clase_automatico varchar;
+   	v_parametros_ad_automatico varchar;
+   	v_tipo_noti_automatico varchar;
+   	v_titulo_automatico  varchar;
+   	v_obs_automatico varchar;
+	v_funcionario_encargado integer;
 BEGIN
  v_nombre_funcion = 'mat.f_iniciar_disparo_ime';
  v_parametros = pxp.f_get_record(p_tabla);
@@ -66,14 +79,151 @@ BEGIN
 
     if(p_transaccion='MAT_SIG_DIS') then
     	begin
-		--RAISE EXCEPTION 'LLEGA %',v_parametros.id_tipo_estado;
         --recupera toda la tabla solicitud
           select *
           into v_solicitud
           from mat.tsolicitud
           where id_proceso_wf_firma = v_parametros.id_proceso_wf_act;
 
-          select
+          /*Aqui pondremos las condiciones para que pase directamente de estado*/
+          if (v_solicitud.estado_firma = 'comite_aeronavegabilidad') then
+
+          		/**********************AUMENTANDO ESTA PARTE PARA QUE NO PUEDA PASAR DE ESTADO SI EL COMITE NO AUTORIZO
+               ***********************iSMAEL VALDIVIA (03/03/2020)*******************************************************/
+
+                        --Recuperamos los datos de la solicitud
+                        select sol.* into v_datos_solicitud
+                        from mat.tsolicitud sol
+                        where id_solicitud = v_parametros.id_solicitud;
+                        ------------------------------------------------
+
+                        --Recuperamos el id_tipo_proceso_wf para obtener el siguiente estado
+                        select pr.id_tipo_proceso into v_id_tipo_proceso_wf
+                        from wf.tproceso_wf pr
+                        where pr.id_proceso_wf = v_datos_solicitud.id_proceso_wf_firma;
+
+                        select es.id_tipo_estado,
+                               es.codigo,
+                               fun.id_funcionario
+                        into v_id_tipo_estado_siguiente,
+                             v_codigo_estado_siguiente_auto,
+                             v_funcionario_encargado
+                        from wf.ttipo_estado es
+                        left join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                        where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'autorizado';
+                        ---------------------------------------------------------------------------
+                         v_acceso_directo_automatico = '';
+                         v_clase_automatico = '';
+                         v_parametros_ad_automatico = '';
+                         v_tipo_noti_automatico = 'notificacion';
+                         v_titulo_automatico  = 'Visto Boa';
+                         v_obs_automatico ='---';
+                         ------------------------------------------pasamos el estado a vb_dpto_administrativo
+                         v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
+                                                                 v_funcionario_encargado,--id del funcionario Solicitante Jaime Lazarte (Definir de donde recuperaremos)
+                                                                 v_datos_solicitud.id_estado_wf_firma,
+                                                                 v_datos_solicitud.id_proceso_wf_firma,
+                                                                 p_id_usuario,
+                                                                 v_parametros._id_usuario_ai,
+                                                                 v_parametros._nombre_usuario_ai,
+                                                                 v_id_depto,
+                                                                 COALESCE(v_datos_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
+                                                                 v_acceso_directo_automatico,
+                                                                 v_clase_automatico,
+                                                                 v_parametros_ad_automatico,
+                                                                 v_tipo_noti_automatico,
+                                                                 v_titulo_automatico);
+
+                         IF mat.f_procesar_estados_firmas(p_id_usuario,
+                                                        v_parametros._id_usuario_ai,
+                                                        v_parametros._nombre_usuario_ai,
+                                                        v_id_estado_actual,
+                                                        v_datos_solicitud.id_proceso_wf_firma,
+                                                        v_codigo_estado_siguiente_auto) THEN
+
+                        RAISE NOTICE 'PASANDO DE ESTADO';
+                        -------------------------------------------------------------------------------------------------------------------------------------
+
+                		END IF;
+
+          /**********************AUMENTANDO ESTA PARTE PARA QUE NO PUEDA PASAR DE ESTADO SI EL COMITE NO AUTORIZO
+           ***********************iSMAEL VALDIVIA (03/03/2020)*******************************************************/
+
+
+                select sol.estado into v_estado_actual
+                from mat.tsolicitud sol
+                where sol.id_solicitud = v_parametros.id_solicitud;
+
+                IF (v_estado_actual = 'autorizado') THEN
+                	--Recuperamos los datos de la solicitud
+                	select sol.* into v_datos_solicitud
+                    from mat.tsolicitud sol
+                    where id_solicitud = v_parametros.id_solicitud;
+                    ------------------------------------------------
+
+                    --Recuperamos el id_tipo_proceso_wf para obtener el siguiente estado
+                    select pr.id_tipo_proceso into v_id_tipo_proceso_wf
+                    from wf.tproceso_wf pr
+                    where pr.id_proceso_wf = v_datos_solicitud.id_proceso_wf;
+
+                    select es.id_tipo_estado,
+                    	   es.codigo,
+                           fun.id_funcionario
+                    into v_id_tipo_estado_siguiente,
+                         v_codigo_estado_siguiente_auto,
+                         v_funcionario_encargado
+                    from wf.ttipo_estado es
+                    inner join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                    where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'vb_rpcd';
+                    ---------------------------------------------------------------------------
+
+                     v_acceso_directo_automatico = '';
+                     v_clase_automatico = '';
+                     v_parametros_ad_automatico = '';
+                     v_tipo_noti_automatico = 'notificacion';
+                     v_titulo_automatico  = 'Visto Boa';
+                     v_obs_automatico ='---';
+                     ------------------------------------------pasamos el estado a vb_dpto_administrativo
+                     v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
+                                                             v_funcionario_encargado,--id del funcionario Solicitante Jaime Lazarte (Definir de donde recuperaremos)
+                                                             v_datos_solicitud.id_estado_wf,
+                                                             v_datos_solicitud.id_proceso_wf,
+                                                             p_id_usuario,
+                                                             v_parametros._id_usuario_ai,
+                                                             v_parametros._nombre_usuario_ai,
+                                                             v_id_depto,
+                                                             COALESCE(v_datos_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
+                                                             v_acceso_directo_automatico,
+                                                             v_clase_automatico,
+                                                             v_parametros_ad_automatico,
+                                                             v_tipo_noti_automatico,
+                                                             v_titulo_automatico);
+
+                     IF mat.f_procesar_estados_solicitud(p_id_usuario,
+           											v_parametros._id_usuario_ai,
+                                            		v_parametros._nombre_usuario_ai,
+                                            		v_id_estado_actual,
+                                            		v_datos_solicitud.id_proceso_wf,
+                                            		v_codigo_estado_siguiente_auto) THEN
+
+         			RAISE NOTICE 'PASANDO DE ESTADO';
+                    -------------------------------------------------------------------------------------------------------------------------------------
+
+          			END IF;
+
+
+
+
+
+                END IF;
+
+
+           /*************************************************************************************************************/
+
+
+               /*************************************************************************************************************/
+          else
+          		select
             ew.id_tipo_estado,
             te.pedir_obs,
             ew.id_estado_wf
@@ -149,9 +299,8 @@ BEGIN
          			RAISE NOTICE 'PASANDO DE ESTADO';
 
           		END IF;
-
-
-
+          end if;
+          /*********************************************************************/
 
           -- si hay mas de un estado disponible  preguntamos al usuario
           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado de Solicitud)');
@@ -195,7 +344,6 @@ BEGIN
                 --Retrocede al estado inmediatamente anterior
                 -------------------------------------------------
                	--recuperaq estado anterior segun Log del WF
-
                   SELECT
 
                      ps_id_tipo_estado,
@@ -219,6 +367,8 @@ BEGIN
                 v_id_proceso_wf
           	  from wf.testado_wf ew
          	  where ew.id_estado_wf= v_id_estado_wf_ant;
+          --end if;
+
 
          END IF;
 
@@ -391,5 +541,8 @@ $body$
 LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
-SECURITY INVOKER
+SECURITY INVOKER 
 COST 100;
+
+ALTER FUNCTION mat.f_iniciar_disparo_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

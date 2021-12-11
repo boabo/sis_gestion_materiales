@@ -41,50 +41,16 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Report').setVisible(false);
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('clonar_solicitud').setVisible(false);
-            this.getBoton('btnproveedor').setVisible(false);
+            //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
 
         },
-
-        cmbGestion: new Ext.form.ComboBox({
-            name: 'gestion',
-            id: 'g_consulta',
-            fieldLabel: 'Gestion',
-            allowBlank: true,
-            emptyText:'Gestion...',
-            blankText: 'Año',
-            store:new Ext.data.JsonStore(
-                {
-                    url: '../../sis_parametros/control/Gestion/listarGestion',
-                    id: 'id_gestion',
-                    root: 'datos',
-                    sortInfo:{
-                        field: 'gestion',
-                        direction: 'DESC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_gestion','gestion'],
-                    // turn on remote sorting
-                    remoteSort: true,
-                    baseParams:{par_filtro:'gestion'}
-                }),
-            valueField: 'id_gestion',
-            triggerAction: 'all',
-            displayField: 'gestion',
-            hiddenName: 'id_gestion',
-            mode:'remote',
-            pageSize:50,
-            queryDelay:500,
-            listWidth:'280',
-            hidden:false,
-            width:80
-        }),
-
         gruposBarraTareas:[
-            {name:'consulta_op',title:'<H1 align="center"><i></i> Operaciones</h1>',grupo:5,height:0, width: 100},
-            {name:'consulta_mal',title:'<H1 "center"><i></i> Mantenimiento</h1>',grupo:5,height:2, width: 100},
-            {name:'consulta_ab',title:'<H1 align="center"><i></i> Abastecimientos</h1>',grupo:5,height:0},
-            {name:'consulta_ceac',title:'<H1 align="center"><i></i> Operaciones CEAC</h1>',grupo:5,height:0}
+            {name:'consulta_op',title:'<H1 align="center" style="color:#E78800; font-size:11px;"><i style="font-size:12px;" class="fa fa-truck" aria-hidden="true"></i> Operaciones</h1>',grupo:5,height:0, width: 100},
+            {name:'consulta_mal',title:'<H1 align="center" style="color:#007AD9; font-size:11px;"><i style="font-size:12px;" class="fa fa-wrench" aria-hidden="true"></i> Mantenimiento</h1>',grupo:5,height:0, width: 100},
+            {name:'consulta_ab',title:'<H1 align="center" style="color:#00A530; font-size:11px;"><i style="font-size:12px;" class="fa fa-retweet" aria-hidden="true"></i> Abastecimientos</h1>',grupo:5,height:0, width: 150},
+            {name:'consulta_ceac',title:'<H1 align="center" style="color:#FF0000; font-size:11px;"><i style="font-size:12px;" class="fa fa-plane" aria-hidden="true"></i> Ope. CEAC</h1>',grupo:5,height:0, width: 200},
+            {name:'consulta_repu',title:'<H1 align="center" style="color:#7100BB; font-size:11px;"><i style="font-size:12px;" class="fa fa-cogs" aria-hidden="true"></i> Reparaciones</h1>',grupo:5,height:0, width: 200}
 
         ],
         tam_pag:50,
@@ -98,6 +64,9 @@ header("content-type: text/javascript; charset=UTF-8");
         bdelGroups:  [0],
         bactGroups:  [5],
         bexcelGroups: [5],
+        bganttGroups: [0,5],
+
+        bgantt:true,
         font:function () {
             this.Atributos[this.getIndAtributo('nro_po')].grid=true;
             this.Atributos[this.getIndAtributo('id_proveedor')].grid=true;

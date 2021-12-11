@@ -85,13 +85,20 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->Cell(0, 0, $this->datos[0]['desc_funcionario1'], 1, 1, 'C', 0, '', 0);
         $this->ln(2);
         $tamano_letra = 11;
-        $cantidad_caracteres = strlen($this->datos[0]['observaciones_sol']);        
-        if ($cantidad_caracteres >= 747) {            
+        $cantidad_caracteres = strlen($this->datos[0]['observaciones_sol']);
+        if ($cantidad_caracteres >= 747) {
             $tamano_letra = 8;
-        }        
+        }
         $this->SetFont('times', '', 11);
         if ($fecha >= $fecha_base) {
         $this->Cell(0, 6, ' Condición:'.' '.$this->datos[0]['condicion'], 1, 1, 'L', 0, '', 0);
+        if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
+          if ($this->datos[0]['tipo_de_adjudicacion'] == 'Ninguno') {
+            $this->MultiCell(0, 6, ' <b>Método de selección de adjudicación: </b>'.$this->datos[0]['metodo_de_adjudicación'], 1, 'L', 0, 1, '', '',true, 0, true);
+          } else {
+            $this->MultiCell(0, 6, ' <b>Método de selección de adjudicación: </b>'.$this->datos[0]['metodo_de_adjudicación'].'  <b>Tipo de adjudicación: </b>'.$this->datos[0]['tipo_de_adjudicacion'], 1, 'L', 0, 1, '', '',true, 0, true);
+          }
+        }
         $this->ln();
         }
         $this->MultiCell(0, 10, ' Motivo: ' . $this->datos[0]['motivo_solicitud'] . "\n", 1, 'J', 0, '', '');
@@ -100,13 +107,13 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->MultiCell(0, 10, ' Observaciones: ' . $this->datos[0]['observaciones_sol'] . "\n", 1, 'J', 0, '', '');
         $this->ln(13);
         $this->SetFont('times', 'B', 11);
-        
-        $salto='';        
+
+        $salto='';
         if ($cantidad_caracteres >= 200 && $cantidad_caracteres < 300){
             $salto= $this->Ln(4);
         }elseif($cantidad_caracteres >= 300 && $cantidad_caracteres < 500){
-            $salto = $this->Ln(10);                
-        }elseif ($cantidad_caracteres >= 500  && $cantidad_caracteres < 600 ) {            
+            $salto = $this->Ln(10);
+        }elseif ($cantidad_caracteres >= 500  && $cantidad_caracteres < 600 ) {
             $salto = $this->Ln(15);
         }elseif ($cantidad_caracteres >= 600  && $cantidad_caracteres < 747 ) {
             $salto = $this->Ln(19);
@@ -114,11 +121,11 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             $salto = $this->Ln(17);
         }
 
-        if ($fecha >= $fecha_base) { 
-            $salto;         
+        if ($fecha >= $fecha_base) {
+            $salto;
         $this->Cell(0, 6, ' Especificación Técnica Material a Solicitar', 1, 1, 'L', 0, '', 0);
       }else{
-        $salto;  
+        $salto;
         $this->Cell(0, 6, ' Detalle', 1, 1, 'L', 0, '', 0);
       }
         $this->ln(0.10);
@@ -133,6 +140,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
 
         $RowArray = array(
 
+            'Nro.',
             'Número de Parte',
             'Número Parte Alterno',
             'Referencia',
@@ -147,6 +155,23 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->tablewidths = $conf_det_tablewidths;
         $this->tablealigns = $conf_det_tablealigns;
         $y = 165;
+        if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
+        $itemnum = 1;
+        foreach ($this->datos as $Row) {
+
+            $RowArray = array(
+                'Nro.' => $itemnum,
+                'Número de Parte' => $Row['nro_parte'],
+                'Número Parte Alterno' => $Row['nro_parte_alterno'],
+                'Referencia' => $Row['referencia'],
+                'Descripcion' => $Row['descripcion'],
+                'Cantidad' => $Row['cantidad_sol'],
+                'Unidad Medida' => $Row['unidad_medida']
+            );
+            $this->MultiRow($RowArray);
+            $itemnum ++;
+        }
+      } else {
         foreach ($this->datos as $Row) {
 
             $RowArray = array(
@@ -159,6 +184,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             );
             $this->MultiRow($RowArray);
         }
+      }
 
         $this->ln();
         $RT = 2;

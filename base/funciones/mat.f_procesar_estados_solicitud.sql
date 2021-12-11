@@ -89,6 +89,20 @@ group by c.adjudicado;
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
     	end;
+   	/*Aumentando esta condicion para seguir el flujo Ismael Valdivia (03/02/2020)*/
+    elsif(p_codigo_estado in ('vb_dpto_administrativo')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+    /*****************************************************************************/
+
         ---
         elsif(p_codigo_estado in ('comite_unidad_abastecimientos')) then
     	begin
@@ -122,6 +136,55 @@ group by c.adjudicado;
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
     	end;
+        /*Aumentando esta condicion para seguir el flujo Ismael Valdivia (03/02/2020)*/
+        elsif(p_codigo_estado in ('autorizado')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+
+        elsif(p_codigo_estado in ('autorizado_jefe_depto')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+
+    	elsif(p_codigo_estado in ('vb_rpcd')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+
+        elsif(p_codigo_estado in ('vb_dpto_abastecimientos')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+    /*****************************************************************************/
         elsif(p_codigo_estado in ('departamento_ceac')) then
     	begin
     		update mat.tsolicitud s set
@@ -254,3 +317,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION mat.f_procesar_estados_solicitud (p_id_usuario integer, p_id_usuario_ai integer, p_usuario_ai varchar, p_id_estado_wf integer, p_id_proceso_wf integer, p_codigo_estado varchar)
+  OWNER TO postgres;

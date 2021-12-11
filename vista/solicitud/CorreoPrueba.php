@@ -18,14 +18,13 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config;
             Phx.vista.CorreoPrueba.superclass.constructor.call(this,config);
             this.init();
-            //console.log('maestro correo',this.maestro);
             this.nroCotizacion = this.maestro.nro_cotizacion;
             this.Cmp.lista_correos.setValue(this.maestro.lista_correos);
             this.loadValoresIniciales();
             //this.obtenerCorreo();
 
 
-        },
+        }, 
 
        /* obtenerCorreo:function(){
             Phx.CP.loadingShow();
@@ -38,23 +37,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout:this.timeout,
                 scope:this
             });
-
-
         },
-
-
         successSinc:function(resp){
             Phx.CP.loadingHide();
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             if(reg.ROOT.datos.resultado!='falla'){
                 if(!reg.ROOT.datos.email_notificaciones_2){
-
                     alert('Confgure el EMAIL de notificaciones 1, en el archivo de datos generales');
                 }
-
                 this.getComponente('email').setValue('abastecimiento@boa.bo');
                 this.getComponente('email_cc').setValue(reg.ROOT.datos.email_empresa);
-
             }else{
                 alert(reg.ROOT.datos.mensaje)
             }

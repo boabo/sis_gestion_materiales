@@ -107,13 +107,13 @@ class RRequemientoMaterielesIng extends  ReportePDF {
             $tbl = <<<EOD
 <table cellspacing="0" cellpadding="1" border="1" >
     <tr>
-        <td width="19"  align="center">$numero</td>
-        <td width="109" align="center">$parte</td>
-        <td width="109" align="center">$parte_alterno</td>
-        <td width="79" align="center">$referencia</td>
-        <td width="216" align="justify">$descripcion</td>
-        <td width="57"  align="center">$cantidad</td>
-        <td width="70"  align="center">$unidad</td>
+        <td width="17.5"  align="center">$numero</td>
+        <td width="110" align="center">$parte</td>
+        <td width="110" align="center">$parte_alterno</td>
+        <td width="78" align="center">$referencia</td>
+        <td width="215.9" align="justify">$descripcion</td>
+        <td width="56.9"  align="center">$cantidad</td>
+        <td width="70.5"  align="center">$unidad</td>
     </tr>
 </table>
 EOD;
@@ -122,6 +122,38 @@ EOD;
             $numero++;
             $pagina++;
         }
+
+$tipo_de_adjudicacion = $this->datos[0]['tipo_de_adjudicacion'];
+$metodo_de_adjudicación = $this->datos[0]['metodo_de_adjudicación'];
+
+if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
+  if ($this->datos[0]['tipo_de_adjudicacion'] == 'Ninguno') {
+    $tb2 = <<<EOD
+<table cellspacing="0" cellpadding="1" border="1" >
+<tr>
+<td width="658"><b>Método de selección de adjudicación: </b>$metodo_de_adjudicación</td>
+</tr>
+</table>
+EOD;
+
+  } else {
+    $tb2 = <<<EOD
+<table cellspacing="0" cellpadding="1" border="1" >
+<tr>
+<td width="330"><b>Método de selección de adjudicación: </b>$metodo_de_adjudicación</td>
+<td width="330"><b>Tipo de adjudicación: </b>$tipo_de_adjudicacion</td>
+</tr>
+</table>
+EOD;
+  }
+}
+
+
+
+
+        $this->SetFont('times', '', 9);
+        $this->writeHTML($tb2, false, false, false, false, '');
+
         $this->ln();
         $motivo = $this->datos[0]['motivo_solicitud'];
         $justificacion= $this->datos[0]['justificacion'];
@@ -271,7 +303,7 @@ EOD;
 
     function setDatos($datos,$datos2) {
         $this->datos = $datos;
-        $this->datos2 = $datos2;        
+        $this->datos2 = $datos2;
 
     }
     function generarReporte() {
