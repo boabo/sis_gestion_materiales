@@ -25,7 +25,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         Atributos:[
-            { 
+            {
                 config:{
                     labelSeparator: '',
                     name: 'id_solicitud',

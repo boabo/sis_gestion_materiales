@@ -78,7 +78,8 @@ BEGIN
               tc.monto_total,
               ts.id_estado_wf,
               ts.mel,
-              ts.list_proceso
+              ts.list_proceso,
+              ts.id_proceso_wf
             into
              v_registros_solicitud_mat
             from mat.tsolicitud ts
@@ -182,14 +183,14 @@ BEGIN
               p_id_usuario,
               now(),
               'activo',
-              370,
-              9420,
+              762, --20-4-2021 (may) 370 jaime lazarte(retirado) ahora el funcionario encargado es PATRICIA LOPEZ VARGAS  ,
+              10154, --9420 antiguo organigrama,
 
               4,
               2,
               21,
               v_id_gestion,
-              2711, --160, MAYORGA , 2711 DELGADILLO
+              160, --160, MAYORGA , 2711 DELGADILLO
               2,
               v_num_sol,
               'no',
