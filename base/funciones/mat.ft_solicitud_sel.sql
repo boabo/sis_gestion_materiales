@@ -1977,9 +1977,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           s.estado,
                           '''||v_nro_cite_dce||'''::varchar as nro_cite_dce,
                           s.fecha_solicitud::date,
-                          s.condicion,
-                          s.lugar_entrega,
-                          s.tiempo_entrega,
+                          s.condicion::varchar,
+                          s.lugar_entrega::varchar,
+                          s.tiempo_entrega::numeric,
                           '''||v_fecha_salida_gm||'''::date as fecha_salida
                           from mat.tdetalle_sol det
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
