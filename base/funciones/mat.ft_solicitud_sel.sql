@@ -472,10 +472,10 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.codigo_forma_pago_alkym,
                                 sol.fecha_entrega::date,
                                 sol.mel_observacion,
-                                sol.origen_solicitud,
+                                sol.origen_solicitud::varchar,
                                 /***********************************************************************************/
                                 /*Aumentando para el reporte de invitacion (Ismael Valdivia 09/11/2020)*/
-                                sol.tiempo_entrega,
+                                sol.tiempo_entrega::numeric,
                                 /***********************************************************************/
                                 /*Aumentando los dos campos para recuperar en la interfaz (Ismael Valdivia 13/10/2021)*/
                                 sol.metodo_de_adjudicación,
