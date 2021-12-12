@@ -227,7 +227,7 @@ header("content-type: text/javascript; charset=UTF-8");
               				 gwidth: 200,
               				 fieldLabel: 'Centro de Costos',
               				 url: '../../sis_parametros/control/CentroCosto/listarCentroCostoFiltradoXDepto',
-              				 baseParams: {filtrar: 'grupo_ep'},
+              				 baseParams: {filtrar: 'grupo_ep', reparaciones: 'si'},
                      }),
 
                      'id_concepto_ingas': new Ext.form.ComboBox({
@@ -1385,7 +1385,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         allowBlank:true,
                         //hidden:true,
                         width: 165,
-                        renderer:function(value, p, record){                          
+                        renderer:function(value, p, record){
                           return String.format('{0}', record.data['desc_concepto_ingas']);
                         },
                         editor: this.detCmp.id_concepto_ingas
