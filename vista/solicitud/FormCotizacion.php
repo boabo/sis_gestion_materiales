@@ -477,6 +477,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.Cmp.id_condicion_entrega.setDisabled(true);
                 this.Cmp.id_forma_pago.setDisabled(true);
                 this.Cmp.tipo_evaluacion.setDisabled(true);
+                this.ocultarComponente(this.Cmp.id_proveedor_contacto);
+                this.Cmp.id_proveedor_contacto.allowBlank = true;
 
           } else {
             this.megrid.colModel.setHidden(3,false);
@@ -537,6 +539,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.Cmp.id_condicion_entrega.setDisabled(true);
                 this.Cmp.id_forma_pago.setDisabled(true);
                 this.Cmp.tipo_evaluacion.setDisabled(true);
+                this.ocultarComponente(this.Cmp.id_proveedor_contacto);
+                this.Cmp.id_proveedor_contacto.allowBlank = true;
                 /****************************/
               } else {
 
@@ -716,6 +720,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 //this.Cmp.fecha_entrega.setValue(fecha_formateada);
                 //this.mostrarComponente(this.Cmp.fecha_entrega);
                 this.mostrarComponente(this.Cmp.tipo_evaluacion);
+                this.ocultarComponente(this.Cmp.id_proveedor_contacto);
+                this.Cmp.id_proveedor_contacto.allowBlank = true;
 
                 this.Cmp.id_condicion_entrega.setDisabled(true);
                 this.Cmp.id_forma_pago.setDisabled(true);
