@@ -821,3 +821,8 @@ ALTER TABLE mat.tasginacion_automatica_abastecimiento
 ALTER TABLE mat.tsolicitud
   ALTER COLUMN condicion TYPE VARCHAR(600) COLLATE pg_catalog."default";
 /***********************************F-SCP-IRVA-MAT-5-11/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-12/12/2021****************************************/
+ALTER TABLE mat.tsolicitud
+  ALTER COLUMN revisado_presupuesto SET DEFAULT 'no';
+/***********************************F-SCP-IRVA-MAT-0-12/12/2021****************************************/
