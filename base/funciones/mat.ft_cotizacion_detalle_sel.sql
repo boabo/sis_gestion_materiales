@@ -76,7 +76,9 @@ BEGIN
                         cde.cd,
                         u.codigo,
                         cde.revisado,
-                        da.codigo_tipo as desc_codigo_tipo
+                        da.codigo_tipo as desc_codigo_tipo,
+                        cde.referencial,
+                        cde.id_unidad_medida_cot
 						from mat.tcotizacion_detalle cde
 						inner join segu.tusuario usu1 on usu1.id_usuario = cde.id_usuario_reg
             			left join mat.tunidad_medida u on u.id_unidad_medida = cde.id_unidad_medida_cot
