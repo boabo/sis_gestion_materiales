@@ -1226,7 +1226,7 @@ END IF;
                     ---------------------------------------------------------------------------
 
                       ---------------------------------------------------------------------------
-                    --raise exception 'Aqui llega %',v_codigo_estado_siguiente_auto;
+
                      v_acceso_directo_automatico = '';
                      v_clase_automatico = '';
                      v_parametros_ad_automatico = '';
@@ -1315,6 +1315,8 @@ END IF;
 
                         RAISE NOTICE 'PASANDO DE ESTADO';
                         end if;
+
+
                     /*******************************************/
                     /*Pasa al estado RPCD*/
                     --Recuperamos los datos de la solicitud
@@ -1448,7 +1450,6 @@ END IF;
                     RAISE NOTICE 'PASANDO DE ESTADO';
                     end if;
                     -------------------------------------------------------------------------------------------------------------------------------------
-
 
                     ------------------------------------Pasa el estado del RPC-----------------------------------
                     select sol.* into v_datos_solicitud
@@ -2150,13 +2151,13 @@ END IF;
             /************************************************************************************************/
 
           IF (v_codigo_estado_siguiente='despachado')THEN
-            /*if (pxp.f_get_variable_global('interviene_presupuesto') = 'si') then
+            if (pxp.f_get_variable_global('interviene_presupuesto') = 'si') then
               /*Aqui ponemos un control para que presupuesto (Ismael valdivia 27/04/2020)*/
                if (v_solicitud.revisado_presupuesto = 'no') then
                   raise exception 'La solicitud actual aún se encuentra en revisión por parte de presupuestos.';
                end if;
               /***************************************************************************/
-            end if;*/
+            end if;
           	--RAISE EXCEPTION 'ENTRA';
               FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
 
