@@ -925,8 +925,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
                   this.detCmp.id_centro_costo.on('select', function (cmp, rec) {
+                    console.log("aqui hace el Select para filtro",rec);
                     this.detCmp.id_orden_trabajo.store.baseParams.id_centro_costo = rec.data.id_centro_costo;
-                    console.log("aqui hace el Select para filtro",rec.data.id_centro_costo);
                   }, this);
 
                   this.detCmp.id_orden_trabajo.on('select', function (cmp, rec) {
