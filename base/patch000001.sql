@@ -828,10 +828,9 @@ ALTER TABLE mat.tsolicitud
 /***********************************F-SCP-IRVA-MAT-0-12/12/2021****************************************/
 
 /***********************************I-SCP-IRVA-MAT-1-12/12/2021****************************************/
-ALTER TABLE mat.tsolicitud
-ADD COLUMN revertido_mb NUMERIC(18,2);
+  ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN revertido_mb NUMERIC(18,2);
 
-
-ALTER TABLE mat.tsolicitud
-ADD COLUMN revertido_mo NUMERIC(18,2);
+  ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN revertido_mo NUMERIC(18,2);
 /***********************************F-SCP-IRVA-MAT-1-12/12/2021****************************************/
