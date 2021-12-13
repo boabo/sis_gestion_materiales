@@ -566,8 +566,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.mel_observacion.setDisabled(sw);
 
             /*Aumentnado para que los campos esten bloqueados*/
-            this.Cmp.fecha_requerida.setDisabled(sw);
-            this.Cmp.fecha_solicitud.setDisabled(sw);
+            //this.Cmp.fecha_requerida.setDisabled(sw);
+            //this.Cmp.fecha_solicitud.setDisabled(sw);
             this.Cmp.motivo_solicitud.setDisabled(sw);
             /*************************************************/
 
