@@ -1410,9 +1410,9 @@ class ACTSolicitud extends ACTbase{
 
         if ($this->objParam->getParametro('tipo') != '') {
           if ($this->objParam->getParametro('tipo') != 'talleres') {
-              $this->objParam->addFiltro("provee.tipo  = ''". $this->objParam->getParametro('tipo')."''");
+              $this->objParam->addFiltro("provee.tipo  in (''". $this->objParam->getParametro('tipo')."'',''taller-abas'')");
           } else {
-            $this->objParam->addFiltro("provee.tipo  in (''taller_repues_abas'',''broker_repues_abas'')");
+            $this->objParam->addFiltro("provee.tipo  in (''taller_repues_abas'',''broker_repues_abas'', ''taller-abas'')");
           }
         }
         $this->objFunc=$this->create('MODSolicitud');
