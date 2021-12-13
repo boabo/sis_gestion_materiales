@@ -472,8 +472,13 @@ class ACTSolicitud extends ACTbase{
         }
 
         if($this->objParam->getParametro('soloAlkym') != '') {
-            $this->objParam->addFiltro("ord.id_avion_alkym is not null");
+          if($this->objParam->getParametro('flota') == 'si') {
+              $this->objParam->addFiltro("(ord.id_avion_alkym is not null or ord.codigo = ''FLOTA BOA'')");
+          } else {
+            $this->objParam->addFiltro("(ord.id_avion_alkym is not null)");
+          }
         }
+
 
 
         $this->objFunc=$this->create('MODSolicitud');

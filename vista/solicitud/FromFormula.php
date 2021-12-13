@@ -566,6 +566,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Gerencia de Operaciones');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
+                  this.Cmp.id_matricula.store.baseParams.flota = '';
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                     /*Ocultando los nuevos campos para repuestos*/
                     this.ocultarComponente(this.Cmp.nro_po);
@@ -632,6 +633,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Gerencia de Mantenimiento'); this.Cmp.origen_pedido.setValue('Gerencia de Operaciones DGAC');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
+                  this.Cmp.id_matricula.store.baseParams.flota = '';
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                   /*Ocultando los nuevos campos para repuestos*/
                   this.ocultarComponente(this.Cmp.nro_po);
@@ -698,6 +700,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Almacenes Consumibles o Rotables');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
+                  this.Cmp.id_matricula.store.baseParams.flota = '';
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                   /*Ocultando los nuevos campos para repuestos*/
                   this.ocultarComponente(this.Cmp.nro_po);
@@ -765,6 +768,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
                     this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
+                    this.Cmp.id_matricula.store.baseParams.flota = '';
                     /*Ocultando los nuevos campos para repuestos*/
                     this.ocultarComponente(this.Cmp.nro_po);
                   //  this.ocultarComponente(this.Cmp.fecha_po);
@@ -831,6 +835,10 @@ header("content-type: text/javascript; charset=UTF-8");
                 }
                 /*Aumentando para repuestos (Ismael Valdivia 12/03/2020)*/
                 if(this.Cmp.origen_pedido.getValue() == 'Reparación de Repuestos'){
+                  /*Aumentamos para incluir la flota BOA*/
+                  this.Cmp.id_matricula.store.baseParams.flota = 'si';
+                  /**************************************/
+
                   /*Aqui iremos mostrando los componentes que se deben ocultar*/
                   //this.form.bwrap.dom.firstChild[16].labels[0].innerHTML = 'HOLA PRUEBA';
                   //this.form.bwrap.dom.firstChild[16].labels[0].innerText = 'HOLA PRUEBA';
@@ -1894,7 +1902,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     queryDelay:500,
                     minChars:2,
                     width: 400,
-                    gwidth: 230
+                    gwidth: 230,
+                    listeners: {
+            					beforequery: function(qe){
+            						delete qe.combo.lastQuery;
+            					}
+            				}
                 },
                 type: 'ComboBox',
                 id_grupo: 0,
