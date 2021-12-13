@@ -1462,26 +1462,26 @@ v_consulta:='select		sol.id_solicitud,
         select count(nro_parte_cot) into v_cantidad_items
         from datos;
 
-			v_consulta:='select s.id_solicitud,
+			v_consulta:='select s.id_solicitud::integer,
 								initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion)))::varchar as item_selecionados,
                                 initcap(pxp.f_convertir_num_a_letra('||v_cantidad_items||'))::varchar as items_diferentes,
-                                s.nro_tramite,
-                                s.origen_pedido,
-                                to_char(s.fecha_po,''DD/MM/YYYY'') as fecha_po,
+                                s.nro_tramite::varchar,
+                                s.origen_pedido::varchar,
+                                to_char(s.fecha_po,''DD/MM/YYYY'')::text as fecha_po,
                                 pxp.aggarray( d.nro_parte_cot)::text as nro_parte,
-                                s.tipo_evaluacion,
+                                s.tipo_evaluacion::varchar,
                                 (case
                                 when s.tipo_evaluacion =''Reparacion''then
                                 s.taller_asignado
                                 else
                                 ''N/A''
-                                end::varchar )as taller_asignado,
+                                end::varchar )::varchar as taller_asignado,
                                 COALESCE(s.observacion_nota,''N/A'')::varchar as observacion_nota,
                                 (select count(ng.id_solicitud)
                                 from mat.tgestion_proveedores_new ng
                                 where ng.id_solicitud = s.id_solicitud) ::integer as cotizacion_solicitadas,
-                                c.nro_cotizacion,
-                                c.monto_total,
+                                c.nro_cotizacion::varchar,
+                                c.monto_total::numeric,
                                 (select count(z.id_proveedor)
                                 from mat.tcotizacion z
                                 where z.id_solicitud = s.id_solicitud
@@ -1493,25 +1493,25 @@ v_consulta:='select		sol.id_solicitud,
                                     '''||COALESCE (v_fecha_firma_rev_qr,' ')||'''::text as fecha_rev,
                                     '''||COALESCE (initcap(v_nombre_funcionario_abas_qr),' ')||'''::varchar as visto_abas,
                                     '''||COALESCE (v_fecha_firma_abas_qr,' ')||'''::text as fecha_abas,
-                                c.obs,
-                                c.recomendacion,
-                                mo.codigo,
+                                c.obs::varchar,
+                                c.recomendacion::varchar,
+                                mo.codigo::varchar,
                                 '''||COALESCE(initcap(v_nombre_funcionario_presu_qr),' ')||'''::varchar AS funcionario_pres,
                                 '''||COALESCE(v_codigo_pre,' ')||'''::varchar AS codigo_pres,
                                 '''||COALESCE (v_fecha_firma_presu_qr,' ')||'''::text as fecha_pres,
-                                s.estado as estado_materiales,
+                                s.estado::varchar as estado_materiales,
                                d.nro_parte_cot::varchar,
                                d.descripcion_cot::varchar,
-                               d.cantidad_det,
-                               d.cd,
+                               d.cantidad_det:::integer,
+                               d.cd::varchar,
                                /*Aumentando este campo para mostrar el PN cotizacion (Ismael Valdivia 06/10/2020)*/
-                               d.explicacion_detallada_part_cot,
+                               d.explicacion_detallada_part_cot::varchar,
                                /**********************************************************************************/
-							   da.codigo_tipo,
-                               '''||COALESCE (initcap(v_nombre_funcionario_resp_qr),' ')||'''::varchar as funcionario_resp,
+							   da.codigo_tipo::varchar,
+                               '''||COALESCE (initcap(v_nombre_funcionario_resp_qr),' ')||'''::text as funcionario_resp,
                                '''||COALESCE (v_fecha_firma_resp_qr,' ')||'''::text as fecha_resp,
                                s.fecha_solicitud::date,
-								s.estado_firma,
+								s.estado_firma::varchar,
                                 '''||v_fecha_salida_gm||'''::date as fecha_salida
                                 from mat.tsolicitud s
                                 inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
@@ -1843,7 +1843,9 @@ v_consulta:='select		sol.id_solicitud,
 
 
 			v_consulta:='select s.id_solicitud,
-initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion)))::varchar as item_selecionados,                                s.nro_tramite,
+initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion)))::varchar as item_selecionados,
+								''''::varchar,
+                               s.nro_tramite,
                                 s.origen_pedido,
                                 to_char(s.fecha_po,''DD/MM/YYYY'') as fecha_po,
                                 pxp.aggarray( d.nro_parte_cot)::text as nro_parte,
