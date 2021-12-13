@@ -484,7 +484,8 @@ END IF;
             from param.tcatalogo cat
             inner join param.tcatalogo_tipo cattip on cattip.id_catalogo_tipo = cat.id_catalogo_tipo
             inner join segu.tsubsistema subsis on subsis.id_subsistema = cattip.id_subsistema
-            where subsis.codigo = 'MAT' and cattip.nombre = 'tsolicitud';
+            where subsis.codigo = 'MAT' and cattip.nombre = 'tsolicitud'
+            and cat.codigo not in ('B.E.R.','AS-IS');
         else
         	v_condicion = v_parametros.condicion;
         end if;
