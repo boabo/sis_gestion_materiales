@@ -259,42 +259,43 @@ EOF;
 
                              }
 
-                if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {                
+                if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {
+
                   $tbl.=      ' <br>
                                     </td>
                                   </tr>
                                   <tr>
+                                      <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
                                       <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
-                                      <!--<td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>-->
-                                      <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                                       <!--<td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>-->
                                   </tr>
                                   <tr>
+                                      <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                          <br><br>
+                                          <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
+                                          <br>'.$fun_admi[0].' <b>Vo.Bo</b>
+                                      </td>
                                       <td align="center" style="font-family: Calibri; font-size: 9px;">
                                           <br><br>
                                           <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
                                           <br>'.$fun_sol[0].' <b>'.$solicitante.'</b>
                                       </td>
-                                      <!--<td align="center" style="font-family: Calibri; font-size: 9px;">
-                                          <br><br>
-                                          <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
-                                          <br>'.$fun_admi[0].' <b>Vo.Bo</b>
+                                       <!--<td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                      <br><br>
+                                      <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                       <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
                                       </td>-->
-                                      <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                   </tr>
+                                   <tr>
+                                      <td style="font-family: Calibri; font-size: 9px; text-align: center;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                                  </tr>
+                                   <tr>
+                                   <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
                                       <br><br>
                                       <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
                                        <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
                                       </td>
-                                   </tr>
-                                   <!--<tr>
-                                      <td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
                                   </tr>
-                                   <tr>
-                                      <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
-                                      <br><br>
-                                      <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
-                                       <br>'.$fun_presu[0].' <b>RPCE</b>
-                                      </td>
-                                  </tr>-->
                                   </table>
                                   ';
                 } else {

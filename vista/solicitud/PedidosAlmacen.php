@@ -584,7 +584,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
         successSave:function(resp){
           Phx.vista.PedidosAlmacen.superclass.successSave.call(this,resp);
-          this.confirmarEstado();
+          if (this.historico == 'no') {
+            this.confirmarEstado();
+          }
         },
 
     }

@@ -433,7 +433,7 @@ BEGIN
           /*Comentando esta parte para que marco mendoza aparesca en las Firmas Ismael Valdivia (06/02/2020)*/
 --          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_dpto_abastecimientos' and vf.fecha_finalizacion is null
 
-          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_dpto_administrativo' and vf.fecha_finalizacion is null
+          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_dpto_abastecimientos' and vf.fecha_finalizacion is null
 
           GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo, pro.nro_tramite;
 

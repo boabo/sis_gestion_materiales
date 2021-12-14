@@ -178,7 +178,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->Ln();
 
         if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
-          
+
         if ( $this->datos[0]['estado'] != 'cotizacion') {
             $elaborado = $this->datos2[0]['visto_ag'];
             $fecha_elaborado = $this->datos2[0]['fecha_ag'];
@@ -296,7 +296,7 @@ class RCuandroComparativoPDF extends  ReportePDF
          <tbody>
         <tr>
                 <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
-              <!--  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td> -->
+                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td>
         </tr>
         <tr>';
 
@@ -305,9 +305,9 @@ class RCuandroComparativoPDF extends  ReportePDF
             $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
             $tbl1 .= '<br></td>';
         }
-        /*if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
+        if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
             $tbl1 .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>';
-        }*/
+        }
         $tbl1 .= '</tr>
          </tbody>
         </table>';

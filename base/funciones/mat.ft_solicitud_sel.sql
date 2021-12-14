@@ -283,6 +283,8 @@ DECLARE
      v_fecha_solicitud_recu	date;
      v_cantidad_items	integer;
      v_nombre_macro		varchar;
+     v_gerencia_recu	varchar;
+     v_fecha_gerencia_recu varchar;
     /**************************************************/
 BEGIN
 
@@ -1997,7 +1999,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           s.condicion::varchar,
                           s.lugar_entrega::varchar,
                           s.tiempo_entrega::numeric,
-                          '''||v_fecha_salida_gm||'''::date as fecha_salida
+                          '''||v_fecha_salida_gm||'''::date as fecha_salida,
+                          s.tipo_solicitud
                           from mat.tdetalle_sol det
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
@@ -2484,7 +2487,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
   if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
   	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
-  	 SELECT 	twf.id_funcionario,
+
+
+    /*select car.id_funcionario,
+    	   car.desc_funcionario1
+    from orga.vfuncionario_ultimo_cargo car
+    where car.nombre_cargo = 'Gerencia Administrativa Financiera';
+
+
+     SELECT 	twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
 			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
     INTO
@@ -2495,13 +2506,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
         INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-
-        /*Comentando esta parte recuperar al Encargado(a) de vb_dpto_administrativo (Ismael Valdivia 20/02/2020)
-        WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia' */
         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_dpto_administrativo'
+        and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+        GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;*/
 
-              and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
-        GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
+
 	else
     SELECT 	twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -2716,6 +2725,48 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     	v_gerencia = '';
     end if;
     /***************************************/
+
+
+    /*Aumentando para recuperar por el cargo*/
+    if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+
+
+    SELECT
+    		pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+    INTO
+        	v_gerencia_recu,
+        	v_fecha_gerencia_recu
+    FROM wf.testado_wf twf
+        INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+        INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
+        and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(now(), vf.fecha_finalizacion)
+        GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
+
+
+    select car.id_funcionario,
+    	   initcap(car.desc_funcionario1) || ' | '||car.nombre_cargo || ' | '||v_gerencia_recu
+    INTO
+    	   v_id_funcionario_af_qr_oficial,
+        	v_nombre_funcionario_af_qr_ocifial
+    from orga.vfuncionario_ultimo_cargo car
+    where car.nombre_cargo = 'Gerencia Administrativa Financiera';
+
+    v_nombre_funcionario_af_qr = v_nombre_funcionario_af_qr_ocifial;
+
+
+
+    end if;
+
+
+
+
+
+    /************************************/
+
+
 
           v_consulta='select
            			      '''||v_estado_actual||'''::varchar AS estado_actual,

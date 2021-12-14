@@ -1294,6 +1294,7 @@ class MODSolicitud extends MODbase
         $this->captura('lugar_entrega', 'varchar');
         $this->captura('tiempo_entrega', 'numeric');
         $this->captura('fecha_salida', 'date');
+        $this->captura('tipo_solicitud', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
