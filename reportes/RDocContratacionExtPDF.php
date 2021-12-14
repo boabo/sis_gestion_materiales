@@ -92,7 +92,7 @@ EOF;
         $this->Ln(19);
         $this->writeHTML($tbl);
         if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
-          $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) '.$this->datos[0]['tipo_solicitud'].' después de la invitación."', 0, 'L', 0, 1, '', '');          
+          $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) después de la invitación."', 0, 'L', 0, 1, '', '');          
         }
         $this->SetFont('', 'B',9);
         $this->MultiCell(200, 5, "\n" . 'FAVOR ENVIAR SU COTIZACIÓN AL CORREO abastecimiento@boa.bo', 0, 'L', 0, '', '');

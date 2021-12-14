@@ -131,7 +131,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->ln(0.10);
         $this->SetFont('', 'B', 10);
 
-        $conf_det_tablewidths = array(45, 45, 50, 55, 25);
+        $conf_det_tablewidths = array(15, 45, 50, 55, 55);
         $conf_det_tablealigns = array('C', 'C', 'C', 'C', 'C', 'C');
 
         $this->tablewidths = $conf_det_tablewidths;
@@ -150,7 +150,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         );
         $this->MultiRow($RowArray, false, 1);
         $this->SetFont('', '', 10);
-        $conf_det_tablewidths = array(45, 45, 50, 55, 25);
+        $conf_det_tablewidths = array(15, 45, 50, 55, 55);
         $conf_det_tablealigns = array('C', 'C', 'C', 'C', 'C', 'C');
         $this->tablewidths = $conf_det_tablewidths;
         $this->tablealigns = $conf_det_tablealigns;
