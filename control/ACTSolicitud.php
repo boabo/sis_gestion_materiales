@@ -144,21 +144,21 @@ class ACTSolicitud extends ACTbase{
                 /********************************************************/
 
             }else{
-                if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n' ) {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_ceac' ) {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'ab_origen_rep_n' ) {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
-                }
+                //if ($this->objParam->getParametro('pes_estado') == 'ab_origen_ing_n') {
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'',''arribo'',''desaduanizado'',''almacen'')");
+                //}
+                // if ($this->objParam->getParametro('pes_estado') == 'ab_origen_man_n') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_n' ) {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'ab_origen_alm_ceac' ) {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'ab_origen_rep_n' ) {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''arribo'',''desaduanizado'',''almacen'')");
+                // }
             }
         }
         //operaciones
@@ -184,15 +184,15 @@ class ACTSolicitud extends ACTbase{
                     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''finalizado'')");
                 }
             }else{
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
+                //if ($this->objParam->getParametro('pes_estado') == 'pedido_op_pendiente') {
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_op_solicitada') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_op_compra') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
             }
         }
         ///matenimiento
@@ -217,15 +217,15 @@ class ACTSolicitud extends ACTbase{
                     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''finalizado'')");
                 }
             }else{
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
+                //if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_pendiente') {
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                //}
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_solicitada') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_ma_compra') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
             }
         }
         /*Aumentando para vista de repuestos (Ismael Valdivia 16/03/2020)*/
@@ -250,15 +250,15 @@ class ACTSolicitud extends ACTbase{
                     $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''finalizado'')");
                 }
             }else{
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_re_pendiente') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_re_solicitada') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_re_compra') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
+                //if ($this->objParam->getParametro('pes_estado') == 'pedido_re_pendiente') {
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                //}
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_re_solicitada') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_re_compra') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
             }
         }
         /*****************************************************************/
@@ -285,15 +285,15 @@ class ACTSolicitud extends ACTbase{
                 }
 
             }else{
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
+                //if ($this->objParam->getParametro('pes_estado') == 'pedido_al_pendiente') {
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_al_solicitada') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_al_compra') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
             }
         }
         //dgac
@@ -319,15 +319,15 @@ class ACTSolicitud extends ACTbase{
                 }
 
             }else{
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_dgac_pendiente') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_dgac_solicitada') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
-                if ($this->objParam->getParametro('pes_estado') == 'pedido_dgac_compra') {
-                    $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
-                }
+                //if ($this->objParam->getParametro('pes_estado') == 'pedido_dgac_pendiente') {
+                    $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_dgac_solicitada') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
+                // if ($this->objParam->getParametro('pes_estado') == 'pedido_dgac_compra') {
+                //     $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''despachado'',''arribo'',''desaduanizado'',''almacen'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                // }
             }
         }
 
