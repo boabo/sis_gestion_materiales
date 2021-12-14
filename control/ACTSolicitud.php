@@ -61,6 +61,12 @@ class ACTSolicitud extends ACTbase{
         }
         /*************************************************************************/
 
+        if ($this->objParam->getParametro('tipo_interfaz') == 'PedidosAdquisiciones' ) {
+          $this->objParam->addFiltro("sol.estado  in (''compra'')");
+        }
+
+
+
         if ($this->objParam->getParametro('tipo_interfaz') == 'RegistroSolicitud' ) {
 
             if ($this->objParam->getParametro('pes_estado') == 'borrador_reg') {
@@ -782,11 +788,15 @@ class ACTSolicitud extends ACTbase{
            $enviarDatos = json_encode($datosArmados);
            //var_dump("mandar",$enviarDatos);exit;
          /***********************************************/
-         if ($_SESSION["_ESTADO_SISTEMA"] == 'produccion') {
-           $request =  'http://sms.obairlines.bo/ServMantenimiento/servSiscomm.svc/InsertarOrdenCompra';
-         } else {
-           $request =  'http://sms.obairlines.bo/ServSisComm/servSiscomm.svc/InsertarOrdenCompra';
-         }
+
+
+             if ($_SESSION["_ESTADO_SISTEMA"] == 'produccion') {
+               $request =  'http://sms.obairlines.bo/ServMantenimiento/servSiscomm.svc/InsertarOrdenCompra';
+             } else {
+               $request =  'http://sms.obairlines.bo/ServSisComm/servSiscomm.svc/InsertarOrdenCompra';
+             }
+
+
 
           $session = curl_init($request);
           curl_setopt($session, CURLOPT_CUSTOMREQUEST, "POST");

@@ -326,6 +326,10 @@ BEGIN
         	IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
 
+            /*aumentnado para la interfaz de adquisiciones*/
+            ELSIF (v_parametros.tipo_interfaz = 'PedidosAdquisiciones') then
+            	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+            /****************************************************/
             /*Aumentando condicion para presupuestos luego cambiar*/
             ELSIF (v_parametros.tipo_interfaz = 'Presupuesto_Mantenimiento') THEN
             		v_filtro = ' 0=0 AND ';
@@ -540,6 +544,11 @@ v_consulta:='select		sol.id_solicitud,
         IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
 
+            /*aumentnado para la interfaz de adquisiciones*/
+            ELSIF (v_parametros.tipo_interfaz = 'PedidosAdquisiciones') then
+            	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+            /****************************************************/
+
             ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
 
             	 v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND tew.estado_reg = ''activo'' AND ';
@@ -548,10 +557,14 @@ v_consulta:='select		sol.id_solicitud,
             ELSIF (v_parametros.tipo_interfaz = 'PedidoRepuesto' or v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
 
 
-                        IF (v_parametros.pes_estado = 'pedido_ma_compra' or v_parametros.pes_estado = 'pedido_ma_concluido') then
+                        IF (v_parametros.pes_estado = 'pedido_ma_compra' OR v_parametros.pes_estado = 'pedido_op_compra' OR v_parametros.pes_estado = 'pedido_re_compra' OR v_parametros.pes_estado = 'pedido_dgac_compra' OR v_parametros.pes_estado = 'pedido_al_compra') then
+                        	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        ELSIF (v_parametros.pes_estado = 'pedido_ma_concluido') THEN
                         	v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
-                        ELSE
-                        	v_filtro = '(ewb.id_funcionario in (1951,1950,69,302,373,303,304) OR  ewb.id_funcionario = '||v_record.id_funcionario||' ) AND';
+                        ELSIF v_parametros.pes_estado = 'pedido_re_comite' THEN
+                    		v_filtro = '';
+                	    ELSE
+                        	v_filtro = '(tew.id_funcionario in (1951,1950,69,302,373,303,304) OR  tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
                         END IF;
 
                ELSIF (v_parametros.tipo_interfaz = 'SolicitudvoboComite') THEN
