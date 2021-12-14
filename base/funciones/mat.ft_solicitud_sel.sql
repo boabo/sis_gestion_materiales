@@ -282,6 +282,7 @@ DECLARE
      v_fecha_salida_gm  date;
      v_fecha_solicitud_recu	date;
      v_cantidad_items	integer;
+     v_nombre_macro		varchar;
     /**************************************************/
 BEGIN
 
@@ -326,10 +327,11 @@ BEGIN
         	IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
 
-            /*aumentnado para la interfaz de adquisiciones*/
+			/*aumentnado para la interfaz de adquisiciones*/
             ELSIF (v_parametros.tipo_interfaz = 'PedidosAdquisiciones') then
             	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
             /****************************************************/
+
             /*Aumentando condicion para presupuestos luego cambiar*/
             ELSIF (v_parametros.tipo_interfaz = 'Presupuesto_Mantenimiento') THEN
             		v_filtro = ' 0=0 AND ';
@@ -544,7 +546,7 @@ v_consulta:='select		sol.id_solicitud,
         IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
 
-            /*aumentnado para la interfaz de adquisiciones*/
+                 /*aumentnado para la interfaz de adquisiciones*/
             ELSIF (v_parametros.tipo_interfaz = 'PedidosAdquisiciones') then
             	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
             /****************************************************/
@@ -1492,7 +1494,7 @@ v_consulta:='select		sol.id_solicitud,
                                 COALESCE(s.observacion_nota,''N/A'')::varchar as observacion_nota,
                                 (select count(ng.id_solicitud)
                                 from mat.tgestion_proveedores_new ng
-                                where ng.id_solicitud = s.id_solicitud) ::integer as cotizacion_solicitadas,
+                                where ng.id_solicitud = s.id_solicitud)::integer as cotizacion_solicitadas,
                                 c.nro_cotizacion::varchar,
                                 c.monto_total::numeric,
                                 (select count(z.id_proveedor)
@@ -1515,13 +1517,13 @@ v_consulta:='select		sol.id_solicitud,
                                 s.estado::varchar as estado_materiales,
                                d.nro_parte_cot::varchar,
                                d.descripcion_cot::varchar,
-                               d.cantidad_det:::integer,
+                               d.cantidad_det::integer,
                                d.cd::varchar,
                                /*Aumentando este campo para mostrar el PN cotizacion (Ismael Valdivia 06/10/2020)*/
                                d.explicacion_detallada_part_cot::varchar,
                                /**********************************************************************************/
 							   da.codigo_tipo::varchar,
-                               '''||COALESCE (initcap(v_nombre_funcionario_resp_qr),' ')||'''::text as funcionario_resp,
+                               '''||COALESCE (initcap(v_nombre_funcionario_resp_qr),' ')||'''::varchar as funcionario_resp,
                                '''||COALESCE (v_fecha_firma_resp_qr,' ')||'''::text as fecha_resp,
                                s.fecha_solicitud::date,
 								s.estado_firma::varchar,
@@ -1872,7 +1874,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 COALESCE(s.observacion_nota,''N/A'')::varchar as observacion_nota,
                                 (select count(ng.id_solicitud)
                                 from mat.tgestion_proveedores_new ng
-                                where ng.id_solicitud = s.id_solicitud) ::integer as cotizacion_solicitadas,
+                                where ng.id_solicitud = s.id_solicitud)::integer as cotizacion_solicitadas,
                                 c.nro_cotizacion,
                                 c.monto_total,
                                 (select count(z.id_proveedor)
@@ -4045,6 +4047,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     from mat.tsolicitud sol
                     where sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
+
+                    SELECT ma.nombre into v_nombre_macro
+                    FROM wf.tproceso_wf pro
+                    inner join wf.ttipo_proceso tp on tp.id_tipo_proceso = pro.id_tipo_proceso
+                    inner join wf.tproceso_macro ma on ma.id_proceso_macro = tp.id_proceso_macro
+                    WHERE pro.id_proceso_wf = v_proces_wf;
+
             END IF;
 
 			if (substr(v_nro_tramite, 1, 2) in ('GM', 'GO', 'GA', 'GC', 'GR')) then
@@ -4138,7 +4147,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         ('''||Coalesce(v_firma_gerente,'')||''')::varchar as firma_gerente,
                         ('''||v_desc_uo||''')::varchar as desc_uo,
                         fun.descripcion_cargo::varchar as cargo_desc_funcionario,
-                        ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente
+                        ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
+                        '''||v_nombre_macro||'''::varchar as nombre_macro
 						from mat.tsolicitud sol
                         inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                         inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = sol.id_funcionario_solicitante

@@ -12,7 +12,7 @@ require_once dirname(__FILE__).'/../../pxp/pxpReport/Report.php';
         return $this->dataSource;
     }
 
-    public function Header() { 
+    public function Header() {
         $height = 20;
         //$codigo_uo=$this->getDataSource()->getParameter('codigo_uo');
 
@@ -137,7 +137,7 @@ Class RSolicitudCompraBoARep extends Report {
         $pdf->SetFillColor(192,192,192, true);
 
         //est alinea cambia el color de la lienas
-        $pdf->Cell($width3+$width2, $height, 'Compra Internacional BOA REP', $white, 0, 'L', true, '', 0, false, 'T', 'C');
+        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('nombre_macro'), $white, 0, 'L', true, '', 0, false, 'T', 'C');
 
 
         $pdf->SetFont('', 'B');
@@ -146,7 +146,7 @@ Class RSolicitudCompraBoARep extends Report {
         $pdf->Cell($width3, $height, 'Categoria de Compra:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $pdf->SetFont('', '');
         $pdf->SetFillColor(192,192,192, true);
-        $pdf->Cell($width3+$width2, $height, 'Compra Internacional BOA REP', $white, 0, 'L', true, '', 0, false, 'T', 'C');
+        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('nombre_macro'), $white, 0, 'L', true, '', 0, false, 'T', 'C');
 
         $pdf->Ln();
 

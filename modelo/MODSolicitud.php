@@ -1084,7 +1084,7 @@ class MODSolicitud extends MODbase
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-        //var_dump($this->respuesta); exit;
+        var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }
@@ -1854,6 +1854,7 @@ class MODSolicitud extends MODbase
       $this->captura('desc_uo','varchar');
       $this->captura('cargo_desc_funcionario','varchar');
       $this->captura('desc_cargo_gerente','varchar');
+      $this->captura('nombre_macro','varchar');
 
       $this->armarConsulta();
       //var_dump("aqui llegada",$this->respuesta);
@@ -1943,7 +1944,7 @@ class MODSolicitud extends MODbase
             $path_download = 'erp.obairlines.bo/uploaded_files/sis_workflow/DocumentoWf'.$path.$file_name;
         } else {
             $path_download = '10.150.0.91/kerp_ismael/uploaded_files/sis_workflow/DocumentoWf'.$path.$file_name;
-        }        
+        }
 
         $this->respuesta = new Mensaje();
         $this->respuesta->setMensaje($status?'EXITO':'ERROR',"",$message,$description,'modelo',"","","","");

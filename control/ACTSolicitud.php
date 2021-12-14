@@ -1625,6 +1625,7 @@ class ACTSolicitud extends ACTbase{
       $dataSource->putParameter('desc_uo', $datosSolicitud[0]['desc_uo']);
       $dataSource->putParameter('cargo_desc_funcionario', $datosSolicitud[0]['cargo_desc_funcionario']);
       $dataSource->putParameter('desc_cargo_gerente', $datosSolicitud[0]['desc_cargo_gerente']);
+      $dataSource->putParameter('nombre_macro', $datosSolicitud[0]['nombre_macro']);
 
       //get detalle
       //Reset all extra params:
