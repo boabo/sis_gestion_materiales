@@ -1497,6 +1497,7 @@ class MODSolicitud extends MODbase
         $this->captura('correos', 'varchar');
         $this->captura('titulo_correo', 'varchar');
         $this->captura('detalle', 'varchar');
+        $this->captura('proveedores', 'varchar');
 
 
         //Ejecuta la instruccion

@@ -4,7 +4,7 @@ class RConstanciaEnvioInvitacionBoaRep extends ReportePDF
 {
     function Header()
     {
-        $this->Ln(10); 
+        $this->Ln(10);
         $this->SetFont('', 'B');
         //$this->Cell(35, 0, '', 0, 0, 'C', 0, '', 0);
         $this->Cell(15, 0, 'De:', 0, 0, 'L', 0, '', 0);
@@ -38,9 +38,11 @@ class RConstanciaEnvioInvitacionBoaRep extends ReportePDF
                  </li> ';
         $this->writeHTML($html, true);
 
+        $this->Ln(15);
+        $this->Cell(60, 0, 'Señores: '.$this->datos[0]['proveedores'], 0, 0, 'L', 0, '', 0);
 
         $this->Ln(15);
-        $this->Cell(60, 0, ' ' . $this->datos[0]['mensaje_correo'] . '', 0, 0, 'L', 0, '', 0);
+        $this->Cell(60, 0, '' . $this->datos[0]['mensaje_correo'] . '', 0, 0, 'L', 0, '', 0);
         $this->Ln(17);
 
         $table = ''.$this->datos[0]['detalle'].'';

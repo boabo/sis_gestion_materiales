@@ -327,7 +327,7 @@ BEGIN
         	IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
 
-			/*aumentnado para la interfaz de adquisiciones*/
+            /*aumentnado para la interfaz de adquisiciones*/
             ELSIF (v_parametros.tipo_interfaz = 'PedidosAdquisiciones') then
             	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
             /****************************************************/
@@ -546,7 +546,7 @@ v_consulta:='select		sol.id_solicitud,
         IF 	p_administrador THEN
 				v_filtro = ' 0=0 AND ';
 
-                 /*aumentnado para la interfaz de adquisiciones*/
+/*aumentnado para la interfaz de adquisiciones*/
             ELSIF (v_parametros.tipo_interfaz = 'PedidosAdquisiciones') then
             	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' ) AND';
             /****************************************************/
@@ -1874,7 +1874,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 COALESCE(s.observacion_nota,''N/A'')::varchar as observacion_nota,
                                 (select count(ng.id_solicitud)
                                 from mat.tgestion_proveedores_new ng
-                                where ng.id_solicitud = s.id_solicitud)::integer as cotizacion_solicitadas,
+                                where ng.id_solicitud = s.id_solicitud) ::integer as cotizacion_solicitadas,
                                 c.nro_cotizacion,
                                 c.monto_total,
                                 (select count(z.id_proveedor)
@@ -2863,7 +2863,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     MAX(ala.fecha_reg)::timestamp,
                                     MAX(array_to_string(pcorreo.correos, '',''))::varchar as correos,
                                     MAX(ala.titulo_correo)::varchar,
-                                    MAX(mat.f_get_detalle_html(sol.id_solicitud)::text)::varchar as detalle
+                                    MAX(mat.f_get_detalle_html(sol.id_solicitud)::text)::varchar as detalle,
+                                    (select list(pro.rotulo_comercial)
+                                     from mat.tgestion_proveedores_new ge
+                                     inner join param.vproveedor pro on pro.id_proveedor = ge.id_proveedor
+                                     where ge.id_solicitud = (select soli.id_solicitud
+                                                             from mat.tsolicitud soli
+                                                             where soli.id_proceso_wf = '||v_parametros.id_proceso_wf||'))::varchar as proveedores
                                     from  mat.tsolicitud sol
                                     left join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                                     left join segu.vusuario u on u.id_usuario = sol.id_usuario_mod
