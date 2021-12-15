@@ -417,8 +417,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.megrid.colModel.setHidden(3,true);
             this.megrid.colModel.setHidden(4,false);
-            this.megrid.colModel.setHidden(13,true);
-            this.detCmp.id_day_week.allowBlank = true;
+            //this.megrid.colModel.setHidden(13,true);
+            //this.detCmp.id_day_week.allowBlank = true;
             this.ocultarComponente(this.Cmp.recomendacion);
             this.ocultarComponente(this.Cmp.pie_pag);
             this.ocultarComponente(this.Cmp.tipo_evaluacion);
@@ -429,6 +429,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.recomendacion.allowBlank = true;
             this.Cmp.pie_pag.allowBlank = true;
 
+            this.ocultarComponente(this.Cmp.nro_cotizacion);
+            this.Cmp.nro_cotizacion.allowBlank = true;
             /*Aqui Recuperamos los datos*/
             this.Cmp.id_condicion_entrega.store.load({params:{start:0,limit:50},
                callback : function (r) {

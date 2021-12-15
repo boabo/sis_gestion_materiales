@@ -283,6 +283,8 @@ DECLARE
      v_fecha_solicitud_recu	date;
      v_cantidad_items	integer;
      v_nombre_macro		varchar;
+     v_cantidad_sumados_adjudicado	integer;
+     v_dias_sumados		integer;
     /**************************************************/
 BEGIN
 
@@ -3579,12 +3581,22 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 end if;
               end if;*/
             if (v_estado_actual != 'borrador') then
-              select fun.desc_funcionario1||' | '||fun.nombre_cargo||' | '||v_num_tramite_rep||' | '||v_fecha_solicitud||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1
-              	     into
-                     v_funcionario_sol_rpcd_oficial
-              from orga.vfuncionario_ultimo_cargo fun
-              where fun.id_funcionario = v_id_fun_pre
-              limit 1;
+              SELECT  twf.id_funcionario,
+                      vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                      vf.desc_funcionario1,
+                      to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+                INTO v_id_funcionario_oficial,
+                      v_funcionario_sol_rpcd_oficial,
+                      v_funcionario_oficial,
+                      v_fecha_firma_pru
+              FROM wf.testado_wf twf
+              INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+              INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+              INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+              WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'vb_dpto_abastecimientos'
+              and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+              GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
+
               end if;
 
 
@@ -3718,6 +3730,16 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             inner join mat.tdetalle_sol detsol on detsol.id_solicitud = sol.id_solicitud
             where sol.id_solicitud = v_id_solicitud_rec;
 
+			/*Aumentnado para que se sume los disas estimados en el reporte de especificacion tecnica*/
+            select sum(COALESCE(day.cantidad_dias,0)) into v_cantidad_sumados_adjudicado
+            from mat.tcotizacion cot
+            inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
+            inner join mat.tday_week day on day.id_day_week = det.id_day_week
+            where cot.id_solicitud = v_id_solicitud_rec
+            and cot.adjudicado = 'si';
+            /******************************************************************************************/
+
+            v_dias_sumados = v_tiempo_entrega + v_cantidad_sumados_adjudicado;
 
 
             /*Aqui recuperamos para las firmas Jaime Lazarte*/
@@ -3801,7 +3823,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||COALESCE(v_ship_to,'')||''')::varchar as ship_to,
                       ('''||v_funcionario_sol_oficial||''')::varchar as aprobado_por,
                       ('''||v_funcionario_pre||''')::varchar as preparado_por,
-                      ('||v_tiempo_entrega||')::integer as tiempo_entrega';
+                      ('||v_dias_sumados||')::integer as tiempo_entrega';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;

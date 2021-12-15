@@ -926,3 +926,8 @@ FROM mat.tsolicitud sol
 ALTER VIEW mat.vsolicitud
 OWNER TO postgres;
 /***********************************F-SCP-IRVA-MAT-0-13/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-15/12/2021****************************************/
+ALTER TABLE mat.tday_week
+  ADD COLUMN cantidad_dias INTEGER;
+/***********************************F-SCP-IRVA-MAT-0-15/12/2021****************************************/

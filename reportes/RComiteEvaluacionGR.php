@@ -214,8 +214,8 @@ class RComiteEvaluacionGR extends  ReportePDF
         $firmas = '
         <table border="1" cellpadding="10">
             <tr>
-                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>
-                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Elaborado por:</b> </td>
+                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
+                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad de Abastecimiento:</b> </td>
 
             </tr>
             <tr>
@@ -233,7 +233,7 @@ class RComiteEvaluacionGR extends  ReportePDF
          <table nowrap border="1" cellpadding="10">
              <tr>
                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
-                 <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico Adquisiciones:</b> </td>
+                 <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Elaborado por:</b> </td>
              </tr>
              <tr>
                  <td align="center" style="font-family: Calibri; font-size: 9px;">
@@ -248,7 +248,7 @@ class RComiteEvaluacionGR extends  ReportePDF
 
 
               <!--Aqui la Firma de Marco Mendoza encargado RPCE-->
-
+              <!--
               <tr>
                   <td colspan="2" style="font-family: Calibri; font-size: 11px; text-align: center;"><b> RPCE:</b> </td>
               </tr>
@@ -257,7 +257,7 @@ class RComiteEvaluacionGR extends  ReportePDF
                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_rpc_0, $fun_rpc_1,$fun_rpc_4,$fun_rpc_3).'" alt="Logo">
                       <br>'.$fun_rpc_0.'
                   </td>
-               </tr>
+               </tr>-->
           </table>';
 
 
@@ -295,7 +295,7 @@ class RComiteEvaluacionGR extends  ReportePDF
 
 
               <!--Aqui la Firma de Marco Mendoza encargado RPCE-->
-
+              <!--
               <tr>
                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> RPCE:</b> </td>
               </tr>
@@ -305,6 +305,7 @@ class RComiteEvaluacionGR extends  ReportePDF
                       <br>'.$fun_rpc_0.'
                   </td>
                </tr>
+               -->
           </table>';
       }
 
