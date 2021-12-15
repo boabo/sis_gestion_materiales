@@ -390,6 +390,48 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.tipo_de_adjudicacion.setValue('Ninguno');
             }
 
+            var fecha_salida = '2021-12-13';
+
+            var diaActual = new Date(fecha_salida).getDate() + 1;
+            var mesActual = new Date(fecha_salida).getMonth() + 1;
+            var añoActual = new Date(fecha_salida).getFullYear();
+
+            if (diaActual < 10) {
+              diaActual = "0"+diaActual;
+            }
+
+            if (mesActual < 10) {
+              mesActual = "0"+mesActual;
+            }
+
+            var fechaFormateada = diaActual + "/" + mesActual + "/" + añoActual;
+
+
+            var fecha_recuperado = this.Cmp.fecha_solicitud.getValue();
+
+            var diaActual = new Date(fecha_recuperado).getDate();
+            var mesActual = new Date(fecha_recuperado).getMonth() + 1;
+            var añoActual = new Date(fecha_recuperado).getFullYear();
+
+            if (diaActual < 10) {
+              diaActual = "0"+diaActual;
+            }
+
+            if (mesActual < 10) {
+              mesActual = "0"+mesActual;
+            }
+
+            var fechaFormateadaRecu = diaActual + "/" + mesActual + "/" + añoActual;
+
+
+
+            if ((fechaFormateadaRecu <= fechaFormateada) && (data['estado'] ==  'cotizacion' || data['estado'] ==  'cotizacion_solicitada')) {
+              console.log("entra reseteo 1");
+              this.Cmp.condicion.reset();
+              this.Cmp.condicion.setValue('');
+            }
+
+
             if (this.Cmp.nro_po.getValue()) {
               this.Cmp.fecha_po.setDisabled(true);
               this.Cmp.fecha_entrega.setDisabled(true);

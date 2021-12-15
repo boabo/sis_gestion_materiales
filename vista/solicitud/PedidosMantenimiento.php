@@ -391,7 +391,9 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         onButtonEdit: function() {
             this.iniciarEvento();
+            var data = this.getSelectedData();
             Phx.vista.PedidosMantenimiento.superclass.onButtonEdit.call(this);
+            console.log("entra reseteo",data);
             //console.log("aqui llega el mensaje del correo",this);
             this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
 
@@ -399,11 +401,46 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.tipo_de_adjudicacion.setValue('Ninguno');
             }
 
-            // var fecha_prueba = new Date(this.store.baseParams.fecha_po_automatico);
-            // this.Cmp.fecha_po.setValue(this.store.baseParams.fecha_po_automatico);
-            //
-            // this.Cmp.fecha_po.fireEvent('select', this.store.baseParams.fecha_po_automatico,0);
+            var fecha_salida = '2021-12-13';
 
+            var diaActual = new Date(fecha_salida).getDate() + 1;
+      			var mesActual = new Date(fecha_salida).getMonth() + 1;
+      			var añoActual = new Date(fecha_salida).getFullYear();
+
+      			if (diaActual < 10) {
+      				diaActual = "0"+diaActual;
+      			}
+
+      			if (mesActual < 10) {
+      				mesActual = "0"+mesActual;
+      			}
+
+      			var fechaFormateada = diaActual + "/" + mesActual + "/" + añoActual;
+
+
+            var fecha_recuperado = this.Cmp.fecha_solicitud.getValue();
+
+            var diaActual = new Date(fecha_recuperado).getDate();
+      			var mesActual = new Date(fecha_recuperado).getMonth() + 1;
+      			var añoActual = new Date(fecha_recuperado).getFullYear();
+
+      			if (diaActual < 10) {
+      				diaActual = "0"+diaActual;
+      			}
+
+      			if (mesActual < 10) {
+      				mesActual = "0"+mesActual;
+      			}
+
+      			var fechaFormateadaRecu = diaActual + "/" + mesActual + "/" + añoActual;
+
+
+
+            if ((fechaFormateadaRecu <= fechaFormateada) && (data['estado'] ==  'cotizacion' || data['estado'] ==  'cotizacion_solicitada')) {
+              console.log("entra reseteo 1");
+              this.Cmp.condicion.reset();
+              this.Cmp.condicion.setValue('');
+            }
 
 
             if (this.Cmp.nro_po.getValue()) {
