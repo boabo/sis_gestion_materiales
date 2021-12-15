@@ -450,7 +450,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.tiempo_entrega.allowBlank=false;
 
                     /*Aqui poner condcion para ocultar el campo de dias de entrega para el reporte de invitacion (Ismael Valdivia)*/
-                    if (data['estado'] ==  'cotizacion') {
+                    if (data['estado'] ==  'cotizacion' || data['estado'] ==  'cotizacion_solicitada' ) {
 
                       //this.ocultarComponente(this.Cmp.tiempo_entrega);
                       //this.Cmp.tiempo_entrega.allowBlank=true;
