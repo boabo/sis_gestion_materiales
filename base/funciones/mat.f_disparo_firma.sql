@@ -78,7 +78,7 @@ BEGIN
         	v_id_estado_wf_firma
             from wf.tproceso_wf pw
             inner join wf.ttipo_proceso tp on pw.id_tipo_proceso = tp.id_tipo_proceso
-            inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and (te.codigo = 'vobo_area' or te.codigo = 'vobo_aeronavegabilidad')
+            inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and (te.codigo = 'vobo_area' or te.codigo = 'vobo_aeronavegabilidad' or te.codigo = 'comite_aeronavegabilidad')
             where pw.id_proceso_wf = v_registro_solicitud.id_proceso_wf_firma;
 
 
@@ -178,3 +178,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION mat.f_disparo_firma (p_id_usuario integer, p_id_usuario_ai integer, p_usuario_ai varchar, p_id_solicitud integer, p_id_estado_actual integer, p_id_funcionario_wf_pro integer, "p_obs_pro " varchar, p_id_depto_wf_pro integer)
+  OWNER TO postgres;

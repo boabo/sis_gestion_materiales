@@ -930,6 +930,112 @@ END IF;
                 where id_proceso_wf_firma = v_solicitud.id_proceso_wf_firma;
                 /***********************************************************/
 
+            elsif (v_registros_mat.estado = 'comite_unidad_abastecimientos') then
+
+           		select sol.*
+                      into v_solicitud
+                from mat.tsolicitud sol
+                where id_proceso_wf = v_parametros.id_proceso_wf;
+
+           	/*Retrocedemos al comite de Abastecimiento el estado del tramite*/
+               select pr.id_tipo_proceso into v_id_tipo_proceso_wf
+                        from wf.tproceso_wf pr
+                        where pr.id_proceso_wf = v_solicitud.id_proceso_wf;
+
+                select es.id_tipo_estado,
+                       es.codigo,
+                       fun.id_funcionario
+                into v_id_tipo_estado_siguiente,
+                     v_codigo_estado_siguiente_auto,
+                     v_funcionario_encargado
+                from wf.ttipo_estado es
+                LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'cotizacion_solicitada';
+
+               v_acceso_directo_automatico = '';
+               v_clase_automatico = '';
+               v_parametros_ad_automatico = '';
+               v_tipo_noti_automatico = 'notificacion';
+               v_titulo_automatico  = 'Visto Boa';
+               v_obs_automatico ='Desde el estado Compra';
+               ------------------------------------------pasamos el estado a vb_dpto_administrativo
+
+
+               v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
+                                                       v_funcionario_encargado,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
+                                                       v_solicitud.id_estado_wf,
+                                                       v_solicitud.id_proceso_wf,
+                                                       p_id_usuario,
+                                                       v_parametros._id_usuario_ai,
+                                                       v_parametros._nombre_usuario_ai,
+                                                       v_id_depto,
+                                                       '[RETROCESO] '||v_parametros.obs,
+                                                       v_acceso_directo_automatico,
+                                                       v_clase_automatico,
+                                                       v_parametros_ad_automatico,
+                                                       v_tipo_noti_automatico,
+                                                       v_titulo_automatico);
+
+                IF  not mat.f_ant_estado_solicitud_wf(p_id_usuario,
+                                                       v_parametros._id_usuario_ai,
+                                                       v_parametros._nombre_usuario_ai,
+                                                       v_id_estado_actual,
+                                                       v_solicitud.id_proceso_wf,
+                                                       v_codigo_estado_siguiente_auto) THEN
+
+                raise exception 'Error al retroceder estado';
+
+                END IF;
+
+
+                /*Aqui retrocedemos lo que es la firma de Aeronavegabilidad*/
+                select pr.id_tipo_proceso into v_id_tipo_proceso_wf
+                        from wf.tproceso_wf pr
+                        where pr.id_proceso_wf = v_solicitud.id_proceso_wf_firma;
+
+                select es.id_tipo_estado,
+                       es.codigo,
+                       fun.id_funcionario
+                into v_id_tipo_estado_siguiente,
+                     v_codigo_estado_siguiente_auto,
+                     v_funcionario_encargado
+                from wf.ttipo_estado es
+                LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'rechazado';
+
+               v_acceso_directo_automatico = '';
+               v_clase_automatico = '';
+               v_parametros_ad_automatico = '';
+               v_tipo_noti_automatico = 'notificacion';
+               v_titulo_automatico  = 'Visto Boa';
+               v_obs_automatico ='Desde el estado Compra';
+               ------------------------------------------pasamos el estado a vb_dpto_administrativo
+
+               v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
+                                                       v_funcionario_encargado,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
+                                                       v_solicitud.id_estado_wf_firma,
+                                                       v_solicitud.id_proceso_wf_firma,
+                                                       p_id_usuario,
+                                                       v_parametros._id_usuario_ai,
+                                                       v_parametros._nombre_usuario_ai,
+                                                       v_id_depto,
+                                                       '[RETROCESO] '||v_parametros.obs,
+                                                       v_acceso_directo_automatico,
+                                                       v_clase_automatico,
+                                                       v_parametros_ad_automatico,
+                                                       v_tipo_noti_automatico,
+                                                       v_titulo_automatico);
+
+                update mat.tsolicitud  set
+                       id_estado_wf_firma =  v_id_estado_actual,
+                       estado_firma = v_codigo_estado_siguiente_auto,
+                       id_usuario_mod = p_id_usuario,
+                       id_usuario_ai = v_parametros._id_usuario_ai,
+                       usuario_ai = v_parametros._nombre_usuario_ai,
+                       fecha_mod = now()
+                where id_proceso_wf_firma = v_solicitud.id_proceso_wf_firma;
+                /***********************************************************/
+
            else
 
                  IF  v_operacion = 'anterior' THEN
