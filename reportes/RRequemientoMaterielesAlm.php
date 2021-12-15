@@ -131,6 +131,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
         $this->ln(0.10);
         $this->SetFont('', 'B', 10);
 
+        if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
         $conf_det_tablewidths = array(15, 45, 50, 55, 55);
         $conf_det_tablealigns = array('C', 'C', 'C', 'C', 'C', 'C');
 
@@ -148,10 +149,32 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             'Cantidad',
             'Unidad Medida'
         );
+
         $this->MultiRow($RowArray, false, 1);
         $this->SetFont('', '', 10);
         $conf_det_tablewidths = array(15, 45, 50, 55, 55);
         $conf_det_tablealigns = array('C', 'C', 'C', 'C', 'C', 'C');
+      } else {
+        $conf_det_tablewidths = array(45, 50, 55, 55);
+        $conf_det_tablealigns = array('C', 'C', 'C', 'C', 'C');
+
+        $this->tablewidths = $conf_det_tablewidths;
+        $this->tablealigns = $conf_det_tablealigns;
+
+        $RowArray = array(
+            'Número de Parte',
+            'Número Parte Alterno',
+            'Referencia',
+            'Descripcion',
+            'Cantidad',
+            'Unidad Medida'
+            );
+            $this->MultiRow($RowArray, false, 1);
+            $this->SetFont('', '', 10);
+            $conf_det_tablewidths = array(45, 50, 55, 55);
+            $conf_det_tablealigns = array('C', 'C', 'C', 'C');
+      }
+
         $this->tablewidths = $conf_det_tablewidths;
         $this->tablealigns = $conf_det_tablealigns;
         $y = 165;
