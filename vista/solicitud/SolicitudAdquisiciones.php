@@ -404,15 +404,22 @@ header("content-type: text/javascript; charset=UTF-8");
             //
             // this.Cmp.fecha_po.fireEvent('select', this.store.baseParams.fecha_po_automatico,0);
 
+            if (data['origen_pedido'] == 'Reparación de Repuestos'){
 
+                this.Cmp.fecha_po.setDisabled(false);
+                this.Cmp.fecha_entrega.setDisabled(false);
 
-            if (this.Cmp.nro_po.getValue()) {
-              this.Cmp.fecha_po.setDisabled(true);
-              this.Cmp.fecha_entrega.setDisabled(true);
             } else {
-              this.Cmp.fecha_po.setDisabled(false);
-              this.Cmp.fecha_entrega.setDisabled(false);
+              if (this.Cmp.nro_po.getValue()) {
+                this.Cmp.fecha_po.setDisabled(true);
+                this.Cmp.fecha_entrega.setDisabled(true);
+              } else {
+                this.Cmp.fecha_po.setDisabled(false);
+                this.Cmp.fecha_entrega.setDisabled(false);
+              }
             }
+
+
             this.ocultarComponente(this.Cmp.taller_asignado);
             this.ocultarComponente(this.Cmp.observacion_nota);
             this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
