@@ -91,6 +91,8 @@ class RRequemientoMaterielesMan extends  ReportePDF
               $condicion_tabla='<tr><th colspan="2" ><b>Condición:</b>'.' '.$condicion.'</th></tr> <tr><th><b>Método de selección de adjudicación: </b> '.$this->datos[0]['metodo_de_adjudicación'].'</th><th><b>Tipo de adjudicación: </b>'.$this->datos[0]['tipo_de_adjudicacion'].'</th></tr>';
             }
 
+          } else {
+            $condicion_tabla='<tr><th colspan="2" ><b>Condición:</b>'.' '.$condicion.'</th></tr>';
           }
           /******************************************************************************************************/
           $this->ln();
