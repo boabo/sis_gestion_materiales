@@ -389,6 +389,8 @@ header("content-type: text/javascript; charset=UTF-8");
           this.ocultarComponente(this.Cmp.lugar_entrega);
           this.ocultarComponente(this.Cmp.obs_pac);
           this.ocultarComponente(this.Cmp.condicion);
+          this.ocultarComponente(this.Cmp.remark);
+          this.Cmp.remark.allowBlank=true;
 
           this.mostrarComponente(this.Cmp.metodo_de_adjudicación);
           this.Cmp.metodo_de_adjudicación.allowBlank=false;

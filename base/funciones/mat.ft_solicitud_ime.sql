@@ -543,7 +543,8 @@ END IF;
             /*****************************************************/
             /*Aumentando campos (Ismael Valdivia 06/10/2021)*/
             metodo_de_adjudicación = v_parametros.metodo_de_adjudicación,
-            tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion
+            tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion,
+            remark = v_parametros.remark
             /************************************************/
         	where id_solicitud=v_parametros.id_solicitud;
         ELSE
@@ -589,18 +590,19 @@ END IF;
             tiempo_entrega = v_parametros.tiempo_entrega,
             /*Aumentando campos (Ismael Valdivia 06/10/2021)*/
             metodo_de_adjudicación = v_parametros.metodo_de_adjudicación,
-            tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion
+            tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion,
+            remark = v_parametros.remark
             /************************************************/
         	where id_solicitud=v_parametros.id_solicitud;
         end if;
 
 
 
-   --para insertar monto_pac en tsolicitud_pac
-   select so.id_proceso_wf
-   into v_id_proceso_wf_so
-   from mat.tsolicitud so
-   where so.id_solicitud = v_parametros.id_solicitud;
+         --para insertar monto_pac en tsolicitud_pac
+         select so.id_proceso_wf
+         into v_id_proceso_wf_so
+         from mat.tsolicitud so
+         where so.id_solicitud = v_parametros.id_solicitud;
 
 
    --RAISE exception '%',v_id_proceso_wf_so;

@@ -393,7 +393,13 @@ header("content-type: text/javascript; charset=UTF-8");
             this.iniciarEvento();
             var data = this.getSelectedData();
             Phx.vista.PedidosMantenimiento.superclass.onButtonEdit.call(this);
-            console.log("entra reseteo",data);
+
+            if (data.remark == '') {
+              this.Cmp.remark.setValue(data.motivo_solicitud);
+            } else {
+              this.Cmp.remark.setValue(data.remark);
+            }
+
             //console.log("aqui llega el mensaje del correo",this);
             this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
 

@@ -114,6 +114,7 @@ class MODSolicitud extends MODbase
         $this->captura('tiempo_entrega', 'numeric');
         $this->captura('metodo_de_adjudicación', 'varchar');
         $this->captura('tipo_de_adjudicacion', 'varchar');
+        $this->captura('remark', 'varchar');
         /********************************************************************************/
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -246,6 +247,7 @@ class MODSolicitud extends MODbase
         /*Nuevos Campos para la leyenda que se mandara por el correo*/
         $this->setParametro('metodo_de_adjudicación', 'metodo_de_adjudicación', 'varchar');
         $this->setParametro('tipo_de_adjudicacion', 'tipo_de_adjudicacion', 'varchar');
+        $this->setParametro('remark', 'remark', 'text');
         /************************************************************/
         //Ejecuta la instruccion
         $this->armarConsulta();

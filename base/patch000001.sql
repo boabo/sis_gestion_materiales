@@ -931,3 +931,11 @@ OWNER TO postgres;
 ALTER TABLE mat.tday_week
   ADD COLUMN cantidad_dias INTEGER;
 /***********************************F-SCP-IRVA-MAT-0-15/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-16/12/2021****************************************/
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN remark TEXT;
+
+COMMENT ON COLUMN mat.tsolicitud.remark
+IS 'Campo para editar por patricia';
+/***********************************F-SCP-IRVA-MAT-0-16/12/2021****************************************/

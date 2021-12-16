@@ -361,6 +361,13 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonEdit: function() {
             this.iniciarEvento();
             Phx.vista.PedidosOperacion.superclass.onButtonEdit.call(this);
+
+            if (data.remark == '') {
+              this.Cmp.remark.setValue(data.motivo_solicitud);
+            } else {
+              this.Cmp.remark.setValue(data.remark);
+            }
+
             this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
 
             if (this.Cmp.tipo_de_adjudicacion.getValue() == '') {

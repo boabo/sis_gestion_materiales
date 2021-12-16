@@ -789,6 +789,7 @@ class ACTSolicitud extends ACTbase{
            $datosArmados = array("credenciales"=>"",
                                  "dato"=>json_encode($CabeceraSolicitud));
            $enviarDatos = json_encode($datosArmados);
+           //var_dump("mandar",$_SESSION["_ESTADO_SISTEMA"]);
            //var_dump("mandar",$enviarDatos);exit;
          /***********************************************/
 

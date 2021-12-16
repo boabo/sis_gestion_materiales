@@ -878,6 +878,24 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:true
             },
+            /*Aumentando elcmapo remark para el reporte solicitud de compra y alkym*/
+            {
+                config:{
+                    name: 'remark',
+                    fieldLabel: 'Justificacion (Remark)',
+                    allowBlank: false,
+                    qtip: 'Este dato se refleja en el reporte solicitud de compra y en el campo de alkym remark ',
+                    width: 200,
+                    gwidth: 150,
+                    maxLength:10000
+                },
+                type:'TextArea',
+                filters:{pfiltro:'sol.remark',type:'string'},
+                id_grupo:0,
+                grid:true,
+                form:true
+            },
+            /**********************************************************************/
             {
                 config:{
                     name: 'observaciones_sol',
@@ -1664,7 +1682,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'origen_solicitud', type: 'string'},
             {name:'tiempo_entrega', type: 'numeric'},
             {name:'metodo_de_adjudicación', type: 'string'},
-            {name:'tipo_de_adjudicacion', type: 'string'}
+            {name:'tipo_de_adjudicacion', type: 'string'},
+            {name:'remark', type: 'string'}
 
 
         ],
@@ -1709,7 +1728,7 @@ header("content-type: text/javascript; charset=UTF-8");
                       style:{
                             background:'#5EDE82',
                             width:'330px',
-                            height:'430px',
+                            height:'520px',
                             border:'1px solid black',
                             borderRadius:'2px'
                            },
@@ -1736,7 +1755,7 @@ header("content-type: text/javascript; charset=UTF-8");
                       style:{
                             background:'#EEDE5A',
                             width:'330px',
-                            height:'430px',
+                            height:'520px',
                             marginLeft:'2px',
                             border:'1px solid black',
                             borderRadius:'2px'

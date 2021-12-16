@@ -491,7 +491,8 @@ v_consulta:='select		sol.id_solicitud,
                                 /***********************************************************************/
                                 /*Aumentando los dos campos para recuperar en la interfaz (Ismael Valdivia 13/10/2021)*/
                                 sol.metodo_de_adjudicación,
-                                sol.tipo_de_adjudicacion
+                                sol.tipo_de_adjudicacion,
+                                sol.remark::varchar
                                 /**************************************************************************************/
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
@@ -4055,7 +4056,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                      ot.codigo::varchar as matricula,
                                      procont.id_proveedor_contacto_alkym::integer,
                                      sol.id_orden_destino_alkym::integer,
-                                     sol.observaciones_sol::varchar,
+                                     sol.remark::varchar,
                                      (select fun.ci
                                       from orga.vfuncionario_ultimo_cargo fun
                                       where fun.id_funcionario = (select pxp.f_get_variable_global(''funcionario_solicitante_gm'')::integer))::varchar as nro_documento,
