@@ -27,6 +27,7 @@ DECLARE
     v_tipo_tramite			varchar;
     v_descripcion			varchar;
     v_condicion				varchar;
+    v_tipo_evaluacion		varchar;
 BEGIN
 
     v_nombre_funcion = 'mat.f_get_detalle_html';
@@ -39,16 +40,62 @@ BEGIN
             from param.tcatalogo cat
             inner join param.tcatalogo_tipo tip on tip.id_catalogo_tipo = cat.id_catalogo_tipo
             where tip.nombre = 'tsolicitud' and cat.descripcion in (SELECT UNNEST(REGEXP_SPLIT_TO_ARRAY(sol.condicion, ',')))
-            )
+            ),
+            sol.tipo_evaluacion
             into
             v_tipo_tramite,
             v_descripcion,
-            v_condicion
+            v_condicion,
+            v_tipo_evaluacion
         from mat.tsolicitud sol
         where sol.id_solicitud = p_id_solicitud;
     /*******************************************************************************************************************/
 
     IF(v_tipo_tramite = 'GR')THEN
+
+    	if (v_tipo_evaluacion = 'Flat Exchange' or v_tipo_evaluacion = 'Exchange') then
+
+
+        v_resp = '
+        <b>NOTA:</b> Mencionar el Número de Serial Ofertado<br><br>
+        <table border="1">
+                      <tbody>
+                            <tr>
+                            <th style="text-align: center; vertical-align: middle;"><b>PART NUMBER</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>QTY</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>DESCRIPTION</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>SERIAL</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>CD</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>REPAIR INSTRUCTION</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>MONTO $US</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>SERVICE TO BE PERFORMED</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>DELIVERY TIME</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>N° DE SERIAL OFERTADO</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>WARRANTY</b></th>
+                            </tr>';
+
+    	FOR v_record IN (SELECT tds.nro_parte, tds.referencia, tds.descripcion, tds.condicion_det, tds.cantidad_sol, tum.codigo
+                        FROM  mat.tdetalle_sol tds
+                        INNER JOIN mat.tunidad_medida tum ON tum.id_unidad_medida = tds.id_unidad_medida
+                        WHERE tds.id_solicitud = p_id_solicitud)
+    	LOOP
+            v_resp = v_resp ||'<tr>
+                                  <td style="text-align: center; vertical-align: middle;">'||v_record.nro_parte||'</td>
+                                  <td style="text-align: center; vertical-align: middle;">'||v_record.cantidad_sol||'</td>
+                                  <td style="text-align: center; vertical-align: middle;">'||v_record.descripcion||'</td>
+                                  <td style="text-align: center; vertical-align: middle;">'||v_record.referencia||'</td>
+                                  <td style="text-align: center; vertical-align: middle;">AR</td>
+                                  <td style="text-align: center; vertical-align: middle;">'||v_record.condicion_det||'</td>
+                                  <td style="text-align: center; vertical-align: middle;"> </td>
+                                  <td style="text-align: center; vertical-align: middle;"> </td>
+                                  <td style="text-align: center; vertical-align: middle;"> </td>
+                                  <td style="text-align: center; vertical-align: middle;"> </td>
+                                  <td style="text-align: center; vertical-align: middle;"> </td>
+                              </tr>
+                            </tbody>';
+        END LOOP;
+        else
+
         v_resp = '<table border="1">
                       <tbody>
                             <tr>
@@ -63,6 +110,8 @@ BEGIN
                             <th style="text-align: center; vertical-align: middle;"><b>DELIVERY TIME</b></th>
                             <th style="text-align: center; vertical-align: middle;"><b>WARRANTY</b></th>
                             </tr>';
+
+
         FOR v_record IN (SELECT tds.nro_parte, tds.referencia, tds.descripcion, tds.condicion_det, tds.cantidad_sol, tum.codigo
                         FROM  mat.tdetalle_sol tds
                         INNER JOIN mat.tunidad_medida tum ON tum.id_unidad_medida = tds.id_unidad_medida
@@ -82,6 +131,7 @@ BEGIN
                               </tr>
                             </tbody>';
         END LOOP;
+         end if;
     ELSE
     	v_resp = '<table border="1"><tr>
                                   <th>Nro. Parte</th>
