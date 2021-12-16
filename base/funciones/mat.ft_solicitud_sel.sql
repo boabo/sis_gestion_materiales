@@ -1377,7 +1377,7 @@ v_consulta:='select		sol.id_solicitud,
                     FROM wf.testado_wf twf
                         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                         /*Comentamos esta parte para incluir a Karina Barrancos*/
 
                         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_rpcd' and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -1401,7 +1401,7 @@ v_consulta:='select		sol.id_solicitud,
                             v_fecha_firma_presu_qr
                     FROM wf.testado_wf twf
                         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                         /*Comentamos esta parte para incluir a Karina Barrancos*/
 
                         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_rpcd' and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -1429,7 +1429,7 @@ v_consulta:='select		sol.id_solicitud,
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	  AND  te.codigo = 'cotizacion'
                   AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -1449,7 +1449,7 @@ v_consulta:='select		sol.id_solicitud,
                 		v_fecha_firma_resp_qr
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	 AND  te.codigo ='cotizacion'
                  AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -1573,7 +1573,7 @@ v_consulta:='select		sol.id_solicitud,
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
           		WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND  te.codigo =
           		(case
           			when (select s.origen_pedido
@@ -1597,7 +1597,7 @@ v_consulta:='select		sol.id_solicitud,
                 		v_fecha_firma_dc_qr
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
           		WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND  te.codigo =
           		(case
           			when (select s.origen_pedido
@@ -1633,7 +1633,7 @@ v_consulta:='select		sol.id_solicitud,
           FROM wf.testado_wf twf
           	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-          	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	AND te.codigo = 'comite_dpto_abastecimientos'
                 --27-04-2021 (may) la condicion fecha finalizacion no es solo que este null ya tiene valor
@@ -1653,7 +1653,7 @@ v_consulta:='select		sol.id_solicitud,
                 	v_fecha_firma_abas_qr
           FROM wf.testado_wf twf
           	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-          	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_dpto_abastecimientos' and vf.fecha_finalizacion is null
           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
@@ -1681,7 +1681,7 @@ v_consulta:='select		sol.id_solicitud,
         	FROM wf.testado_wf twf
                   INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                   INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                  INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                  INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                   WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                   	AND te.codigo = 'comite_unidad_abastecimientos'
                     --27-04-2021 (may) la condicion fecha finalizacion no es solo que este null ya tiene valor
@@ -1701,7 +1701,7 @@ v_consulta:='select		sol.id_solicitud,
     					v_fecha_firma_rev_qr
         	FROM wf.testado_wf twf
                   INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                  INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                  INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                   WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null
                   GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
@@ -1763,7 +1763,7 @@ v_consulta:='select		sol.id_solicitud,
         	FROM wf.testado_wf twf
         		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-        		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc' and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
         		GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
                 /*IF(v_codigo_rpc = 'vbrpc') then
@@ -1785,7 +1785,7 @@ v_consulta:='select		sol.id_solicitud,
         			v_fecha_firma_presu_qr
         	FROM wf.testado_wf twf
         		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-        		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
         		GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
@@ -1817,7 +1817,7 @@ v_consulta:='select		sol.id_solicitud,
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	  AND  te.codigo = 'cotizacion'
                   AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -1838,7 +1838,7 @@ v_consulta:='select		sol.id_solicitud,
                 		v_fecha_firma_resp_qr
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	 AND  te.codigo ='cotizacion'
                  AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -2133,7 +2133,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     FROM wf.testado_wf twf
                         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_rpcd' and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
                         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
                   	end if;
@@ -2150,7 +2150,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     FROM wf.testado_wf twf
                         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                     WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                           AND  te.codigo = 'cotizacion'
                           AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
@@ -2504,7 +2504,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     FROM wf.testado_wf twf
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
 
         /*Comentando esta parte recuperar al Encargado(a) de vb_dpto_administrativo (Ismael Valdivia 20/02/2020)
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia' */
@@ -2523,7 +2523,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     FROM wf.testado_wf twf
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia'
         --and vf.fecha_finalizacion is null
               and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
@@ -2542,7 +2542,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         	v_fecha_firma_af_qr
     FROM wf.testado_wf twf
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         /*Comentando esta parte recuperar a MAVY MARCELA TRIGO QUIROGA como vb_dpto_administrativo (Ismael Valdivia 20/02/2020)*/
 
         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_dpto_administrativo'
@@ -2558,7 +2558,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         	v_fecha_firma_af_qr
     FROM wf.testado_wf twf
         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia'
         --and vf.fecha_finalizacion is null
         and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
@@ -2620,7 +2620,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     	FROM wf.testado_wf twf
         	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-        	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         	/*Comentando esta parte para recuperar al encargado(a) de vb_rpcd (Ismael Valdivia 20/02/2020)*/
 
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_rpcd'
@@ -2639,7 +2639,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     	FROM wf.testado_wf twf
         	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-        	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         	WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'
             --and vf.fecha_finalizacion is null
             and v_vbrpc.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
@@ -2659,7 +2659,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
     	FROM wf.testado_wf twf
         	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-        	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         	/*Comentando esta parte para recuperar al encargado(a) de vb_rpcd (Ismael Valdivia 20/02/2020)*/
 
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_rpcd'
@@ -2680,7 +2680,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
     	FROM wf.testado_wf twf
         	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-        	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
         	WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'
             --and vf.fecha_finalizacion is null
             and v_vbrpc.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
@@ -3297,7 +3297,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           FROM wf.testado_wf twf
                           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                           INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                          INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'vb_rpcd'
                           and v_rpcd.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
@@ -3553,7 +3553,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                             FROM wf.testado_wf twf
                             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                            INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                            INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
                             and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                             GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
@@ -3589,7 +3589,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           FROM wf.testado_wf twf
                           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                           INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                          INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'borrador'
                           and v_rpcd.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
@@ -3610,7 +3610,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               FROM wf.testado_wf twf
               INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
               INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-              INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+              INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
               WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'vb_dpto_abastecimientos'
               and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
               GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
@@ -3784,7 +3784,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       FROM wf.testado_wf twf
                       INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                       INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                      INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                      INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                       WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
                       and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                       GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
@@ -4539,7 +4539,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           FROM wf.testado_wf twf
                           INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                           INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                          INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'vb_rpcd'
                           and v_rpcd.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;

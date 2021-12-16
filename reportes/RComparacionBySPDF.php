@@ -356,6 +356,9 @@ EOF;
     }
 
     function generarImagen( $nac){
+
+      if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {
+
         $separando_infor = explode('|', $nac);
         $funcionario_qr =  'Funcionario: '.$separando_infor[0]. "\n";
         $cargo_qr =  'Cargo: '.$separando_infor[1]. "\n";
@@ -377,6 +380,25 @@ EOF;
         $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $nac . ".png"; //$this->objParam->getParametro('nombre_archivo')
 
         return $url_archivo;
+      } else {
+        $cadena_nac = explode('|', $nac);
+        $cadena_nac = str_replace('-','_', $cadena_nac[2] );
+        $cadena_qr =  'Funcionario: '.$nac ;
+        $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
+        $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
+        $im = imagecreatefromstring($png);
+        if ($im !== false) {
+            header('Content-Type: image/png');
+            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $cadena_nac . ".png");
+            imagedestroy($im);
+
+        } else {
+            echo 'A ocurrido un Error.';
+        }
+        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $cadena_nac . ".png"; //$this->objParam->getParametro('nombre_archivo')
+
+        return $url_archivo;
+      }
     }
 
 }
