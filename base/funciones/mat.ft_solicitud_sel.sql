@@ -2338,7 +2338,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 FROM wf.testado_wf twf
                 INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
 
                 and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(now(), vf.fecha_finalizacion)
@@ -2355,7 +2355,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 FROM wf.testado_wf twf
                 INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
                 --and vf.fecha_finalizacion is null
                 --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
@@ -2375,7 +2375,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     v_fecha_firma_pru
               FROM wf.testado_wf twf
               INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-              INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+              INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
               WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
 
               and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(now(), vf.fecha_finalizacion)
@@ -2391,7 +2391,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_fecha_firma_pru
             FROM wf.testado_wf twf
             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-            INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+            INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
             --and vf.fecha_finalizacion is null
             --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
@@ -2666,6 +2666,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
             and v_vbrpc.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
         	GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
+
+
+
 	else
     SELECT  twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -2726,6 +2729,21 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     	v_gerencia = '';
     end if;
     /***************************************/
+
+    if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+
+      select initcap(sol.nro_tramite) into v_nro_tramite
+      from mat.tsolicitud sol
+      where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+     /*Aqui recuperamos al Gerencia*/
+     select initcap(fun.desc_funcionario1) || ' | '||fun.nombre_cargo||' | '||v_nro_tramite||' | '||replace(v_fecha_firma_presu_qr,'/','-')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1
+     		into
+            v_nombre_funcionario_af_qr
+     from orga.vfuncionario_ultimo_cargo fun
+     where fun.nombre_cargo = 'Gerencia Administrativa Financiera';
+     end if;
 
           v_consulta='select
            			      '''||v_estado_actual||'''::varchar AS estado_actual,
