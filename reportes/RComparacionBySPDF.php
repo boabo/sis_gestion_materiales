@@ -299,6 +299,7 @@ EOF;
                                   </table>
                                   ';
                 } else {
+
                   $tbl.=      ' <br>
                                   </td>
 
@@ -381,8 +382,9 @@ EOF;
 
         return $url_archivo;
       } else {
+
         $cadena_nac = explode('|', $nac);
-        $cadena_nac = str_replace('-','_', $cadena_nac[2] );
+        $cadena_nac = str_replace('-','_', $cadena_nac[0] );
         $cadena_qr =  'Funcionario: '.$nac ;
         $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
         $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
