@@ -4162,8 +4162,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             from orga.vfuncionario_ultimo_cargo fu
             inner join orga.tuo uo on uo.id_uo = fu.id_uo
             where fu.id_funcionario = v_id_gerente_rep;
-
-			v_consulta:='select
+		if (v_nombre_macro = 'Reparacion de Repuestos') then
+        	v_consulta:='select
 						sol.id_solicitud,
                         sol.estado_reg,
                         sol.estado,
@@ -4207,6 +4207,53 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
                         inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
                         where '||v_filtro;
+        else
+        v_consulta:='select
+						sol.id_solicitud,
+                        sol.estado_reg,
+                        sol.estado,
+                        sol.id_moneda,
+                        sol.id_gestion,
+                        sol.tipo,
+                        sol.nro_tramite,
+                        sol.remark::varchar,
+                        sol.id_depto,
+                        sol.id_proceso_wf,
+                        sol.id_funcionario_solicitante,
+                        sol.id_estado_wf,
+                        sol.fecha_solicitud,
+                        sol.fecha_reg,
+                        sol.id_usuario_reg,
+                        sol.fecha_mod,
+                        sol.id_usuario_mod,
+                        COALESCE(sol.usuario_ai,'''')::varchar as nombre_usuario_ai,
+                        usu1.cuenta as usr_reg,
+                        usu2.cuenta as usr_mod,
+                        fun.desc_funcionario1 as desc_funcionario,
+                        ges.gestion as desc_gestion,
+                        mon.codigo as desc_moneda,
+                        dep.codigo as desc_depto,
+                        dep.prioridad as dep_prioridad,
+						'''||coalesce(v_fecha_sol,now())||'''::date as fecha_soli_gant,
+                        '''||coalesce(v_fecha_sol_rep,now())||'''::date as fecha_soli_material,
+                        ('''||Coalesce(v_funcionario_rpcd_oficial,'')||''')::varchar as funcionario_rpc,
+                        ('''||Coalesce(v_gerente,'')||''')::varchar as gerente,
+                        ('''||Coalesce(v_firma_gerente,'')||''')::varchar as firma_gerente,
+                        ('''||v_desc_uo||''')::varchar as desc_uo,
+                        fun.descripcion_cargo::varchar as cargo_desc_funcionario,
+                        ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
+                        '''||v_nombre_macro||'''::varchar as nombre_macro
+						from mat.tsolicitud sol
+                        inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+                        inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = sol.id_funcionario_solicitante
+                        inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
+                        inner join param.tgestion ges on ges.id_gestion = sol.id_gestion
+                        inner join param.tdepto dep on dep.id_depto = sol.id_depto
+                        left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
+                        inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
+                        where '||v_filtro;
+        end if;
+
 
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
