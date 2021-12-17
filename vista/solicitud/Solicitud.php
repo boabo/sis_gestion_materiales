@@ -312,7 +312,10 @@ header("content-type: text/javascript; charset=UTF-8");
                         if (record.data['nro_lote'] != null) {
                           return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
                               '</font><p style="font-size:14px;"><b style="color:blue;">Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></font>'+
-                              '<p style="font-size:14px;"><b style="color:blue;">Nro lote: </b>'+color+'<b>'+record.data['nro_lote']+'</b></font></div>';
+                              '<p style="font-size:14px;"><b style="color:blue;">Nro lote: </b>'+color+'<b>'+record.data['nro_lote']+'</b></p>'+
+                              '<p style="font-size:14px;"><b style="color:blue;">Nro REP: </b>'+color+'<b>'+record.data['nro_po']+'</b></p></font></div>';
+
+
                         }  else {
                           return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
                               '</font><p style="font-size:14px;"><b style="color:blue;">Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></font></div>';

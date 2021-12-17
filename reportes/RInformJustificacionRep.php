@@ -53,8 +53,10 @@ class RInformJustificacionRep extends  ReportePDF
           $texto = 'COMPLETAR INFORMACION ADJUDICADA';
         } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+          $texto_ref = 'en '.$this->datos[0]['evaluacion'];
         } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
+          $texto_ref = 'las reparaciones';
         }
         /********************************************************/
 
@@ -137,7 +139,7 @@ class RInformJustificacionRep extends  ReportePDF
                <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                        <tr>
                          <th align="left">En fecha <b>'.$this->datos[0]["fecha_solicitud"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
-                          obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que cotiza las reparaciones de acuerdo al siguiente cuadro:</th>
+                          obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que cotiza '.$texto_ref.' de acuerdo al siguiente cuadro:</th>
                        </tr>
                </table>
                <table cellspacing="0" cellpadding="1" border="1" style="font-size:12px;">
