@@ -2784,7 +2784,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            sp.observaciones,
                            substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
                            '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                           detcot.explicacion_detallada_part_cot::varchar
+                           coalesce(array_to_string(pxp.aggarray(detcot.explicacion_detallada_part_cot),''|'')::varchar,''''::varchar)::varchar
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 
@@ -2798,7 +2798,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
 
-          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite,detcot.explicacion_detallada_part_cot';
+          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
