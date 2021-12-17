@@ -171,7 +171,7 @@ class RConformidadActaFinal extends  ReportePDF
                                   </td>
 
                                   <td width="50%" align="center"  colspan="2">
-                                    <b>Técnico Auxiliar de Abastecimiento:</b>
+                                    <b>Técnico:</b>
                                   </td>
                               </tr>
 

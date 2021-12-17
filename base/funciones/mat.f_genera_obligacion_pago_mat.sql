@@ -40,8 +40,8 @@ DECLARE
     va_codigo_estado 				varchar[];
     v_id_estado_actual				integer;
     v_total_detalle					numeric;
-
-
+	v_compra						record;
+	v_id_funcionario_adquisiciones	integer;
 
 BEGIN
 
@@ -78,7 +78,9 @@ BEGIN
               ts.id_funcionario_solicitante,
 			  est.id_funcionario,
               est.tipo_cambio,
-              ts.codigo_poa
+              ts.codigo_poa,
+              ts.id_proceso_wf,
+              ts.origen_pedido
 
             into
              v_registros_solicitud_mat
@@ -88,8 +90,95 @@ BEGIN
             left join wf.testado_wf est on est.id_estado_wf = ts.id_estado_wf
             WHERE ts.id_solicitud = p_id_solicitud;
 
+    		if (v_registros_solicitud_mat.origen_pedido = 'Reparación de Repuestos') then
 
 
+    		/*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
+            SELECT  twf.id_funcionario,
+                    twf.fecha_reg
+                  into  v_compra
+            FROM wf.testado_wf twf
+            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+            INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+            WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf
+            AND te.codigo = 'compra'
+            GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
+
+            SELECT  twf.id_funcionario
+          	INTO
+                  v_id_funcionario_adquisiciones
+            FROM wf.testado_wf twf
+                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'compra'
+                and v_compra.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
+			/****************************************************************************/
+
+
+            --  RAC  02/08/2017
+            --  marca la obligacion como comproemtido en funcion a variable global de adquisiciones
+            v_adq_comprometer_presupuesto = pxp.f_get_variable_global('adq_comprometer_presupuesto');
+
+
+            INSERT INTO
+              tes.tobligacion_pago
+            (
+              id_usuario_reg,
+              fecha_reg,
+              estado_reg,
+              id_proveedor,
+              id_subsistema,
+              id_moneda,
+             -- id_depto,
+              tipo_obligacion,
+              fecha,
+              numero,
+              tipo_cambio_conv,
+              num_tramite,
+              id_gestion,
+              comprometido,
+              id_categoria_compra,
+              tipo_solicitud,
+              tipo_concepto_solicitud,
+              id_funcionario,
+              id_contrato,
+              obs,
+              id_funcionario_gerente,
+              codigo_poa,
+              presupuesto_aprobado,
+              pago_variable
+            )
+            VALUES (
+              p_id_usuario,
+              now(),
+              'activo',
+              v_registros_solicitud_mat.id_proveedor,
+              v_id_subsistema,
+              v_registros_solicitud_mat.id_moneda,
+              'gestion_mat', --'adquisiciones',
+              now(),
+              null, --pxp.f_iif(v_num_contrato is NULL, v_registros_cotizacion.numero_oc, v_num_contrato),
+              1,--v_registros_solicitud_mat.tipo_cambio, -- 2,  --v_registros_cotizacion.tipo_cambio_conv,??
+              v_registros_solicitud_mat.nro_tramite,
+              v_registros_solicitud_mat.id_gestion,
+              v_adq_comprometer_presupuesto,
+              null, -- 4,     --v_registros_cotizacion.id_categoria_compra,
+              'Boa',  --v_registros_cotizacion.tipo,
+              'bien', --v_registros_cotizacion.tipo_concepto,
+              v_id_funcionario_adquisiciones, -- 370 => PASTOR JAIME LAZARTE VILLAGRA
+              null, --v_id_contrato,
+              v_registros_solicitud_mat.motivo_solicitud, --v_registros_cotizacion.justificacion,
+              v_registros_solicitud_mat.id_funcionario, --v_registros_cotizacion.id_funcionario_aprobador, 2711 = JORGE EDUARDO DELGADILLO POEPSEL 160= GONZALO ARIEL MAYORGA LAZCANO
+              v_registros_solicitud_mat.codigo_poa,
+              null,
+              'si'
+
+            ) RETURNING id_obligacion_pago into v_id_obligacion_pago;
+
+
+			else
 
             --  RAC  02/08/2017
             --  marca la obligacion como comproemtido en funcion a variable global de adquisiciones
@@ -151,8 +240,7 @@ BEGIN
 
             ) RETURNING id_obligacion_pago into v_id_obligacion_pago;
 
-
-
+            end if;
 
             -----------------------------------------------------------------------------
             --recupera datos del detalle e inserta en detalle de obligacion
