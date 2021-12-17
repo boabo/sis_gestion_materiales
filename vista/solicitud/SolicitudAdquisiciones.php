@@ -393,7 +393,10 @@ header("content-type: text/javascript; charset=UTF-8");
             this.iniciarEvento();
             Phx.vista.SolicitudAdquisiciones.superclass.onButtonEdit.call(this);
             //console.log("aqui llega el mensaje del correo",this);
-            this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
+
+            var data = this.getSelectedData();
+
+            //this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
 
             if (this.Cmp.tipo_de_adjudicacion.getValue() == '') {
               this.Cmp.tipo_de_adjudicacion.setValue('Ninguno');
@@ -408,14 +411,39 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.Cmp.fecha_po.setDisabled(false);
                 this.Cmp.fecha_entrega.setDisabled(false);
+                this.Cmp.remark.allowBlank = true,
+                this.ocultarComponente(this.Cmp.remark);
+                this.ocultarComponente(this.Cmp.condicion);
+
+                this.ocultarComponente(this.Cmp.nro_no_rutina);
+                this.ocultarComponente(this.Cmp.justificacion);
+                this.ocultarComponente(this.Cmp.mel);
+                this.ocultarComponente(this.Cmp.tipo_falla);
+                this.ocultarComponente(this.Cmp.tipo_reporte);
+
 
             } else {
-              if (this.Cmp.nro_po.getValue()) {
+              console.log("aqui llega para las condiciones",this.Cmp.nro_po.getValue(),data['origen_pedido']);
+              if (this.Cmp.nro_po.getValue() && data['origen_pedido'] != 'Reparación de Repuestos') {
                 this.Cmp.fecha_po.setDisabled(true);
                 this.Cmp.fecha_entrega.setDisabled(true);
               } else {
                 this.Cmp.fecha_po.setDisabled(false);
                 this.Cmp.fecha_entrega.setDisabled(false);
+                this.Cmp.remark.allowBlank = false,
+                this.mostrarComponente(this.Cmp.remark);
+                this.mostrarComponente(this.Cmp.condicion);
+
+                this.mostrarComponente(this.Cmp.nro_no_rutina);
+                this.mostrarComponente(this.Cmp.justificacion);
+                this.mostrarComponente(this.Cmp.mel);
+                this.mostrarComponente(this.Cmp.tipo_falla);
+                this.mostrarComponente(this.Cmp.tipo_reporte);
+                this.Cmp.nro_no_rutina.setDisabled(true);
+                this.Cmp.justificacion.setDisabled(true);
+                this.Cmp.mel.setDisabled(true);
+                this.Cmp.tipo_falla.setDisabled(true);
+                this.Cmp.tipo_reporte.setDisabled(true);
               }
             }
 
