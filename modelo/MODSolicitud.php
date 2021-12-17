@@ -665,6 +665,7 @@ class MODSolicitud extends MODbase
         $this->captura('tipo_de_adjudicacion', 'varchar');
         $this->captura('metodo_de_adjudicación', 'varchar');
         $this->captura('fecha_salida', 'date');
+        $this->captura('pn_cotizacion', 'varchar');
 
 
         //Ejecuta la instruccion
@@ -1296,6 +1297,7 @@ class MODSolicitud extends MODbase
         $this->captura('lugar_entrega', 'varchar');
         $this->captura('tiempo_entrega', 'numeric');
         $this->captura('fecha_salida', 'date');
+        $this->captura('pn_cotizacion', 'varchar');
         //$this->captura('tipo_solicitud', 'varchar');
 
         //Ejecuta la instruccion
@@ -1393,6 +1395,7 @@ class MODSolicitud extends MODbase
         $this->captura('observaciones', 'varchar');
         $this->captura('tipo_proceso', 'varchar');
         $this->captura('fecha_salida','date');
+        $this->captura('pn_cotizacion','varchar');
 
 
         $this->armarConsulta();

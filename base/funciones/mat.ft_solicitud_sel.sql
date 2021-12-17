@@ -285,6 +285,7 @@ DECLARE
      v_nombre_macro		varchar;
      v_cantidad_sumados_adjudicado	integer;
      v_dias_sumados		integer;
+     v_cargo_solicitante	varchar;
     /**************************************************/
 BEGIN
 
@@ -732,10 +733,15 @@ v_consulta:='select		sol.id_solicitud,
                                 /*Aumentando para desglosar en el reporte Ismael Valdivia (26/10/2021)*/
                                 sol.tipo_de_adjudicacion,
                                 sol.metodo_de_adjudicación,
-                                '''||v_fecha_salida_gm||'''::date as fecha_salida
+                                '''||v_fecha_salida_gm||'''::date as fecha_salida,
+                                detcot.explicacion_detallada_part_cot
                                 /*****************************************/
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
+
+                                left join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
+								left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.nro_parte_cot = de.nro_parte
+
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
                                 inner join wf.testado_wf wof on wof.id_estado_wf = sol.id_estado_wf
@@ -2008,10 +2014,17 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           s.condicion::varchar,
                           s.lugar_entrega::varchar,
                           s.tiempo_entrega::numeric,
-                          '''||v_fecha_salida_gm||'''::date as fecha_salida
+                          '''||v_fecha_salida_gm||'''::date as fecha_salida,
+                          detcot.explicacion_detallada_part_cot::varchar as pn_cotizacion
                           from mat.tdetalle_sol det
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
+
+                          left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
+                          left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.nro_parte_cot = det.nro_parte
+
+
+
                           inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                           inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud and det.estado_reg = ''activo''
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf||'
@@ -2770,16 +2783,22 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            '''||COALESCE(v_funcionario,'')||'''::varchar AS funcionario,
                            sp.observaciones,
                            substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
-                           '''||v_fecha_salida_gm||'''::date as fecha_salida
+                           '''||v_fecha_salida_gm||'''::date as fecha_salida,
+                           detcot.explicacion_detallada_part_cot::varchar
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
+
+                          left join mat.tcotizacion cot on cot.id_solicitud = s.id_solicitud and cot.adjudicado = ''si''
+						  left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.nro_parte_cot = det.nro_parte
+
+
 						  left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = s.id_solicitud
                           left join mat.tcotizacion tc ON tc.id_solicitud = s.id_solicitud AND tc.adjudicado = ''si''
                           left join mat.tsolicitud_pac sp on sp.id_proceso_wf = s.id_proceso_wf
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
 
-          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite';
+          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite,detcot.explicacion_detallada_part_cot';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
@@ -4171,6 +4190,27 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             inner join orga.tuo uo on uo.id_uo = fu.id_uo
             where fu.id_funcionario = v_id_gerente_rep;
 		if (v_nombre_macro = 'Reparacion de Repuestos') then
+
+        	SELECT  twf.id_funcionario,
+                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||COALESCE (to_char(twf.fecha_reg,'DD-MM-YYYY'),'')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                    vf.desc_funcionario1,
+                    to_char(twf.fecha_reg,'DD-MM-YYYY')as fecha_firma,
+                    vf.nombre_cargo
+              INTO v_id_funcionario_oficial,
+                    v_funcionario_sol_oficial,
+                    v_funcionario_oficial,
+                    v_fecha_firma_pru,
+                    v_cargo_solicitante
+            FROM wf.testado_wf twf
+            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+            INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+            INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+            WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'compra'
+            and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
+
+
+
         	v_consulta:='select
 						sol.id_solicitud,
                         sol.estado_reg,
@@ -4192,7 +4232,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         COALESCE(sol.usuario_ai,'''')::varchar as nombre_usuario_ai,
                         usu1.cuenta as usr_reg,
                         usu2.cuenta as usr_mod,
-                        fun.desc_funcionario1 as desc_funcionario,
+                        '''||v_funcionario_oficial||'''::text as desc_funcionario,
                         ges.gestion as desc_gestion,
                         mon.codigo as desc_moneda,
                         dep.codigo as desc_depto,
@@ -4203,7 +4243,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         ('''||Coalesce(v_gerente,'')||''')::varchar as gerente,
                         ('''||Coalesce(v_firma_gerente,'')||''')::varchar as firma_gerente,
                         ('''||v_desc_uo||''')::varchar as desc_uo,
-                        fun.descripcion_cargo::varchar as cargo_desc_funcionario,
+                        '''||v_cargo_solicitante||'''::varchar as cargo_desc_funcionario,
                         ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
                         '''||v_nombre_macro||'''::varchar as nombre_macro
 						from mat.tsolicitud sol

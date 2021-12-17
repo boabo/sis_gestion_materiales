@@ -240,13 +240,15 @@ class MODCotizacion extends MODbase{
         $this->captura('estado','varchar');
 				$this->captura('nro_cotizacion','varchar');
 				$this->captura('fecha_solicitud','date');
-        $this->captura('fecha_salida','date');
+				$this->captura('fecha_salida','date');
+        $this->captura('pn_cotizacion','varchar');
 
 
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
         //Devuelve la respuesta
+				//var_dump("aqui llega ",$this->respuesta);exit;
         return $this->respuesta;
     }
     function listasFrimas(){

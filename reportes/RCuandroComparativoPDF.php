@@ -61,6 +61,34 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->writeHTML('<p align="justify">Enviado a: '.$this->datos4[0]['lista_proverod'].'</p> <br>', true, false, false, false, '');
 
         $this->nro= 1;
+
+        if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
+
+        foreach ($this->datos as  $val)
+        {
+            if (  !array_key_exists($val['nro_cotizacion'], $this->proveedor)
+                ||!array_key_exists($val['desc_proveedor'], $this->proveedor[$val['nro_cotizacion']])
+                ||!array_key_exists($this->nro, $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']])
+                ||!array_key_exists($val['tipo_cot'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro])
+                ||!array_key_exists($val['pn_cotizacion'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']])
+                ||!array_key_exists($val['descripcion'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']])
+                ||!array_key_exists($val['cantidad'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']])
+                ||!array_key_exists($val['cd'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']])
+                ||!array_key_exists($val['precio_unitario'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']])
+                ||!array_key_exists($val['precio_unitario_mb'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']])
+                ||!array_key_exists($val['codigo_tipo'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']])
+                ||!array_key_exists($val['monto_total'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']])
+                ||!array_key_exists($val['recomendacion'], $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']])
+
+            )
+            {
+                $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]= 1;
+            } else {
+                $this->proveedor[$val['nro_cotizacion']][$val['desc_proveedor']][$this->nro][$val['tipo_cot']][$val['pn_cotizacion']][$val['descripcion']][$val['cantidad']][$val['cd']][$val['precio_unitario']][$val['precio_unitario_mb']][$val['codigo_tipo']][$val['monto_total']][$val['recomendacion']]++;
+            }
+            $this->nro++;
+        }
+      }else{
         foreach ($this->datos as  $val)
         {
             if (  !array_key_exists($val['nro_cotizacion'], $this->proveedor)
@@ -85,6 +113,7 @@ class RCuandroComparativoPDF extends  ReportePDF
             }
             $this->nro++;
         }
+      }
 
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 

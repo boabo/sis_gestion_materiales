@@ -295,7 +295,8 @@ BEGIN
                               s.estado,
                                c.nro_cotizacion,
                                s.fecha_solicitud,
-                               '''||v_fecha_salida_gm||'''::date as fecha_salida
+                               '''||v_fecha_salida_gm||'''::date as fecha_salida,
+                               d.explicacion_detallada_part_cot::varchar
 							  from mat.tsolicitud s
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion

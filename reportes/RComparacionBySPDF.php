@@ -136,7 +136,11 @@ EOF;
         $monto_ref = $this->datos[0]["monto_ref"];
         //$codigo = $this->datos[0]["codigo"];
         $nro_partes = explode('|',$this->datos[0]["nro_partes"]);
+        if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {
+        $nro_partes_alternos = explode('|',$this->datos[0]["pn_cotizacion"]);
+        } else {
         $nro_partes_alternos = explode('|',$this->datos[0]["nro_partes_alternos"]);
+        }
         $obs = $this->datos[0]["observaciones"];
 
         $this->Ln(5);

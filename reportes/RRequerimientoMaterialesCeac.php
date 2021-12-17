@@ -136,7 +136,7 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
                   </tr>
                   <tr>
                   <th colspan="2" style="text-align:justify"><b>Motivo de la Solicitud:</b> '.$this->datos[0]['motivo_solicitud'].'</th>
-                  </tr>                  
+                  </tr>
                   </tbody>
                   </table>';
             }
@@ -158,9 +158,10 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
         $this->Cell(0, 0, 'U/M', 1, 0, 'C', 0, '', 0);
         $this->ln();
         $numero = 1;
+        if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
         foreach ($this->datos as $Row) {
             $parte = $Row['nro_parte'];
-            $parte_alterno = $Row['nro_parte_alterno'];
+            $parte_alterno = $Row['pn_cotizacion'];
             $referencia = $Row['referencia'];
             $descripcion = $Row['descripcion'];
             $tipo= $Row['tipo'];
@@ -183,11 +184,46 @@ class RRequerimientoMaterialesCeac extends  ReportePDF
 
 </table>
 EOD;
+
             $this->SetFont('times', '', 11);
             $this->writeHTML($tbl, false, false, false, false, '');
             $numero++;
 
         }
+
+}else {
+  foreach ($this->datos as $Row) {
+      $parte = $Row['nro_parte'];
+      $parte_alterno = $Row['nro_parte_alterno'];
+      $referencia = $Row['referencia'];
+      $descripcion = $Row['descripcion'];
+      $tipo= $Row['tipo'];
+      $cantidad = $Row['cantidad_sol'];
+      $unidad = $Row['unidad_medida'];
+
+      $tbl = <<<EOD
+<table cellspacing="0" cellpadding="1" border="1">
+<tr>
+  <td width="18" align="center">$numero</td>
+  <td width="98" align="center">$parte</td>
+  <td width="111" align="center">$parte_alterno</td>
+  <td width="68" align="center">$referencia</td>
+  <td width="195" align="justify">$descripcion</td>
+   <td width="88" align="center">$tipo</td>
+  <td width="40" align="center">$cantidad</td>
+  <td width="41" align="center">$unidad</td>
+</tr>
+
+
+</table>
+EOD;
+
+      $this->SetFont('times', '', 11);
+      $this->writeHTML($tbl, false, false, false, false, '');
+      $numero++;
+
+  }
+}
 
 
         $html = '

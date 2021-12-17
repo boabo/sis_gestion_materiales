@@ -97,9 +97,10 @@ class RRequemientoMaterielesIng extends  ReportePDF {
         $this->ln();
         $numero = 1;
         $pagina = 0;
+        if ($this->datos[0]['fecha_soli'] >= $this->datos[0]['fecha_salida']) {
         foreach ($this->datos as $Row) {
             $parte = $Row['nro_parte'];
-            $parte_alterno = $Row['nro_parte_alterno'];
+            $parte_alterno = $Row['pn_cotizacion'];
             $referencia = $Row['referencia'];
             $descripcion = $Row['descripcion'];
             $cantidad = $Row['cantidad_sol'];
@@ -122,6 +123,33 @@ EOD;
             $numero++;
             $pagina++;
         }
+}else {
+  foreach ($this->datos as $Row) {
+      $parte = $Row['nro_parte'];
+      $parte_alterno = $Row['nro_parte_alterno'];
+      $referencia = $Row['referencia'];
+      $descripcion = $Row['descripcion'];
+      $cantidad = $Row['cantidad_sol'];
+      $unidad = $Row['unidad_medida'];
+      $tbl = <<<EOD
+<table cellspacing="0" cellpadding="1" border="1" >
+<tr>
+  <td width="17.5"  align="center">$numero</td>
+  <td width="110" align="center">$parte</td>
+  <td width="110" align="center">$parte_alterno</td>
+  <td width="78" align="center">$referencia</td>
+  <td width="215.9" align="justify">$descripcion</td>
+  <td width="56.9"  align="center">$cantidad</td>
+  <td width="70.5"  align="center">$unidad</td>
+</tr>
+</table>
+EOD;
+      $this->SetFont('times', '', 9);
+      $this->writeHTML($tbl, false, false, false, false, '');
+      $numero++;
+      $pagina++;
+  }
+}
 
 $tipo_de_adjudicacion = $this->datos[0]['tipo_de_adjudicacion'];
 $metodo_de_adjudicación = $this->datos[0]['metodo_de_adjudicación'];

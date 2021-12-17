@@ -83,16 +83,23 @@ EOF;
                 ';
         //var_dump($this->datos);exit;
         $cont = 1;
+        if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
+          foreach( $this->datos as $record){
+              $tbl .='<tr style="font-size: 8pt;"><td style="width:3%; text-align: center;">'.$cont.'</td><td>&nbsp;'. $record["nro_parte"].'</td><td>&nbsp;'. $record["pn_cotizacion"].'</td><td>'. $record["descripcion"].'</td><td style="text-align: center;">'. $record["cantidad_sol"].'</td><td style="text-align: center;">'. $record["codigo"].'</td><td style="text-align: center;">'. $record["lugar_entrega"].'</td><td style="text-align: center;">'.$record["condicion"].'</td></tr>';
+              $cont++;
+          }
+      }else{
         foreach( $this->datos as $record){
             $tbl .='<tr style="font-size: 8pt;"><td style="width:3%; text-align: center;">'.$cont.'</td><td>&nbsp;'. $record["nro_parte"].'</td><td>&nbsp;'. $record["nro_parte_alterno"].'</td><td>'. $record["descripcion"].'</td><td style="text-align: center;">'. $record["cantidad_sol"].'</td><td style="text-align: center;">'. $record["codigo"].'</td><td style="text-align: center;">'. $record["lugar_entrega"].'</td><td style="text-align: center;">'.$record["condicion"].'</td></tr>';
             $cont++;
         }
+      }
         $tbl.='</table>';
 
         $this->Ln(19);
         $this->writeHTML($tbl);
         if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
-          $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) después de la invitación."', 0, 'L', 0, 1, '', '');          
+          $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) después de la invitación."', 0, 'L', 0, 1, '', '');
         }
         $this->SetFont('', 'B',9);
         $this->MultiCell(200, 5, "\n" . 'FAVOR ENVIAR SU COTIZACIÓN AL CORREO abastecimiento@boa.bo', 0, 'L', 0, '', '');

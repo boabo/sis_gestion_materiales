@@ -185,7 +185,7 @@ class RRequemientoMaterielesAlm extends  ReportePDF
             $RowArray = array(
                 'Nro.' => $itemnum,
                 'Número de Parte' => $Row['nro_parte'],
-                'Número Parte Alterno' => $Row['nro_parte_alterno'],
+                'Número Parte Alterno' => $Row['pn_cotizacion'],
                 'Referencia' => $Row['referencia'],
                 'Descripcion' => $Row['descripcion'],
                 'Cantidad' => $Row['cantidad_sol'],
