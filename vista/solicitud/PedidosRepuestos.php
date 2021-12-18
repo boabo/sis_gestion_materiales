@@ -344,9 +344,9 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.PedidosRepuestos.superclass.onButtonEdit.call(this);
             //this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
             //this.ocultarComponente(this.Cmp.taller_asignado);
-
+            var data = this.getSelectedData();
             this.Cmp.observaciones_sol.reset();
-
+            console.log("aqui llega para poner el nro rep",data);
             this.ocultarComponente(this.Cmp.observacion_nota);
             this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
                 if (record.data.ID == 1 ){
@@ -356,7 +356,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 }if (record.data.ID == 2 ){
                     //this.ocultarComponente(this.Cmp.taller_asignado);
                     //this.ocultarComponente(this.Cmp.observacion_nota);
-                    this.Cmp.mensaje_correo.setValue('Favor cotizar la reparación de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
+                    this.Cmp.mensaje_correo.setValue('Favor cotizar la reparación '+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
                     this.Cmp.motivo_solicitud.setValue('CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS ROTABLES FLOTA BOA');
 
                     this.Cmp.observaciones_sol.reset();
@@ -368,14 +368,14 @@ header("content-type: text/javascript; charset=UTF-8");
                     //this.mostrarComponente(this.Cmp.taller_asignado);
                     //this.ocultarComponente(this.Cmp.observacion_nota);
                     this.Cmp.observaciones_sol.setValue('Se puede aceptar unidad(es) cotizada(s) en Flat Exchange');
-                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
+                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange '+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
                     this.Cmp.motivo_solicitud.setValue('COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) REQUERIDO PARA FLOTA BOA ');
                     this.mostrarComponente(this.Cmp.observaciones_sol);
                 }if (record.data.ID == 4){
                     //this.ocultarComponente(this.Cmp.taller_asignado);
                     //this.ocultarComponente(this.Cmp.observacion_nota);
                     this.Cmp.observaciones_sol.setValue('Se puede aceptar unidad(es) cotizada(s) en Flat Exchange');
-                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
+                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange '+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
                     this.Cmp.motivo_solicitud.setValue('COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) REQUERIDO PARA FLOTA BOA ');
                     this.mostrarComponente(this.Cmp.observaciones_sol);
                 }
