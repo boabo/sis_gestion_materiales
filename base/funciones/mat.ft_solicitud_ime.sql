@@ -228,6 +228,7 @@ DECLARE
     v_codigo_estado_siguiente_auto_jefe varchar;
     v_funcionario_encargado_jefe	integer;
     v_id_matricula					integer;
+    v_nro_po_alkym					varchar;
     /****************************************/
 
 BEGIN
@@ -3722,12 +3723,16 @@ END IF;
         elsif(p_transaccion='MAT_PO_ALKYM_IME')then
 
             begin
-            		select mat.id_po_alkym into v_id_po_alkym
-                    from mat.tsolicitud mat
-                    where mat.id_solicitud = v_parametros.id_solicitud;
+            		select mate.id_po_alkym,
+                    	   mate.nro_po
+                           into
+                           v_id_po_alkym,
+                           v_nro_po_alkym
+                    from mat.tsolicitud mate
+                    where mate.id_solicitud = v_parametros.id_solicitud;
 
                   /*Aqui Actualizamos el Id_PO_Alkym obtenido del servicio 24/04/2020*/
-                      if (v_id_po_alkym is null) then
+                      if (v_id_po_alkym is null or trim(v_nro_po_alkym) = '') then
                               update mat.tsolicitud set
                               id_po_alkym = v_parametros.idPoAlkym,
                               nro_po = upper(v_parametros.nro_po)

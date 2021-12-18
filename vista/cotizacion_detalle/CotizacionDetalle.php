@@ -12,7 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         bnew: true,
-        fheight: 450, 
+        fheight: 450,
         fwidth: 900,
         constructor: function (config) {
             this.Grupos = [
@@ -233,7 +233,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 filters: {pfiltro: 'cde.nro_parte_cot', type: 'string'},
                 id_grupo: 0,
                 grid: true,
-                egrid: true,
+                //egrid: true,
                 form: true
             },
             {
@@ -249,7 +249,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 filters: {pfiltro: 'cde.nro_parte_alterno_cot', type: 'string'},
                 id_grupo: 0,
                 grid: true,
-                egrid: true,
+                //egrid: true,
                 form: true
             },
             {
