@@ -734,7 +734,13 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.tipo_de_adjudicacion,
                                 sol.metodo_de_adjudicación,
                                 '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                                detcot.explicacion_detallada_part_cot
+                                (CASE
+                                     WHEN trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-''
+
+                                     THEN trim(de.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+
+                                     ELSE  detcot.explicacion_detallada_part_cot
+                                END)::varchar
                                 /*****************************************/
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
@@ -2015,7 +2021,16 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           s.lugar_entrega::varchar,
                           s.tiempo_entrega::numeric,
                           '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                          detcot.explicacion_detallada_part_cot::varchar as pn_cotizacion
+
+                          (CASE
+                                     WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
+
+                                     THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+
+                                     ELSE  detcot.explicacion_detallada_part_cot
+                                END)::varchar
+
+
                           from mat.tdetalle_sol det
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
@@ -2784,7 +2799,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            sp.observaciones,
                            substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
                            '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                           coalesce(array_to_string(pxp.aggarray(detcot.explicacion_detallada_part_cot),''|'')::varchar,''''::varchar)::varchar
+                           coalesce(array_to_string(pxp.aggarray(CASE
+                                     WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
+
+                                     THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+
+                                     ELSE  detcot.explicacion_detallada_part_cot
+                                END),''|'')::varchar,''''::varchar)::varchar
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 
