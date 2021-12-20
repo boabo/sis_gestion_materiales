@@ -101,7 +101,7 @@ BEGIN
             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
             WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf
-            AND te.codigo = 'compra'
+            AND te.codigo = 'cotizacion'
             GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
 
             SELECT  twf.id_funcionario
@@ -111,7 +111,7 @@ BEGIN
                 INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
                 INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'compra'
+                WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'cotizacion'
                 and v_compra.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
 			/****************************************************************************/

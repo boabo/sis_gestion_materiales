@@ -4226,10 +4226,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
             INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-            WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'compra'
+            WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'cotizacion'
             and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
             GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
-
 
 
         	v_consulta:='select
