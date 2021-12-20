@@ -19,7 +19,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 url:'../../../sis_gestion_materiales/vista/detalle_sol/DetalleNoEdit.php',
                 title:'Detalle',
                 height:'50%',
-                cls:'DetalleNoEdit' 
+                cls:'DetalleNoEdit'
             }
         ],
 
@@ -97,6 +97,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bactGroups:  [0,1,2],
         btestGroups: [0],
         bexcelGroups: [0,1,2],
+        bganttGroups: [0,1,2],
 
         enableTabDetalle:function(){
             if(this.TabPanelSouth.get(0)){

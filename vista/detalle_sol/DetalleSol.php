@@ -984,9 +984,18 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 						if (this.maestro.estado == 'borrador') {
 							this.Cmp.nro_parte_alterno.setDisabled(false);
 							this.Cmp.nro_parte.setDisabled(false);
+							this.Cmp.precio_unitario.allowBlank = true;
+							this.Cmp.id_concepto_ingas.allowBlank = true;
+							this.Cmp.id_centro_costo.allowBlank = true;
+							this.Cmp.id_orden_trabajo.allowBlank = true;
+
 						} else {
 							this.Cmp.nro_parte_alterno.setDisabled(true);
 							this.Cmp.nro_parte.setDisabled(true);
+							this.Cmp.precio_unitario.allowBlank = false;
+							this.Cmp.id_concepto_ingas.allowBlank = false;
+							this.Cmp.id_centro_costo.allowBlank = false;
+							this.Cmp.id_orden_trabajo.allowBlank = false;
 						}
 
 
