@@ -973,7 +973,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.maestro = m;
 						this.store.baseParams.tipo_tramite = m.nro_tramite.substr(0, 2);
 						var tb =this.tbar;
-
+						console.log("aqui llega el maestro",this);
 						//Aqui para oculatar el boton new
 						/*if (m.nro_tramite.substr(0, 2) == 'GM' && (tb.items.get('b-new-' + this.idContenedor) != undefined && tb.items.get('b-new-' + this.idContenedor) != '')){
 								//Phx.vista.MovimientoEntidad.superclass.preparaMenu.call(this);
@@ -981,6 +981,13 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								tb.items.get('b-del-' + this.idContenedor).hide();
 						}*/
 
+						if (this.maestro.estado == 'borrador') {
+							this.Cmp.nro_parte_alterno.setDisabled(false);
+							this.Cmp.nro_parte.setDisabled(false);
+						} else {
+							this.Cmp.nro_parte_alterno.setDisabled(true);
+							this.Cmp.nro_parte.setDisabled(true);
+						}
 
 
 						//console.log("llega aqui el dato para esconder",m.nro_tramite.substr(0, 2));
