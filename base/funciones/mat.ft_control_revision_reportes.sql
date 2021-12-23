@@ -61,6 +61,7 @@ BEGIN
                           select *
                           from t_tramites_po tra
                           where tra.po between v_parametros.po_inicio and v_parametros.po_final
+                          order by tra.po ASC
                       ) t_tramites_po
                 ) AS t_tramites_po
           ) jsonData;
