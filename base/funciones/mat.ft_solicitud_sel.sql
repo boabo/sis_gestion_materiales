@@ -2396,9 +2396,10 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 --and vf.fecha_finalizacion is null
                 --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
                 and v_revision.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
-                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, fecha_firma
+                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
                  ORDER BY  twf.fecha_reg DESC
                 limit 1;
+                 --raise exception 'Aqui lelga data %, %',v_parametros.id_proceso_wf, v_revision.fecha_reg;
           end if;
             	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud);
         else
@@ -2417,7 +2418,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
 
               and v_revision.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
-              GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, fecha_firma
+              GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, twf.fecha_reg
               ORDER BY  twf.fecha_reg DESC
               limit 1;
           else
@@ -2436,7 +2437,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             --and vf.fecha_finalizacion is null
             --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
             and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion, now())
-            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, fecha_firma
+            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, twf.fecha_reg
             ORDER BY  twf.fecha_reg DESC
             limit 1;
           end if;
