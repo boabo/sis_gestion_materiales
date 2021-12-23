@@ -49,7 +49,7 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
         $this->Ln(8);
         $this->SetFont('', '');
         $this->SetFontSize(12);
-        $this->MultiCell(180, 0,'Que la propuesta presentada por su empresa ha sido evaluada, justificada y recomendada en el informe <b>'.$this->datos[0]['informe_rep'].'</b> en fecha '.$this->datos[0]['fecha_firma'].' por la unidad solicitante.', 0, '', 0, 1, '20', '',true,0,true);
+        $this->MultiCell(180, 0,'Que la propuesta presentada por su empresa ha sido evaluada, justificada y recomendada en el informe <b>'.$this->datos[0]['informe_rep'].'</b> en fecha '.$this->datos[0]['fecha_cotizacion'].' por la unidad solicitante.', 0, '', 0, 1, '20', '',true,0,true);
 
         $this->Ln(8);
         $this->SetFont('', '');
@@ -82,7 +82,9 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
         $this->Ln(8);
         $this->SetFont('', '');
         $this->SetFontSize(12);
-        $this->MultiCell(180, 0,'Cochabamba, '.$this->datos[0]['fecha_literal'].'', 0, 'R', 0, 0, '20', '');
+        if ($this->datos[0]['fecha_literal'] != '') {
+          $this->MultiCell(180, 0,'Cochabamba, '.$this->datos[0]['fecha_literal'].'', 0, 'R', 0, 0, '20', '');
+        }
 
         // $this->SetFont('', 'B');
         //

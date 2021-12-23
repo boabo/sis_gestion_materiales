@@ -2035,6 +2035,7 @@ class MODSolicitud extends MODbase
         $this->captura('nro_tramite', 'varchar');
         $this->captura('fecha_firma', 'varchar');
         $this->captura('fecha_literal', 'varchar');
+        $this->captura('fecha_cotizacion', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

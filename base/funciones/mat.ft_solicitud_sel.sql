@@ -286,6 +286,8 @@ DECLARE
      v_cantidad_sumados_adjudicado	integer;
      v_dias_sumados		integer;
      v_cargo_solicitante	varchar;
+     v_fecha_po_rep		varchar;
+     v_fecha_cotizacion_rep	varchar;
     /**************************************************/
 BEGIN
 
@@ -4667,7 +4669,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                   from mat.tdetalle_sol det
                   where det.id_solicitud = sol.id_solicitud) as total_venta,
                   sol.estado,
-                  sol.nro_tramite
+                  sol.nro_tramite,
+                  sol.fecha_po
 
                   into
 
@@ -4680,13 +4683,22 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                   v_id_solicitud_rep,
                   v_total_venta_rep,
                   v_estado_actual,
-                  v_nro_tramite
+                  v_nro_tramite,
+                  v_fecha_po_rep
 
 
       from mat.tsolicitud sol
       left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
       inner join param.tgestion ge on ge.id_gestion = sol.id_gestion
       where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+      SELECT sol.fecha_cotizacion
+      	     into
+             v_fecha_cotizacion_rep
+      FROM mat.tsolicitud sol
+      inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+      WHERE sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
 
             if (v_estado_actual != 'vb_rpcd') then
@@ -4727,8 +4739,21 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 v_fecha_entrega_rep = '';
             end if;
 
+            if (v_fecha_po_rep is null) then
+            	v_fecha_po_rep = '';
+            end if;
 
-            v_fecha_literal = (to_char(v_fecha_firma_rpcd_pru::date,'DD')::integer || ' de ' ||param.f_literal_periodo(to_char(v_fecha_firma_rpcd_pru::date,'MM')::integer + 1) || ' del ' || to_char(v_fecha_firma_rpcd_pru::date,'YYYY'))::varchar;
+			IF (v_fecha_po_rep != '') THEN
+            v_fecha_literal = (to_char(v_fecha_po_rep::date,'DD')::integer || ' de ' ||param.f_literal_periodo(to_char(v_fecha_po_rep::date,'MM')::integer + 1) || ' del ' || to_char(v_fecha_po_rep::date,'YYYY'))::varchar;
+			ELSE
+            v_fecha_literal = '';
+            END IF;
+
+            IF (v_fecha_cotizacion_rep is null) THEN
+            	v_fecha_cotizacion_rep = '';
+            else
+            	v_fecha_cotizacion_rep = to_char(v_fecha_cotizacion_rep::date,'DD/MM/YYYY')::Varchar;
+            END IF;
 
       		v_consulta:='select
           			  ('''||v_rotulo_proveedor||''')::varchar as proveedor,
@@ -4742,7 +4767,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_funcionario_sol_rpcd_oficial||''')::varchar as firma_rpc,
                       ('''||v_nro_tramite||''')::varchar as nro_tramite,
                       ('''||v_fecha_firma_rpcd_pru||''')::varchar as fecha_firma,
-                      ('''||v_fecha_literal||''')::varchar as fecha_literal';
+                      ('''||v_fecha_literal||''')::varchar as fecha_literal,
+                      ('''||v_fecha_cotizacion_rep||''')::varchar as fecha_cotizacion';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
