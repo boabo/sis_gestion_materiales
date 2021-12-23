@@ -247,7 +247,7 @@ BEGIN
             -----------------------------------------------------------------------------
 
             FOR v_registros in (
-                                  select 	ds.nro_parte,
+                                  /*select 	ds.nro_parte,
                                             ds.cantidad_sol,
                                             ds.precio_unitario,
                                             ds.precio_unitario as precio_unitario_mb,
@@ -262,7 +262,27 @@ BEGIN
                                             ds.id_orden_trabajo
 
                                   from mat.tdetalle_sol ds
-                                  where ds.id_solicitud =  p_id_solicitud
+                                  where ds.id_solicitud =  p_id_solicitud*/
+
+                                  /*Tomar en cuenta de la cotizacion adjudicada*/
+                                  select 	det.nro_parte_cot,
+                                            det.cantidad_det,
+                                            det.precio_unitario,
+                                            det.precio_unitario_mb as precio_unitario_mb,
+
+                                            ds.id_concepto_ingas,
+                                            ds.id_centro_costo,
+                                            ds.id_partida,
+                                            ds.id_cuenta,
+                                            ds.id_auxiliar,
+                                            ds.id_partida_ejecucion,
+                                            (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion,
+                                            ds.id_orden_trabajo
+
+                                    from mat.tdetalle_sol ds
+                                    inner join mat.tcotizacion_detalle det on det.id_detalle = ds.id_detalle
+                                    inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
+                                    where ds.id_solicitud = p_id_solicitud
 
             )LOOP
 

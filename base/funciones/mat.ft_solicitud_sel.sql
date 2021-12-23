@@ -735,18 +735,21 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.metodo_de_adjudicación,
                                 '''||v_fecha_salida_gm||'''::date as fecha_salida,
                                 (CASE
-                                     WHEN trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-''
+                                     --WHEN trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-''
+                                     WHEN ((trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
+
 
                                      THEN trim(de.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
 
-                                     ELSE  detcot.explicacion_detallada_part_cot
+                                     --ELSE  detcot.explicacion_detallada_part_cot
+                                     ELSE  de.nro_parte_alterno
                                 END)::varchar
                                 /*****************************************/
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
 
                                 left join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
-								left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.nro_parte_cot = de.nro_parte
+								left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = de.id_detalle
 
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
@@ -2023,20 +2026,22 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           '''||v_fecha_salida_gm||'''::date as fecha_salida,
 
                           (CASE
-                                     WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
+                                     --WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
+                                     WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
+
 
                                      THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
 
-                                     ELSE  detcot.explicacion_detallada_part_cot
+                                     --ELSE  detcot.explicacion_detallada_part_cot
+                                     ELSE  det.nro_parte_alterno
                                 END)::varchar
-
 
                           from mat.tdetalle_sol det
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
 
                           left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
-                          left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.nro_parte_cot = det.nro_parte
+                          left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle
 
 
 
@@ -2800,17 +2805,20 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
                            '''||v_fecha_salida_gm||'''::date as fecha_salida,
                            coalesce(array_to_string(pxp.aggarray(CASE
-                                     WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
+                                     --WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
+									 WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
+
 
                                      THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
 
-                                     ELSE  detcot.explicacion_detallada_part_cot
+                                     --ELSE  detcot.explicacion_detallada_part_cot
+                                     ELSE  det.nro_parte_alterno
                                 END),''|'')::varchar,''''::varchar)::varchar
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 
                           left join mat.tcotizacion cot on cot.id_solicitud = s.id_solicitud and cot.adjudicado = ''si''
-						  left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.nro_parte_cot = det.nro_parte
+						  left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle
 
 
 						  left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = s.id_solicitud
