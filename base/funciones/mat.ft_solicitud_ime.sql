@@ -2261,6 +2261,12 @@ END IF;
             /************************************************************************************************/
 
           IF (v_codigo_estado_siguiente='despachado')THEN
+
+          	if ((v_solicitud.fecha_po is null) ) then
+            	raise exception 'La fecha del (PO/REP) no puede ser vacia, favor verificar';
+            end if;
+
+
             if (pxp.f_get_variable_global('interviene_presupuesto') = 'si') then
               /*Aqui ponemos un control para que presupuesto (Ismael valdivia 27/04/2020)*/
                if (v_solicitud.revisado_presupuesto = 'no') then

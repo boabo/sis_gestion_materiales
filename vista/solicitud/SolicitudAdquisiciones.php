@@ -396,6 +396,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
             var data = this.getSelectedData();
 
+            this.Cmp.fecha_po.allowBlank= false;
+            this.Cmp.fecha_entrega.allowBlank= false;
+
             //this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto. Cuando se traten de componentes Rotables por favor detallar el tiempo de garantía del componente ofertado en cada cotización y en caso de ser adjudicado también detallar en la factura.');
 
             if (this.Cmp.tipo_de_adjudicacion.getValue() == '') {
@@ -431,6 +434,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.Cmp.fecha_po.setDisabled(false);
                 this.Cmp.fecha_entrega.setDisabled(false);
                 this.Cmp.remark.allowBlank = false,
+
                 this.mostrarComponente(this.Cmp.remark);
                 this.mostrarComponente(this.Cmp.condicion);
 
