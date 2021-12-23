@@ -322,8 +322,10 @@ BEGIN
                         v_registros.id_auxiliar,
                         v_registros.id_partida_ejecucion,
 
-                        (v_registros.cantidad_sol *v_registros.precio_unitario),
-                        (v_registros.cantidad_sol *v_registros.precio_unitario_mb),
+                        --(v_registros.cantidad_sol *v_registros.precio_unitario),
+                        --(v_registros.cantidad_sol *v_registros.precio_unitario_mb),
+                        (v_registros.cantidad_det *v_registros.precio_unitario),
+                        (v_registros.cantidad_det *v_registros.precio_unitario_mb),
                         v_registros.descripcion,
                         v_registros.id_orden_trabajo
                       )RETURNING id_obligacion_det into v_id_obligacion_det;
