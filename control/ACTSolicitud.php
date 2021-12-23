@@ -2235,6 +2235,15 @@ class ACTSolicitud extends ACTbase{
        $this->res->imprimirRespuesta($this->res->generarJson());
    }
 
+   function controlReimpresion(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->controlReimpresion($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+
+
+
+
 }
 
 ?>

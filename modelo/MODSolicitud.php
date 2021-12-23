@@ -2181,6 +2181,24 @@ class MODSolicitud extends MODbase
         return $this->respuesta;
     }
 
+
+    function controlReimpresion(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.ft_control_revision_reportes';
+        $this->transaccion='MAT_REV_REPOR_SEL';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('po_inicio','po_inicio','numeric');
+        $this->setParametro('po_final','po_final','numeric');
+
+          //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        return $this->respuesta;
+    }
+
 }
 
 ?>
