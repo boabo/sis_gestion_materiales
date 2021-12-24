@@ -49,7 +49,7 @@ BEGIN
 
         begin
 
-           select usu.id_persona
+           select fun.id_funcionario
            into v_id_funcionario
            from segu.vusuario usu
            inner join orga.vfuncionario fun on fun.id_persona = usu.id_persona
