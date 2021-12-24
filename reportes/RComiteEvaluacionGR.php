@@ -380,7 +380,7 @@ class RComiteEvaluacionGR extends  ReportePDF
     //
     // }
     function generarImagen($nom, $car, $ofi, $fecha){
-        $cadena_qr = 'Nombre: '.$nom. "\n" . 'Cargo: '.$car."\n".'Oficina: '.$ofi."\n".'Fecha: '.$fecha ;
+        $cadena_qr = 'Nombre: '.$nom. "\n" . 'Cargo: '.$car."\n".'Fecha: '.$fecha ;
         $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
         $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
         $im = imagecreatefromstring($png);
