@@ -81,27 +81,29 @@ Class RSolicitudCompraBoARep extends Report {
         $gestion = $this->getDataSource()->getParameter('desc_gestion');
         $cigla_tramite = array('GM', 'GO', 'GA', 'GC');
 
-        if(in_array(substr($this->getDataSource()->getParameter('num_tramite'),0, 2), $cigla_tramite)){
-            if ( $this->getDataSource()->getParameter('fecha_soli_material') >= '2019-09-01' ) {
-                $fecha_solicitud = $this->getDataSource()->getParameter('fecha_soli_material');
-            }else{
-                $fecha_solicitud = $this->getDataSource()->getParameter('fecha_solicitud');
-            }
-        }else{
-            if ( $this->getDataSource()->getParameter('fecha_soli_gant') >= '2019-09-01'){
-                $fecha_solicitud = $this->getDataSource()->getParameter('fecha_soli_gant');
-            }else{
-                $fecha_solicitud = $this->getDataSource()->getParameter('fecha_solicitud');
-            }
-        }
+        // if(in_array(substr($this->getDataSource()->getParameter('num_tramite'),0, 2), $cigla_tramite)){
+        //     if ( $this->getDataSource()->getParameter('fecha_soli_material') >= '2019-09-01' ) {
+        //         $fecha_solicitud = $this->getDataSource()->getParameter('fecha_soli_material');
+        //     }else{
+        //         $fecha_solicitud = $this->getDataSource()->getParameter('fecha_solicitud');
+        //     }
+        // }else{
+        //     if ( $this->getDataSource()->getParameter('fecha_soli_gant') >= '2019-09-01'){
+        //         $fecha_solicitud = $this->getDataSource()->getParameter('fecha_soli_gant');
+        //     }else{
+        //         $fecha_solicitud = $this->getDataSource()->getParameter('fecha_solicitud');
+        //     }
+        // }
+        //
+        // if(in_array(substr($this->getDataSource()->getParameter('num_tramite'),0, 2), $cigla_tramite)){
+        //     // if( $fecha_solicitud  >= '2019-09-01' ){
+        //     //     if ($fecha_apro != null || $fecha_apro != ''){
+        //     //         $fecha_apro = date_format(date_create($fecha_solicitud), 'd-m-Y');
+        //     //     }
+        //     // }
+        // }
 
-        if(in_array(substr($this->getDataSource()->getParameter('num_tramite'),0, 2), $cigla_tramite)){
-            // if( $fecha_solicitud  >= '2019-09-01' ){
-            //     if ($fecha_apro != null || $fecha_apro != ''){
-            //         $fecha_apro = date_format(date_create($fecha_solicitud), 'd-m-Y');
-            //     }
-            // }
-        }
+        $fecha_solicitud = $this->getDataSource()->getParameter('fecha_solicitud');
         // if ($fecha_apro != null || $fecha_apro != ''){
         //     $fecha_apro = date_format(date_create($fecha_apro), 'd-m-Y');
         // }
