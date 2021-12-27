@@ -159,7 +159,7 @@ BEGIN
               v_registros_solicitud_mat.id_moneda,
               'gestion_mat', --'adquisiciones',
               now(),
-              null, --pxp.f_iif(v_num_contrato is NULL, v_registros_cotizacion.numero_oc, v_num_contrato),
+              v_registros_solicitud_mat.nro_tramite, --null, --pxp.f_iif(v_num_contrato is NULL, v_registros_cotizacion.numero_oc, v_num_contrato),
               1,--v_registros_solicitud_mat.tipo_cambio, -- 2,  --v_registros_cotizacion.tipo_cambio_conv,??
               v_registros_solicitud_mat.nro_tramite,
               v_registros_solicitud_mat.id_gestion,
@@ -222,7 +222,7 @@ BEGIN
               v_registros_solicitud_mat.id_moneda,
               'gestion_mat', --'adquisiciones',
               now(),
-              null, --pxp.f_iif(v_num_contrato is NULL, v_registros_cotizacion.numero_oc, v_num_contrato),
+              v_registros_solicitud_mat.nro_tramite, --null, --pxp.f_iif(v_num_contrato is NULL, v_registros_cotizacion.numero_oc, v_num_contrato),
               1,--v_registros_solicitud_mat.tipo_cambio, -- 2,  --v_registros_cotizacion.tipo_cambio_conv,??
               v_registros_solicitud_mat.nro_tramite,
               v_registros_solicitud_mat.id_gestion,
