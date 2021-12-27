@@ -42,7 +42,7 @@ class RInformJustificacionRep extends  ReportePDF
         //var_dump("lelga aqui",$this->datos[0]['tipo_taller']);
         if ($this->datos[0]['tipo_taller'] == NULL) {
           $inciso = 'b)/d)';
-        } elseif ($this->datos[0]['tipo_taller'] == 'taller_repues_abas' ) {
+        } elseif ($this->datos[0]['tipo_taller'] == 'taller_repues_abas' || $this->datos[0]['tipo_taller'] == 'taller-abas') {
           $inciso = 'd, efectua el presente proceso de contratación directa. para la contratación de servicio denominado';
         } elseif ($this->datos[0]['tipo_taller'] == 'broker_repues_abas' ) {
           $inciso = 'b, efectua el presente proceso de contratación directa. para la contratación de servicio denominado';
