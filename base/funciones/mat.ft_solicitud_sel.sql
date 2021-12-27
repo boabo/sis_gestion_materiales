@@ -288,6 +288,7 @@ DECLARE
      v_cargo_solicitante	varchar;
      v_fecha_po_rep		varchar;
      v_fecha_cotizacion_rep	varchar;
+     v_cotizacion_fecha	varchar;
     /**************************************************/
 BEGIN
 
@@ -742,6 +743,11 @@ v_consulta:='select		sol.id_solicitud,
 
 
                                      THEN trim(de.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+
+                                     WHEN ((trim(de.nro_parte_alterno) = '''' or trim(de.nro_parte_alterno) = ''-'' or trim(de.nro_parte_alterno) = ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
+
+
+                                      THEN detcot.explicacion_detallada_part_cot
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                      ELSE  de.nro_parte_alterno
@@ -2034,6 +2040,10 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                                      THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
 
+                                     WHEN ((trim(det.nro_parte_alterno) = '''' or trim(det.nro_parte_alterno) = ''-'' or trim(det.nro_parte_alterno) = ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
+
+									  THEN detcot.explicacion_detallada_part_cot
+
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                      ELSE  det.nro_parte_alterno
                                 END)::varchar
@@ -2858,13 +2868,19 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            '''||v_fecha_salida_gm||'''::date as fecha_salida,
                            coalesce(array_to_string(pxp.aggarray(CASE
                                      --WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
-									 WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
+                                      WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
 
 
-                                     THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+                                      THEN trim(det.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+
+
+                                      WHEN ((trim(det.nro_parte_alterno) = '''' or trim(det.nro_parte_alterno) = ''-'' or trim(det.nro_parte_alterno) = ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
+
+
+                                      THEN detcot.explicacion_detallada_part_cot
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
-                                     ELSE  det.nro_parte_alterno
+                                      ELSE  det.nro_parte_alterno
                                 END),''|'')::varchar,''''::varchar)::varchar
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
@@ -3108,6 +3124,22 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             FROM pre.tdireccion_administrativa tda;
 
 
+             /*Aumentando para recuperar la fecha de la cotizacion*/
+            select cot.fecha_cotizacion
+            into
+            v_cotizacion_fecha
+            from mat.tsolicitud sol
+            inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+            where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+            if (v_cotizacion_fecha is null) then
+            	v_cotizacion_fecha = '';
+            end if;
+
+
+            /*****************************************************/
+
+
 			v_consulta:='
             SELECT
             vcp.id_categoria_programatica AS id_cp,
@@ -3138,7 +3170,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             coalesce(ts.codigo_poa,''''::varchar) as codigo_poa,
 
             ob.descripcion as codigo_descripcion,
-            ''''::varchar as tipo
+            ''''::varchar as tipo,
+            '''||v_cotizacion_fecha||'''::varchar as fecha_cotizacion
             FROM mat.tsolicitud ts
             INNER JOIN mat.tdetalle_sol tsd ON tsd.id_solicitud = ts.id_solicitud
             INNER JOIN pre.tpartida tpar ON tpar.id_partida = tsd.id_partida
@@ -4270,6 +4303,23 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             from orga.vfuncionario_ultimo_cargo fu
             inner join orga.tuo uo on uo.id_uo = fu.id_uo
             where fu.id_funcionario = v_id_gerente_rep;
+
+
+            /*Aumentando para recuperar la fecha de la cotizacion*/
+            select cot.fecha_cotizacion
+            into
+            v_cotizacion_fecha
+            from mat.tsolicitud sol
+            inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+            where sol.id_proceso_wf = v_proces_wf;
+            /*****************************************************/
+
+        if (v_cotizacion_fecha is null) then
+        	v_cotizacion_fecha = '';
+        end if;
+
+
+
 		if (v_nombre_macro = 'Reparacion de Repuestos') then
 
         	SELECT  twf.id_funcionario,
@@ -4325,7 +4375,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         ('''||v_desc_uo||''')::varchar as desc_uo,
                         '''||v_cargo_solicitante||'''::varchar as cargo_desc_funcionario,
                         ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
-                        '''||v_nombre_macro||'''::varchar as nombre_macro
+                        '''||v_nombre_macro||'''::varchar as nombre_macro,
+                        '''||v_cotizacion_fecha||'''::varchar as cotizacion_fecha
 						from mat.tsolicitud sol
                         inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                         inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = sol.id_funcionario_solicitante
@@ -4370,7 +4421,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         ('''||v_desc_uo||''')::varchar as desc_uo,
                         fun.descripcion_cargo::varchar as cargo_desc_funcionario,
                         ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
-                        '''||v_nombre_macro||'''::varchar as nombre_macro
+                        '''||v_nombre_macro||'''::varchar as nombre_macro,
+                        '''||v_cotizacion_fecha||'''::varchar as cotizacion_fecha
 						from mat.tsolicitud sol
                         inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                         inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = sol.id_funcionario_solicitante

@@ -10,7 +10,7 @@ class RCertificacionPresupuestaria extends  ReportePDF{
     var $cantidad_columnas_estaticas;
 
     function Header() {
-        $this->Ln(3); 
+        $this->Ln(3);
 
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
@@ -69,7 +69,7 @@ class RCertificacionPresupuestaria extends  ReportePDF{
         /*if($firma_fecha[0]=='vbrpc') {
             $fecha = date_create($firma_fecha[1]);
         }*/
-        $fecha = date_format(date_create($this->datos[0]['fecha_soli']),'d/m/Y');
+        $fecha = date_format(date_create($this->datos[0]['fecha_cotizacion']),'d/m/Y');
 
 
         /*AUMENTANDO CODIGO PRUEBA IRVA*/

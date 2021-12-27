@@ -1630,6 +1630,7 @@ class ACTSolicitud extends ACTbase{
       $dataSource->putParameter('cargo_desc_funcionario', $datosSolicitud[0]['cargo_desc_funcionario']);
       $dataSource->putParameter('desc_cargo_gerente', $datosSolicitud[0]['desc_cargo_gerente']);
       $dataSource->putParameter('nombre_macro', $datosSolicitud[0]['nombre_macro']);
+      $dataSource->putParameter('cotizacion_fecha', $datosSolicitud[0]['cotizacion_fecha']);
 
       //get detalle
       //Reset all extra params:

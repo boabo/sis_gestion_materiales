@@ -1574,6 +1574,7 @@ class MODSolicitud extends MODbase
         $this->captura('codigo_poa', 'varchar');
         $this->captura('codigo_descripcion', 'varchar');
         $this->captura('tipo', 'varchar');
+        $this->captura('fecha_cotizacion', 'varchar');
 
 
         //Ejecuta la instruccion
@@ -1862,6 +1863,7 @@ class MODSolicitud extends MODbase
       $this->captura('cargo_desc_funcionario','varchar');
       $this->captura('desc_cargo_gerente','varchar');
       $this->captura('nombre_macro','varchar');
+      $this->captura('cotizacion_fecha','varchar');
 
       $this->armarConsulta();
       //var_dump("aqui llegada",$this->respuesta);

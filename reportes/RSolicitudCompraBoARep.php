@@ -103,7 +103,7 @@ Class RSolicitudCompraBoARep extends Report {
         //     // }
         // }
 
-        $fecha_solicitud = $this->getDataSource()->getParameter('fecha_solicitud');
+        $fecha_solicitud = $this->getDataSource()->getParameter('cotizacion_fecha');
         // if ($fecha_apro != null || $fecha_apro != ''){
         //     $fecha_apro = date_format(date_create($fecha_apro), 'd-m-Y');
         // }
