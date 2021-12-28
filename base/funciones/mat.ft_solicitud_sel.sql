@@ -289,6 +289,8 @@ DECLARE
      v_fecha_po_rep		varchar;
      v_fecha_cotizacion_rep	varchar;
      v_cotizacion_fecha	varchar;
+     v_fecha_cotizacion_oficial	varchar;
+     v_fecha_firma_envio	varchar;
     /**************************************************/
 BEGIN
 
@@ -3667,8 +3669,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    list (detcot.referencia_cot),
                    list (detcot.cd),
                    list (COALESCE (detcot.precio_unitario,0)::varchar),
-                   list (COALESCE (detcot.precio_unitario_mb,0)::varchar)
-                   --to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
+                   list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
+                   to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
                    INTO
                    v_num_part,
                    v_num_part_alt,
@@ -3677,8 +3679,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_serial,
                    v_cd,
                    v_precio_unitario,
-                   v_precio_total
-                   --v_fecha_cotizacion
+                   v_precio_total,
+                   v_fecha_cotizacion_oficial
             from mat.tcotizacion cot
             inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
             where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
@@ -3767,6 +3769,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             /*********************************************************************************************************************************/
 
 
+            SELECT to_char(twf.fecha_reg,'DD/MM/YYYY') into v_fecha_firma_envio
+            FROM wf.testado_wf twf
+            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+            WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND
+                  te.codigo = 'cotizacion_solicitada'
+            order by twf.fecha_reg desc
+            limit 1;
+
+
 
             /*****************************************************/
             v_fecha_cotizacion = '';
@@ -3783,9 +3794,14 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
 
-            /*if (v_fecha_cotizacion is null) then
-            	v_fecha_cotizacion = '';
-            end if;*/
+            if (v_fecha_cotizacion_oficial is null) then
+            	v_fecha_cotizacion_oficial = '';
+            end if;
+
+
+            if (v_fecha_firma_envio is null) then
+            	v_fecha_firma_envio = '';
+            end if;
 
 
             /*Aqui recuperamos el detalle de la solicitud*/
@@ -3945,7 +3961,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
            			  ('''||v_num_tramite_rep||''')::varchar as num_tramite,
                       ('''||v_fecha_solicitud||''')::varchar as fecha_solicitud,
                       ('''||v_fecha_order||''')::varchar as fecha_order,
-                      ('''||v_fecha_cotizacion||''')::varchar as fecha_cotizacion,
+                      ('''||v_fecha_cotizacion||''')::varchar as fecha_aprobacion,
                       ('''||v_num_part||''')::varchar as num_part,
                       ('''||v_num_part_alt||''')::varchar as num_part_alt,
                       ('''||v_cantidad||''')::varchar as cantidad,
@@ -3967,7 +3983,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_nro_parte_alterna_det||''')::varchar as parte_alter_det,
                       ('''||v_descripcion_det||''')::varchar as desc_det,
                       ('''||v_serial_det||''')::varchar as serial_det,
-                      ('''||v_nro_lote||''')::varchar as nro_lote';
+                      ('''||v_nro_lote||''')::varchar as nro_lote,
+                      ('''||v_fecha_cotizacion_oficial||''')::varchar as fecha_cotizacion,
+                      ('''||v_fecha_firma_envio||''')::varchar as fecha_envio';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
