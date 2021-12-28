@@ -948,3 +948,11 @@ ALTER TABLE mat.tcotizacion
  ALTER TABLE mat.tcotizacion
   ALTER COLUMN obs TYPE VARCHAR COLLATE pg_catalog."default";
 /***********************************F-SCP-IRVA-MAT-0-27/12/2021****************************************/
+
+/***********************************I-SCP-MAY-MAT-0-28/12/2021****************************************/
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN id_obligacion_pago INTEGER;
+
+COMMENT ON COLUMN mat.tsolicitud.id_obligacion_pago
+IS 'identificador integracion con obligacion de pago';
+/***********************************F-SCP-MAY-MAT-0-28/12/2021****************************************/
