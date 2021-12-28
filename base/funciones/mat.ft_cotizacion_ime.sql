@@ -372,16 +372,16 @@ BEGIN
             begin
 
                 select
-                      string_agg (d.nro_parte::VARCHAR,','),
-                      string_agg (d.nro_parte_alterno,','),
-                      string_agg (d.referencia,','),
-                      string_agg (d.descripcion,','),
-                      string_agg (d.explicacion_detallada_part::VARCHAR,','),
-                      string_agg (d.tipo::VARCHAR,','),
-                      string_agg (d.cantidad_sol::VARCHAR,','),
-                      string_agg (d.id_unidad_medida::VARCHAR,','),
-                      string_agg (med.codigo::VARCHAR,','),
-                      string_agg (d.id_detalle::VARCHAR,',')
+                      string_agg (d.nro_parte::VARCHAR,'||'),
+                      string_agg (d.nro_parte_alterno,'||'),
+                      string_agg (d.referencia,'||'),
+                      string_agg (d.descripcion,'||'),
+                      string_agg (d.explicacion_detallada_part::VARCHAR,'||'),
+                      string_agg (d.tipo::VARCHAR,'||'),
+                      string_agg (d.cantidad_sol::VARCHAR,'||'),
+                      string_agg (d.id_unidad_medida::VARCHAR,'||'),
+                      string_agg (med.codigo::VARCHAR,'||'),
+                      string_agg (d.id_detalle::VARCHAR,'||')
                       into
                       v_nro_parte,
                       v_nro_parte_alterno,

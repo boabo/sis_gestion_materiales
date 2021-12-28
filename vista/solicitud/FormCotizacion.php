@@ -936,16 +936,16 @@ header("content-type: text/javascript; charset=UTF-8");
                   this.cod_medida_rec = reg.ROOT.datos.cod_medida;
                   this.id_detalle_rec = reg.ROOT.datos.id_detalle;
 
-                  this.nro_parte_json = this.nro_parte_rec.split(",");
-                  this.nro_parte_alterno_json = this.nro_parte_alterno_rec.split(",");
-                  this.referencia_json = this.referencia_rec.split(",");
-                  this.descripcion_json = this.descripcion_rec.split(",");
-                  this.explicacion_detallada_part_json = this.explicacion_detallada_part_rec.split(",");
-                  this.tipo_json = this.tipo_rec.split(",");
-                  this.cantidad_sol_json = this.cantidad_sol_rec.split(",");
-                  this.id_unidad_medida_json = this.id_unidad_medida_rec.split(",");
-                  this.cod_medida_json = this.cod_medida_rec.split(",");
-                  this.id_detalle_json = this.id_detalle_rec.split(",");
+                  this.nro_parte_json = this.nro_parte_rec.split("||");
+                  this.nro_parte_alterno_json = this.nro_parte_alterno_rec.split("||");
+                  this.referencia_json = this.referencia_rec.split("||");
+                  this.descripcion_json = this.descripcion_rec.split("||");
+                  this.explicacion_detallada_part_json = this.explicacion_detallada_part_rec.split("||");
+                  this.tipo_json = this.tipo_rec.split("||");
+                  this.cantidad_sol_json = this.cantidad_sol_rec.split("||");
+                  this.id_unidad_medida_json = this.id_unidad_medida_rec.split("||");
+                  this.cod_medida_json = this.cod_medida_rec.split("||");
+                  this.id_detalle_json = this.id_detalle_rec.split("||");
 
                   var grillaRecord =  Ext.data.Record.create([
                       {name:'nro_parte_cot', type: 'varchar'},
