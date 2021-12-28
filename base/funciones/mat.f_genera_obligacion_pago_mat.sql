@@ -334,6 +334,10 @@ BEGIN
             END LOOP;
 
 
+			   --UPDATE DATOS OP-GM
+               update mat.tsolicitud s set
+               	id_obligacion_pago = v_id_obligacion_pago
+               where s.id_solicitud  = p_id_solicitud;
 
 			  --UPDATE DATOS WF de la OP
                update tes.tobligacion_pago  o set
