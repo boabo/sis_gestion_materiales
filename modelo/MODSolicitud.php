@@ -1191,7 +1191,7 @@ class MODSolicitud extends MODbase
         $this->captura('num_tramite', 'varchar');
         $this->captura('fecha_solicitud', 'varchar');
         $this->captura('fecha_order', 'varchar');
-        $this->captura('fecha_cotizacion', 'varchar');
+        $this->captura('fecha_aprobacion', 'varchar');
 
         $this->captura('num_part', 'varchar');
         $this->captura('num_part_alt', 'varchar');
@@ -1215,6 +1215,8 @@ class MODSolicitud extends MODbase
         $this->captura('desc_det', 'varchar');
         $this->captura('serial_det', 'varchar');
         $this->captura('nro_lote', 'varchar');
+        $this->captura('fecha_cotizacion', 'varchar');
+        $this->captura('fecha_envio', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

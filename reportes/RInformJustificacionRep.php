@@ -63,7 +63,7 @@ class RInformJustificacionRep extends  ReportePDF
         $tb='<table cellspacing="0" cellpadding="1" style="font-size:14px;">
               <tr>
                 <th align="center" style="border:1px solid #000000;" width="60"><b>Fecha:</b></th>
-                <th align="center" style="border:1px solid #000000;">'.$this->datos[0]["fecha_cotizacion"].'</th>
+                <th align="center" style="border:1px solid #000000;">'.$this->datos[0]["fecha_aprobacion"].'</th>
                 <th align="center" width="211"> </th>
                 <th align="center" width="250" style="border:1px solid #000000;"><b>OB.DAB.REP. '.$this->datos[0]['nro_rep'].' .'.$this->datos[0]['gestion'].'</b></th>
               </tr>
@@ -138,7 +138,7 @@ class RInformJustificacionRep extends  ReportePDF
                </table>
                <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                        <tr>
-                         <th align="left">En fecha <b>'.$this->datos[0]["fecha_solicitud"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
+                         <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
                           obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que cotiza '.$texto_ref.' de acuerdo al siguiente cuadro:</th>
                        </tr>
                </table>
