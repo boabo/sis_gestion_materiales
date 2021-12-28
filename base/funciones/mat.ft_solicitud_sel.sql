@@ -2839,7 +2839,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                        where fun.nombre_cargo = 'Gerente Administrativo Financiero'
                        AND v_fecha_firma_presu_qr::date between fun.fecha_asignacion and coalesce(fun.fecha_finalizacion,now()))
                     end) into v_nombre_funcionario_af_qr;
-       end if;
+
 
           v_consulta='select
            			      '''||v_estado_actual||'''::varchar AS estado_actual,
@@ -2893,6 +2893,43 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           left join mat.tcotizacion tc ON tc.id_solicitud = s.id_solicitud AND tc.adjudicado = ''si''
                           left join mat.tsolicitud_pac sp on sp.id_proceso_wf = s.id_proceso_wf
                           where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
+
+    ELSE
+    					v_consulta='select
+           			      '''||v_estado_actual||'''::varchar AS estado_actual,
+           				  '''||COALESCE(v_nom_unidad[1],'')||'''::varchar AS unidad_sol,
+                          '''||v_gerencia||'''::varchar AS gerencia,
+                          '''||COALESCE (v_funcionario_sol,'')||'''::varchar AS funcionario_sol,
+                          '''||COALESCE(v_nombre_funcionario_af_qr,' ')||'''::varchar AS funcionario_adm,
+                          '''||COALESCE(v_nombre_funcionario_presu_qr,' ')||'''::varchar AS funcionario_pres,
+                          '''||COALESCE(v_codigo_pre,' ')||'''::varchar AS codigo_pres,
+                          COALESCE(array_length(pxp.aggarray(det.nro_parte),1),0)::integer AS nro_items,
+                          COALESCE(tgp.adjudicado,''POR COTIZAR'')::varchar AS adjudicado,
+                          s.motivo_solicitud::varchar,
+
+                          coalesce(array_to_string(pxp.aggarray(det.nro_parte),''|'')::varchar,''''::varchar) as nro_partes,
+                          coalesce(array_to_string(pxp.aggarray(det.nro_parte_alterno),''|'')::varchar,''''::varchar) as nro_partes_alternos,
+                            '''||COALESCE(v_nro_cite_dce,'')||'''::varchar AS nro_cobs,
+                          s.fecha_solicitud::date,
+                          (case
+                          		when sp.monto=0 then tc.monto_total
+                                when sp.monto is Null then tc.monto_total
+                                when sp.monto>0 then sp.monto
+                            end)AS monto_ref,
+                           '''||COALESCE(v_funcionario,'')||'''::varchar AS funcionario,
+                           sp.observaciones,
+                           substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
+                           '''||v_fecha_salida_gm||'''::date as fecha_salida,
+                           ''''::varchar
+                          from mat.tsolicitud s
+                          inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
+
+
+						  left join mat.tgestion_proveedores tgp ON tgp.id_solicitud = s.id_solicitud
+                          left join mat.tcotizacion tc ON tc.id_solicitud = s.id_solicitud AND tc.adjudicado = ''si''
+                          left join mat.tsolicitud_pac sp on sp.id_proceso_wf = s.id_proceso_wf
+                          where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
+	end if;
 
 
           v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite';
@@ -3134,6 +3171,70 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
             if (v_cotizacion_fecha is null) then
             	v_cotizacion_fecha = '';
+            end if;
+
+            /*Cambiando para recuperar la fecha del proceso wf*/
+
+            select
+        			to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
+                    to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
+                    sou.id_proceso_wf_firma,
+                    sou.estado_firma,
+                    sou.estado,
+                    sou.nro_tramite
+                    into
+                    v_fecha_po,
+                    v_fecha_solicitud,
+                    v_id_proceso_wf_firma,
+                    v_estado_firma_paralelo,
+                    v_estado_actual,
+                    v_nro_tramite
+            from mat.tsolicitud sou
+            where sou.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+
+            /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
+             if (v_estado_firma_paralelo = 'autorizado') then
+
+                      SELECT twf.fecha_reg into v_fecha_firma_dc_qr
+                      FROM wf.testado_wf twf
+                      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                      WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND
+                            te.codigo = 'autorizado'
+                      order by twf.fecha_reg desc
+                      limit 1;
+              /*************************************************************************/
+             end if;
+
+
+
+
+            /*Aqui recuperamos la Firma del encargado del comite de Unidad de abastecimiento*/
+            if (v_estado_actual != 'comite_unidad_abastecimientos') then
+
+                  SELECT twf.fecha_reg into v_fecha_firma_rev_qr
+                  FROM wf.testado_wf twf
+                  INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                  WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND
+                        te.codigo = 'autorizado'
+                  order by twf.fecha_reg desc
+                  limit 1; --comite abastecimiento
+            end if;
+            /*********************************************************************************************************************************/
+
+
+
+            /*****************************************************/
+            v_cotizacion_fecha = '';
+            if (v_fecha_firma_dc_qr is not null and v_fecha_firma_rev_qr is not null) THEN
+                if (v_fecha_firma_dc_qr::date > v_fecha_firma_rev_qr::date) then
+                    v_cotizacion_fecha = v_fecha_firma_dc_qr::varchar;
+                elsif (v_fecha_firma_rev_qr::date > v_fecha_firma_dc_qr::date) then
+                    v_cotizacion_fecha = v_fecha_firma_abas_qr::varchar;
+                elsif (v_fecha_firma_rev_qr::date = v_fecha_firma_dc_qr::date) then
+                    v_cotizacion_fecha = v_fecha_firma_rev_qr::varchar;
+                end if;
             end if;
 
 
@@ -3566,8 +3667,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    list (detcot.referencia_cot),
                    list (detcot.cd),
                    list (COALESCE (detcot.precio_unitario,0)::varchar),
-                   list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
-                   to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
+                   list (COALESCE (detcot.precio_unitario_mb,0)::varchar)
+                   --to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
                    INTO
                    v_num_part,
                    v_num_part_alt,
@@ -3576,8 +3677,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_serial,
                    v_cd,
                    v_precio_unitario,
-                   v_precio_total,
-                   v_fecha_cotizacion
+                   v_precio_total
+                   --v_fecha_cotizacion
             from mat.tcotizacion cot
             inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
             where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
@@ -3615,9 +3716,76 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             	v_precio_total = '0';
             end if;
 
-            if (v_fecha_cotizacion is null) then
-            	v_fecha_cotizacion = '';
+            /*Cambiando para recuperar la fecha del proceso wf*/
+
+            select
+        			to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
+                    to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
+                    sou.id_proceso_wf_firma,
+                    sou.estado_firma,
+                    sou.estado,
+                    sou.nro_tramite
+                    into
+                    v_fecha_po,
+                    v_fecha_solicitud,
+                    v_id_proceso_wf_firma,
+                    v_estado_firma_paralelo,
+                    v_estado_actual,
+                    v_nro_tramite
+            from mat.tsolicitud sou
+            where sou.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+
+            /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
+             if (v_estado_firma_paralelo = 'autorizado') then
+
+                      SELECT twf.fecha_reg into v_fecha_firma_dc_qr
+                      FROM wf.testado_wf twf
+                      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                      WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND
+                            te.codigo = 'autorizado'
+                      order by twf.fecha_reg desc
+                      limit 1;
+              /*************************************************************************/
+             end if;
+
+
+
+
+            /*Aqui recuperamos la Firma del encargado del comite de Unidad de abastecimiento*/
+            if (v_estado_actual != 'comite_unidad_abastecimientos') then
+
+                  SELECT twf.fecha_reg into v_fecha_firma_rev_qr
+                  FROM wf.testado_wf twf
+                  INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                  WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND
+                        te.codigo = 'autorizado'
+                  order by twf.fecha_reg desc
+                  limit 1; --comite abastecimiento
             end if;
+            /*********************************************************************************************************************************/
+
+
+
+            /*****************************************************/
+            v_fecha_cotizacion = '';
+            if (v_fecha_firma_dc_qr is not null and v_fecha_firma_rev_qr is not null) THEN
+                if (v_fecha_firma_dc_qr::date > v_fecha_firma_rev_qr::date) then
+                    v_fecha_cotizacion = to_char(v_fecha_firma_dc_qr::date,'DD/MM/YYYY');
+                elsif (v_fecha_firma_rev_qr::date > v_fecha_firma_dc_qr::date) then
+                    v_fecha_cotizacion = to_char(v_fecha_firma_abas_qr::date,'DD/MM/YYYY');
+                elsif (v_fecha_firma_rev_qr::date = v_fecha_firma_dc_qr::date) then
+                    v_fecha_cotizacion = to_char(v_fecha_firma_rev_qr::date,'DD/MM/YYYY');
+                end if;
+            end if;
+
+
+
+
+            /*if (v_fecha_cotizacion is null) then
+            	v_fecha_cotizacion = '';
+            end if;*/
 
 
             /*Aqui recuperamos el detalle de la solicitud*/
@@ -4306,17 +4474,76 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
             /*Aumentando para recuperar la fecha de la cotizacion*/
-            select cot.fecha_cotizacion
+            /*select cot.fecha_cotizacion
             into
             v_cotizacion_fecha
             from mat.tsolicitud sol
             inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
-            where sol.id_proceso_wf = v_proces_wf;
-            /*****************************************************/
+            where sol.id_proceso_wf = v_proces_wf;*/
 
-        if (v_cotizacion_fecha is null) then
-        	v_cotizacion_fecha = '';
-        end if;
+            /*Cambiando para recuperar la fecha del proceso wf*/
+
+            select
+        			to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
+                    to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
+                    sou.id_proceso_wf_firma,
+                    sou.estado_firma,
+                    sou.estado,
+                    sou.nro_tramite
+                    into
+                    v_fecha_po,
+                    v_fecha_solicitud,
+                    v_id_proceso_wf_firma,
+                    v_estado_firma_paralelo,
+                    v_estado_actual,
+                    v_nro_tramite
+            from mat.tsolicitud sou
+            where sou.id_proceso_wf = v_proces_wf;
+
+
+
+            /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
+             if (v_estado_firma_paralelo = 'autorizado') then
+
+                      SELECT twf.fecha_reg into v_fecha_firma_dc_qr
+                      FROM wf.testado_wf twf
+                      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                      WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND
+                            te.codigo = 'autorizado'
+                      order by twf.fecha_reg desc
+                      limit 1;
+              /*************************************************************************/
+             end if;
+
+
+
+
+            /*Aqui recuperamos la Firma del encargado del comite de Unidad de abastecimiento*/
+            if (v_estado_actual != 'comite_unidad_abastecimientos') then
+
+                  SELECT twf.fecha_reg into v_fecha_firma_rev_qr
+                  FROM wf.testado_wf twf
+                  INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                  WHERE twf.id_proceso_wf = v_proces_wf AND
+                        te.codigo = 'autorizado'
+                  order by twf.fecha_reg desc
+                  limit 1; --comite abastecimiento
+            end if;
+            /*********************************************************************************************************************************/
+
+
+
+            /*****************************************************/
+            v_cotizacion_fecha = '';
+            if (v_fecha_firma_dc_qr is not null and v_fecha_firma_rev_qr is not null) THEN
+                if (v_fecha_firma_dc_qr::date > v_fecha_firma_rev_qr::date) then
+                    v_cotizacion_fecha = v_fecha_firma_dc_qr::varchar;
+                elsif (v_fecha_firma_rev_qr::date > v_fecha_firma_dc_qr::date) then
+                    v_cotizacion_fecha = v_fecha_firma_abas_qr::varchar;
+                elsif (v_fecha_firma_rev_qr::date = v_fecha_firma_dc_qr::date) then
+                    v_cotizacion_fecha = v_fecha_firma_rev_qr::varchar;
+                end if;
+            end if;
 
 
 
@@ -4745,12 +4972,77 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
       where sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
 
-      SELECT sol.fecha_cotizacion
+      /*SELECT sol.fecha_cotizacion
       	     into
              v_fecha_cotizacion_rep
       FROM mat.tsolicitud sol
       inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
-      WHERE sol.id_proceso_wf = v_parametros.id_proceso_wf;
+      WHERE sol.id_proceso_wf = v_parametros.id_proceso_wf;*/
+
+
+      /*Cambiando para recuperar la fecha del proceso wf*/
+
+      select
+              to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
+              to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
+              sou.id_proceso_wf_firma,
+              sou.estado_firma,
+              sou.estado,
+              sou.nro_tramite
+              into
+              v_fecha_po,
+              v_fecha_solicitud,
+              v_id_proceso_wf_firma,
+              v_estado_firma_paralelo,
+              v_estado_actual,
+              v_nro_tramite
+      from mat.tsolicitud sou
+      where sou.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+
+      /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
+       if (v_estado_firma_paralelo = 'autorizado') then
+
+                SELECT twf.fecha_reg into v_fecha_firma_dc_qr
+                FROM wf.testado_wf twf
+                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND
+                      te.codigo = 'autorizado'
+                order by twf.fecha_reg desc
+                limit 1;
+        /*************************************************************************/
+       end if;
+
+
+
+
+      /*Aqui recuperamos la Firma del encargado del comite de Unidad de abastecimiento*/
+      if (v_estado_actual != 'comite_unidad_abastecimientos') then
+
+            SELECT twf.fecha_reg into v_fecha_firma_rev_qr
+            FROM wf.testado_wf twf
+            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+            WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND
+                  te.codigo = 'autorizado'
+            order by twf.fecha_reg desc
+            limit 1; --comite abastecimiento
+      end if;
+      /*********************************************************************************************************************************/
+
+
+
+      /*****************************************************/
+      v_fecha_cotizacion_rep = '';
+      if (v_fecha_firma_dc_qr is not null and v_fecha_firma_rev_qr is not null) THEN
+          if (v_fecha_firma_dc_qr::date > v_fecha_firma_rev_qr::date) then
+              v_fecha_cotizacion_rep = to_char(v_fecha_firma_dc_qr::date,'DD/MM/YYYY');
+          elsif (v_fecha_firma_rev_qr::date > v_fecha_firma_dc_qr::date) then
+              v_fecha_cotizacion_rep = to_char(v_fecha_firma_abas_qr::date,'DD/MM/YYYY');
+          elsif (v_fecha_firma_rev_qr::date = v_fecha_firma_dc_qr::date) then
+              v_fecha_cotizacion_rep = to_char(v_fecha_firma_rev_qr::date,'DD/MM/YYYY');
+          end if;
+      end if;
 
 
             if (v_estado_actual != 'vb_rpcd') then

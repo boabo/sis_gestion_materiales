@@ -40,6 +40,9 @@ $body$
 				and es.id_funcionario=p_id_funcionario
 				order by es.fecha_reg;
 
+
+
+
         select es.id_usuario_ai
         into es_id_usuario
         		from wf.testado_wf es
@@ -56,7 +59,7 @@ $body$
         into es_id_cargo
 				from orga.vfuncionario_cargo fu
 				where fu.id_funcionario=p_id_funcionario --370
-                AND( fu.fecha_finalizacion is null or fu.fecha_finalizacion >= now())
+                AND p_fecha::date between fu.fecha_asignacion and coalesce(fu.fecha_finalizacion,now())
 				order by fu.fecha_finalizacion desc
 				limit 1;
 
@@ -84,7 +87,7 @@ IF(es_id_cargo_suplente is not null)then
 				inner join orga.tfuncionario fu on fu.id_funcionario=f.id_funcionario
 				inner join segu.vusuario su on su.id_persona=fu.id_persona
 				where f.id_cargo=es_id_cargo_suplente--15781
-                and f.fecha_finalizacion is null;
+                and p_fecha::date between f.fecha_asignacion and coalesce(f.fecha_finalizacion,now());
 
 	return   resul;
 else
@@ -97,7 +100,7 @@ else
           inner join orga.vfuncionario_cargo f1 on f1.id_funcionario=f.id_funcionario
           --where us.id_usuario=es_id_usuario;
           where f.id_funcionario=p_id_funcionario
-          AND( f1.fecha_finalizacion is null or f1.fecha_finalizacion >= now());
+          and p_fecha::date between f1.fecha_asignacion and coalesce(f1.fecha_finalizacion,now());
 	return resul;
 end if;
 
