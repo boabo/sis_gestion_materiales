@@ -41,7 +41,7 @@ DECLARE
     v_funcionario_encargado_almacen	varchar;
     v_cargo_encargado_almacen		varchar;
     v_oficina_encargado_almacen		varchar;
-
+	v_fecha_reg_estado				varchar;
 
 BEGIN
 
@@ -63,18 +63,21 @@ BEGIN
             SELECT
                     vf.desc_funcionario1::varchar,
                     vf.nombre_cargo::varchar,
-                    vf.oficina_nombre::varchar
+                    twf.fecha_reg
             INTO
             		v_nombre_jefe_abastecimiento,
                     v_cargo_jefe_abastecimiento,
-                    v_oficina_jefe_abastecimiento
+                    v_fecha_reg_estado
             FROM wf.testado_wf twf
             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-            INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+            INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'revision'
+            and twf.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
             GROUP BY vf.desc_funcionario1,
                     vf.nombre_cargo,
-                    vf.oficina_nombre;
+                    twf.fecha_reg
+            ORDER BY  twf.fecha_reg DESC
+            limit 1;
 
 
             --Firma del encargado de almacen
@@ -92,14 +95,15 @@ BEGIN
 
 
             select car.desc_funcionario1,
-            	   car.nombre_cargo,
-                   car.oficina_nombre
+            	   car.nombre_cargo
             into
             	   v_funcionario_encargado_almacen,
-                   v_cargo_encargado_almacen,
-                   v_oficina_encargado_almacen
-            from orga.vfuncionario_ultimo_cargo car
-            where car.id_funcionario = v_funcionario_almacen;
+                   v_cargo_encargado_almacen
+            from orga.vfuncionario_cargo car
+            where car.id_funcionario = v_funcionario_almacen
+            and v_fecha_reg_estado::date between car.fecha_asignacion and coalesce(car.fecha_finalizacion, now())
+            ORDER BY  car.fecha_asignacion DESC
+            limit 1;
 
 
             /************************************************************************************************/
@@ -122,13 +126,13 @@ BEGIN
                                 /*Firma de jefe abastecimiento*/
                                 '''||v_nombre_jefe_abastecimiento||'''::varchar as jefe_abastecimiento,
                                 '''||v_cargo_jefe_abastecimiento||'''::varchar as cargo_jefe_abastecimiento,
-                                '''||v_oficina_jefe_abastecimiento||'''::varchar as oficina_abastecimiento,
+                                ''''::varchar as oficina_abastecimiento,
                                 /******************************/
 
                                  /*Firma encargado almacen*/
                                 '''||v_funcionario_encargado_almacen||'''::varchar as encargado_almacen,
                                 '''||v_cargo_encargado_almacen||'''::varchar as cargo_encargado_almacen,
-                                '''||v_oficina_encargado_almacen||'''::varchar as oficina_encargado_almacen
+                                ''''::varchar as oficina_encargado_almacen
                                 /******************************/
 
 
@@ -157,25 +161,27 @@ BEGIN
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-                               ing.desc_ingas::varchar,
-                               (CASE
-                                      WHEN sol.origen_pedido = ''Reparación de Repuestos''  THEN
-                                          (''P/N: ''||det.nro_parte||''  ''||det.descripcion||'' S/N: ''||det.referencia)
-                                      ELSE
-                                          (''P/N: ''||det.nro_parte||''  ''||det.descripcion||'' ''||
+                                ing.desc_ingas::varchar,
+                                (CASE
+                                WHEN sol.origen_pedido = ''Reparación de Repuestos''  THEN
+                                (''P/N: ''||detcot.explicacion_detallada_part_cot||''  ''||detcot.descripcion_cot||'' S/N: ''||detcot.referencia_cot)
+                                ELSE
+                                (''P/N: ''||detcot.explicacion_detallada_part_cot||''  ''||detcot.descripcion_cot||'' ''||
 
-                                              (case when det.tipo = ''Rotables'' THEN
-                                                  '' Rotable''
-                                               when det.tipo = ''Consumibles'' then
-                                                  '' Consumible''
-                                               else
-                                                  ''''
-                                              end ))
+                                (case when det.tipo = ''Rotables'' THEN
+                                '' Rotable''
+                                when det.tipo = ''Consumibles'' then
+                                '' Consumible''
+                                else
+                                ''''
+                                end ))
                                 END)::varchar as descripcion,
-                               det.cantidad_sol::integer
-                      from mat.tsolicitud sol
-                      inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
-                      inner join param.tconcepto_ingas ing on ing.id_concepto_ingas = det.id_concepto_ingas
+                                det.cantidad_sol::integer
+                                from mat.tsolicitud sol
+                                inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
+                                inner join param.tconcepto_ingas ing on ing.id_concepto_ingas = det.id_concepto_ingas
+                                inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
+                                inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle
                       where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
 			--raise notice '%',v_consulta;
 			--Devuelve la respuesta
