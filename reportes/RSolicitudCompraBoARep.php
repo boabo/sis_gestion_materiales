@@ -103,6 +103,8 @@ Class RSolicitudCompraBoARep extends Report {
         //     // }
         // }
 
+
+
         if ($this->getDataSource()->getParameter('cotizacion_fecha') != null && $this->getDataSource()->getParameter('cotizacion_fecha') != '') {
           $fecha_solicitud = $this->getDataSource()->getParameter('cotizacion_fecha');
           $fecha_cabezera = date_format(date_create($fecha_solicitud), 'd-m-Y');
@@ -453,14 +455,29 @@ Class RSolicitudCompraBoARep extends Report {
 
 
             foreach ($row['groupeddata'] as $solicitudDetalle) {
-                $table.='<tr>
-                            <td style="text-align: justify;">'.$solicitudDetalle['desc_concepto_ingas'].'</td>
-                            <td>'.stripcslashes(nl2br(htmlentities('P/N: '.$solicitudDetalle['nro_parte'].' '.$solicitudDetalle['descripcion'].' S/N: '.$solicitudDetalle['referencia']))).'</td>
-                            <td style="text-align: center;">'.$solicitudDetalle['cantidad_sol'].'</td>
-                            <td style="text-align: right;">'.number_format($solicitudDetalle['precio_unitario'],2,',','.').'</td>
-                            <td style="text-align: right;">'.number_format($solicitudDetalle['precio_total'],2,',','.').'</td>
-                         </tr>
-                        ';
+
+                 if (substr($this->getDataSource()->getParameter('num_tramite'),0, 2) != 'GR') {
+                   $table.='<tr>
+                               <td style="text-align: justify;">'.$solicitudDetalle['desc_concepto_ingas'].'</td>
+                               <td>'.stripcslashes(nl2br(htmlentities('P/N: '.$solicitudDetalle['nro_parte'].' '.$solicitudDetalle['descripcion']))).'</td>
+                               <td style="text-align: center;">'.$solicitudDetalle['cantidad_sol'].'</td>
+                               <td style="text-align: right;">'.number_format($solicitudDetalle['precio_unitario'],2,',','.').'</td>
+                               <td style="text-align: right;">'.number_format($solicitudDetalle['precio_total'],2,',','.').'</td>
+                            </tr>
+                           ';
+
+                 }else{
+                   $table.='<tr>
+                               <td style="text-align: justify;">'.$solicitudDetalle['desc_concepto_ingas'].'</td>
+                               <td>'.stripcslashes(nl2br(htmlentities('P/N: '.$solicitudDetalle['nro_parte'].' '.$solicitudDetalle['descripcion'].' S/N: '.$solicitudDetalle['referencia']))).'</td>
+                               <td style="text-align: center;">'.$solicitudDetalle['cantidad_sol'].'</td>
+                               <td style="text-align: right;">'.number_format($solicitudDetalle['precio_unitario'],2,',','.').'</td>
+                               <td style="text-align: right;">'.number_format($solicitudDetalle['precio_total'],2,',','.').'</td>
+                            </tr>
+                           ';
+                 }
+
+
                 /*$RowArray = array(
                         'desc_concepto_ingas'  => $solicitudDetalle['desc_concepto_ingas'],
                         'descripcion'  =>  $solicitudDetalle['descripcion'],
