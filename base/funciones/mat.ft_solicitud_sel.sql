@@ -705,7 +705,30 @@ v_consulta:='select		sol.id_solicitud,
     elsif(p_transaccion='MAT_REING_SEL')then
 
 		begin
-			v_consulta:='select
+			v_consulta:='WITH part_number_cotizaciones as (select
+                                                            list(CASE
+                                                                 --WHEN trim(de.nro_parte_alterno) != '''''' and trim(de.nro_parte_alterno) != ''-''
+                                                                 WHEN ((trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
+
+
+                                                                 THEN trim(de.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
+
+                                                                 WHEN ((trim(de.nro_parte_alterno) = '''' or trim(de.nro_parte_alterno) = ''-'' or trim(de.nro_parte_alterno) = ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
+
+
+                                                                  THEN detcot.explicacion_detallada_part_cot
+
+                                                                 --ELSE  detcot.explicacion_detallada_part_cot
+                                                                 ELSE  de.nro_parte_alterno
+                                                            END)::varchar as part_number_alternos,
+                                                            de.id_detalle
+                                                            /*****************************************/
+                                                            from mat.tsolicitud sol
+                                                            inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
+                                                            left join mat.tcotizacion_detalle detcot on detcot.id_detalle = de.id_detalle
+                                                            where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'
+                                                            group by de.id_detalle)
+                          select
                                 sol.id_solicitud,
                                 to_char( sol.fecha_solicitud,''DD/MM/YYYY'') as fecha_solicitud,
                                 ot.motivo_orden,
@@ -739,27 +762,13 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.tipo_de_adjudicacion,
                                 sol.metodo_de_adjudicación,
                                 '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                                (CASE
-                                     --WHEN trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-''
-                                     WHEN ((trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
-
-
-                                     THEN trim(de.nro_parte_alterno)||'',''||detcot.explicacion_detallada_part_cot
-
-                                     WHEN ((trim(de.nro_parte_alterno) = '''' or trim(de.nro_parte_alterno) = ''-'' or trim(de.nro_parte_alterno) = ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
-
-
-                                      THEN detcot.explicacion_detallada_part_cot
-
-                                     --ELSE  detcot.explicacion_detallada_part_cot
-                                     ELSE  de.nro_parte_alterno
-                                END)::varchar
+                                coti.part_number_alternos::varchar
                                 /*****************************************/
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
 
-                                left join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
-								left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = de.id_detalle
+                                inner join part_number_cotizaciones coti on coti.id_detalle = de.id_detalle
+
 
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
@@ -2389,7 +2398,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
 
-                and v_revision.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                and v_revision.fecha_reg::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
                 ORDER BY  twf.fecha_reg DESC
                 limit 1;
@@ -2409,7 +2418,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
                 --and vf.fecha_finalizacion is null
                 --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
-                and v_revision.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                and v_revision.fecha_reg::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
                  GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
                  ORDER BY  twf.fecha_reg DESC
                 limit 1;
@@ -2431,7 +2440,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
               WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
 
-              and v_revision.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+              and v_revision.fecha_reg::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
               GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, twf.fecha_reg
               ORDER BY  twf.fecha_reg DESC
               limit 1;
@@ -2450,7 +2459,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision'
             --and vf.fecha_finalizacion is null
             --21-04-2021 (may) modificacion coalesce al reves coalesce(vf.fecha_finalizacion,now())
-            and v_revision.fecha_reg between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion, now())
+            and v_revision.fecha_reg::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion, now())
             GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo, twf.fecha_reg
             ORDER BY  twf.fecha_reg DESC
             limit 1;

@@ -174,11 +174,14 @@ BEGIN
 			v_consulta:='select
 						det.id_detalle,
 						det.id_solicitud,
-						det.descripcion,
+						--det.descripcion,
+                        detcot.referencia_cot,
 						det.estado_reg,
 						det.id_unidad_medida,
-						det.nro_parte,
-						cotdet.referencia_cot,
+						--det.nro_parte,
+                        detcot.explicacion_detallada_part_cot,
+						--det.referencia,
+                        detcot.referencia_cot,
 						det.nro_parte_alterno,
 						det.id_moneda,
 						det.precio_unitario,
@@ -218,8 +221,8 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
                         inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                         inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
-                        left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
-                        left join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion and det.id_detalle = cotdet.id_detalle
+
+                        inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si''
 
                         /*Aumentando para recuperar detalles (Ismael Valdivia 31/01/2020)*/
                         left join param.vcentro_costo cc on cc.id_centro_costo = det.id_centro_costo
@@ -235,11 +238,14 @@ BEGIN
             	v_consulta:='select
 						det.id_detalle,
 						det.id_solicitud,
-						det.descripcion,
+						--det.descripcion,
+                        detcot.referencia_cot,
 						det.estado_reg,
 						det.id_unidad_medida,
-						det.nro_parte,
-						det.referencia,
+						--det.nro_parte,
+                        detcot.explicacion_detallada_part_cot,
+						--det.referencia,
+                        detcot.referencia_cot,
 						det.nro_parte_alterno,
 						det.id_moneda,
 						det.precio_unitario,
@@ -279,6 +285,8 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
                         inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                         inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
+
+                        inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si''
 
                         /*Aumentando para recuperar detalles (Ismael Valdivia 31/01/2020)*/
                         left join param.vcentro_costo cc on cc.id_centro_costo = det.id_centro_costo
@@ -328,7 +336,7 @@ BEGIN
 					    inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                         inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
                         left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
-                        left join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion and det.id_detalle = cotdet.id_detalle
+                        left join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion and det.nro_parte = cotdet.nro_parte_cot
 
                         /*Aumentando para recuperar detalles (Ismael Valdivia 31/01/2020)*/
                         left join param.vcentro_costo cc on cc.id_centro_costo = det.id_centro_costo
