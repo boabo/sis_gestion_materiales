@@ -360,6 +360,7 @@ header("content-type: text/javascript; charset=UTF-8");
       	fwidth: 750,
         onButtonEdit: function() {
             this.iniciarEvento();
+            var data = this.getSelectedData();
             Phx.vista.PedidosOperacion.superclass.onButtonEdit.call(this);
 
             if (data.remark == '') {

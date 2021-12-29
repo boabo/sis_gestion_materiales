@@ -356,6 +356,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         onButtonEdit: function() {
             this.iniciarEvento();
+            var data = this.getSelectedData();
             Phx.vista.PedidosCeac.superclass.onButtonEdit.call(this);
 
             if (data.remark == '') {
