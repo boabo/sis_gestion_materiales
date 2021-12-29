@@ -2219,9 +2219,9 @@ class ACTSolicitud extends ACTbase{
 
        if ($this->objParam->getParametro('pes_estado') != '') {
          	if ($this->objParam->getParametro('pes_estado') == 'sin_firma') {
-            	$this->objParam->addFiltro(" (acta.fecha_conformidad is null) ");
+            	$this->objParam->addFiltro(" (acta.revisado = ''no'') ");
           } elseif ($this->objParam->getParametro('pes_estado') == 'firmados') {
-            $this->objParam->addFiltro(" (acta.fecha_conformidad is not null) ");
+            $this->objParam->addFiltro(" (acta.revisado = ''si'') ");
           }
        }
 

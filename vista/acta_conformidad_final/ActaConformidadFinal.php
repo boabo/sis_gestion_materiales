@@ -306,8 +306,8 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 	},
 
 	gruposBarraTareas:[
-										  {name:'sin_firma',title:'<H1 style="font-size:12px; color:red;" align="center"><i style="color:red; font-size:15px;" class="fa fa-ban"></i> Sin firma</h1>',grupo:1,height:0},
-											{name:'firmados',title:'<H1 style="font-size:12px; color:blue;" align="center"><i style="color:blue; font-size:15px;" class="fa fa-pencil"></i> Firmados</h1>',grupo:2,height:0},
+										  {name:'sin_firma',title:'<H1 style="font-size:12px; color:red;" align="center"><i style="color:red; font-size:15px;" class="fa fa-ban"></i> Pendiente</h1>',grupo:1,height:0},
+											{name:'firmados',title:'<H1 style="font-size:12px; color:blue;" align="center"><i style="color:blue; font-size:15px;" class="fa fa-pencil"></i> Revisado</h1>',grupo:2,height:0},
 										],
 
 	bactGroups:  [1,2],

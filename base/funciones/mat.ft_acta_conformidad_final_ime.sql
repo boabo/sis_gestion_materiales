@@ -84,7 +84,8 @@ BEGIN
              fecha_conformidad = v_parametros.fecha_conformidad_final,
              observaciones = v_parametros.observaciones,
              fecha_mod = now(),
-             id_usuario_mod = p_id_usuario
+             id_usuario_mod = p_id_usuario,
+             revisado = 'si'
              where id_solicitud = v_parametros.id_solicitud;
 
 			--Definicion de la respuesta
