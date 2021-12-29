@@ -3338,8 +3338,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    (COALESCE (inst.email1,'') ||' '|| COALESCE(inst.email2,''))::varchar as email,
                    (Coalesce(inst.telefono1::varchar,'') ||' '|| Coalesce (inst.telefono2::varchar,''))::varchar as telefono,
                    (COALESCE (inst.fax,''))::varchar as fax,
-                   pro.lugar::varchar as estado,
-                   pro.pais::varchar as country,
+                   --pro.lugar::varchar as estado,
+                   --pro.pais::varchar as country,
+                   state.nombre::varchar as estado,
+                   country.nombre as region,
+
                    COALESCE(procontac.nombre_contacto,'')::varchar,
                    pro.nit,
                    sol.fecha_solicitud,
@@ -3374,8 +3377,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
             left join param.tproveedor_contacto procontac on procontac.id_proveedor = pro.id_proveedor
             left join param.tinstitucion inst on inst.id_institucion = pro.id_institucion
-            left join param.tlugar lu on lu.id_lugar = pro.id_lugar
-			left join param.tlugar lug on lug.id_lugar = lu.id_lugar
+            left join param.tproveedor proof on proof.id_proveedor = pro.id_proveedor
+            left join param.tlugar country on country.id_lugar = proof.id_lugar
+            left join param.tlugar state on state.id_lugar = proof.id_lugar_ciudad
             where sol.id_proceso_wf = v_parametros.id_proceso_wf;
             /************************************************/
 

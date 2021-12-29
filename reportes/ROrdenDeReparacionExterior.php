@@ -12,7 +12,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 12, 15, 36);
     }
     function ReporteOrdenRaparacion(){
-        $this->AddPage(); 
+        $this->AddPage();
 
         if ($this->datos[0]['po_type'] == 'Reparacion'){
            $type = 'REPAIR';
@@ -72,7 +72,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                     <table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
                           <tr>
                             <th width="400" align="left" ><b>VENDOR: '.$this->datos[0]['nom_provee'].'</b> </th>
-                            <th width="295" align="left" >DNI: '.$this->datos[0]['dni'].'</th>
+                            <th width="295" align="left" >NIT: '.$this->datos[0]['dni'].'</th>
                           </tr>
                           <tr>
                             <th width="400" align="left" >ADDRESS: '.$this->datos[0]['direcc_provee'].'</th>
