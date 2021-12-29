@@ -69,7 +69,14 @@ class RCertificacionPresupuestaria extends  ReportePDF{
         /*if($firma_fecha[0]=='vbrpc') {
             $fecha = date_create($firma_fecha[1]);
         }*/
-        $fecha = date_format(date_create($this->datos[0]['fecha_cotizacion']),'d/m/Y');
+
+        if ($this->datos[0]['fecha_cotizacion'] != null && $this->datos[0]['fecha_cotizacion'] != '') {
+          $fecha = date_format(date_create($this->datos[0]['fecha_cotizacion']),'d/m/Y');
+        } else {
+          $fecha = '';
+        }
+
+
 
 
         /*AUMENTANDO CODIGO PRUEBA IRVA*/

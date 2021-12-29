@@ -103,7 +103,12 @@ Class RSolicitudCompraBoARep extends Report {
         //     // }
         // }
 
-        $fecha_solicitud = $this->getDataSource()->getParameter('cotizacion_fecha');
+        if ($this->getDataSource()->getParameter('cotizacion_fecha') != null && $this->getDataSource()->getParameter('cotizacion_fecha') != '') {
+          $fecha_solicitud = $this->getDataSource()->getParameter('cotizacion_fecha');
+          $fecha_cabezera = date_format(date_create($fecha_solicitud), 'd-m-Y');
+        } else {
+          $fecha_cabezera = '';
+        }
         // if ($fecha_apro != null || $fecha_apro != ''){
         //     $fecha_apro = date_format(date_create($fecha_apro), 'd-m-Y');
         // }
@@ -118,7 +123,7 @@ Class RSolicitudCompraBoARep extends Report {
 
         $pdf->SetFont('', '');
         //$pdf->Cell($width3, $height, $this->getDataSource()->getParameter('numero'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width3, $height, date_format(date_create($fecha_solicitud), 'd-m-Y'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width3, $height,$fecha_cabezera, 0, 0, 'C', false, '', 0, false, 'T', 'C');
         //$pdf->Cell($width3, $height, $fecha_apro, 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $pdf->Cell($width2+8, $height, $this->getDataSource()->getParameter('num_tramite'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
 		    $pdf->Cell($width2-3, $height, $this->getDataSource()->getParameter('tipo'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
