@@ -943,7 +943,7 @@ IS 'Campo para editar por patricia';
 
 /***********************************I-SCP-IRVA-MAT-0-27/12/2021****************************************/
 ALTER TABLE mat.tcotizacion
-  ALTER COLUMN recomendacion TYPE VARCHAR COLLATE pg_catalog."default";  
+  ALTER COLUMN recomendacion TYPE VARCHAR COLLATE pg_catalog."default";
 
  ALTER TABLE mat.tcotizacion
   ALTER COLUMN obs TYPE VARCHAR COLLATE pg_catalog."default";
@@ -956,3 +956,11 @@ ALTER TABLE mat.tsolicitud
 COMMENT ON COLUMN mat.tsolicitud.id_obligacion_pago
 IS 'identificador integracion con obligacion de pago';
 /***********************************F-SCP-MAY-MAT-0-28/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-29/12/2021****************************************/
+ALTER TABLE mat.tacta_conformidad_final
+  ADD COLUMN revisado VARCHAR(5);
+
+ALTER TABLE mat.tacta_conformidad_final
+  ALTER COLUMN revisado SET DEFAULT 'no';
+/***********************************F-SCP-IRVA-MAT-0-29/12/2021****************************************/

@@ -229,6 +229,7 @@ DECLARE
     v_funcionario_encargado_jefe	integer;
     v_id_matricula					integer;
     v_nro_po_alkym					varchar;
+    v_existe_acta					integer;
     /****************************************/
 
 BEGIN
@@ -1967,10 +1968,18 @@ END IF;
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_solicitud_actual.id_proceso_wf
                       AND  te.codigo = 'cotizacion'
-                      AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
-                GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite;
+                      AND twf.fecha_reg between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion, now())
+                GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
+                order by twf.fecha_reg desc
+                limit 1;
 
+				/*Verificamos si existe el acta de conformidad para no crear otra*/
 
+                select count(act.id_solicitud) into v_existe_acta
+                from mat.tacta_conformidad_final act
+                where act.id_solicitud = v_solicitud_actual.id_solicitud;
+
+                if (v_existe_acta = 0) then
 
                 insert into mat.tacta_conformidad_final (fecha_conformidad,
                                                          conformidad_final,
@@ -1980,7 +1989,8 @@ END IF;
                                                          id_solicitud,
                                                          id_funcionario_firma,
                                                          id_usuario_reg,
-                                                         fecha_reg
+                                                         fecha_reg,
+                                                         revisado
                                                         )
                                                    values(now()::date,
                                                           '',
@@ -1990,8 +2000,17 @@ END IF;
                                                           v_solicitud_actual.id_solicitud,
                                                           v_id_funcionario_tecnico_auxiliar,
                                                           p_id_usuario,
-                                                          now()
+                                                          now(),
+                                                          'no'
                                                    );
+                else
+                	update mat.tacta_conformidad_final set
+                    id_funcionario_firma = v_id_funcionario_tecnico_auxiliar,
+                    revisado = 'no'
+                    where id_solicitud = v_solicitud_actual.id_solicitud;
+                end if;
+
+
 
                 /*********************************************************************************************/
 
