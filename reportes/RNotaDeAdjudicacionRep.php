@@ -54,7 +54,7 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
         $this->Ln(8);
         $this->SetFont('', '');
         $this->SetFontSize(12);
-        $this->MultiCell(180, 0,'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"('.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>', 0, '', 0, 1, '20', '',true,0,true);
+        $this->MultiCell(180, 0,'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>', 0, '', 0, 1, '20', '',true,0,true);
 
         $this->Ln(8);
         $this->SetFont('', '');
