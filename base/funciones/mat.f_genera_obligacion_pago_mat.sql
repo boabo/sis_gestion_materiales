@@ -173,7 +173,7 @@ BEGIN
               v_registros_solicitud_mat.id_funcionario, --v_registros_cotizacion.id_funcionario_aprobador, 2711 = JORGE EDUARDO DELGADILLO POEPSEL 160= GONZALO ARIEL MAYORGA LAZCANO
               v_registros_solicitud_mat.codigo_poa,
               null,
-              'si'
+              'no'
 
             ) RETURNING id_obligacion_pago into v_id_obligacion_pago;
 
@@ -236,7 +236,7 @@ BEGIN
               v_registros_solicitud_mat.id_funcionario, --v_registros_cotizacion.id_funcionario_aprobador, 2711 = JORGE EDUARDO DELGADILLO POEPSEL 160= GONZALO ARIEL MAYORGA LAZCANO
               v_registros_solicitud_mat.codigo_poa,
               null,
-              'si'
+              'no'
 
             ) RETURNING id_obligacion_pago into v_id_obligacion_pago;
 
