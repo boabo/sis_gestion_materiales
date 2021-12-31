@@ -5019,14 +5019,16 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               sou.id_proceso_wf_firma,
               sou.estado_firma,
               sou.estado,
-              sou.nro_tramite
+              sou.nro_tramite,
+              sou.tipo_evaluacion
               into
               v_fecha_po,
               v_fecha_solicitud,
               v_id_proceso_wf_firma,
               v_estado_firma_paralelo,
               v_estado_actual,
-              v_nro_tramite
+              v_nro_tramite,
+              v_tipo_evaluacion
       from mat.tsolicitud sou
       where sou.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -5143,7 +5145,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_nro_tramite||''')::varchar as nro_tramite,
                       ('''||v_fecha_firma_rpcd_pru||''')::varchar as fecha_firma,
                       ('''||v_fecha_literal||''')::varchar as fecha_literal,
-                      ('''||v_fecha_cotizacion_rep||''')::varchar as fecha_cotizacion';
+                      ('''||v_fecha_cotizacion_rep||''')::varchar as fecha_cotizacion,
+                      ('''||v_tipo_evaluacion||''')::varchar as tipo_evaluacion';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;

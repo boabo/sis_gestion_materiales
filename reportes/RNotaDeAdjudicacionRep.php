@@ -38,6 +38,15 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
           $firma_rpc_4 = $fun_rpc[4];
         }
 
+
+        if ($this->datos[0]['evaluacion'] == NULL) {
+          $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';
+        } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
+          $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';
+        } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
+          $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';
+
+        }
         //$this->MultiCell(180, 0,$texto, 0, '', 0, 1, '20', '',true,0,true);
         $this->MultiCell(180, 0,'La Empresa Pública Nacional Estratégica "Boliviana de Aviación", Comunica a la Empresa del Extranjero:', 0, '', 0, 1, '20', '',true,0,true);
 
@@ -54,7 +63,7 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
         $this->Ln(8);
         $this->SetFont('', '');
         $this->SetFontSize(12);
-        $this->MultiCell(180, 0,'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>', 0, '', 0, 1, '20', '',true,0,true);
+        $this->MultiCell(180, 0,$texto, 0, '', 0, 1, '20', '',true,0,true);
 
         $this->Ln(8);
         $this->SetFont('', '');
