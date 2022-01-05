@@ -3092,7 +3092,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 		begin
 
-            SELECT ts.estado, ts.id_estado_wf, ts.justificacion, ts.id_gestion,ts.motivo_solicitud
+            SELECT ts.estado, ts.id_estado_wf, ts.justificacion, ts.id_gestion,ts.motivo_solicitud, ts.origen_pedido
             INTO v_record_sol
             FROM mat.tsolicitud ts
             WHERE ts.id_proceso_wf = v_parametros.id_proceso_wf;
@@ -3250,6 +3250,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
             /*****************************************************/
+			if (v_record_sol.origen_pedido = 'Reparación de Repuestos') then
+
 
 
 			v_consulta:='
@@ -3303,6 +3305,62 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             left JOIN pre.tpresupuesto_partida_entidad tppe ON tppe.id_partida = tpar.id_partida AND tppe.id_presupuesto = tp.id_presupuesto
             left JOIN pre.tentidad_transferencia tet ON tet.id_entidad_transferencia = tppe.id_entidad_transferencia
             WHERE ob.id_gestion = '||v_record_sol.id_gestion||' and tsd.estado_reg = ''activo'' AND ts.id_proceso_wf = '||v_parametros.id_proceso_wf;
+
+            else
+
+            v_consulta:='
+            SELECT
+            vcp.id_categoria_programatica AS id_cp,
+            ttc.codigo AS centro_costo,
+            vcp.codigo_programa ,
+            vcp.codigo_proyecto,
+            vcp.codigo_actividad,
+            vcp.codigo_fuente_fin,
+            vcp.codigo_origen_fin,
+            tpar.codigo AS codigo_partida,
+            tpar.nombre_partida ,
+            tcg.codigo AS codigo_cg,
+            tcg.nombre AS nombre_cg,
+            sum(tsd.precio_total) AS precio_total,
+
+            ts.nro_tramite,
+            COALESCE('''||v_nombre_entidad||'''::varchar, '''') AS nombre_entidad,
+            COALESCE('''||v_direccion_admin||'''::varchar, '''') AS direccion_admin,
+            coalesce(vcp.desc_unidad_ejecutora::varchar,''Boliviana de Aviación - BoA''::varchar) as unidad_ejecutora,
+            coalesce(vcp.codigo_unidad_ejecutora::varchar,''0''::varchar) as codigo_ue,
+            COALESCE('''||v_firma_fun||'''::varchar, '''') AS firmas,
+            COALESCE('''||v_record_sol.motivo_solicitud||'''::varchar,'''') AS justificacion,
+            COALESCE(tet.codigo::varchar,''00''::varchar) AS codigo_transf,
+            (uo.codigo||''-''||uo.nombre_unidad)::varchar as unidad_solicitante,
+            fun.desc_funcionario1::varchar as funcionario_solicitante,
+            ts.fecha_solicitud AS fecha_soli,
+            COALESCE(tg.gestion, (extract(year from current_date))::integer) AS gestion,
+            coalesce(ts.codigo_poa,''''::varchar) as codigo_poa,
+
+            ob.descripcion as codigo_descripcion,
+            ''''::varchar as tipo,
+            ts.fecha_solicitud::varchar as fecha_cotizacion
+            FROM mat.tsolicitud ts
+            INNER JOIN mat.tdetalle_sol tsd ON tsd.id_solicitud = ts.id_solicitud
+            INNER JOIN pre.tpartida tpar ON tpar.id_partida = tsd.id_partida
+            /*Aumentando para recueperar la descripcion del codigo_poa*/
+            INNER JOIN pre.tobjetivo ob on ob.codigo = ts.codigo_poa
+            /**********************************************************/
+            inner join param.tgestion tg on tg.id_gestion = ts.id_gestion
+            INNER JOIN param.tcentro_costo tcc ON tcc.id_centro_costo = tsd.id_centro_costo
+            INNER JOIN param.ttipo_cc ttc ON ttc.id_tipo_cc = tcc.id_tipo_cc
+            INNER JOIN pre.tpresupuesto	tp ON tp.id_presupuesto = tsd.id_centro_costo
+            INNER JOIN pre.vcategoria_programatica vcp ON vcp.id_categoria_programatica = tp.id_categoria_prog
+            INNER JOIN pre.tclase_gasto_partida tcgp ON tcgp.id_partida = tpar.id_partida
+            INNER JOIN pre.tclase_gasto tcg ON tcg.id_clase_gasto = tcgp.id_clase_gasto
+
+            inner join orga.vfuncionario fun on fun.id_funcionario = ts.id_funcionario_solicitante
+            inner join orga.tuo uo on uo.id_uo = 9421
+            left JOIN pre.tpresupuesto_partida_entidad tppe ON tppe.id_partida = tpar.id_partida AND tppe.id_presupuesto = tp.id_presupuesto
+            left JOIN pre.tentidad_transferencia tet ON tet.id_entidad_transferencia = tppe.id_entidad_transferencia
+            WHERE ob.id_gestion = '||v_record_sol.id_gestion||' and tsd.estado_reg = ''activo'' AND ts.id_proceso_wf = '||v_parametros.id_proceso_wf;
+
+            end if;
 
 			v_consulta =  v_consulta || ' GROUP BY vcp.id_categoria_programatica, tpar.codigo, ttc.codigo,vcp.codigo_programa,vcp.codigo_proyecto, vcp.codigo_actividad,
             vcp.codigo_fuente_fin, vcp.codigo_origen_fin, tpar.nombre_partida, tcg.codigo, tcg.nombre, ts.nro_tramite, tet.codigo, unidad_solicitante, funcionario_solicitante,
@@ -4680,7 +4738,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         fun.descripcion_cargo::varchar as cargo_desc_funcionario,
                         ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
                         '''||v_nombre_macro||'''::varchar as nombre_macro,
-                        '''||v_cotizacion_fecha||'''::varchar as cotizacion_fecha
+                        sol.fecha_solicitud::varchar as cotizacion_fecha
 						from mat.tsolicitud sol
                         inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                         inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = sol.id_funcionario_solicitante
