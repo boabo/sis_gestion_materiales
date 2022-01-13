@@ -437,10 +437,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             var data = this.getSelectedData();
-            if (data.estado == 'cotizacion') {
-                this.Cmp.lista_correos.reset();
-                this.Cmp.condicion.reset();
-            }
+            // if (data.estado == 'cotizacion') {
+            //     this.Cmp.lista_correos.reset();
+            //     this.Cmp.condicion.reset();
+            // }
             /*Aumentamos la condicion para mostrar el nuevo Campo MELOBSERVACION Ismael Valdivia 01/10/2020*/
             if(data.mel == 'A' || data.mel == 'Otro' || data.mel == 'otro' || data.mel == 'OTRO'){
               this.mostrarComponente(this.Cmp.mel_observacion);

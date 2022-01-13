@@ -442,11 +442,11 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
 
-            if ((fechaFormateadaRecu <= fechaFormateada) && (data['estado'] ==  'cotizacion' || data['estado'] ==  'cotizacion_solicitada')) {
-              console.log("entra reseteo 1");
-              this.Cmp.condicion.reset();
-              this.Cmp.condicion.setValue('');
-            }
+            // if ((fechaFormateadaRecu <= fechaFormateada) && (data['estado'] ==  'cotizacion' || data['estado'] ==  'cotizacion_solicitada')) {
+            //   console.log("entra reseteo 1");
+            //   this.Cmp.condicion.reset();
+            //   this.Cmp.condicion.setValue('');
+            // }
 
 
             if (this.Cmp.nro_po.getValue()) {
