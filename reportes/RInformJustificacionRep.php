@@ -22,6 +22,8 @@ class RInformJustificacionRep extends  ReportePDF
     }
     function ReporteComiteEvaluacion(){
         $this->AddPage();
+
+
         $nro_partes = explode(',',$this->datos[0]["num_part"]);
         $nro_partes_alternas = explode(',',$this->datos[0]["num_part_alt"]);
         $cantidad = explode(',',$this->datos[0]["cantidad"]);
@@ -258,7 +260,9 @@ class RInformJustificacionRep extends  ReportePDF
                    de que su propuesta CUMPLE CON TODOS los requerimientos establecidos en las Especificaciones Técnicas.
                    </th>
                 </tr>
-              </table>
+              </table>';
+              if ($this->datos[0]["fecha_solicitud"] < '01/01/2022') {
+              $tb .=   '
               <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                   <tr>
                       <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
@@ -278,6 +282,25 @@ class RInformJustificacionRep extends  ReportePDF
                    </tr>
               </table>
               ';
+              } else {
+                $tb .=   '
+                <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                    <tr>
+                      <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe Departamento Abastecimiento y Logistica:</b><br></td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="font-family: Calibri; font-size: 9px;">
+                            <br><br>
+                            <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_sol_0, $fun_sol_1,$fun_sol_4,$fun_sol_3).'" alt="Logo">
+                            <br>'.$fun_sol_0.'
+                        </td>
+                     </tr>
+                </table>
+                ';
+              }
+
+
+
 
 
 

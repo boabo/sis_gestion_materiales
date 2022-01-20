@@ -321,22 +321,42 @@ class RCuandroComparativoPDF extends  ReportePDF
          </tbody>
         </table>';
         $fun_presu = explode('|', $aero);
-        $tbl1 = ' <table border="2">
-         <tbody>
-        <tr>
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td>
-        </tr>
-        <tr>';
 
-        if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad'|| $this->datos[0]['estado'] != 'departamento_ceac') {
-            $tbl1 .= '<td align="center"><br><br>';
-            $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
-            $tbl1 .= '<br></td>';
+        if ($this->datos[0]['fecha_solicitud'] < '01/01/2022') {
+          $tbl1 = ' <table border="2">
+           <tbody>
+          <tr>
+                  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
+                  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td>
+          </tr>
+          <tr>';
+
+          if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad'|| $this->datos[0]['estado'] != 'departamento_ceac') {
+              $tbl1 .= '<td align="center"><br><br>';
+              $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
+              $tbl1 .= '<br></td>';
+          }
+          if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
+              $tbl1 .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>';
+          }
+        } else {
+          $tbl1 = ' <table border="2">
+           <tbody>
+          <tr>
+                  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_presu[1].'</b><br>'.$fun_aero[0].'</td>
+          </tr>
+          <tr>';
+
+          if ($this->datos[0]['estado'] != 'comite_aeronavegabilidad'|| $this->datos[0]['estado'] != 'departamento_ceac') {
+              $tbl1 .= '<td align="center"><br><br>';
+              $tbl1 .= ' <img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo">';
+              $tbl1 .= '<br></td>';
+          }
         }
-        if ($this->datos[0]['estado'] != 'comite_dpto_abastecimientos') {
-            $tbl1 .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>';
-        }
+
+
+
+
         $tbl1 .= '</tr>
          </tbody>
         </table>';

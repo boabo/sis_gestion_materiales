@@ -3250,7 +3250,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
             /*****************************************************/
-			if (v_record_sol.origen_pedido = 'Reparación de Repuestos') then
+
+            if (v_record_sol.origen_pedido = 'Reparación de Repuestos') then
 
 
 
@@ -4703,6 +4704,26 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
                         where '||v_filtro;
         else
+
+        SELECT  twf.id_funcionario,
+                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||COALESCE (to_char(twf.fecha_reg,'DD-MM-YYYY'),'')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                    vf.desc_funcionario1,
+                    to_char(twf.fecha_reg,'DD-MM-YYYY')as fecha_firma,
+                    vf.nombre_cargo
+              INTO v_id_funcionario_oficial,
+                    v_funcionario_sol_oficial,
+                    v_funcionario_oficial,
+                    v_fecha_firma_pru,
+                    v_cargo_solicitante
+            FROM wf.testado_wf twf
+            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+            INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+            INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+            WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'cotizacion'
+            and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+            GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
+
+
         v_consulta:='select
 						sol.id_solicitud,
                         sol.estado_reg,
@@ -4724,7 +4745,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         COALESCE(sol.usuario_ai,'''')::varchar as nombre_usuario_ai,
                         usu1.cuenta as usr_reg,
                         usu2.cuenta as usr_mod,
-                        fun.desc_funcionario1 as desc_funcionario,
+                        '''||v_funcionario_oficial||'''::text as desc_funcionario,
                         ges.gestion as desc_gestion,
                         mon.codigo as desc_moneda,
                         dep.codigo as desc_depto,
@@ -4735,7 +4756,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         ('''||Coalesce(v_gerente,'')||''')::varchar as gerente,
                         ('''||Coalesce(v_firma_gerente,'')||''')::varchar as firma_gerente,
                         ('''||v_desc_uo||''')::varchar as desc_uo,
-                        fun.descripcion_cargo::varchar as cargo_desc_funcionario,
+                        '''||v_cargo_solicitante||'''::varchar as cargo_desc_funcionario,
                         ('''||v_desc_cargo_gerente||''')::varchar as desc_cargo_gerente,
                         '''||v_nombre_macro||'''::varchar as nombre_macro,
                         sol.fecha_solicitud::varchar as cotizacion_fecha

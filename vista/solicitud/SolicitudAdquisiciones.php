@@ -145,7 +145,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         cmbGestion: new Ext.form.ComboBox({
             name: 'gestion',
-            id: 'g_mantemiento',
+            id: 'g_adquisiciones',
             fieldLabel: 'Gestion',
             allowBlank: true,
             emptyText:'Gestion...',
@@ -243,29 +243,77 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Cotizacion').enable();
             this.getBoton('btnpac').enable();
 
+          
+            if (this.store.baseParams.monto_pac > 20000) {
+              Ext.Ajax.request({
+                    url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                    params:{id_proceso_wf: data.id_proceso_wf,
+                            estado_sig: 'despachado'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        if (reg.ROOT.datos.v_chekeado == 'no') {
+                            this.getBoton('sig_estado').disable();
+                            this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
+                        } else {
+                          this.getBoton('sig_estado').enable();
+                          this.noti_documentos.setText('');
+                          //this.reload();
+                        }
+                      /************************************************************************************/
+
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+            } else {
+              this.getBoton('sig_estado').enable();
+              this.noti_documentos.setText('');
+
+              /*Recuperando la fecha cuando autoriza Jaime Lazarte para compra*/
+              Ext.Ajax.request({
+                    url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                    params:{id_proceso_wf: data.id_proceso_wf,
+                            estado_sig: 'compra'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        this.store.baseParams.fecha_po_automatico = reg.ROOT.datos.fecha_po_automatico;
+                      /************************************************************************************/
+
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+                /****************************************************************/
+
+              //this.reload();
+            }
+
+
             // /*Aqui pondremos para verificar los docuementos*/
             // if (this.store.baseParams.pes_estado == 'pedido_ma_pendiente') {
-            //   Ext.Ajax.request({
-            //       url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
-            //       params:{id_proceso_wf: data.id_proceso_wf,
-            //               estado_sig: 'cotizacion_solicitada'},
-            //       success:function(resp){
-            //           var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            //           if (reg.ROOT.datos.v_chekeado == 'no') {
-            //               this.getBoton('sig_estado').disable();
-            //               this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
-            //           } else {
-            //             this.getBoton('sig_estado').enable();
-            //             this.noti_documentos.setText('');
-            //             //this.reload();
-            //           }
-            //         /************************************************************************************/
-            //
-            //       },
-            //       failure: this.conexionFailure,
-            //       timeout:this.timeout,
-            //       scope:this
-            //   });
+              // Ext.Ajax.request({
+              //     url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+              //     params:{id_proceso_wf: data.id_proceso_wf,
+              //             estado_sig: 'cotizacion_solicitada'},
+              //     success:function(resp){
+              //         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+              //         if (reg.ROOT.datos.v_chekeado == 'no') {
+              //             this.getBoton('sig_estado').disable();
+              //             this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
+              //         } else {
+              //           this.getBoton('sig_estado').enable();
+              //           this.noti_documentos.setText('');
+              //           //this.reload();
+              //         }
+              //       /************************************************************************************/
+              //
+              //     },
+              //     failure: this.conexionFailure,
+              //     timeout:this.timeout,
+              //     scope:this
+              // });
             // }
             //
             //

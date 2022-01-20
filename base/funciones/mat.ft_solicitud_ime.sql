@@ -1465,100 +1465,101 @@ END IF;
                     where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'vb_rpcd';
                     ---------------------------------------------------------------------------
 
+					if (v_datos_solicitud.fecha_solicitud < '01/01/2022') then
+                      if (v_funcionario_encargado_jefe != v_funcionario_encargado) then
+                          ------------------------------------Pasa el estado del Jefe de departamento-----------------
+                          v_acceso_directo_automatico = '';
+                           v_clase_automatico = '';
+                           v_parametros_ad_automatico = '';
+                           v_tipo_noti_automatico = 'notificacion';
+                           v_titulo_automatico  = 'Visto Boa';
+                           v_obs_automatico ='---';
 
-                    if (v_funcionario_encargado_jefe != v_funcionario_encargado) then
-                    ------------------------------------Pasa el estado del Jefe de departamento-----------------
-                    v_acceso_directo_automatico = '';
-                     v_clase_automatico = '';
-                     v_parametros_ad_automatico = '';
-                     v_tipo_noti_automatico = 'notificacion';
-                     v_titulo_automatico  = 'Visto Boa';
-                     v_obs_automatico ='---';
+                           v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente_jefe,--id del estado siguiente revision
+                                                                   v_funcionario_encargado_jefe,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
+                                                                   v_datos_solicitud.id_estado_wf,
+                                                                   v_datos_solicitud.id_proceso_wf,
+                                                                   p_id_usuario,
+                                                                   v_parametros._id_usuario_ai,
+                                                                   v_parametros._nombre_usuario_ai,
+                                                                   v_id_depto,
+                                                                   COALESCE(v_datos_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
+                                                                   v_acceso_directo_automatico,
+                                                                   v_clase_automatico,
+                                                                   v_parametros_ad_automatico,
+                                                                   v_tipo_noti_automatico,
+                                                                   v_titulo_automatico);
 
-                     v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente_jefe,--id del estado siguiente revision
-                                                             v_funcionario_encargado_jefe,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
-                                                             v_datos_solicitud.id_estado_wf,
-                                                             v_datos_solicitud.id_proceso_wf,
-                                                             p_id_usuario,
-                                                             v_parametros._id_usuario_ai,
-                                                             v_parametros._nombre_usuario_ai,
-                                                             v_id_depto,
-                                                             COALESCE(v_datos_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
-                                                             v_acceso_directo_automatico,
-                                                             v_clase_automatico,
-                                                             v_parametros_ad_automatico,
-                                                             v_tipo_noti_automatico,
-                                                             v_titulo_automatico);
+                           IF mat.f_procesar_estados_solicitud(p_id_usuario,
+                                                          v_parametros._id_usuario_ai,
+                                                          v_parametros._nombre_usuario_ai,
+                                                          v_id_estado_actual,
+                                                          v_datos_solicitud.id_proceso_wf,
+                                                          v_codigo_estado_siguiente_auto_jefe) THEN
 
-                     IF mat.f_procesar_estados_solicitud(p_id_usuario,
-           											v_parametros._id_usuario_ai,
-                                            		v_parametros._nombre_usuario_ai,
-                                            		v_id_estado_actual,
-                                            		v_datos_solicitud.id_proceso_wf,
-                                            		v_codigo_estado_siguiente_auto_jefe) THEN
+                                      RAISE NOTICE 'PASANDO DE ESTADO';
+                                      -------------------------------------------------------------------------------------------------------------------------------------
 
-                                RAISE NOTICE 'PASANDO DE ESTADO';
-                                -------------------------------------------------------------------------------------------------------------------------------------
-
-                     END IF;
-
-
-
-                     ----------------------------------Autoriza el Jefe de Departamento-----------------------------------------------------------------
+                           END IF;
 
 
-                    --Recuperamos los datos de la solicitud
-                	select sol.* into v_datos_solicitud
-                    from mat.tsolicitud sol
-                    where id_solicitud = v_parametros.id_solicitud;
-                    ------------------------------------------------
 
-                    select es.id_tipo_estado,
-                    	   es.codigo,
-                           fun.id_funcionario
-                    into v_id_tipo_estado_siguiente,
-                         v_codigo_estado_siguiente_auto,
-                         v_funcionario_encargado
-                    from wf.ttipo_estado es
-                    LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
-                    where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'autorizado_jefe_depto';
-                    ---------------------------------------------------------------------------
+                           ----------------------------------Autoriza el Jefe de Departamento-----------------------------------------------------------------
 
 
-                      ---------------------------------------------------------------------------
-                    --raise exception 'Aqui llega %',v_codigo_estado_siguiente_auto;
-                     v_acceso_directo_automatico = '';
-                     v_clase_automatico = '';
-                     v_parametros_ad_automatico = '';
-                     v_tipo_noti_automatico = 'notificacion';
-                     v_titulo_automatico  = 'Visto Boa';
-                     v_obs_automatico ='---';
-                     ------------------------------------------pasamos el estado a vb_dpto_administrativo
+                          --Recuperamos los datos de la solicitud
+                          select sol.* into v_datos_solicitud
+                          from mat.tsolicitud sol
+                          where id_solicitud = v_parametros.id_solicitud;
+                          ------------------------------------------------
+
+                          select es.id_tipo_estado,
+                                 es.codigo,
+                                 fun.id_funcionario
+                          into v_id_tipo_estado_siguiente,
+                               v_codigo_estado_siguiente_auto,
+                               v_funcionario_encargado
+                          from wf.ttipo_estado es
+                          LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                          where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'autorizado_jefe_depto';
+                          ---------------------------------------------------------------------------
 
 
-                     v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
-                                                             v_funcionario_encargado,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
-                                                             v_datos_solicitud.id_estado_wf,
-                                                             v_datos_solicitud.id_proceso_wf,
-                                                             p_id_usuario,
-                                                             v_parametros._id_usuario_ai,
-                                                             v_parametros._nombre_usuario_ai,
-                                                             v_id_depto,
-                                                             COALESCE(v_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
-                                                             v_acceso_directo_automatico,
-                                                             v_clase_automatico,
-                                                             v_parametros_ad_automatico,
-                                                             v_tipo_noti_automatico,
-                                                             v_titulo_automatico);
+                            ---------------------------------------------------------------------------
+                          --raise exception 'Aqui llega %',v_codigo_estado_siguiente_auto;
+                           v_acceso_directo_automatico = '';
+                           v_clase_automatico = '';
+                           v_parametros_ad_automatico = '';
+                           v_tipo_noti_automatico = 'notificacion';
+                           v_titulo_automatico  = 'Visto Boa';
+                           v_obs_automatico ='---';
+                           ------------------------------------------pasamos el estado a vb_dpto_administrativo
 
-                     IF mat.f_procesar_estados_solicitud(p_id_usuario,
-           											v_parametros._id_usuario_ai,
-                                            		v_parametros._nombre_usuario_ai,
-                                            		v_id_estado_actual,
-                                            		v_datos_solicitud.id_proceso_wf,
-                                            		v_codigo_estado_siguiente_auto) THEN
 
-                    RAISE NOTICE 'PASANDO DE ESTADO';
+                           v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
+                                                                   v_funcionario_encargado,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
+                                                                   v_datos_solicitud.id_estado_wf,
+                                                                   v_datos_solicitud.id_proceso_wf,
+                                                                   p_id_usuario,
+                                                                   v_parametros._id_usuario_ai,
+                                                                   v_parametros._nombre_usuario_ai,
+                                                                   v_id_depto,
+                                                                   COALESCE(v_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
+                                                                   v_acceso_directo_automatico,
+                                                                   v_clase_automatico,
+                                                                   v_parametros_ad_automatico,
+                                                                   v_tipo_noti_automatico,
+                                                                   v_titulo_automatico);
+
+                           IF mat.f_procesar_estados_solicitud(p_id_usuario,
+                                                          v_parametros._id_usuario_ai,
+                                                          v_parametros._nombre_usuario_ai,
+                                                          v_id_estado_actual,
+                                                          v_datos_solicitud.id_proceso_wf,
+                                                          v_codigo_estado_siguiente_auto) THEN
+
+                          RAISE NOTICE 'PASANDO DE ESTADO';
+                      end if;
                     end if;
                     -------------------------------------------------------------------------------------------------------------------------------------
 
