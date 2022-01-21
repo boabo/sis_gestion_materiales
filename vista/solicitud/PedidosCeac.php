@@ -201,7 +201,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //this.getBoton('btnproveedor').setVisible(true);
                     this.getBoton('Cotizacion').setVisible(true);
                     this.getBoton('btnpac').setVisible(false);
-                    this.getBoton('ant_estado').setVisible(false);
+                    //this.getBoton('ant_estado').setVisible(false);
                 } else{
                     //this.getBoton('btnproveedor').setVisible(false);
                     this.getBoton('btnpac').setVisible(false);
