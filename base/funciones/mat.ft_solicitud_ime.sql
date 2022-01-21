@@ -1067,11 +1067,13 @@ END IF;
                            v_id_estado_wf_ant
                         FROM wf.f_obtener_estado_ant_log_wf(v_parametros.id_estado_wf);
 
-
-                 select te.id_funcionario into v_id_funcionario_actual_estado
-                 from wf.tfuncionario_tipo_estado te
-                 where te.id_tipo_estado = v_id_tipo_estado;
-
+                 if (v_codigo_estado = 'revision') then
+                   select te.id_funcionario into v_id_funcionario_actual_estado
+                   from wf.tfuncionario_tipo_estado te
+                   where te.id_tipo_estado = v_id_tipo_estado;
+                 else
+                 	v_id_funcionario_actual_estado = v_id_funcionario;
+				 end if;
 
 
 
