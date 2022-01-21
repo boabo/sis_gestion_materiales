@@ -90,10 +90,9 @@ BEGIN
             left join wf.testado_wf est on est.id_estado_wf = ts.id_estado_wf
             WHERE ts.id_solicitud = p_id_solicitud;
 
-    		if (v_registros_solicitud_mat.origen_pedido = 'Reparación de Repuestos') then
 
 
-    		/*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
+            /*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
             SELECT  twf.id_funcionario,
                     twf.fecha_reg
                   into  v_compra
@@ -110,11 +109,20 @@ BEGIN
             FROM wf.testado_wf twf
                 INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'cotizacion'
                 and v_compra.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
-                GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
+                GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
+                ORDER BY  twf.fecha_reg DESC
+				LIMIT 1;
 			/****************************************************************************/
+
+
+
+    		if (v_registros_solicitud_mat.origen_pedido = 'Reparación de Repuestos') then
+
+
+
 
 
             --  RAC  02/08/2017
@@ -230,7 +238,7 @@ BEGIN
               null, -- 4,     --v_registros_cotizacion.id_categoria_compra,
               'Boa',  --v_registros_cotizacion.tipo,
               'bien', --v_registros_cotizacion.tipo_concepto,
-              v_registros_solicitud_mat.id_funcionario_solicitante, -- 370 => PASTOR JAIME LAZARTE VILLAGRA
+              v_id_funcionario_adquisiciones,--v_registros_solicitud_mat.id_funcionario_solicitante, -- 370 => PASTOR JAIME LAZARTE VILLAGRA
               null, --v_id_contrato,
               v_registros_solicitud_mat.motivo_solicitud, --v_registros_cotizacion.justificacion,
               v_registros_solicitud_mat.id_funcionario, --v_registros_cotizacion.id_funcionario_aprobador, 2711 = JORGE EDUARDO DELGADILLO POEPSEL 160= GONZALO ARIEL MAYORGA LAZCANO
