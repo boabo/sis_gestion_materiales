@@ -2153,7 +2153,7 @@ header("content-type: text/javascript; charset=UTF-8");
         onSubmit: function(o) {
             //  validar formularios
             var arra = [], k, me = this;
-            console.log("aqui del megrid el formulario",me.megrid.store);
+
             for (k = 0; k < me.megrid.store.getCount(); k++) {
                 record = me.megrid.store.getAt(k);
                 arra[k] = record.data;
@@ -2176,7 +2176,13 @@ header("content-type: text/javascript; charset=UTF-8");
                             var matricula=reg.ROOT.datos.matricula;
                             var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
                             var ma =this;
-                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue() != '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
+
+                            console.log("aqui debe entrar nro_justificacion",ma.Cmp.nro_justificacion.getValue(),nro_justificacion);
+                            console.log("aqui debe entrar nro_justificacion",ma.detCmp.nro_parte.getValue(),nro_parte);
+                            console.log("aqui debe entrar nro_justificacion",ma.Cmp.id_matricula.getValue(),matricula);
+
+
+                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion /*&& ma.Cmp.nro_justificacion.getValue() != ''*/ || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
                                 Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ', function (btn) {
                                     if (btn === 'yes') {
                                         Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
