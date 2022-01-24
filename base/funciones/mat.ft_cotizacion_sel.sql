@@ -568,6 +568,14 @@ BEGIN
                     WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 */
 
+/*Fecha para verificar si es menor o mayor*/
+     select (case when
+		   v_fecha_solicitud::date < '01/01/2022'::date then
+           'menor'
+	    else
+           'mayor'
+	    end ) into v_es_mayor;
+     /******************************************/
             v_consulta:='select 	s.origen_pedido,
                                     '''||COALESCE (initcap(v_nombre_funcionario_dc_qr),' ')||'''::varchar as aero,
                                     '''||COALESCE (v_fecha_firma_dc_qr,' ')||'''::text as fecha_aero,
@@ -578,7 +586,8 @@ BEGIN
                                     '''||COALESCE (initcap(v_nombre_funcionario_abas_qr),' ')||'''::varchar as visto_abas,
                                     '''||COALESCE (v_fecha_firma_abas_qr,' ')||'''::text as fecha_abas,
                                     s.nro_tramite,
-                                    s.estado_firma
+                                    s.estado_firma,
+                                    '''||v_es_mayor||'''::varchar as mayor
                                     from mat.tsolicitud s
                                     where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
             --Devuelve la respuesta
@@ -790,6 +799,15 @@ BEGIN
 
 */
 
+  /*Fecha para verificar si es menor o mayor*/
+          select (case when
+             v_fecha_solicitud::date < '01/01/2022'::date then
+             'menor'
+          else
+             'mayor'
+          end ) into v_es_mayor;
+         /******************************************/
+
             v_consulta:='select 	s.origen_pedido,
                                     '''||COALESCE (initcap(v_nombre_funcionario_dc_qr),' ')||'''::varchar as aero,
                                     '''||COALESCE (v_fecha_firma_dc_qr,' ')||'''::text as fecha_aero,
@@ -800,7 +818,8 @@ BEGIN
                                     '''||COALESCE (initcap(v_nombre_funcionario_abas_qr),' ')||'''::varchar as visto_abas,
                                     '''||COALESCE (v_fecha_firma_abas_qr,' ')||'''::text as fecha_abas,
                                     s.nro_tramite,
-                                    ''''::varchar as estado_firma
+                                    ''''::varchar as estado_firma,
+                                    '''||v_es_mayor||'''::varchar as mayor
                                     from mat.tsolicitud s
                                     where s.id_proceso_wf = '||v_parametros.id_proceso_wf;
             --Devuelve la respuesta

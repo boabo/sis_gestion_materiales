@@ -268,7 +268,8 @@ class MODCotizacion extends MODbase{
         $this->captura('visto_abas','varchar');
         $this->captura('fecha_abas','text');
 				$this->captura('nro_tramite','varchar');
-        $this->captura('estado_firma','varchar');
+				$this->captura('estado_firma','varchar');
+        $this->captura('mayor','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

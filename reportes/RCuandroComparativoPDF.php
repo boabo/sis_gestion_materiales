@@ -46,13 +46,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->Cell($ancho, 0, '', '', 0, 'L');
         $pagenumtxt = 'Página'.' '.$this->getAliasNumPage().' de '.$this->getAliasNbPages();
         $this->Cell($ancho, 0, $pagenumtxt, '', 0, 'C');
-        //$this->Cell($ancho, 0, $_SESSION['_REP_NOMBRE_SISTEMA'], '', 0, 'R');
-        /*$this->Ln();
-        foreach ($this->datos as $Key) {
-            if($Key['adjudicado'] == 'si') {
-                $this->MultiCell(0,7, ''.$Key['pie_pag']."\n" , 0, 'J', 0, '', '');
-            }
-        }*/
+
     }
 
     function reporteCuadroComparativo(){
@@ -61,6 +55,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         $this->writeHTML('<p align="justify">Enviado a: '.$this->datos4[0]['lista_proverod'].'</p> <br>', true, false, false, false, '');
 
         $this->nro= 1;
+
 
         if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
 
@@ -300,9 +295,6 @@ class RCuandroComparativoPDF extends  ReportePDF
 
         }
 
-
-
-
         $tbl =' <table border="2">
          <tbody>
         <tr>
@@ -322,7 +314,8 @@ class RCuandroComparativoPDF extends  ReportePDF
         </table>';
         $fun_presu = explode('|', $aero);
 
-        if ($this->datos[0]['fecha_solicitud'] < '01/01/2022') {
+        if ($this->datos2[0]['mayor'] = 'menor') {
+
           $tbl1 = ' <table border="2">
            <tbody>
           <tr>
