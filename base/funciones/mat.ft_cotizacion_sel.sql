@@ -66,6 +66,7 @@ DECLARE
     v_estado_firma							varchar;
 	v_fecha_salida_gm  date;
     v_fecha_solicitud_recu	date;
+    v_es_mayor				varchar;
 
 BEGIN
 	v_rango_fecha = '01/11/2018';
