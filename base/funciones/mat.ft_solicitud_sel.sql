@@ -291,6 +291,7 @@ DECLARE
      v_cotizacion_fecha	varchar;
      v_fecha_cotizacion_oficial	varchar;
      v_fecha_firma_envio	varchar;
+     v_es_mayor				varchar;
     /**************************************************/
 BEGIN
 
@@ -2820,6 +2821,17 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     end if;
     /***************************************/
 
+
+    /*Fecha para verificar si es menor o mayor*/
+     select (case when
+		   v_fecha_solicitud::date < '01/01/2022'::date then
+           'menor'
+	    else
+           'mayor'
+	    end ) into v_es_mayor;
+    /******************************************/
+
+
       if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
 
         select initcap(sol.nro_tramite) into v_nro_tramite
@@ -2892,7 +2904,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                       ELSE  det.nro_parte_alterno
-                                END),''|'')::varchar,''''::varchar)::varchar
+                                END),''|'')::varchar,''''::varchar)::varchar,
+                           '''||v_es_mayor||'''::varchar as mayor
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 
@@ -2931,7 +2944,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            sp.observaciones,
                            substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
                            '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                           ''''::varchar
+                           ''''::varchar,
+                           '''||v_es_mayor||'''::varchar as mayor
                           from mat.tsolicitud s
                           inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
 

@@ -1398,6 +1398,7 @@ class MODSolicitud extends MODbase
         $this->captura('tipo_proceso', 'varchar');
         $this->captura('fecha_salida','date');
         $this->captura('pn_cotizacion','varchar');
+        $this->captura('mayor','varchar');
 
 
         $this->armarConsulta();

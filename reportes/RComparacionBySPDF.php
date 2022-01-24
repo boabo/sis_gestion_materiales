@@ -265,7 +265,7 @@ EOF;
 
                 if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {
 
-                  if ($this->datos[0]["fecha_solicitud"] < '01/01/2022') {
+                  if ($this->datos[0]["mayor"] == 'menor') {
                     $tbl.=      ' <br>
                                       </td>
                                     </tr>
