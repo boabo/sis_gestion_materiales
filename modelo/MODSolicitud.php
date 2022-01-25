@@ -1217,6 +1217,7 @@ class MODSolicitud extends MODbase
         $this->captura('nro_lote', 'varchar');
         $this->captura('fecha_cotizacion', 'varchar');
         $this->captura('fecha_envio', 'varchar');
+        $this->captura('mayor', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

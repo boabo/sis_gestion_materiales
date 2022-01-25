@@ -261,7 +261,8 @@ class RInformJustificacionRep extends  ReportePDF
                    </th>
                 </tr>
               </table>';
-              if ($this->datos[0]["fecha_solicitud"] < '01/01/2022') {
+        
+              if ($this->datos[0]["mayor"] == 'menor') {
               $tb .=   '
               <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                   <tr>
