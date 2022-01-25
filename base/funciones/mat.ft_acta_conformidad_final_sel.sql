@@ -43,10 +43,22 @@ DECLARE
     v_oficina_encargado_almacen		varchar;
 	v_fecha_reg_estado				varchar;
 
+    v_id_funcionario_abastecimiento	integer;
+    v_id_funcionario_almacen		integer;
+
+
+    v_fecha_nuevo_flujo				date;
+    remplaso				record;
+    v_fecha_solicitud		date;
+
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_acta_conformidad_final_sel';
     v_parametros = pxp.f_get_record(p_tabla);
+
+    /*Aumentando para que los reportes cambien con el lo que es el Iterinato*/
+    v_fecha_nuevo_flujo = pxp.f_get_variable_global('fecha_nuevo_flujo_gm')::date;
+    /************************************************************************/
 
 	/*********************************
  	#TRANSACCION:  'MAT_REP_ACTA_CONFOR'
@@ -58,16 +70,23 @@ BEGIN
 	if(p_transaccion='MAT_REP_ACTA_CONFOR')then
 
     	begin
+        	select sol.fecha_solicitud into v_fecha_solicitud
+            from mat.tsolicitud sol
+            where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
         	/*Incluimos las otras firmas para el reporte de acta de conformidad (Ismael Valdivia 27/10/2021)*/
             --Firma de Jefe de Abastecimiento
             SELECT
                     vf.desc_funcionario1::varchar,
                     vf.nombre_cargo::varchar,
-                    twf.fecha_reg
+                    twf.fecha_reg,
+                    twf.id_funcionario
             INTO
             		v_nombre_jefe_abastecimiento,
                     v_cargo_jefe_abastecimiento,
-                    v_fecha_reg_estado
+                    v_fecha_reg_estado,
+                    v_id_funcionario_abastecimiento
             FROM wf.testado_wf twf
             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
@@ -75,9 +94,23 @@ BEGIN
             and twf.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
             GROUP BY vf.desc_funcionario1,
                     vf.nombre_cargo,
-                    twf.fecha_reg
+                    twf.fecha_reg,
+                    twf.id_funcionario
             ORDER BY  twf.fecha_reg DESC
             limit 1;
+
+
+            if (v_fecha_solicitud >= v_fecha_nuevo_flujo) then
+            	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abastecimiento,v_fecha_solicitud::varchar);
+
+                if(remplaso is null)THEN
+                        v_nombre_jefe_abastecimiento = v_nombre_jefe_abastecimiento;
+                        v_cargo_jefe_abastecimiento = v_cargo_jefe_abastecimiento;
+                else
+                        v_nombre_jefe_abastecimiento = remplaso.funcion;
+                        v_cargo_jefe_abastecimiento = SPLIT_PART(remplaso.desc_funcionario1, '|', 2);
+                end if;
+            end if;
 
 
             --Firma del encargado de almacen
@@ -95,15 +128,31 @@ BEGIN
 
 
             select car.desc_funcionario1,
-            	   car.nombre_cargo
+            	   car.nombre_cargo,
+                   car.id_funcionario
             into
             	   v_funcionario_encargado_almacen,
-                   v_cargo_encargado_almacen
+                   v_cargo_encargado_almacen,
+                   v_id_funcionario_almacen
             from orga.vfuncionario_cargo car
             where car.id_funcionario = v_funcionario_almacen
             and v_fecha_reg_estado::date between car.fecha_asignacion and coalesce(car.fecha_finalizacion, now())
             ORDER BY  car.fecha_asignacion DESC
             limit 1;
+
+
+            if (v_fecha_solicitud >= v_fecha_nuevo_flujo) then
+            	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_almacen,v_fecha_solicitud::varchar);
+
+                if(remplaso is null)THEN
+                        v_funcionario_encargado_almacen = v_funcionario_encargado_almacen;
+                        v_cargo_encargado_almacen = v_cargo_encargado_almacen;
+                else
+                        v_funcionario_encargado_almacen = remplaso.funcion;
+                        v_cargo_encargado_almacen = SPLIT_PART(remplaso.desc_funcionario1, '|', 2);
+                end if;
+            end if;
+
 
 
             /************************************************************************************************/
@@ -122,7 +171,7 @@ BEGIN
                                 acta.observaciones::varchar,
                                 fun.desc_funcionario1::varchar,
                                 fun.nombre_cargo::varchar,
-                                fun.oficina_nombre::varchar,
+                                ofi.nombre as oficina_nombre,
                                 /*Firma de jefe abastecimiento*/
                                 '''||v_nombre_jefe_abastecimiento||'''::varchar as jefe_abastecimiento,
                                 '''||v_cargo_jefe_abastecimiento||'''::varchar as cargo_jefe_abastecimiento,
@@ -141,7 +190,9 @@ BEGIN
                           left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
                           left join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                           left join mat.tacta_conformidad_final acta on acta.id_solicitud = sol.id_solicitud
-                          left join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = acta.id_funcionario_firma
+                          left join orga.vfuncionario_cargo fun on fun.id_funcionario = acta.id_funcionario_firma and sol.fecha_solicitud between fun.fecha_asignacion and COALESCE(fun.fecha_finalizacion,now()::date)
+                          inner join orga.tcargo car on car.id_cargo = fun.id_cargo
+                          inner join orga.toficina ofi on ofi.id_oficina = car.id_oficina
                           where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
 
 			--Devuelve la respuesta

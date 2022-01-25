@@ -314,7 +314,7 @@ class RCuandroComparativoPDF extends  ReportePDF
         </table>';
         $fun_presu = explode('|', $aero);
 
-        if ($this->datos2[0]['mayor'] = 'menor') {
+        if ($this->datos2[0]['mayor'] == 'menor') {
 
           $tbl1 = ' <table border="2">
            <tbody>
@@ -333,6 +333,7 @@ class RCuandroComparativoPDF extends  ReportePDF
               $tbl1 .= '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $cuartaFirma . '" alt="Logo"><br></td>';
           }
         } else {
+
           $tbl1 = ' <table border="2">
            <tbody>
           <tr>
@@ -354,6 +355,7 @@ class RCuandroComparativoPDF extends  ReportePDF
          </tbody>
         </table>';
       }else{
+
         if ( $this->datos[0]['estado'] != 'cotizacion') {
             $elaborado = $this->datos2[0]['visto_ag'];
         }else{
