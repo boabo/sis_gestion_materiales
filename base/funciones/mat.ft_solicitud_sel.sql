@@ -712,7 +712,7 @@ v_consulta:='select		sol.id_solicitud,
 
 		begin
 			v_consulta:='WITH part_number_cotizaciones as (select
-                                                            replace (list(CASE
+                                                            replace (list(distinct(CASE
                                                                  --WHEN trim(de.nro_parte_alterno) != '''''' and trim(de.nro_parte_alterno) != ''-''
                                                                  WHEN ((trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
 
@@ -726,7 +726,7 @@ v_consulta:='select		sol.id_solicitud,
 
                                                                  --ELSE  detcot.explicacion_detallada_part_cot
                                                                  ELSE  de.nro_parte_alterno
-                                                            END)::varchar, '','', '' / '') as part_number_alternos,
+                                                            END))::varchar, '','', '' / '') as part_number_alternos,
                                                             de.id_detalle
                                                             /*****************************************/
                                                             from mat.tsolicitud sol
