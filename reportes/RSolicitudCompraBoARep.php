@@ -487,7 +487,7 @@ Class RSolicitudCompraBoARep extends Report {
                     );
                 $pdf-> MultiRow($RowArray,false,1) ;*/
 
-                $totalRef=$totalRef+$solicitudDetalle['precio_total'];
+                $totalRef=$totalRef+$solicitudDetalle['precio_total']+$solicitudDetalle['total_hazmat'];
                 $totalGa=$totalGa+$solicitudDetalle['precio_ga'];
                 $totalSg=$totalSg+$solicitudDetalle['precio_sg'];
 
@@ -508,7 +508,6 @@ Class RSolicitudCompraBoARep extends Report {
             }else{*/
                 $dif = $saldo_comprometer -  $totalRef;
             //}
-
             $table.='<tr>
                             <td colspan="3" align="center"><b>TOTAL</b></td>
                             <td style="font-weight: bold">('.$this->getDataSource()->getParameter('desc_moneda').')</td>

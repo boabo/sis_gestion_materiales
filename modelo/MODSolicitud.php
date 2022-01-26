@@ -2009,6 +2009,51 @@ class MODSolicitud extends MODbase
         $this->captura('partida','varchar');
         $this->captura('fecha_autorizacion_rpc','varchar');
 
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump( $this->respuesta);exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function ControlGridRpc(){
+
+        $this->procedimiento ='mat.ft_listado_control_rpc ';
+        $this->transaccion='MAT_RPCE_REP_SEL';
+        $this->tipo_procedimiento='SEL';
+
+        $this->setParametro('origen_pedido','origen_pedido','varchar');
+        $this->setParametro('fecha_ini','fecha_ini','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        //$this->setCount(false);
+
+        $this->captura('origen_pedido','varchar');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('estado','varchar');
+         $this->captura('funciaonario','varchar');
+        $this->captura('fecha_solicitud','varchar');
+        $this->captura('motivo_solicitud','varchar');
+        $this->captura('observaciones_sol','varchar');
+        $this->captura('remark','varchar');
+        $this->captura('justificacion','varchar');
+        $this->captura('nro_justificacion','varchar');
+         $this->captura('tipo_solicitud','varchar');
+        $this->captura('tipo_falla','varchar');
+        $this->captura('tipo_reporte','varchar');
+        $this->captura('mel','varchar');
+        $this->captura('nro_no_rutina','varchar');
+        $this->captura('nro_cotizacion','varchar');
+         $this->captura('proveedor','text');
+				$this->captura('nro_po','varchar');
+				 $this->captura('aux_abas','varchar');
+        $this->captura('fecha_autorizacion_rpc','varchar');
+        $this->captura('encargado_rpc','varchar');
+         $this->captura('precio_unitario_mb','numeric');
+         $this->captura('id_proceso_wf','numeric');
+         $this->captura('moneda','varchar');
+         $this->captura('funcionario_solicitante','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

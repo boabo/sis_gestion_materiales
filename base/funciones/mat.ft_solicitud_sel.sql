@@ -724,6 +724,17 @@ v_consulta:='select		sol.id_solicitud,
 
                                                                   THEN detcot.explicacion_detallada_part_cot
 
+                                                                  WHEN (
+                                                                      (trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A'')
+
+                                                                      and (trim(detcot.explicacion_detallada_part_cot) = trim(de.nro_parte_alterno))
+
+                                                                      and (trim(de.nro_parte_alterno) = trim(de.nro_parte))
+
+                                                                      )
+
+                                                                  THEN ''''::varchar
+
                                                                  --ELSE  detcot.explicacion_detallada_part_cot
                                                                  ELSE  de.nro_parte_alterno
                                                             END))::varchar, '','', '' / '') as part_number_alternos,
@@ -2169,6 +2180,17 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 									  THEN detcot.explicacion_detallada_part_cot
 
+                                     WHEN (
+                                          (trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'')
+
+                                          and (trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte_alterno))
+
+                                          and (trim(det.nro_parte_alterno) = trim(det.nro_parte))
+
+                                          )
+
+                                      THEN ''''::varchar
+
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                      ELSE  det.nro_parte_alterno
                                 END)::varchar
@@ -3113,6 +3135,17 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
                                       THEN detcot.explicacion_detallada_part_cot
+
+                                      WHEN (
+                                          (trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'')
+
+                                          and (trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte_alterno))
+
+                                          and (trim(det.nro_parte_alterno) = trim(det.nro_parte))
+
+                                          )
+
+                                      THEN ''::varchar
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                       ELSE  det.nro_parte_alterno

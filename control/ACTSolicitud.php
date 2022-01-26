@@ -2179,6 +2179,22 @@ class ACTSolicitud extends ACTbase{
        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
    }
+
+   function ControlGridRpc (){
+
+       if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+           $this->objReporte = new Reporte($this->objParam,$this);
+           $this->res = $this->objReporte->generarReporteListado('MODSolicitud','ControlGridRpc');
+       } else{
+           $this->objFunc=$this->create('MODSolicitud');
+
+           $this->res=$this->objFunc->ControlGridRpc($this->objParam);
+       }
+
+       // $this->objFunc=$this->create('MODSolicitud');
+       // $this->res=$this->objFunc->ControlGridRpc($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
    /***************************************************************************/
 
    /*Aumentando el reporte del Acta de conformidad final*/

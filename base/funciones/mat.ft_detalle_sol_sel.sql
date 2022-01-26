@@ -30,6 +30,7 @@ DECLARE
     v_inner varchar;
     v_revisado varchar;
     v_origen_pedido		varchar;
+    v_total_hazmat		numeric;
 
 BEGIN
 
@@ -167,6 +168,16 @@ BEGIN
             from mat.tsolicitud sol
             where sol.id_solicitud = v_parametros.id_solicitud;
 
+            select
+            	sum(COALESCE(det.precio_unitario,0)) into v_total_hazmat
+            from mat.tdetalle_sol det
+            inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
+            inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = 'Si'
+            where  det.id_solicitud = v_parametros.id_solicitud and det.nro_parte = 'HAZMAT';
+
+
+
+
             if (v_origen_pedido = 'Reparación de Repuestos') then
 
 
@@ -214,7 +225,7 @@ BEGIN
                         par.nombre_partida,
                         pre.id_presupuesto,
                         par.id_partida
-
+						0::numeric as total_hazmat
                         /****************************************************/
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
@@ -277,8 +288,8 @@ BEGIN
                         par.codigo as codigo_partida,
                         par.nombre_partida,
                         pre.id_presupuesto,
-                        par.id_partida
-
+                        par.id_partida,
+						'||v_total_hazmat||'::numeric as total_hazmat
                         /****************************************************/
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg

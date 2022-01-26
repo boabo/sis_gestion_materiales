@@ -12,7 +12,7 @@ class MODDetalleSol extends MODbase{
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
- 
+
 	function listarDetalleSol(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='mat.ft_detalle_sol_sel';
@@ -127,6 +127,7 @@ class MODDetalleSol extends MODbase{
 		$this->captura('nombre_partida','varchar');
 		$this->captura('id_presupuesto','integer');
 		$this->captura('id_partida','integer');
+		$this->captura('total_hazmat','numeric');
 		/***************************************************************/
 
 		//Ejecuta la instruccion
