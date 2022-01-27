@@ -273,7 +273,7 @@ BEGIN
                                   where ds.id_solicitud =  p_id_solicitud*/
 
                                   /*Tomar en cuenta de la cotizacion adjudicada*/
-                                  select 	det.nro_parte_cot,
+                                  /*select 	det.nro_parte_cot,
                                             det.cantidad_det,
                                             det.precio_unitario,
                                             det.precio_unitario_mb as precio_unitario_mb,
@@ -290,7 +290,27 @@ BEGIN
                                     from mat.tdetalle_sol ds
                                     inner join mat.tcotizacion_detalle det on det.id_detalle = ds.id_detalle
                                     inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
-                                    where ds.id_solicitud = p_id_solicitud
+                                    where ds.id_solicitud = p_id_solicitud*/
+
+
+
+                                    select 	ds.nro_parte,
+                                            ds.cantidad_sol,
+                                            ds.precio_unitario,
+                                            ds.precio_unitario as precio_unitario_mb,
+
+                                            ds.id_concepto_ingas,
+                                            ds.id_centro_costo,
+                                            ds.id_partida,
+                                            ds.id_cuenta,
+                                            ds.id_auxiliar,
+                                            ds.id_partida_ejecucion,
+                                            (' P/N: ' ||ds.nro_parte||' '|| ds.descripcion ||' '||' S/N: ' || ds.referencia) as descripcion,
+                                            ds.id_orden_trabajo
+
+                                      from mat.tdetalle_sol ds
+                                      inner join mat.tcotizacion cot on cot.id_solicitud = ds.id_solicitud and cot.adjudicado = 'si'
+                                      where ds.id_solicitud = p_id_solicitud
 
             )LOOP
 
@@ -330,10 +350,10 @@ BEGIN
                         v_registros.id_auxiliar,
                         v_registros.id_partida_ejecucion,
 
-                        --(v_registros.cantidad_sol *v_registros.precio_unitario),
-                        --(v_registros.cantidad_sol *v_registros.precio_unitario_mb),
-                        (v_registros.cantidad_det *v_registros.precio_unitario),
-                        (v_registros.cantidad_det *v_registros.precio_unitario_mb),
+                        (v_registros.cantidad_sol *v_registros.precio_unitario),
+                        (v_registros.cantidad_sol *v_registros.precio_unitario_mb),
+                        --(v_registros.cantidad_det *v_registros.precio_unitario),
+                        --(v_registros.cantidad_det *v_registros.precio_unitario_mb),
                         v_registros.descripcion,
                         v_registros.id_orden_trabajo
                       )RETURNING id_obligacion_det into v_id_obligacion_det;
