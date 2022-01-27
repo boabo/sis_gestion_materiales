@@ -3145,7 +3145,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                                           )
 
-                                      THEN ''::varchar
+                                      THEN ''''::varchar
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                       ELSE  det.nro_parte_alterno

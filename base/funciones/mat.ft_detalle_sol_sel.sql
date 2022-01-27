@@ -169,7 +169,7 @@ BEGIN
             where sol.id_solicitud = v_parametros.id_solicitud;
 
             select
-            	sum(COALESCE(det.precio_unitario,0)) into v_total_hazmat
+            	COALESCE(sum(det.precio_unitario),0) into v_total_hazmat
             from mat.tdetalle_sol det
             inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
             inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = 'Si'
@@ -224,7 +224,7 @@ BEGIN
                         par.codigo as codigo_partida,
                         par.nombre_partida,
                         pre.id_presupuesto,
-                        par.id_partida
+                        par.id_partida,
 						0::numeric as total_hazmat
                         /****************************************************/
 						from mat.tdetalle_sol det
