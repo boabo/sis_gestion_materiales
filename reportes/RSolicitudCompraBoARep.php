@@ -448,6 +448,9 @@ Class RSolicitudCompraBoARep extends Report {
             $xEnd=0;
             $yEnd=0;
 
+            $totalItem=1;
+            $totalDatos = count($row['groupeddata']);
+
             $pdf->tablewidths=$conf_det2_tablewidths;
             $pdf->tablealigns=$conf_det2_tablealigns;
             $pdf->tablenumbers=$conf_det2_tablenumbers;
@@ -457,12 +460,24 @@ Class RSolicitudCompraBoARep extends Report {
             foreach ($row['groupeddata'] as $solicitudDetalle) {
 
                  if (substr($this->getDataSource()->getParameter('num_tramite'),0, 2) != 'GR') {
+
+                   if ($totalItem == $totalDatos && $solicitudDetalle['total_hazmat'] > 0 ) {
+                     $totalMasHazmat = $solicitudDetalle['precio_total'] + $solicitudDetalle['total_hazmat'];
+                     $descripcionHazmat = $solicitudDetalle['descripcion'] .' Sumando el HAZMAT ('.$solicitudDetalle['total_hazmat'].')';
+                   } else {
+                     $totalMasHazmat = $solicitudDetalle['precio_total'];
+                     $descripcionHazmat = $solicitudDetalle['descripcion'];
+                   }
+
+
+
+
                    $table.='<tr>
                                <td style="text-align: justify;">'.$solicitudDetalle['desc_concepto_ingas'].'</td>
-                               <td>'.stripcslashes(nl2br(htmlentities('P/N: '.$solicitudDetalle['nro_parte'].' '.$solicitudDetalle['descripcion']))).'</td>
+                               <td>'.stripcslashes(nl2br(htmlentities('P/N: '.$solicitudDetalle['nro_parte'].' '.$descripcionHazmat))).'</td>
                                <td style="text-align: center;">'.$solicitudDetalle['cantidad_sol'].'</td>
                                <td style="text-align: right;">'.number_format($solicitudDetalle['precio_unitario'],2,',','.').'</td>
-                               <td style="text-align: right;">'.number_format($solicitudDetalle['precio_total'],2,',','.').'</td>
+                               <td style="text-align: right;">'.number_format($totalMasHazmat,2,',','.').'</td>
                             </tr>
                            ';
 
@@ -486,12 +501,10 @@ Class RSolicitudCompraBoARep extends Report {
                         'precio_total' => $solicitudDetalle['precio_total']
                     );
                 $pdf-> MultiRow($RowArray,false,1) ;*/
-
-                $totalRef=$totalRef+$solicitudDetalle['precio_total']+$solicitudDetalle['total_hazmat'];
+                $totalItem++;
+                $totalRef=$totalRef+$solicitudDetalle['precio_total'];
                 $totalGa=$totalGa+$solicitudDetalle['precio_ga'];
                 $totalSg=$totalSg+$solicitudDetalle['precio_sg'];
-
-
             }
 
            //coloca el total de la partida
@@ -500,6 +513,11 @@ Class RSolicitudCompraBoARep extends Report {
            $pdf->tablenumbers=$conf_tp_tablenumbers;
            $pdf->tableborders=$conf_tp_tableborders;
 
+           if($solicitudDetalle['total_hazmat'] > 0){
+             $totalRef = $totalRef+$solicitudDetalle['total_hazmat'];
+           } else {
+             $totalRef = $totalRef;
+           }
 
             $saldo_comprometer = (double) $solicitudDetalle['captura_presupuesto'];
 
