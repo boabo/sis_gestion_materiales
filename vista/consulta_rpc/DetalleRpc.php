@@ -394,6 +394,15 @@ header("content-type: text/javascript; charset=UTF-8");
             //   tooltip: '<b>Generar Reporte Excel'
             // });
 
+            this.addButton('anularProceso',{
+                text: 'Anular Solicitud',
+                grupo: [0,1,2,3,4,5,6,7],
+                iconCls: 'bwrong',
+                disabled: true,
+                handler: this.anularProceso,
+                tooltip: '<b>Anular la Solicitud </b><br/>'
+            });
+
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
                 grupo: [0,1,2,3,4,5,6,7],
@@ -481,6 +490,44 @@ header("content-type: text/javascript; charset=UTF-8");
         initFiltro: function (param) {
             this.store.baseParams = param;
             this.load({params: {start: 0, limit: this.tam_pag}});
+        },
+
+        preparaMenu: function () {
+      			var rec = this.sm.getSelected();
+
+            if (rec.data.estado == 'borrador' || rec.data.estado == 'revision' || rec.data.estado == 'cotizacion' || rec.data.estado == 'compra' || rec.data.estado == 'finalizado') {
+              this.getBoton('anularProceso').enable();
+              this.getBoton('anularProceso').setVisible(true);
+            } else {
+              this.getBoton('anularProceso').disable();
+              this.getBoton('anularProceso').setVisible(false);
+            }
+      			Phx.vista.DetalleRpc.superclass.preparaMenu.call(this);
+      		},
+
+        liberaMenu : function(){
+    				var rec = this.sm.getSelected();
+    				Phx.vista.DetalleRpc.superclass.liberaMenu.call(this);
+    		},
+
+        anularProceso:function(){
+          var rec = this.sm.getSelected();
+          Phx.CP.loadingShow();
+          Ext.Ajax.request({
+              url : '../../sis_gestion_materiales/control/Solicitud/eliminarSolicitud',
+              params : {
+                'id_solicitud' : rec.data.id_solicitud
+              },
+              success : this.successSinc,
+              failure : this.conexionFailure,
+              timeout : this.timeout,
+              scope : this
+            });
+        },
+
+        successSinc:function(resp){
+            Phx.CP.loadingHide();
+                this.reload();
         },
 
         loadCheckDocumentosRecWf:function() {
