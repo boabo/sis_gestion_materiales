@@ -967,7 +967,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 	bdel:true,
 	bsave:false,
 	btest: false,
-  bnew: false,
+  bnew: true,
 
         onReloadPage: function (m) {
             this.maestro = m;
