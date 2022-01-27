@@ -253,7 +253,7 @@ BEGIN
                           from mat.tcotizacion cot
                           inner join mat.tcotizacion_detalle det on det.id_solicitud = cot.id_solicitud
                           inner join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
-                          inner join mat.tday_week day on day.id_day_week = det.id_day_week
+                          left join mat.tday_week day on day.id_day_week = det.id_day_week
                           inner join mat.tsolicitud sol on sol.id_solicitud = cot.id_solicitud
                           left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                           left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
