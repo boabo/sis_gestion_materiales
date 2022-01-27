@@ -110,7 +110,8 @@ BEGIN
                                      sum(d.precio_unitario_mb)::numeric,
                                      s.id_proceso_wf::numeric,
                                      mon.codigo_internacional::varchar,
-         							 func.desc_funcionario1::varchar as funcionario_solicitante
+         							 func.desc_funcionario1::varchar as funcionario_solicitante,
+                                     s.id_solicitud::numeric
                            from  mat.tsolicitud s
                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                            inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
@@ -148,7 +149,8 @@ BEGIN
                                   s.id_proceso_wf,
                                   mon.codigo_internacional,
                                   func.desc_funcionario1,
-                                  e.fecha_reg
+                                  e.fecha_reg ,
+                                  s.id_solicitud
                           	order by e.fecha_reg desc ';
 
 			return v_consulta;
@@ -218,6 +220,57 @@ BEGIN
 			return v_consulta;
 
 		end;
+
+
+    /*********************************
+ 	#TRANSACCION:  'MAT_DET_SOL_RPC_SEL'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		Ismael.Valdivia
+ 	#FECHA:		08-08-2017 21:54:34
+	***********************************/
+
+	elsif(p_transaccion='MAT_DET_SOL_RPC_SEL')then
+
+		begin
+
+
+           v_consulta:='
+                          SELECT	TO_JSON(ROW_TO_JSON(jsonD) :: TEXT) #>> ''{}'' as jsonData
+                                                    FROM (
+
+                          SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(detalle))) as detalle_solicitud
+                          FROM(
+
+
+                          select det.nro_parte_cot,
+                                 det.explicacion_detallada_part_cot,
+                                 det.cantidad_det,
+                                 det.precio_unitario,
+                                 day.codigo_tipo as cantidad_dias,
+                                 (cc.ep || '' - '' || cc.nombre_uo)::varchar as centro_costo,
+                                 COALESCE (ot.desc_orden,'' '')::varchar as matricula,
+                                 (pp.codigo || '' - '' || pp.nombre_partida)::varchar as partida
+                          from mat.tcotizacion cot
+                          inner join mat.tcotizacion_detalle det on det.id_solicitud = cot.id_solicitud
+                          inner join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                          inner join mat.tday_week day on day.id_day_week = det.id_day_week
+                          inner join mat.tsolicitud sol on sol.id_solicitud = cot.id_solicitud
+                          left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
+                          left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                          left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                          where cot.id_solicitud = '||v_parametros.id_solicitud||'
+                          and cot.adjudicado = ''si''
+
+                          ) detalle
+                          ) jsonD';
+
+			return v_consulta;
+
+		end;
+
+
+
+
 
 	else
 

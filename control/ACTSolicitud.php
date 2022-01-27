@@ -2259,6 +2259,12 @@ class ACTSolicitud extends ACTbase{
    }
 
 
+   function consultaDetalleSolicitud(){
+     $this->objFunc=$this->create('MODSolicitud');
+     $this->res=$this->objFunc->consultaDetalleSolicitud($this->objParam);
+     $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+
 
 
 }

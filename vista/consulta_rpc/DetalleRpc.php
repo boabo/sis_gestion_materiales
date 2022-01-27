@@ -8,7 +8,12 @@
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
-
+<style>
+#ventanaEmergente:hover {
+  background-color: #91FF81;
+  font-size: 20px;
+}
+</style>
 
 <script>
 
@@ -28,6 +33,9 @@ header("content-type: text/javascript; charset=UTF-8");
                       allowBlank: true,
                       gwidth: 180,
                       maxLength: 1000,
+                      renderer: function(value,p,record){
+                              return String.format('{0}','<b id="ventanaEmergente"><i class="fa fa-share" aria-hidden="true"></i> </b>&nbsp;&nbsp;&nbsp;'+record.data['fecha_autorizacion_rpc']);
+                      },
 
                   },
                   type: 'TextField',
@@ -405,6 +413,13 @@ header("content-type: text/javascript; charset=UTF-8");
         		this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#dfe8f6';
             this.iniciarEventos();
 
+            this.bbar.el.dom.style.background='#6EC8E3';
+          	this.tbar.el.dom.style.background='#6EC8E3';
+          	this.grid.body.dom.firstChild.firstChild.lastChild.style.background='#FEFFF4';
+          	this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#FFF4EB';
+
+            this.grid.on('cellclick', this.abrirDetalle, this);
+
             this.load({params: {start: 0, limit: this.tam_pag}});
 
         },
@@ -440,6 +455,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'id_proceso_wf', type: 'numeric'},
             {name: 'moneda', type: 'varchar'},
             {name: 'funcionario_solicitante', type: 'varchar'},
+            {name: 'id_solicitud', type: 'numeric'},
 
         ],
 
@@ -501,8 +517,23 @@ header("content-type: text/javascript; charset=UTF-8");
         postReloadPage: function (data) {
             ini = data.desde;
             fin = data.hasta;
+        },
 
-
+        abrirDetalle: function(cell,rowIndex,columnIndex,e){
+          if(columnIndex==1){
+            var data = this.sm.getSelected().data;
+            Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/consulta_rpc/DetalleSolicitud.php',
+            '<span style="font-size:14pt;padding-left: 35%;letter-spacing: 12px;">DETALLE SOLICITUD</span>', {
+              width:'90%',
+              height:'90%'
+              }, {
+                id_solicitud: data.id_solicitud,
+                link: true
+              },
+              this.idContenedor,
+              'DetalleSolicitud'
+            );
+          }
         },
 
         bnew: false,

@@ -133,7 +133,7 @@ class MODDetalleSol extends MODbase{
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		//var_dump($this->respuesta); exit;
+		var_dump($this->respuesta); exit;
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

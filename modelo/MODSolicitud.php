@@ -2054,6 +2054,7 @@ class MODSolicitud extends MODbase
          $this->captura('id_proceso_wf','numeric');
          $this->captura('moneda','varchar');
          $this->captura('funcionario_solicitante','varchar');
+         $this->captura('id_solicitud','numeric');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -2252,6 +2253,23 @@ class MODSolicitud extends MODbase
         return $this->respuesta;
     }
 
+    function consultaDetalleSolicitud(){
+  		//Definicion de variables para ejecucion del procedimientp
+  		$this->procedimiento='mat.ft_listado_control_rpc';
+  		$this->transaccion='MAT_DET_SOL_RPC_SEL';
+  		$this->tipo_procedimiento='SEL';//tipo de transaccion
+  		$this->setCount(false);
+
+  		$this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+  		$this->captura('jsonData','text');
+  		//Ejecuta la instruccion
+  		$this->armarConsulta();
+  		// echo $this->consulta;exit;
+  		$this->ejecutarConsulta();
+  		//Devuelve la respuesta
+      //var_dump("aqui llega la respuesta",$this->respuesta);exit;
+  		return $this->respuesta;
+  	}
 }
 
 ?>
