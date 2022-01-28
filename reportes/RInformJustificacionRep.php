@@ -261,7 +261,7 @@ class RInformJustificacionRep extends  ReportePDF
                    </th>
                 </tr>
               </table>';
-        
+
               if ($this->datos[0]["mayor"] == 'menor') {
               $tb .=   '
               <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
@@ -287,9 +287,15 @@ class RInformJustificacionRep extends  ReportePDF
                 $tb .=   '
                 <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                     <tr>
+                      <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Elaborado Por:</b> </td>
                       <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe Departamento Abastecimiento y Logistica:</b><br></td>
                     </tr>
                     <tr>
+                        <td align="center" style="font-family: Calibri; font-size: 9px;">
+                            <br><br>
+                            <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($jefeDepto_0, $jefeDepto_1,$jefeDepto_4,$jefeDepto_3) . '" alt="Logo">
+                             <br>'.$jefeDepto_0.'
+                        </td>
                         <td align="center" style="font-family: Calibri; font-size: 9px;">
                             <br><br>
                             <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_sol_0, $fun_sol_1,$fun_sol_4,$fun_sol_3).'" alt="Logo">

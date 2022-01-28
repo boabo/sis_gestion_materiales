@@ -262,11 +262,12 @@ class RComiteEvaluacionGR extends  ReportePDF
 
 
       } else {
+        
         $firmas = '
         <table border="1" cellpadding="10">
             <tr>
                 <!--<td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>-->
-                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Elaborado por:</b> </td>
+                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
 
             </tr>
             <tr>
@@ -280,7 +281,7 @@ class RComiteEvaluacionGR extends  ReportePDF
          <table border="1" cellpadding="10">
              <tr>
                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
-                 <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico Adquisiciones:</b> </td>
+                 <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Elaborado por:</b> </td>
              </tr>
              <tr>
                  <td align="center" style="font-family: Calibri; font-size: 9px;">

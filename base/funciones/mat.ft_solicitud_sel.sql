@@ -2280,13 +2280,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           if(remplaso is null)THEN
                              	v_nombre_funcionario_dc_qr_oficial = v_nombre_funcionario_dc_qr_oficial;
                           else
-                                v_nombre_funcionario_dc_qr_oficial = remplaso.funcion;
+                                v_nombre_funcionario_dc_qr_oficial = remplaso.desc_funcionario1;
                           end if;
                       else
                           v_nombre_funcionario_dc_qr_oficial = v_nombre_funcionario_dc_qr_oficial;
                       end if;
                       /*******************************/
-
 
                   /*************************************************************************/
                  end if;
@@ -2317,7 +2316,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       if(remplaso is null)THEN
                             v_nombre_funcionario_abas_qr_oficial = v_nombre_funcionario_abas_qr_oficial;
                       else
-                            v_nombre_funcionario_abas_qr_oficial = remplaso.funcion;
+                            v_nombre_funcionario_abas_qr_oficial = remplaso.desc_funcionario1;
                       end if;
                   else
                       v_nombre_funcionario_abas_qr_oficial = v_nombre_funcionario_abas_qr_oficial;
@@ -2360,7 +2359,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                             if(remplaso is null)THEN
                                   v_nombre_funcionario_rev_qr_oficial = v_nombre_funcionario_rev_qr_oficial;
                             else
-                                  v_nombre_funcionario_rev_qr_oficial = remplaso.funcion;
+                                  v_nombre_funcionario_rev_qr_oficial = remplaso.desc_funcionario1;
                             end if;
                         else
                             v_nombre_funcionario_rev_qr_oficial = v_nombre_funcionario_rev_qr_oficial;
@@ -2385,7 +2384,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     FROM wf.testado_wf twf
                         INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                         INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                        INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                         AND te.codigo = 'vb_rpcd'
                         and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now())
@@ -2401,7 +2400,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           if(remplaso is null)THEN
                                 v_nombre_funcionario_presu_qr_oficial = v_nombre_funcionario_presu_qr_oficial;
                           else
-                                v_nombre_funcionario_presu_qr_oficial = remplaso.funcion;
+                                v_nombre_funcionario_presu_qr_oficial = remplaso.desc_funcionario1;
                           end if;
                       else
                           v_nombre_funcionario_presu_qr_oficial = v_nombre_funcionario_presu_qr_oficial;
@@ -2441,7 +2440,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         if(remplaso is null)THEN
                               v_nombre_funcionario_resp_qr_oficial = v_nombre_funcionario_resp_qr_oficial;
                         else
-                              v_nombre_funcionario_resp_qr_oficial = remplaso.funcion;
+                              v_nombre_funcionario_resp_qr_oficial = remplaso.desc_funcionario1;
                         end if;
                     else
                         v_nombre_funcionario_resp_qr_oficial = v_nombre_funcionario_resp_qr_oficial;
@@ -3900,7 +3899,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                               if(remplaso is null)THEN
                                     v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
                               else
-                              		v_funcionario_sol_rpcd_oficial = remplaso.funcion;
+                              		v_funcionario_sol_rpcd_oficial = remplaso.desc_funcionario1;
                               end if;
                           else
                               v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
@@ -4255,7 +4254,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 if(remplaso is null)THEN
                                    		v_funcionario_sol_oficial = v_funcionario_sol_oficial;
                                 else
-                                        v_funcionario_sol_oficial = remplaso.funcion;
+                                        v_funcionario_sol_oficial = remplaso.desc_funcionario1;
                                 end if;
                             else
                                 v_funcionario_sol_oficial = v_funcionario_sol_oficial;
@@ -4305,41 +4304,81 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 end if;
               end if;*/
             if (v_estado_actual != 'borrador') then
-              SELECT  twf.id_funcionario,
-                      vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
-                      vf.desc_funcionario1,
-                      to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
-                INTO v_id_funcionario_oficial,
-                      v_funcionario_sol_rpcd_oficial,
-                      v_funcionario_oficial,
-                      v_fecha_firma_pru
-              FROM wf.testado_wf twf
-              INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-              INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-              INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-              WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
-              AND te.codigo = 'vb_dpto_abastecimientos'
-              and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
-              GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
-              ORDER BY twf.fecha_reg DESC
-              limit 1;
 
 
-               /******************Aumentando Iterinato**************************/
-                if (v_fecha_solicitud_recu >= v_fecha_nuevo_flujo::date) then
-                    remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud::varchar);
+              if (v_fecha_solicitud::date >= '01/01/2022'::date) then
+              SELECT		twf.id_funcionario,
+                                  vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                                  to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+                      INTO v_id_funcionario_oficial,
+                        v_funcionario_sol_rpcd_oficial,
+                        v_funcionario_oficial,
+                        v_fecha_firma_pru
+                      FROM wf.testado_wf twf
+                          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                          INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                      WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
+                            AND  te.codigo = 'cotizacion'
+                            AND v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now())
+                      GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
+                      ORDER BY twf.fecha_reg DESC
+                      limit 1;
 
-                    if(remplaso is null)THEN
-                            v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
-                    else
-                            v_funcionario_sol_rpcd_oficial = remplaso.funcion;
-                    end if;
-                else
-                    v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
-                end if;
-              /*****************************************************************/
 
 
+                     /*Aumentando del Iterinado*/
+                      if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
+                          remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf ,v_id_funcionario_oficial,v_fecha_solicitud::varchar);
+
+                           if(remplaso is null)THEN
+                                  v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
+                          else
+                                  v_funcionario_sol_rpcd_oficial = remplaso.desc_funcionario1;
+                          end if;
+                      else
+                          v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
+                      end if;
+                      /*******************************/
+              			raise exception 'Aqui llega datos %',remplaso;
+
+              else
+
+                SELECT  twf.id_funcionario,
+                        vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                        vf.desc_funcionario1,
+                        to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+                  INTO v_id_funcionario_oficial,
+                        v_funcionario_sol_rpcd_oficial,
+                        v_funcionario_oficial,
+                        v_fecha_firma_pru
+                FROM wf.testado_wf twf
+                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
+                AND te.codigo = 'vb_dpto_abastecimientos'
+                and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
+                ORDER BY twf.fecha_reg DESC
+                limit 1;
+
+
+                 /******************Aumentando Iterinato**************************/
+                  if (v_fecha_solicitud >= v_fecha_nuevo_flujo::date) then
+                      remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud::varchar);
+
+                      if(remplaso is null)THEN
+                              v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
+                      else
+                              v_funcionario_sol_rpcd_oficial = remplaso.desc_funcionario1;
+                      end if;
+                  else
+                      v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
+                  end if;
+                /*****************************************************************/
+
+               end if;
 
               end if;
 
@@ -4546,7 +4585,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           if(remplaso is null)THEN
                                 v_funcionario_sol_oficial = v_funcionario_sol_oficial;
                           else
-                                  v_funcionario_sol_oficial = remplaso.funcion;
+                                  v_funcionario_sol_oficial = remplaso.desc_funcionario1;
                           end if;
                       else
                           v_funcionario_sol_oficial = v_funcionario_sol_oficial;
@@ -4594,7 +4633,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     if(remplaso is null)THEN
                           v_funcionario_pre = v_funcionario_pre;
                     else
-                          v_funcionario_pre = remplaso.funcion;
+                          v_funcionario_pre = remplaso.desc_funcionario1;
                     end if;
                 else
                 	v_funcionario_pre = v_funcionario_pre;
@@ -5631,7 +5670,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                               if(remplaso is null)THEN
                                   v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
                               else
-                                      v_funcionario_sol_rpcd_oficial = remplaso.funcion;
+                                      v_funcionario_sol_rpcd_oficial = remplaso.desc_funcionario1;
                               end if;
                           else
                               v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
