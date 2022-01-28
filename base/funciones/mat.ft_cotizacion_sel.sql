@@ -68,6 +68,7 @@ DECLARE
     v_fecha_solicitud_recu	date;
     v_es_mayor								varchar;
     v_fecha_nuevo_flujo	varchar;
+    v_id_solicitud_reporte integer;
 
 BEGIN
 	v_rango_fecha = '01/11/2018';
@@ -345,14 +346,15 @@ BEGIN
 
 		begin
 
-     select to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo, to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol
+     select to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo, to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol, sou.id_solicitud
      into
         v_fecha_po,
-        v_fecha_solicitud
+        v_fecha_solicitud,
+        v_id_solicitud_reporte
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
 
-	if (v_fecha_solicitud::date >= v_fecha_salida_gm) then
+	if (v_fecha_solicitud::date >= v_fecha_salida_gm or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) then
 
         /*Recuperamos el id_proceso_wf_firma para recuperar en el reporte (Ismael Valdivia 09/03/2020)*/
         select sol.id_proceso_wf_firma into v_id_proceso_wf_firma

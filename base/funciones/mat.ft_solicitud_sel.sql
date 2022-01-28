@@ -293,6 +293,7 @@ DECLARE
      v_fecha_firma_envio	varchar;
      v_fecha_nuevo_flujo	varchar;
      v_es_mayor				varchar;
+     v_id_solicitud_reporte	integer;
     /**************************************************/
 BEGIN
 
@@ -808,12 +809,14 @@ v_consulta:='select		sol.id_solicitud,
 
 		begin
 
-        select  sou.fecha_solicitud
+        select  sou.fecha_solicitud,
+        	    sou.id_solicitud
             	into
-        		v_fecha_solicitud_recu
+        		v_fecha_solicitud_recu,
+                v_id_solicitud_reporte
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
-		if (v_fecha_solicitud_recu >= v_fecha_salida_gm) then
+		if (v_fecha_solicitud_recu >= v_fecha_salida_gm or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) then
         v_id_fun_gerencia_mantenimiento = pxp.f_get_variable_global('gm_funcionario_gerencia_mantenimiento')::integer;
 
                     select
@@ -1280,14 +1283,17 @@ v_consulta:='select		sol.id_solicitud,
 
 		begin
 
-        select to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo, to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol
+        select to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
+        to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
+        sou.id_solicitud
         into
         v_fecha_po,
-        v_fecha_solicitud
+        v_fecha_solicitud,
+        v_id_solicitud_reporte
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
 
-        if (v_fecha_solicitud::date >= v_fecha_salida_gm) then
+        if (v_fecha_solicitud::date >= v_fecha_salida_gm or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) then
 
         /*Recuperamos el id_proceso_wf_firma para recuperar en el reporte (Ismael Valdivia 09/03/2020)*/
         select sol.id_proceso_wf_firma into v_id_proceso_wf_firma
@@ -2579,8 +2585,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
    elsif(p_transaccion='MAT_REP_COMP_BYS_SEL')then
 		begin
 
-        SELECT ts.nro_cite_cobs, ts.nro_tramite, to_char(ts.fecha_solicitud, 'DD/MM/YYYY')as fechasol, ts.estado
-        INTO v_nro_cite_dce, v_num_tramite, v_fecha_solicitud, v_estado_actual
+        SELECT ts.nro_cite_cobs, ts.nro_tramite, to_char(ts.fecha_solicitud, 'DD/MM/YYYY')as fechasol, ts.estado, ts.id_solicitud
+        INTO v_nro_cite_dce, v_num_tramite, v_fecha_solicitud, v_estado_actual, v_id_solicitud_reporte
         FROM mat.tsolicitud ts
         WHERE ts.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -2616,7 +2622,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
         if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
          /*Aumentamos para que los reportes no sean afectados*/
-         if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+         if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
 
                 SELECT 	twf.id_funcionario,
                       vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -2660,7 +2666,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
           end if;
             	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud);
         else
-         if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+         if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
               SELECT 	 twf.id_funcionario,
                      vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
                      vf.desc_funcionario1,
@@ -2705,7 +2711,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               v_funcionario_sol = v_funcionario_sol_oficial;
               v_funcionario     = v_funcionario_oficial;
           else
-              if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+              if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
               v_funcionario_sol = v_funcionario_sol_oficial;
               else
               v_funcionario_sol = remplaso.desc_funcionario1;
@@ -2766,7 +2772,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     from wf.tproceso_wf pwf
 	where  pwf.id_estado_wf_prev = v_id_despacho;
 
-    if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+    if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
       SELECT  twf.id_funcionario,
               twf.fecha_reg
             into  v_vbgerencia
@@ -2797,7 +2803,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
   if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
-  	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+  	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
   	 SELECT 	twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
 			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -2841,7 +2847,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
   	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_af_qr_oficial,v_fecha_solicitud);
   else
-  if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+  if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
   SELECT 	twf.id_funcionario, vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
 			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
     INTO
@@ -2884,7 +2890,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               v_nombre_funcionario_af_qr = v_nombre_funcionario_af_qr_ocifial;
 
       else
-      		if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+      		if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
               v_nombre_funcionario_af_qr = v_nombre_funcionario_af_qr_ocifial;
             ELSE
               v_nombre_funcionario_af_qr = remplaso.desc_funcionario1;
@@ -2892,7 +2898,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
       end if;
 
-	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
       SELECT  twf.id_funcionario,
               twf.fecha_reg
             into  v_vbrpc
@@ -2924,7 +2930,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
   if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
-  if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+  if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
    SELECT  twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
 			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -2968,7 +2974,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     end if;
   	remplaso = mat.f_firma_modif(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial,v_fecha_solicitud);
   else
-  if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+  if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
   	SELECT  twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Publica Nacional Estrategica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
 			to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
@@ -3019,7 +3025,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               v_nombre_funcionario_presu_qr = v_nombre_funcionario_presu_qr_oficial;
 
       else
-      	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+      	if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
               v_nombre_funcionario_presu_qr = v_nombre_funcionario_presu_qr_oficial;
       	else
       		 v_nombre_funcionario_presu_qr = remplaso.desc_funcionario1;
@@ -3065,7 +3071,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
     /******************************************/
 
 
-      if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date) THEN
+      if(v_fecha_solicitud ::date >= v_fecha_salida_gm::date or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) THEN
 
         select initcap(sol.nro_tramite) into v_nro_tramite
         from mat.tsolicitud sol
@@ -3217,13 +3223,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	elsif(p_transaccion='MAT_CONENV_REP')then
 
 		begin
-		           select 	soli.fecha_solicitud
+		           select 	soli.fecha_solicitud,
+                   			soli.id_solicitud
                    			into
-                            v_fecha_solicitud_recu
+                            v_fecha_solicitud_recu,
+                            v_id_solicitud_reporte
                      from mat.tsolicitud soli
                      where soli.id_proceso_wf = v_parametros.id_proceso_wf;
 
-                   if (v_fecha_solicitud_recu >= v_fecha_salida_gm) then
+                   if (v_fecha_solicitud_recu >= v_fecha_salida_gm or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) then
 
 
                    /*Aqui aumentando para recueprar el tiempo de entrega (Ismael Valdivia 09/11/2020)*/
@@ -4365,7 +4373,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
                  /******************Aumentando Iterinato**************************/
-                  if (v_fecha_solicitud >= v_fecha_nuevo_flujo::date) then
+                  if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
                       remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud::varchar);
 
                       if(remplaso is null)THEN
