@@ -403,7 +403,7 @@ BEGIN
               limit 1;
        end if;
 
-  	remplaso = mat.f_firma_modif(v_id_proceso_wf_firma,v_id_funcionario_dc_qr_oficial,v_fecha_solicitud);
+  	remplaso = mat.f_firma_modif(v_id_proceso_wf_firma,v_id_funcionario_dc_qr_oficial,v_fecha_po);
 
       if(remplaso is null)THEN
 
@@ -506,7 +506,7 @@ BEGIN
 
          if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
 
-  			remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial,v_fecha_solicitud);
+  			remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial,v_fecha_po);
 
              if(remplaso is null)THEN
 
@@ -574,7 +574,7 @@ BEGIN
            ORDER BY vf.fecha_asignacion desc
            limit 1;
 
-  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_ag_qr_oficial,v_fecha_solicitud);
+  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_ag_qr_oficial,v_fecha_po);
 
       if(remplaso is null)THEN
 
@@ -637,7 +637,7 @@ BEGIN
                  ORDER BY vf.fecha_asignacion desc
                  limit 1;
 
-        remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_solicitud);
+        remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_po);
 
         if(remplaso is null)THEN
 
@@ -736,7 +736,7 @@ BEGIN
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite;
 
 
-  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_dc_qr_oficial,v_fecha_solicitud);
+  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_dc_qr_oficial,v_fecha_po);
 
       if(remplaso is null)THEN
 
@@ -799,7 +799,7 @@ BEGIN
           and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
           GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo, pro.nro_tramite;
 
-  remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial,v_fecha_solicitud);
+  remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial,v_fecha_po);
 
    if(remplaso is null)THEN
 
@@ -858,7 +858,7 @@ BEGIN
     				(vf.fecha_finalizacion is null OR vf.fecha_finalizacion >= v_fecha_solicitud::date)
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo, pro.nro_tramite;
 
-  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_ag_qr_oficial,v_fecha_solicitud);
+  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_ag_qr_oficial,v_fecha_po);
 
      if(remplaso is null)THEN
 
@@ -911,7 +911,7 @@ BEGIN
              WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null
              GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo, pro.nro_tramite;
 
-  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_solicitud);
+  	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_po);
 
       if(remplaso is null)THEN
 
