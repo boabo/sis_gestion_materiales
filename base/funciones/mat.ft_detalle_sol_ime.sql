@@ -78,6 +78,9 @@ DECLARE
      v_id_auxiliar_recu	integer;
      v_recuperar_datos_detalle	varchar;
      v_origen_pedido	varchar;
+     v_total_hazmat		numeric;
+     v_existe_relacion	numeric;
+     v_datos_cambiar	record;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_detalle_sol_ime';
@@ -854,6 +857,57 @@ BEGIN
             return v_resp;
 
 		end;
+
+        /*********************************
+        #TRANSACCION:  'MAT_REL_HAZMAT'
+        #DESCRIPCION:	Asociar Hazmat
+        #AUTOR:		admin
+        #FECHA:		01-02-2022 09:15:01
+        ***********************************/
+
+        elsif(p_transaccion='MAT_REL_HAZMAT')then
+
+            begin
+                --Sentencia de la eliminacion
+
+                /*Aqui para reponer los datos si tienen hazmat relacionado y quieran cambiarlo*/
+                select count(det.id_cotizacion_det) into v_existe_relacion
+                from mat.tcotizacion_detalle det
+                where det.id_detalle_hazmat = v_parametros.id_hazmat;
+
+                if (v_existe_relacion > 0) then
+
+                        update mat.tcotizacion_detalle set
+                            id_detalle_hazmat = null
+                        where id_detalle_hazmat = v_parametros.id_hazmat;
+
+                end if;
+
+
+                /*****************************************************************************/
+
+
+
+                update mat.tcotizacion_detalle set
+                id_detalle_hazmat = v_parametros.id_cotizacion_det
+                --precio_total = precio_total + (COALESCE(v_total_hazmat,0))
+                where id_cotizacion_det = v_parametros.id_hazmat;
+
+
+                --Definicion de la respuesta
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Hazmat Relacionado Correctamente');
+                v_resp = pxp.f_agrega_clave(v_resp,'id_detalle',v_parametros.id_hazmat::varchar);
+
+                --Devuelve la respuesta
+                return v_resp;
+
+            end;
+
+
+
+
+
+
 
     else
 

@@ -1740,7 +1740,7 @@ class ACTSolicitud extends ACTbase{
 
             }
 
-
+            
             $cont_grup = 0;
             foreach ($arrayResp as $value2) {
                 $grup_desc_centro_costo = "";

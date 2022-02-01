@@ -168,14 +168,6 @@ BEGIN
             from mat.tsolicitud sol
             where sol.id_solicitud = v_parametros.id_solicitud;
 
-            select
-            	COALESCE(sum(det.precio_unitario),0) into v_total_hazmat
-            from mat.tdetalle_sol det
-            inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
-            inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = 'Si'
-            where  det.id_solicitud = v_parametros.id_solicitud and det.nro_parte = 'HAZMAT';
-
-
 
 
             if (v_origen_pedido = 'Reparación de Repuestos') then
@@ -225,7 +217,7 @@ BEGIN
                         par.nombre_partida,
                         pre.id_presupuesto,
                         par.id_partida,
-						0::numeric as total_hazmat
+                        0::numeric
                         /****************************************************/
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
@@ -250,7 +242,14 @@ BEGIN
 						det.id_detalle,
 						det.id_solicitud,
 						--det.descripcion,
-                        detcot.descripcion_cot,
+                        (case
+                        	when detHazmat.id_detalle_hazmat is not null then
+                            	detcot.descripcion_cot || '' Incluye Hazmat por: ''||detHazmat.precio_unitario_mb
+                            else
+                            	detcot.descripcion_cot
+                        end )::varchar as descripcion_cot,
+
+                        --detcot.descripcion_cot,
 						det.estado_reg,
 						det.id_unidad_medida,
 						--det.nro_parte,
@@ -289,7 +288,7 @@ BEGIN
                         par.nombre_partida,
                         pre.id_presupuesto,
                         par.id_partida,
-						'||v_total_hazmat||'::numeric as total_hazmat
+                        COALESCE(detHazmat.precio_unitario_mb,0)::numeric as total_hazmat
                         /****************************************************/
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
@@ -308,7 +307,10 @@ BEGIN
                         left join conta.tauxiliar aux on aux.id_auxiliar = det.id_auxiliar
                         left join pre.tpresupuesto pre on pre.id_centro_costo = cc.id_centro_costo
                         left join pre.vcategoria_programatica c on c.id_categoria_programatica = pre.id_categoria_prog
-                        where  det.id_solicitud = '||v_parametros.id_solicitud||' and ';
+
+                        left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = detcot.id_cotizacion_det
+
+                        where det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             end if;
 
 			--Definicion de la respuesta

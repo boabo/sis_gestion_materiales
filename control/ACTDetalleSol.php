@@ -9,12 +9,13 @@
 
 class ACTDetalleSol extends ACTbase{
 
-	function listarDetalleSol(){ 
+	function listarDetalleSol(){
 		$this->objParam->defecto('ordenacion','id_detalle');
         $this->objParam->defecto('dir_ordenacion','asc');
        if($this->objParam->getParametro('id_solicitud') != '') {
             $this->objParam->addFiltro(" det.id_solicitud = " . $this->objParam->getParametro('id_solicitud'));
         }
+
        /* if($this->objParam->getParametro('parte') != '') {
            var_dump($this->objParam->addParametro('parte', 'parte')); exit;
         }*/
@@ -98,6 +99,14 @@ class ACTDetalleSol extends ACTbase{
       $this->res=$this->objFunc->getCentroCosto($this->objParam);
       $this->res->imprimirRespuesta($this->res->generarJson());
     }
+
+		function RelacionarHazmat(){
+				$this->objFunc=$this->create('MODDetalleSol');
+				$this->res=$this->objFunc->RelacionarHazmat($this->objParam);
+				$this->res->imprimirRespuesta($this->res->generarJson());
+		}
+
+
 }
 
 ?>

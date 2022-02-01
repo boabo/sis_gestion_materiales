@@ -614,7 +614,7 @@ BEGIN
 
 
             /*Aqui aumentamos la condicion para registrar nuevos detalles de la cotizacion (Ismael Valdivia 29/04/2020)*/
-			if (v_id_detalle is null) then
+			/*if (v_id_detalle is null) then
             	select nextval('mat.tdetalle_sol_id_detalle_seq') into v_id_detalle;
 
                 /*Aqui realizamos la inserccion*/
@@ -808,7 +808,7 @@ BEGIN
 
 
 
-            end if;
+            end if;*/
 			/***********************************************************************************************************/
 
               insert into mat.tcotizacion_detalle(

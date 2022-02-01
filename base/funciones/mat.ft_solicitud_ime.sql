@@ -231,6 +231,7 @@ DECLARE
     v_nro_po_alkym					varchar;
     v_existe_acta					integer;
     v_id_funcionario_actual_estado	integer;
+    v_existe_referencia				numeric;
     /****************************************/
 
 BEGIN
@@ -2152,10 +2153,22 @@ END IF;
                 from mat.tcotizacion cot
                 where cot.id_solicitud = v_parametros.id_solicitud and cot.adjudicado = 'si';
 
+
+                select count(cot.id_cotizacion) into v_existe_referencia
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
+                where cot.id_solicitud = v_parametros.id_solicitud and det.referencial = 'Si';
+
+                if (v_existe_referencia = 0) then
+                	raise exception 'No se encontraron precios referenciales para la solicitud, favor verificar la información.';
+                end if;
+
+
+
                 /*Control para completar los datos del detalle (Ismael Valdivia 28/02/2020)*/
                 select count (*) into v_datos_incompletos
                  from mat.tdetalle_sol det
-                 where --det.nro_parte != 'HAZMAT' and
+                 where det.nro_parte != 'HAZMAT' and
                  det.id_solicitud = v_parametros.id_solicitud and (det.id_auxiliar is null or det.id_centro_costo is null or det.id_orden_trabajo is null or det.id_partida is null or det.id_concepto_ingas is null );
 
 

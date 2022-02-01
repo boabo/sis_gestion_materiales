@@ -8,10 +8,16 @@
 */
 
 class ACTCotizacionDetalle extends ACTbase{
- 
+
 	function listarCotizacionDetalle(){
 		$this->objParam->defecto('ordenacion','id_cotizacion_det');
 		$this->objParam->defecto('dir_ordenacion','asc');
+
+    if($this->objParam->getParametro('FiltroDetalle') != '') {
+         $this->objParam->addFiltro("trim(cde.nro_parte_cot) != ''HAZMAT'' ");
+     }
+
+
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODCotizacionDetalle','listarCotizacionDetalle');

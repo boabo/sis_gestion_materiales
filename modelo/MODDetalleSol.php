@@ -307,6 +307,24 @@ class MODDetalleSol extends MODbase{
   		return $this->respuesta;
   	}
 
+		function RelacionarHazmat(){
+			//Definicion de variables para ejecucion del procedimiento
+			$this->procedimiento='mat.ft_detalle_sol_ime';
+			$this->transaccion='MAT_REL_HAZMAT';
+			$this->tipo_procedimiento='IME';
+
+			//Define los parametros para la funcion
+			$this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+			$this->setParametro('id_hazmat','id_hazmat','int4');
+
+			//Ejecuta la instruccion
+			$this->armarConsulta();
+			$this->ejecutarConsulta();
+
+			//Devuelve la respuesta
+			return $this->respuesta;
+		}
+
 
 }
 ?>
