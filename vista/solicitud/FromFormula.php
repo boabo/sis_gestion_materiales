@@ -2177,12 +2177,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             var mgs_control =reg.ROOT.datos.mgs_control_duplicidad;
                             var ma =this;
 
-                            console.log("aqui debe entrar nro_justificacion",ma.Cmp.nro_justificacion.getValue(),nro_justificacion);
-                            console.log("aqui debe entrar nro_justificacion",ma.detCmp.nro_parte.getValue(),nro_parte);
-                            console.log("aqui debe entrar nro_justificacion",ma.Cmp.id_matricula.getValue(),matricula);
-
-
-                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion /*&& ma.Cmp.nro_justificacion.getValue() != ''*/ || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
+                            if(ma.Cmp.nro_justificacion.getValue() == nro_justificacion && ma.Cmp.nro_justificacion.getValue() != '' || ma.detCmp.nro_parte.getValue() == nro_parte && ma.Cmp.id_matricula.getValue() == matricula){
                                 Ext.Msg.confirm('DUPLICIDAD', mgs_control + ' desea continuar con el registro ', function (btn) {
                                     if (btn === 'yes') {
                                         Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
@@ -2195,6 +2190,8 @@ header("content-type: text/javascript; charset=UTF-8");
                             }
                             else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()==''){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
+                            } else {
+                              Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);                              
                             }
                         },
                         failure: this.conexionFailure,

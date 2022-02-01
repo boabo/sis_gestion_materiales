@@ -232,6 +232,8 @@ DECLARE
     v_existe_acta					integer;
     v_id_funcionario_actual_estado	integer;
     v_existe_referencia				numeric;
+    v_verificar_relacion			record;
+    v_proveedor_hazmat				varchar;
     /****************************************/
 
 BEGIN
@@ -2200,6 +2202,42 @@ END IF;
 
                 end if;
                 /*********************************************************************************************/
+
+                /*Verificamos si el HAZMAT esta relacionado*/
+                for v_verificar_relacion in (select cot.id_cotizacion
+                                            from mat.tcotizacion cot
+                                            inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
+                                            where cot.id_solicitud = v_parametros.id_solicitud and det.id_detalle_hazmat is null
+                                            and det.nro_parte_cot = 'HAZMAT') loop
+
+                    if (v_parametros.id_solicitud is not null) then
+
+                          select pro.rotulo_comercial into v_proveedor_hazmat
+                          from param.vproveedor pro
+                          where pro.id_proveedor = (select cot.id_proveedor
+                                                    from mat.tcotizacion cot
+                                                    where cot.id_cotizacion = v_verificar_relacion.id_cotizacion);
+
+
+                           raise exception 'El Hazmat de la cotización para el proveedor %, no esta relacionado a ningun part number.',v_proveedor_hazmat;
+
+
+                    end if;
+
+
+
+
+
+
+
+
+
+
+                end loop;
+                /*******************************************/
+
+
+
 
 
              END IF;
