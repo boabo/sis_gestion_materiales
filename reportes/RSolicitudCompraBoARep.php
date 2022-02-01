@@ -400,7 +400,7 @@ Class RSolicitudCompraBoARep extends Report {
             // din chequeo disponibilidad
             $RowArray = array(
                         'codigo_partida'  => $row['groupeddata'][0]['codigo_partida'],
-                        'nombre_partida'  => $row['groupeddata'][0]['codigo_partida'],
+                        'nombre_partida'  => $row['groupeddata'][0]['nombre_partida'],
                         //'desc_centro_costo'    => $row['groupeddata'][0]['desc_centro_costo'],
                         'desc_centro_costo'    => $descCentroCosto,
                         //'desc_centro_costo'    => $row['grup_desc_centro_costo']. "\nCP: ".$row['groupeddata'][0]['codigo_categoria'],
