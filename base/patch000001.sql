@@ -964,3 +964,11 @@ ALTER TABLE mat.tacta_conformidad_final
 ALTER TABLE mat.tacta_conformidad_final
   ALTER COLUMN revisado SET DEFAULT 'no';
 /***********************************F-SCP-IRVA-MAT-0-29/12/2021****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-01/02/2022****************************************/
+ALTER TABLE mat.tcotizacion_detalle
+  ADD COLUMN id_detalle_hazmat INTEGER;
+
+COMMENT ON COLUMN mat.tcotizacion_detalle.id_detalle_hazmat
+IS 'Id que hara la relacion con el Hazmat';
+/***********************************F-SCP-IRVA-MAT-0-01/02/2022****************************************/
