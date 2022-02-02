@@ -81,6 +81,15 @@ DECLARE
      v_total_hazmat		numeric;
      v_existe_relacion	numeric;
      v_datos_cambiar	record;
+     v_suma_hazmat		numeric;
+
+     v_cantidad			numeric;
+     v_precio_unitario  numeric;
+     v_precio_total		numeric;
+
+
+
+
 BEGIN
 
     v_nombre_funcion = 'mat.ft_detalle_sol_ime';
@@ -877,9 +886,25 @@ BEGIN
 
                 if (v_existe_relacion > 0) then
 
-                        update mat.tcotizacion_detalle set
-                            id_detalle_hazmat = null
-                        where id_detalle_hazmat = v_parametros.id_hazmat;
+
+                  /*Recuperamos el id Solicitud para actualizar*/
+                  select det.id_detalle, det.cantidad_det, det.precio_unitario, det.precio_unitario_mb into v_id_detalle, v_cantidad, v_precio_unitario, v_precio_total
+                  from mat.tcotizacion cot
+                  inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion and det.referencial = 'Si'
+                  where det.id_cotizacion_det = v_parametros.id_cotizacion_det;
+                  /*********************************************/
+
+                  if (v_id_detalle is not null) then
+                      update mat.tdetalle_sol set
+                      cantidad_sol = v_cantidad,
+                      precio_unitario = v_precio_unitario,
+                      precio_total = v_precio_total
+                      where id_detalle =  v_id_detalle;
+                  end if;
+
+                  update mat.tcotizacion_detalle set
+                      id_detalle_hazmat = null
+                  where id_detalle_hazmat = v_parametros.id_hazmat;
 
                 end if;
 
@@ -892,6 +917,92 @@ BEGIN
                 id_detalle_hazmat = v_parametros.id_cotizacion_det
                 --precio_total = precio_total + (COALESCE(v_total_hazmat,0))
                 where id_cotizacion_det = v_parametros.id_hazmat;
+
+
+                /*Recuperamos el id Solicitud para actualizar*/
+                select cot.id_solicitud,
+                det.id_detalle,
+                (det.precio_unitario_mb + COALESCE(detHazmat.precio_unitario_mb,0))
+                into v_id_solicitud,
+                v_id_detalle,
+                v_suma_hazmat
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion and det.referencial = 'Si'
+                left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = det.id_cotizacion_det
+                where det.id_cotizacion_det = v_parametros.id_cotizacion_det;
+                /*********************************************/
+
+
+                if (v_id_detalle is not null) then
+                      update mat.tdetalle_sol set
+                      cantidad_sol = 1,
+                      precio_unitario = v_suma_hazmat,
+                      precio_total = v_suma_hazmat
+                      where id_detalle =  v_id_detalle;
+                end if;
+
+
+
+                select sum(
+
+                (case
+                    when detHazmat.id_detalle_hazmat is not null then
+                     COALESCE (detcot.precio_unitario_mb,0) + COALESCE(detHazmat.precio_unitario_mb,0)
+                    else
+                     COALESCE (detcot.precio_unitario_mb,0)
+                    end )::numeric
+
+                ) into v_suma_total
+                from mat.tdetalle_sol det
+
+                inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = 'Si'
+                left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = detcot.id_cotizacion_det
+
+
+
+            	where det.id_solicitud = v_id_solicitud;
+
+				--raise exception 'Aqui llega la solicitud %, total %',v_id_solicitud,v_suma_total;
+              if (v_suma_total > 0) then
+
+
+                  --para insertar monto_pac en tsolicitud_pac
+                   select so.id_proceso_wf
+                   into v_id_proceso_wf_so
+                   from mat.tsolicitud so
+                   where so.id_solicitud = v_id_solicitud;
+
+
+                   select count(*) into v_existencia_pac
+                   from mat.tsolicitud_pac
+                   where id_proceso_wf = v_id_proceso_wf_so;
+
+                           if(v_existencia_pac > 0)then
+
+                              update mat.tsolicitud_pac set
+                                  monto = v_suma_total
+                                  --observaciones = 'hola'
+                              where id_proceso_wf = v_id_proceso_wf_so;
+
+                           ELSE
+                              INSERT INTO mat.tsolicitud_pac(
+                                id_proceso_wf,
+                                monto
+                                --observaciones
+                              )
+                              VALUES (
+                                v_id_proceso_wf_so,
+                                v_suma_total
+                                --'hola'
+                              );
+                            END IF;
+                     -----
+
+
+              end if;
+
+
+
 
 
                 --Definicion de la respuesta

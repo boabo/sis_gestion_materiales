@@ -62,8 +62,10 @@ BEGIN
 						det.referencia,
 						det.nro_parte_alterno,
 						det.id_moneda,
-						det.precio_unitario,
-						det.cantidad_sol,
+
+                        det.precio_unitario,
+
+                        det.cantidad_sol,
 						det.id_usuario_reg,
 						det.usuario_ai,
 						det.fecha_reg,
@@ -85,6 +87,7 @@ BEGIN
                         cc.codigo_cc as desc_centro_costo,
                         ingas.desc_ingas as desc_concepto_ingas,
                         orden.desc_orden as desc_orden_trabajo,
+
                         det.precio_total,
                         det.condicion_det
                         /****************************************************/
@@ -99,6 +102,7 @@ BEGIN
                         left join param.tconcepto_ingas ingas on ingas.id_concepto_ingas = det.id_concepto_ingas
                         left join conta.torden_trabajo orden on orden.id_orden_trabajo = det.id_orden_trabajo
                         /******************************************************************/
+
                         where  ';
 
 			--Definicion de la respuesta
@@ -121,7 +125,7 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_detalle),
+			v_consulta:='select count(det.id_detalle),
             			/*Aumentando para obtener suma (Ismael valdivia 17/02/2020)*/
                         sum (det.precio_total)
                         /*****************************/
@@ -136,6 +140,7 @@ BEGIN
                         left join param.tconcepto_ingas ingas on ingas.id_concepto_ingas = det.id_concepto_ingas
                         left join conta.torden_trabajo orden on orden.id_orden_trabajo = det.id_orden_trabajo
 
+
                         /*Comentando esta parte para que no muestre (Ismael Valdivia 14/02/2020)*/
                          /*
                           left join pre.tpartida par on par.id_partida = det.id_partida
@@ -144,7 +149,7 @@ BEGIN
                          */
                         /******************************************************************/
 
-                        where trim(det.nro_parte) != ''HAZMAT'' and ';
+                        where ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
