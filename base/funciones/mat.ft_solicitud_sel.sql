@@ -3596,7 +3596,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             tpar.nombre_partida ,
             tcg.codigo AS codigo_cg,
             tcg.nombre AS nombre_cg,
-            sum(tsd.precio_total) AS precio_total,
+
+            sum(tsd.precio_total+COALESCE(detHazmat.precio_unitario_mb,0)) AS precio_total,
 
             ts.nro_tramite,
             COALESCE('''||v_nombre_entidad||'''::varchar, '''') AS nombre_entidad,
@@ -3633,6 +3634,14 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             inner join orga.tuo uo on uo.id_uo = 9421
             left JOIN pre.tpresupuesto_partida_entidad tppe ON tppe.id_partida = tpar.id_partida AND tppe.id_presupuesto = tp.id_presupuesto
             left JOIN pre.tentidad_transferencia tet ON tet.id_entidad_transferencia = tppe.id_entidad_transferencia
+
+            /*Aumentando para el HAZMAT*/
+            inner join mat.tcotizacion_detalle det on det.id_detalle = tsd.id_detalle and det.referencial = ''Si''
+			left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = det.id_cotizacion_det
+
+            /***************************/
+
+
             WHERE ob.id_gestion = '||v_record_sol.id_gestion||' and tsd.estado_reg = ''activo'' AND ts.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
             end if;

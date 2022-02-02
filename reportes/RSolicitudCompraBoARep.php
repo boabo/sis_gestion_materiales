@@ -461,11 +461,11 @@ Class RSolicitudCompraBoARep extends Report {
 
                  if (substr($this->getDataSource()->getParameter('num_tramite'),0, 2) != 'GR') {
 
-                   if ($solicitudDetalle['total_hazmat'] > 0 ) {
-                     $totalMasHazmat = $solicitudDetalle['precio_total'] + $solicitudDetalle['total_hazmat'];
-                   } else {
+                   //if ($solicitudDetalle['total_hazmat'] > 0 ) {
+                  //   $totalMasHazmat = $solicitudDetalle['precio_total'] + $solicitudDetalle['total_hazmat'];
+                  // } else {
                       $totalMasHazmat = $solicitudDetalle['precio_total'];
-                   }
+                  // }
 
 
 
@@ -501,15 +501,16 @@ Class RSolicitudCompraBoARep extends Report {
                 $pdf-> MultiRow($RowArray,false,1) ;*/
                 $totalItem++;
 
-                if($solicitudDetalle['total_hazmat'] > 0){
-                  $totalRef = $totalRef+$solicitudDetalle['precio_total']+$solicitudDetalle['total_hazmat'];
-                } else {
-                  $totalRef=$totalRef+$solicitudDetalle['precio_total'];
-                }
+                //if($solicitudDetalle['total_hazmat'] > 0){
+                  //$totalRef = $totalRef+$solicitudDetalle['precio_total']+$solicitudDetalle['total_hazmat'];
+                //} else {
+                //
+                //}
 
 
                 $totalGa=$totalGa+$solicitudDetalle['precio_ga'];
                 $totalSg=$totalSg+$solicitudDetalle['precio_sg'];
+                $totalRef=$totalRef+$solicitudDetalle['precio_total'];
             }
 
            //coloca el total de la partida

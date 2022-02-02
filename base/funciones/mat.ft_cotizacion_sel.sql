@@ -571,7 +571,7 @@ BEGIN
             AND te.codigo = 'cotizacion_solicitada'
             and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
            GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo, pro.nro_tramite, vf.fecha_asignacion
-           ORDER BY vf.fecha_asignacion desc
+           ORDER BY twf.fecha_reg  desc
            limit 1;
 
   	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_ag_qr_oficial,v_fecha_po);

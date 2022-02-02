@@ -144,7 +144,7 @@ BEGIN
                          */
                         /******************************************************************/
 
-                        where ';
+                        where trim(det.nro_parte) != ''HAZMAT'' and ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -258,8 +258,23 @@ BEGIN
                         detcot.referencia_cot,
 						det.nro_parte_alterno,
 						det.id_moneda,
-						det.precio_unitario,
-						det.cantidad_sol,
+						(case
+                        	when detHazmat.id_detalle_hazmat is not null then
+                            	(det.precio_unitario*det.cantidad_sol)+ COALESCE(detHazmat.precio_unitario_mb,0)
+                            else
+                            	det.precio_unitario
+                        end )::numeric as descripcion_cot,
+
+
+                        (case
+                        	when detHazmat.id_detalle_hazmat is not null then
+                            	1
+                            else
+                            	det.cantidad_sol
+                        end )::numeric as cantidad_sol,
+
+                        --det.precio_unitario,
+						--det.cantidad_sol,
 						det.id_usuario_reg,
 						det.usuario_ai,
 						det.fecha_reg,
@@ -281,7 +296,13 @@ BEGIN
                         cc.codigo_cc as desc_centro_costo,
                         ingas.desc_ingas as desc_concepto_ingas,
                         orden.desc_orden as desc_orden_trabajo,
-                        det.precio_total,
+                        (case
+                        	when detHazmat.id_detalle_hazmat is not null then
+                            	det.precio_total + COALESCE(detHazmat.precio_unitario_mb,0)
+                            else
+                            	det.precio_total
+                        end )::numeric as precio_total,
+                        --det.precio_total,
                         det.condicion_det,
                         c.codigo_categoria,
                         par.codigo as codigo_partida,
