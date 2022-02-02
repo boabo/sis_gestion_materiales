@@ -274,8 +274,26 @@ BEGIN
 
                                   /*Tomar en cuenta de la cotizacion adjudicada*/
                                   select 	det.nro_parte_cot,
-                                            det.cantidad_det,
-                                            det.precio_unitario,
+
+                                  			(CASE
+                                                WHEN COALESCE(detHaz.precio_unitario_mb,0) > 0 THEN
+                                                    1
+                                                ELSE
+                                                    det.cantidad_det
+
+                                            END)::numeric as cantidad_det,
+
+                                            (CASE
+                                                WHEN COALESCE(detHaz.precio_unitario_mb,0) > 0 THEN
+                                                    (det.cantidad_det*det.precio_unitario)+detHaz.precio_unitario_mb
+                                                ELSE
+                                                    det.precio_unitario
+
+                                            END)::numeric as precio_unitario,
+
+
+                                            --det.cantidad_det,
+                                            --det.precio_unitario,
                                             --det.precio_unitario_mb as precio_unitario_mb,
                                             (CASE
                                                 WHEN COALESCE(detHaz.precio_unitario_mb,0) > 0 THEN
