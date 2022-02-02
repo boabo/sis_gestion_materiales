@@ -542,7 +542,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                }),
                valueField : 'codigo',
                displayField : 'codigo',
-               gdisplayField : 'codigo',
+               gdisplayField : 'cd',
                hiddenName : 'codigo',
                forceSelection : true,
                typeAhead : false,
