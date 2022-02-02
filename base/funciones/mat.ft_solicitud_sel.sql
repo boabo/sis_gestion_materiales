@@ -3597,7 +3597,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             tcg.codigo AS codigo_cg,
             tcg.nombre AS nombre_cg,
 
-            sum(tsd.precio_total+COALESCE(detHazmat.precio_unitario_mb,0)) AS precio_total,
+            sum(tsd.precio_total) AS precio_total,
 
             ts.nro_tramite,
             COALESCE('''||v_nombre_entidad||'''::varchar, '''') AS nombre_entidad,
