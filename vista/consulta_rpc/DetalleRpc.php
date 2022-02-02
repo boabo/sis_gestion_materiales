@@ -394,14 +394,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //   tooltip: '<b>Generar Reporte Excel'
             // });
 
-            this.addButton('anularProceso',{
-                text: 'Anular Solicitud',
-                grupo: [0,1,2,3,4,5,6,7],
-                iconCls: 'bwrong',
-                disabled: true,
-                handler: this.anularProceso,
-                tooltip: '<b>Anular la Solicitud </b><br/>'
-            });
+
 
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
@@ -410,6 +403,23 @@ header("content-type: text/javascript; charset=UTF-8");
                 disabled: true,
                 handler: this.loadCheckDocumentosRecWf,
                 tooltip: '<b>Documentos </b><br/>Subir los documetos requeridos.'
+            });
+
+            this.addButton('btnObs',{
+                text :'Obs Wf.',
+                iconCls : 'bchecklist',
+                disabled: true,
+                handler : this.onOpenObs,
+                tooltip : '<b>Observaciones</b><br/><b>Observaciones del WF</b>'
+            });
+
+            this.addButton('anularProceso',{
+                text: 'Anular Solicitud',
+                grupo: [0,1,2,3,4,5,6,7],
+                iconCls: 'bwrong',
+                disabled: true,
+                handler: this.anularProceso,
+                tooltip: '<b>Anular la Solicitud </b><br/>'
             });
             /***********************************************************************************************/
 
@@ -465,6 +475,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'moneda', type: 'varchar'},
             {name: 'funcionario_solicitante', type: 'varchar'},
             {name: 'id_solicitud', type: 'numeric'},
+            {name: 'id_estado_wf', type: 'numeric'},
 
         ],
 
@@ -494,6 +505,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
         preparaMenu: function () {
       			var rec = this.sm.getSelected();
+
+            this.getBoton('btnObs').enable();
 
             if (rec.data.estado == 'borrador' || rec.data.estado == 'revision' || rec.data.estado == 'cotizacion' || rec.data.estado == 'compra' || rec.data.estado == 'finalizado') {
               this.getBoton('anularProceso').enable();
@@ -557,6 +570,26 @@ header("content-type: text/javascript; charset=UTF-8");
                 rec.data,
                 this.idContenedor,
                 'DocumentoWf'
+            )
+        },
+
+        onOpenObs:function() {
+            var rec=this.sm.getSelected();
+            console.log("aqui llega data",rec);
+            var data = {
+                id_proceso_wf: rec.data.id_proceso_wf,
+                id_estado_wf: rec.data.id_estado_wf,
+                num_tramite: rec.data.nro_tramite
+            };
+            Phx.CP.loadWindows('../../../sis_workflow/vista/obs/Obs.php',
+                'Observaciones del WF',
+                {
+                    width:'80%',
+                    height:'70%'
+                },
+                data,
+                this.idContenedor,
+                'Obs'
             )
         },
 

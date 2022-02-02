@@ -111,7 +111,8 @@ BEGIN
                                      s.id_proceso_wf::numeric,
                                      mon.codigo_internacional::varchar,
          							 func.desc_funcionario1::varchar as funcionario_solicitante,
-                                     s.id_solicitud::numeric
+                                     s.id_solicitud::numeric,
+                                     s.id_estado_wf::numeric
                            from  mat.tsolicitud s
                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                            inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
@@ -150,8 +151,10 @@ BEGIN
                                   mon.codigo_internacional,
                                   func.desc_funcionario1,
                                   e.fecha_reg ,
-                                  s.id_solicitud
-                          	order by e.fecha_reg desc ';
+                                  s.id_solicitud,
+                                  s.id_estado_wf
+                          	order by e.fecha_reg desc
+                            ' || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			return v_consulta;
 
