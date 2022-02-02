@@ -9,11 +9,45 @@
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
+
+<style>
+
+.HazmatAsociado {
+    background-color: #5FB1F5;
+}
+
+</style>
+
+
 <script>
 Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         bnew: true,
         fheight: 450,
         fwidth: 900,
+        viewConfig: {
+
+            getRowClass: function (record) {
+
+                var id_hazmat = '';
+
+                if (record.data.id_hazmat_asociado != null && record.data.id_hazmat_asociado != '') {
+                  this.id_hazmat_asociado = record.data.id_hazmat_asociado;
+                }
+
+                if (this.id_hazmat_asociado == record.data.id_cotizacion_det) {
+                  return 'HazmatAsociado';
+                }
+
+            },
+            listener: {
+                render: this.createTooltip
+            },
+
+        },
+
+
+
+
         constructor: function (config) {
             this.Grupos = [
                 {
@@ -778,7 +812,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             {name: 'revisado', type: 'string'},
             {name: 'desc_codigo_tipo', type: 'string'},
             {name: 'referencial', type: 'string'},
-            {name: 'id_unidad_medida_cot', type: 'numeric'}
+            {name: 'id_unidad_medida_cot', type: 'numeric'},
+            {name: 'id_hazmat_asociado', type: 'numeric'}
 
 
         ],
@@ -1022,7 +1057,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
 
     relacionarHazmat : function(formu_relacion_hazmat){
 			//Phx.CP.loadingShow();
-			var rec=this.sm.getSelected();    
+			var rec=this.sm.getSelected();
 			/*Recuperamos de la venta detalle si existe algun concepto con excento*/
 			Ext.Ajax.request({
 					url : '../../sis_gestion_materiales/control/DetalleSol/RelacionarHazmat',

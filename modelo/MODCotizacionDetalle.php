@@ -12,7 +12,7 @@ class MODCotizacionDetalle extends MODbase{
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
- 
+
 	function listarCotizacionDetalle(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='mat.ft_cotizacion_detalle_sel';
@@ -52,6 +52,7 @@ class MODCotizacionDetalle extends MODbase{
         $this->captura('desc_codigo_tipo','varchar');
 				$this->captura('referencial','varchar');
 				$this->captura('id_unidad_medida_cot','int4');
+				$this->captura('id_hazmat_asociado','int4');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
