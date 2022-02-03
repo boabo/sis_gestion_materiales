@@ -115,6 +115,7 @@ class MODSolicitud extends MODbase
         $this->captura('metodo_de_adjudicación', 'varchar');
         $this->captura('tipo_de_adjudicacion', 'varchar');
         $this->captura('remark', 'varchar');
+        $this->captura('id_obligacion_pago', 'int4');
         /********************************************************************************/
         //Ejecuta la instruccion
         $this->armarConsulta();

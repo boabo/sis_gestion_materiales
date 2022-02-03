@@ -165,6 +165,17 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope:this
             });
 
+            this.addButton('btnCheckPresupeusto', {
+                text: 'Rev./Incr. Pres.',
+                grupo: [5],
+                hidden:true,
+                iconCls: 'bassign',
+                disabled: false,
+                handler: this.onBtnCheckPresup,
+                tooltip: '<b>Revertir/Incrementar  presupuestos,  permite ver la evolucón presupuestaria y revertir parcialmente</b>'
+            });
+
+
             this.bbar.el.dom.style.background='#03A27C';
     				this.tbar.el.dom.style.background='#03A27C';
     				this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#E9E9E9';
@@ -1686,7 +1697,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tiempo_entrega', type: 'numeric'},
             {name:'metodo_de_adjudicación', type: 'string'},
             {name:'tipo_de_adjudicacion', type: 'string'},
-            {name:'remark', type: 'string'}
+            {name:'remark', type: 'string'},
+            {name:'id_obligacion_pago', type: 'numeric'},
 
 
         ],
@@ -2595,6 +2607,15 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.store.baseParams.id_gestion=this.cmbGestion.getValue();
                 Phx.vista.Solicitud.superclass.onButtonAct.call(this);
             }
+        },
+
+        onBtnCheckPresup: function () {
+            var rec = this.sm.getSelected();
+            Phx.CP.loadWindows('../../../sis_tesoreria/vista/presupuesto/CheckPresupuesto.php', 'Evolución presupuestaria <span style="color:green; font-size:15;">($us)</span>', {
+                modal: true,
+                width: '98%',
+                height: '70%',
+            }, rec.data, this.idContenedor, 'CheckPresupuesto');
         },
 
     })

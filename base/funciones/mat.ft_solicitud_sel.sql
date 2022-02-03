@@ -505,8 +505,11 @@ v_consulta:='select		sol.id_solicitud,
                                 /*Aumentando los dos campos para recuperar en la interfaz (Ismael Valdivia 13/10/2021)*/
                                 sol.metodo_de_adjudicación,
                                 sol.tipo_de_adjudicacion,
-                                sol.remark::varchar
+                                sol.remark::varchar,
                                 /**************************************************************************************/
+
+                                pag.id_obligacion_pago
+
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
                                 inner join orga.vfuncionario f on f.id_funcionario = sol.id_funcionario_sol
@@ -522,6 +525,9 @@ v_consulta:='select		sol.id_solicitud,
                                 left join mat.tsolicitud_pac pa on pa.id_proceso_wf = sol.id_proceso_wf
                            		left join param.tmoneda mo on mo.id_moneda = pa.id_moneda
                                 left join orga.vfuncionario funsol on funsol.id_funcionario = sol.id_funcionario_solicitante
+
+                               	left join tes.tobligacion_pago pag on pag.numero = sol.nro_tramite and pag.estado_reg = ''activo''
+
                                 where '||v_filtro;
 
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -643,6 +649,10 @@ v_consulta:='select		sol.id_solicitud,
                                 left join mat.tsolicitud_pac pa on pa.id_proceso_wf = sol.id_proceso_wf
                            		left join param.tmoneda mo on mo.id_moneda = pa.id_moneda
                                 left join orga.vfuncionario funsol on funsol.id_funcionario = sol.id_funcionario_solicitante
+
+                                left join tes.tobligacion_pago pag on pag.numero = sol.nro_tramite and pag.estado_reg = ''activo''
+
+
                                 where '||v_filtro;
 
 			v_consulta:=v_consulta||v_parametros.filtro;

@@ -43,6 +43,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('clonar_solicitud').setVisible(false);
             //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
+            this.getBoton('btnCheckPresupeusto').setVisible(true);
 
         },
         gruposBarraTareas:[
