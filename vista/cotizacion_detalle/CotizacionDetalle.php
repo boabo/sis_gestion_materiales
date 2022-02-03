@@ -24,26 +24,26 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         bnew: true,
         fheight: 450,
         fwidth: 900,
-        viewConfig: {
-
-            getRowClass: function (record) {
-
-                var id_hazmat = '';
-
-                if (record.data.id_hazmat_asociado != null && record.data.id_hazmat_asociado != '') {
-                  this.id_hazmat_asociado = record.data.id_hazmat_asociado;
-                }
-
-                if (this.id_hazmat_asociado == record.data.id_cotizacion_det) {
-                  return 'HazmatAsociado';
-                }
-
-            },
-            listener: {
-                render: this.createTooltip
-            },
-
-        },
+        // viewConfig: {
+        //
+        //     getRowClass: function (record) {
+        //
+        //         var id_hazmat = '';
+        //
+        //         if (record.data.id_hazmat_asociado != null && record.data.id_hazmat_asociado != '') {
+        //           this.id_hazmat_asociado = record.data.id_hazmat_asociado;
+        //         }
+        //
+        //         if (this.id_hazmat_asociado == record.data.id_cotizacion_det) {
+        //           return 'HazmatAsociado';
+        //         }
+        //
+        //     },
+        //     listener: {
+        //         render: this.createTooltip
+        //     },
+        //
+        // },
 
 
 
@@ -262,6 +262,27 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
                 grid: true,
                 form: false
             },
+
+            {
+                config: {
+                    name: 'hazmat_relacionado',
+                    fieldLabel: 'Nro Parte Relacionado',
+                    allowBlank: true,
+                    //hidden:true,
+                    width: 200,
+                    gwidth: 150,
+                    maxLength: 50
+
+                },
+                type: 'TextField',
+                filters: {pfiltro: 'cde.hazmat_relacionado', type: 'string'},
+                id_grupo: 0,
+                grid: true,
+                //egrid: true,
+                form: false
+            },
+
+
             {
                 config: {
                     name: 'nro_parte_cot',
@@ -813,7 +834,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             {name: 'desc_codigo_tipo', type: 'string'},
             {name: 'referencial', type: 'string'},
             {name: 'id_unidad_medida_cot', type: 'numeric'},
-            {name: 'id_hazmat_asociado', type: 'numeric'}
+            {name: 'id_hazmat_asociado', type: 'numeric'},
+            {name: 'hazmat_relacionado', type: 'numeric'}
 
 
         ],
@@ -838,7 +860,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
   						this.cm.setHidden(6, true);
             }
 
-
+            this.cm.setHidden(3, true);
           //  Phx.CP.getPagina(this.idContenedorPadre).maestro
               //console.log("llega carga pagina deta",Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite);
               //this.changeFieldLabel('referencia_cot', '<b style="font-size:12px;"><i class="fa fa-pencil" aria-hidden="true"></i></b> Serial');
@@ -964,10 +986,15 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
 				var rec = this.getSelectedData();
         Phx.vista.CotizacionDetalle.superclass.preparaMenu.call(this,n);
 
+
+
 				if (rec.nro_parte_cot == 'HAZMAT') {
 	        this.getBoton('relacionarHazmat').setVisible(true);
+          this.cm.setHidden(3, false);
+
 	      } else {
 					this.getBoton('relacionarHazmat').setVisible(false);
+          this.cm.setHidden(3, true);
 				}
 
         return tb;

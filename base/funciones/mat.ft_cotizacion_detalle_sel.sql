@@ -49,7 +49,27 @@ BEGIN
 
 
     		--Sentencia de la consulta
-			v_consulta:='select
+			v_consulta:='
+            			with datosHazmat as (select
+                        cde.id_cotizacion_det,
+                        cde.nro_parte_cot,
+                        cde.id_detalle_hazmat
+                        from mat.tcotizacion_detalle cde
+                        where cde.id_detalle_hazmat is not null
+                        and cde.id_cotizacion = '||v_parametros.id_cotizacion||'),
+
+                        relacionHazmat as (
+                        select
+                        cde.id_cotizacion_det,
+                        cde.nro_parte_cot
+                        from mat.tcotizacion_detalle cde
+                        inner join mat.tcotizacion_detalle deta on deta.id_detalle_hazmat = cde.id_cotizacion_det
+                        where cde.id_cotizacion = '||v_parametros.id_cotizacion||'
+                        group by cde.id_cotizacion_det,
+                        cde.nro_parte_cot)
+
+
+            			select
             			cde.id_day_week,
 						cde.id_cotizacion_det,
 						cde.id_cotizacion,
@@ -79,12 +99,29 @@ BEGIN
                         da.codigo_tipo as desc_codigo_tipo,
                         cde.referencial,
                         cde.id_unidad_medida_cot,
-                        cde.id_detalle_hazmat
+                        cde.id_detalle_hazmat,
+
+                        (CASE
+                        	WHEN trim(rel_hazmat.nro_parte_cot) != '''' THEN
+                            ''Relacionado al Nro de Parte: ''||trim(rel_hazmat.nro_parte_cot)
+                            ELSE
+                            ''''
+                        END)::varchar as relacionado
+
+
+
 						from mat.tcotizacion_detalle cde
 						inner join segu.tusuario usu1 on usu1.id_usuario = cde.id_usuario_reg
             			left join mat.tunidad_medida u on u.id_unidad_medida = cde.id_unidad_medida_cot
                         left join mat.tday_week da on da.id_day_week = cde.id_day_week
                         left join segu.tusuario usu2 on usu2.id_usuario = cde.id_usuario_mod
+
+
+                        left join datosHazmat hazmat on hazmat.id_cotizacion_det = cde.id_cotizacion_det
+                        left join relacionHazmat rel_hazmat on rel_hazmat.id_cotizacion_det = hazmat.id_detalle_hazmat
+
+
+
             			where cde.id_cotizacion ='||v_parametros.id_cotizacion||'and';
 
 			--Definicion de la respuesta

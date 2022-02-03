@@ -53,6 +53,7 @@ class MODCotizacionDetalle extends MODbase{
 				$this->captura('referencial','varchar');
 				$this->captura('id_unidad_medida_cot','int4');
 				$this->captura('id_hazmat_asociado','int4');
+				$this->captura('hazmat_relacionado','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

@@ -273,7 +273,7 @@ BEGIN
                                   where ds.id_solicitud =  p_id_solicitud*/
 
                                   /*Tomar en cuenta de la cotizacion adjudicada*/
-                                  select 	det.nro_parte_cot,
+                                  /*select 	det.nro_parte_cot,
 
                                   			(CASE
                                                 WHEN COALESCE(detHaz.precio_unitario_mb,0) > 0 THEN
@@ -316,7 +316,65 @@ BEGIN
                                     inner join mat.tcotizacion_detalle det on det.id_detalle = ds.id_detalle
                                     inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
                                     left join mat.tcotizacion_detalle detHaz on detHaz.id_detalle_hazmat = det.id_cotizacion_det
-                                    where ds.id_solicitud = p_id_solicitud
+                                    where ds.id_solicitud = p_id_solicitud*/
+
+
+                                    with HazmatData as(
+
+                                                      select
+                                                      sum(COALESCE(detHaz.precio_unitario_mb,0)) as precioHazmat,
+                                                      ds.id_detalle
+                                                      from mat.tdetalle_sol ds
+                                                      inner join mat.tcotizacion_detalle det on det.id_detalle = ds.id_detalle
+                                                      inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
+                                                      left join mat.tcotizacion_detalle detHaz on detHaz.id_detalle_hazmat = det.id_cotizacion_det
+                                                      where ds.id_solicitud = p_id_solicitud
+                                                      group by ds.id_detalle
+
+                                                      )
+                                  select 	det.nro_parte_cot,
+                                          (CASE
+                                              WHEN detHaz.precioHazmat > 0 THEN
+                                                  1
+                                              ELSE
+                                                  det.cantidad_det
+                                          END)::numeric as cantidad_det,
+
+                                          (CASE
+                                              WHEN detHaz.precioHazmat > 0 THEN
+                                                  (det.precio_unitario_mb + detHaz.precioHazmat)
+                                              ELSE
+                                                  det.precio_unitario
+                                          END)::numeric as precio_unitario,
+
+                                          (CASE
+                                              WHEN detHaz.precioHazmat > 0 THEN
+                                                  (det.precio_unitario_mb + detHaz.precioHazmat)
+                                              ELSE
+                                                  det.precio_unitario_mb
+                                          END)::numeric as precio_unitario_mb,
+
+                                          --det.cantidad_det,
+                                          --det.precio_unitario,
+                                          --det.precio_unitario_mb,
+                                          ds.id_concepto_ingas,
+                                          ds.id_centro_costo,
+                                          ds.id_partida,
+                                          ds.id_cuenta,
+                                          ds.id_auxiliar,
+                                          ds.id_partida_ejecucion,
+                                          (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion,
+                                          ds.id_orden_trabajo
+                                          --detHaz.precioHazmat
+
+                                  from mat.tdetalle_sol ds
+                                  inner join mat.tcotizacion_detalle det on det.id_detalle = ds.id_detalle
+                                  inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
+                                  left join HazmatData detHaz on detHaz.id_detalle = ds.id_detalle
+                                  where ds.id_solicitud = p_id_solicitud
+
+
+
             )LOOP
 
 

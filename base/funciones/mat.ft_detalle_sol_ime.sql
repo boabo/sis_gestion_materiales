@@ -86,7 +86,7 @@ DECLARE
      v_cantidad			numeric;
      v_precio_unitario  numeric;
      v_precio_total		numeric;
-
+     v_total_detalle	numeric;
 
 
 
@@ -921,11 +921,11 @@ BEGIN
 
                 /*Recuperamos el id Solicitud para actualizar*/
                 select cot.id_solicitud,
-                det.id_detalle,
-                (det.precio_unitario_mb + COALESCE(detHazmat.precio_unitario_mb,0))
+                det.id_detalle
+                --(det.precio_unitario_mb + COALESCE(detHazmat.precio_unitario_mb,0))
                 into v_id_solicitud,
-                v_id_detalle,
-                v_suma_hazmat
+                v_id_detalle
+                --v_suma_hazmat
                 from mat.tcotizacion cot
                 inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion and det.referencial = 'Si'
                 left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = det.id_cotizacion_det
@@ -933,17 +933,40 @@ BEGIN
                 /*********************************************/
 
 
+                /*Hazmat Totalizado*/
+                select
+                sum(COALESCE(detHazmat.precio_unitario_mb,0))
+                into
+                v_suma_hazmat
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion and det.referencial = 'Si'
+                left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = det.id_cotizacion_det
+                where det.id_cotizacion_det = v_parametros.id_cotizacion_det;
+                /*******************/
+
+
+
+                select
+                det.precio_unitario_mb into v_total_detalle
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion and det.referencial = 'Si'
+                where det.id_cotizacion_det = v_parametros.id_cotizacion_det;
+
+
+
+
+
                 if (v_id_detalle is not null) then
                       update mat.tdetalle_sol set
                       cantidad_sol = 1,
-                      precio_unitario = v_suma_hazmat,
-                      precio_total = v_suma_hazmat
+                      precio_unitario = (v_suma_hazmat + v_total_detalle),
+                      precio_total = (v_suma_hazmat + v_total_detalle)
                       where id_detalle =  v_id_detalle;
                 end if;
 
 
 
-                select sum(
+                /*select sum(
 
                 (case
                     when detHazmat.id_detalle_hazmat is not null then
@@ -957,10 +980,11 @@ BEGIN
 
                 inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = 'Si'
                 left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = detcot.id_cotizacion_det
+            	where det.id_solicitud = v_id_solicitud;*/
 
 
+                v_suma_total = ((v_suma_hazmat + v_total_detalle));
 
-            	where det.id_solicitud = v_id_solicitud;
 
 				--raise exception 'Aqui llega la solicitud %, total %',v_id_solicitud,v_suma_total;
               if (v_suma_total > 0) then
