@@ -60,6 +60,20 @@ class RInformJustificacionRep extends  ReportePDF
           $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
           $texto_ref = 'las reparaciones';
         }
+
+        $incluyeBerTexto = 'NO';
+        foreach ($nro_partes as $indice=>$partes){
+          if($cd[$indice] == 'B.E.R.'){
+            $incluyeBerTexto = 'SI';
+          }
+         }
+
+         if ($incluyeBerTexto == 'SI') {
+           $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO EN REEMPLAZO DE UNIDAD DECLARADA B.E.R REQUERIDO PARA FLOTA BOA LOTE '.$nro_lote.'';
+         }
+
+
+
         /********************************************************/
 
         $tb='<table cellspacing="0" cellpadding="1" style="font-size:14px;">
@@ -255,6 +269,9 @@ class RInformJustificacionRep extends  ReportePDF
         $jefeDepartamento = $this->datos[0]["firma_jefe_departamento"];
         $nro_lote = $this->datos[0]["nro_lote"];
 
+        $nro_partes = explode(',',$this->datos[0]["num_part"]);
+        $cd = explode(',',$this->datos[0]["cd"]);
+
         if ($this->datos[0]['evaluacion'] == NULL) {
           $texto = 'COMPLETAR INFORMACION ADJUDICADA';
         } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
@@ -262,6 +279,20 @@ class RInformJustificacionRep extends  ReportePDF
         } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
         }
+
+        
+
+        $incluyeBerTexto = 'NO';
+        foreach ($nro_partes as $indice=>$partes){
+          if($cd[$indice] == 'B.E.R.'){
+            $incluyeBerTexto = 'SI';
+          }
+         }
+
+         if ($incluyeBerTexto == 'SI') {
+           $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO EN REEMPLAZO DE UNIDAD DECLARADA B.E.R REQUERIDO PARA FLOTA BOA LOTE '.$nro_lote.'';
+         }
+
 
         $fun_sol = explode('|', $funcionario_sol);
 

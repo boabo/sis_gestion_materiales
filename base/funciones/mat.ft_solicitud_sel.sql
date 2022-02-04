@@ -294,6 +294,8 @@ DECLARE
      v_fecha_nuevo_flujo	varchar;
      v_es_mayor				varchar;
      v_id_solicitud_reporte	integer;
+     v_existe_bear			integer;
+     v_tiene_bear			varchar;
     /**************************************************/
 BEGIN
 
@@ -5584,6 +5586,17 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
       where sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
 
+      select count(det.cd) into v_existe_bear
+      from mat.tcotizacion cot
+      inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion and cot.adjudicado = 'si'
+      where cot.id_solicitud = v_id_solicitud_rep
+      and det.cd = 'B.E.R.';
+
+	  if (v_existe_bear > 0) then
+      	v_tiene_bear = 'SI';
+      else
+      	v_tiene_bear = 'NO';
+      end if;
       /*SELECT sol.fecha_cotizacion
       	     into
              v_fecha_cotizacion_rep
@@ -5742,7 +5755,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_fecha_firma_rpcd_pru||''')::varchar as fecha_firma,
                       ('''||v_fecha_literal||''')::varchar as fecha_literal,
                       ('''||v_fecha_cotizacion_rep||''')::varchar as fecha_cotizacion,
-                      ('''||v_tipo_evaluacion||''')::varchar as tipo_evaluacion';
+                      ('''||v_tipo_evaluacion||''')::varchar as tipo_evaluacion,
+                      ('''||v_tiene_bear||''')::varchar as tiene_bear';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
