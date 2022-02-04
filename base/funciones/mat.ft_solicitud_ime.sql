@@ -1685,91 +1685,125 @@ END IF;
                     where sol.id_solicitud = v_datos_solicitud.id_solicitud;
 
 
-                    select es.id_tipo_estado,
-                    	   es.codigo
-                    into v_id_tipo_estado_siguiente,
-                         v_codigo_estado_siguiente_auto
-                    from wf.ttipo_estado es
-                    LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
-                    where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'compra';
+                  /*Aumentando la condicion para que en las compras de repuestos se le asigne al funcionario de cotizacion*/
+                  if (v_datos_solicitud.origen_pedido != 'Reparación de Repuestos') then
+                  		SELECT		twf.id_funcionario
 
+                                    into
+                                                v_funcionario_encargado
 
-                    /*Aqui para asignar el usuario*/
-                    select auto.id_funcionario_asignado,
-                           auto.id_asignacion
-                           into
-                           v_ultimo_funcionario_asignado,
-                           v_id_asignacion
-                    from mat.tasginacion_automatica_abastecimiento auto
-                    where auto.ultima_asignacion = 'si'
-                    and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
-
-
-                    if (v_ultimo_funcionario_asignado is null) then
-
-                    select te.id_tipo_estado,
-                           te.id_funcionario,
-                           te.id_funcionario_tipo_estado
-                           into
-                           v_id_tipo_estado_asignacion,
-                           v_funcionario_encargado,
-                           v_id_funcionario_tipo_estado_asignacion
-                    from wf.tfuncionario_tipo_estado te
-                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                    where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                    and te.estado_reg = 'activo'
-                    and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                    order by te.id_funcionario_tipo_estado ASC
-                    limit 1;
-
-                    else
-
-                	select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
-                    from wf.tfuncionario_tipo_estado te
-                    where te.id_funcionario = v_ultimo_funcionario_asignado
-                    and te.estado_reg = 'activo'
-                    and te.id_tipo_estado = v_id_tipo_estado_siguiente;
-
-
-                	select te.id_tipo_estado,
-                           te.id_funcionario,
-                           te.id_funcionario_tipo_estado
-                           into
-                           v_id_tipo_estado_asignacion,
-                           v_id_funcionario_asignacion,
-                           v_id_funcionario_tipo_estado_asignacion
-                    from wf.tfuncionario_tipo_estado te
-                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                    where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                    and te.estado_reg = 'activo'
-                    and te.id_funcionario not in (v_ultimo_funcionario_asignado)
-                    and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
-                    and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                    order by te.id_funcionario_tipo_estado ASC
-                    limit 1;
-
-                      if (v_id_funcionario_tipo_estado_asignacion is not null) then
-                      		v_funcionario_encargado = v_id_funcionario_asignacion;
-                       else
-
-                          select te.id_tipo_estado,
-                               te.id_funcionario,
-                               te.id_funcionario_tipo_estado
-                               into
-                               v_id_tipo_estado_asignacion,
-                               v_funcionario_encargado,
-                               v_id_funcionario_tipo_estado_asignacion
-                        from wf.tfuncionario_tipo_estado te
-                        INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                        where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                        and te.estado_reg = 'activo'
-                        and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                        order by te.id_funcionario_tipo_estado ASC
+                        FROM wf.testado_wf twf
+                            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                            INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                            INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        WHERE twf.id_proceso_wf = v_datos_solicitud.id_proceso_wf
+                              AND  te.codigo = 'cotizacion'
+                              AND twf.fecha_reg between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion, now())
+                        GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
+                        order by twf.fecha_reg desc
                         limit 1;
-                      end if;
-                	end if;
 
-                    /******************************/
+
+                        select es.id_tipo_estado,
+                               es.codigo
+                        into v_id_tipo_estado_siguiente,
+                             v_codigo_estado_siguiente_auto
+                        from wf.ttipo_estado es
+                        LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                        where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'compra';
+
+
+                  else
+
+                          select es.id_tipo_estado,
+                                   es.codigo
+                            into v_id_tipo_estado_siguiente,
+                                 v_codigo_estado_siguiente_auto
+                            from wf.ttipo_estado es
+                            LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                            where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'compra';
+
+                            /*Aqui para asignar el usuario*/
+                            select auto.id_funcionario_asignado,
+                                   auto.id_asignacion
+                                   into
+                                   v_ultimo_funcionario_asignado,
+                                   v_id_asignacion
+                            from mat.tasginacion_automatica_abastecimiento auto
+                            where auto.ultima_asignacion = 'si'
+                            and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
+
+
+                            if (v_ultimo_funcionario_asignado is null) then
+
+                            select te.id_tipo_estado,
+                                   te.id_funcionario,
+                                   te.id_funcionario_tipo_estado
+                                   into
+                                   v_id_tipo_estado_asignacion,
+                                   v_funcionario_encargado,
+                                   v_id_funcionario_tipo_estado_asignacion
+                            from wf.tfuncionario_tipo_estado te
+                            INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                            where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                            and te.estado_reg = 'activo'
+                            and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                            order by te.id_funcionario_tipo_estado ASC
+                            limit 1;
+
+                            else
+
+                            select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
+                            from wf.tfuncionario_tipo_estado te
+                            where te.id_funcionario = v_ultimo_funcionario_asignado
+                            and te.estado_reg = 'activo'
+                            and te.id_tipo_estado = v_id_tipo_estado_siguiente;
+
+
+                            select te.id_tipo_estado,
+                                   te.id_funcionario,
+                                   te.id_funcionario_tipo_estado
+                                   into
+                                   v_id_tipo_estado_asignacion,
+                                   v_id_funcionario_asignacion,
+                                   v_id_funcionario_tipo_estado_asignacion
+                            from wf.tfuncionario_tipo_estado te
+                            INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                            where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                            and te.estado_reg = 'activo'
+                            and te.id_funcionario not in (v_ultimo_funcionario_asignado)
+                            and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
+                            and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                            order by te.id_funcionario_tipo_estado ASC
+                            limit 1;
+
+                              if (v_id_funcionario_tipo_estado_asignacion is not null) then
+                                    v_funcionario_encargado = v_id_funcionario_asignacion;
+                               else
+
+                                  select te.id_tipo_estado,
+                                       te.id_funcionario,
+                                       te.id_funcionario_tipo_estado
+                                       into
+                                       v_id_tipo_estado_asignacion,
+                                       v_funcionario_encargado,
+                                       v_id_funcionario_tipo_estado_asignacion
+                                from wf.tfuncionario_tipo_estado te
+                                INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                                where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                                and te.estado_reg = 'activo'
+                                and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                                order by te.id_funcionario_tipo_estado ASC
+                                limit 1;
+                              end if;
+                            end if;
+
+                            /******************************/
+
+                  end if;
+
+                  /********************************************************************************************************/
+
 
 
                     /*select
@@ -1825,153 +1859,161 @@ END IF;
                 from mat.tsolicitud sol
                 where id_proceso_wf = v_parametros.id_proceso_wf_act;
 
-                /*Aqui Para Insertar y asignar automaticamente el funcionario de abastecimiento Ismael Valdivia (29/09/2021)*/
+                if (v_solicitud_actual.origen_pedido != 'Reparación de Repuestos') then
 
-                select auto.id_funcionario_asignado,
-                	   auto.id_asignacion
-                       into
-                       v_ultimo_funcionario_asignado,
-                       v_id_asignacion
-                from mat.tasginacion_automatica_abastecimiento auto
-                where auto.ultima_asignacion = 'si'
-                and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
+                ELSE
 
-                select
-                    esta.id_funcionario into v_funcionario_encargado_rpcd
-                from wf.testado_wf esta
-                inner join wf.ttipo_estado es on es.id_tipo_estado = esta.id_tipo_estado
-                where esta.id_proceso_wf = v_id_proceso_wf and es.codigo = 'vb_rpcd';
+                	/*Aqui Para Insertar y asignar automaticamente el funcionario de abastecimiento Ismael Valdivia (29/09/2021)*/
 
-                /*Si es Nulo entonces registramos el dato con el funcionario Asignado*/
-                if (v_ultimo_funcionario_asignado is null) then
+                      select auto.id_funcionario_asignado,
+                             auto.id_asignacion
+                             into
+                             v_ultimo_funcionario_asignado,
+                             v_id_asignacion
+                      from mat.tasginacion_automatica_abastecimiento auto
+                      where auto.ultima_asignacion = 'si'
+                      and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
 
-                  select te.id_tipo_estado,
-                         te.id_funcionario,
-                         te.id_funcionario_tipo_estado
-                         into
-                         v_id_tipo_estado_asignacion,
-                         v_id_funcionario_asignacion,
-                         v_id_funcionario_tipo_estado_asignacion
-                  from wf.tfuncionario_tipo_estado te
-                  INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                  where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                  and te.estado_reg = 'activo'
-                  and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                  order by te.id_tipo_estado ASC
-                  limit 1;
+                      select
+                          esta.id_funcionario into v_funcionario_encargado_rpcd
+                      from wf.testado_wf esta
+                      inner join wf.ttipo_estado es on es.id_tipo_estado = esta.id_tipo_estado
+                      where esta.id_proceso_wf = v_id_proceso_wf and es.codigo = 'vb_rpcd';
 
-                  insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
-                                                                         fecha_reg,
-                                                                         id_solicitud,
-                                                                         nro_tramite,
-                                                                         id_funcionario_asignado,
-                                                                         id_tipo_estado,
-                                                                         id_funcionario_rpc,
-                                                                         ultima_asignacion
-                                                                        )
-                                                                 values(p_id_usuario,
-                                                                        now(),
-                                                                        v_solicitud_actual.id_solicitud,
-                                                                        v_solicitud_actual.nro_tramite,
-                                                                        v_id_funcionario_asignacion,
-                                                                        v_id_tipo_estado_asignacion,
-                                                                        v_funcionario_encargado_rpcd,
-                                                                        'si'
-                                                                 );
-                else
+                      /*Si es Nulo entonces registramos el dato con el funcionario Asignado*/
+                      if (v_ultimo_funcionario_asignado is null) then
 
-                	select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
-                    from wf.tfuncionario_tipo_estado te
-                    where te.id_funcionario = v_ultimo_funcionario_asignado
-                    and te.estado_reg = 'activo'
-                    and te.id_tipo_estado = v_id_tipo_estado_siguiente;
+                        select te.id_tipo_estado,
+                               te.id_funcionario,
+                               te.id_funcionario_tipo_estado
+                               into
+                               v_id_tipo_estado_asignacion,
+                               v_id_funcionario_asignacion,
+                               v_id_funcionario_tipo_estado_asignacion
+                        from wf.tfuncionario_tipo_estado te
+                        INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                        where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                        and te.estado_reg = 'activo'
+                        and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                        order by te.id_tipo_estado ASC
+                        limit 1;
 
+                        insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                               fecha_reg,
+                                                                               id_solicitud,
+                                                                               nro_tramite,
+                                                                               id_funcionario_asignado,
+                                                                               id_tipo_estado,
+                                                                               id_funcionario_rpc,
+                                                                               ultima_asignacion
+                                                                              )
+                                                                       values(p_id_usuario,
+                                                                              now(),
+                                                                              v_solicitud_actual.id_solicitud,
+                                                                              v_solicitud_actual.nro_tramite,
+                                                                              v_id_funcionario_asignacion,
+                                                                              v_id_tipo_estado_asignacion,
+                                                                              v_funcionario_encargado_rpcd,
+                                                                              'si'
+                                                                       );
+                      else
 
-                	select te.id_tipo_estado,
-                           te.id_funcionario,
-                           te.id_funcionario_tipo_estado
-                           into
-                           v_id_tipo_estado_asignacion,
-                           v_id_funcionario_asignacion,
-                           v_id_funcionario_tipo_estado_asignacion
-                    from wf.tfuncionario_tipo_estado te
-                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                    where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                    and te.estado_reg = 'activo'
-                    and te.id_funcionario not in (v_ultimo_funcionario_asignado)
-                    and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
-                    and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                    order by te.id_tipo_estado ASC
-                    limit 1;
-
-                    if (v_id_funcionario_tipo_estado_asignacion is not null) then
-                    insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
-                                                                         fecha_reg,
-                                                                         id_solicitud,
-                                                                         nro_tramite,
-                                                                         id_funcionario_asignado,
-                                                                         id_tipo_estado,
-                                                                         id_funcionario_rpc,
-                                                                         ultima_asignacion
-                                                                        )
-                                                                 values(p_id_usuario,
-                                                                        now(),
-                                                                        v_solicitud_actual.id_solicitud,
-                                                                        v_solicitud_actual.nro_tramite,
-                                                                        v_id_funcionario_asignacion,
-                                                                        v_id_tipo_estado_asignacion,
-                                                                        v_funcionario_encargado_rpcd,
-                                                                        'si'
-                                                                 );
-                    else
-
-                    select te.id_tipo_estado,
-                         te.id_funcionario,
-                         te.id_funcionario_tipo_estado
-                         into
-                         v_id_tipo_estado_asignacion,
-                         v_id_funcionario_asignacion,
-                         v_id_funcionario_tipo_estado_asignacion
-                  from wf.tfuncionario_tipo_estado te
-                  INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                  where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                  and te.estado_reg = 'activo'
-                  and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                  order by te.id_tipo_estado ASC
-                  limit 1;
-
-                  insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
-                                                                         fecha_reg,
-                                                                         id_solicitud,
-                                                                         nro_tramite,
-                                                                         id_funcionario_asignado,
-                                                                         id_tipo_estado,
-                                                                         id_funcionario_rpc,
-                                                                         ultima_asignacion
-                                                                        )
-                                                                 values(p_id_usuario,
-                                                                        now(),
-                                                                        v_solicitud_actual.id_solicitud,
-                                                                        v_solicitud_actual.nro_tramite,
-                                                                        v_id_funcionario_asignacion,
-                                                                        v_id_tipo_estado_asignacion,
-                                                                        v_funcionario_encargado_rpcd,
-                                                                        'si'
-                                                                 );
-
-                    end if;
-
-                    update mat.tasginacion_automatica_abastecimiento set
-                    ultima_asignacion = 'no'
-                    where id_asignacion = v_id_asignacion;
+                          select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
+                          from wf.tfuncionario_tipo_estado te
+                          where te.id_funcionario = v_ultimo_funcionario_asignado
+                          and te.estado_reg = 'activo'
+                          and te.id_tipo_estado = v_id_tipo_estado_siguiente;
 
 
-                end if;
+                          select te.id_tipo_estado,
+                                 te.id_funcionario,
+                                 te.id_funcionario_tipo_estado
+                                 into
+                                 v_id_tipo_estado_asignacion,
+                                 v_id_funcionario_asignacion,
+                                 v_id_funcionario_tipo_estado_asignacion
+                          from wf.tfuncionario_tipo_estado te
+                          INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                          where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                          and te.estado_reg = 'activo'
+                          and te.id_funcionario not in (v_ultimo_funcionario_asignado)
+                          and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
+                          and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                          order by te.id_tipo_estado ASC
+                          limit 1;
+
+                          if (v_id_funcionario_tipo_estado_asignacion is not null) then
+                          insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                               fecha_reg,
+                                                                               id_solicitud,
+                                                                               nro_tramite,
+                                                                               id_funcionario_asignado,
+                                                                               id_tipo_estado,
+                                                                               id_funcionario_rpc,
+                                                                               ultima_asignacion
+                                                                              )
+                                                                       values(p_id_usuario,
+                                                                              now(),
+                                                                              v_solicitud_actual.id_solicitud,
+                                                                              v_solicitud_actual.nro_tramite,
+                                                                              v_id_funcionario_asignacion,
+                                                                              v_id_tipo_estado_asignacion,
+                                                                              v_funcionario_encargado_rpcd,
+                                                                              'si'
+                                                                       );
+                          else
+
+                          select te.id_tipo_estado,
+                               te.id_funcionario,
+                               te.id_funcionario_tipo_estado
+                               into
+                               v_id_tipo_estado_asignacion,
+                               v_id_funcionario_asignacion,
+                               v_id_funcionario_tipo_estado_asignacion
+                        from wf.tfuncionario_tipo_estado te
+                        INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                        where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                        and te.estado_reg = 'activo'
+                        and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                        order by te.id_tipo_estado ASC
+                        limit 1;
+
+                        insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                               fecha_reg,
+                                                                               id_solicitud,
+                                                                               nro_tramite,
+                                                                               id_funcionario_asignado,
+                                                                               id_tipo_estado,
+                                                                               id_funcionario_rpc,
+                                                                               ultima_asignacion
+                                                                              )
+                                                                       values(p_id_usuario,
+                                                                              now(),
+                                                                              v_solicitud_actual.id_solicitud,
+                                                                              v_solicitud_actual.nro_tramite,
+                                                                              v_id_funcionario_asignacion,
+                                                                              v_id_tipo_estado_asignacion,
+                                                                              v_funcionario_encargado_rpcd,
+                                                                              'si'
+                                                                       );
+
+                          end if;
+
+                          update mat.tasginacion_automatica_abastecimiento set
+                          ultima_asignacion = 'no'
+                          where id_asignacion = v_id_asignacion;
+
+
+                      end if;
 
 
 
 
-                /************************************************************************************************************/
+                      /************************************************************************************************************/
+
+                END IF;
+
+
                 SELECT		twf.id_funcionario
 
                 into
@@ -4211,6 +4253,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
- 
+
 ALTER FUNCTION mat.ft_solicitud_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
   OWNER TO postgres;
