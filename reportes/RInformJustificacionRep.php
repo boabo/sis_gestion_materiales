@@ -130,44 +130,95 @@ class RInformJustificacionRep extends  ReportePDF
              $numero++;
           }
 
-          $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
-                  <tr>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <th align="center"><b>PRECIO REFERENCIAL</b></th>
-                  </tr>
-               </table>
-               <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
-                       <tr>
-                         <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
-                          obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que cotiza '.$texto_ref.' de acuerdo al siguiente cuadro:</th>
-                       </tr>
-               </table>
-               <table cellspacing="0" cellpadding="1" border="1" style="font-size:12px;">
+          $incluyeBer = 'NO';
+
+          foreach ($nro_partes as $indice=>$partes){
+            if($cd[$indice] == 'B.E.R.'){
+              $incluyeBer = 'SI';
+            }
+           }
+
+           if ($incluyeBer == 'SI') {
+             $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                      <tr>
-                       <th width="50" align="center"><b>ITEM</b></th>
-                       <th width="150" align="center"><b>PART NUMBER</b></th>
-                       <th width="150" align="center"><b>DESCRIPCIÓN</b></th>
-                       <th width="140" align="center"><b>SERIAL</b></th>
-                       <th width="102" align="center"><b>MONTO EN $US.</b></th>
-                       <th width="102" align="center"><b>CONDICIÓN</b></th>
+                       <th></th>
                      </tr>
-              </table>';
-              $numero = 1;
-              foreach ($nro_partes as $indice=>$partes){
-              $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
+                     <tr>
+                       <th align="center"><b>PRECIO REFERENCIAL</b></th>
+                     </tr>
+                  </table>
+                  <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                          <tr>
+                            <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
+                             obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que el taller nos informa que la o las unidades fueron declaradas B.E.R (BEYOND ECONOMICAL REPAIR) y nos ofrece reemplazar las mismas con otras unidades, de acuerdo al siguiente cuadro:</th>
+                          </tr>
+                  </table>
+                  <table cellspacing="0" cellpadding="1" border="1" style="font-size:12px;">
                         <tr>
-                            <td width="50" align="center"><li>'.$numero.'</li></td>
-                            <td width="150" align="center"><li>'.$partes.'</li></td>
-                            <td width="150" align="center"><li>'.$descripcion[$indice].'</li></td>
-                            <td width="140" align="center"><li>'.$serial[$indice].'</li></td>
-                            <td width="102" align="right"><li>'.$precio_total[$indice].'</li></td>
-                            <td width="102" align="center"><li>'.$cd[$indice].'</li></td>
+                          <th width="50" align="center"><b>ITEM</b></th>
+                          <th width="150" align="center"><b>PART NUMBER</b></th>
+                          <th width="150" align="center"><b>DESCRIPCIÓN</b></th>
+                          <th width="140" align="center"><b>SERIAL</b></th>
+                          <th width="102" align="center"><b>MONTO EN $US.</b></th>
+                          <th width="102" align="center"><b>CONDICIÓN</b></th>
                         </tr>
-                    </table>';
-                  $numero++;
-               }
+                 </table>';
+                 $numero = 1;
+                 foreach ($nro_partes as $indice=>$partes){
+                 $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
+                           <tr>
+                               <td width="50" align="center"><li>'.$numero.'</li></td>
+                               <td width="150" align="center"><li>'.$partes.'</li></td>
+                               <td width="150" align="center"><li>'.$descripcion[$indice].'</li></td>
+                               <td width="140" align="center"><li>'.$serial[$indice].'</li></td>
+                               <td width="102" align="right"><li>'.$precio_total[$indice].'</li></td>
+                               <td width="102" align="center"><li>'.$cd[$indice].'</li></td>
+                           </tr>
+                       </table>';
+                     $numero++;
+                  }
+           } else {
+             $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                     <tr>
+                       <th></th>
+                     </tr>
+                     <tr>
+                       <th align="center"><b>PRECIO REFERENCIAL</b></th>
+                     </tr>
+                  </table>
+                  <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                          <tr>
+                            <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
+                             obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que cotiza '.$texto_ref.' de acuerdo al siguiente cuadro:</th>
+                          </tr>
+                  </table>
+                  <table cellspacing="0" cellpadding="1" border="1" style="font-size:12px;">
+                        <tr>
+                          <th width="50" align="center"><b>ITEM</b></th>
+                          <th width="150" align="center"><b>PART NUMBER</b></th>
+                          <th width="150" align="center"><b>DESCRIPCIÓN</b></th>
+                          <th width="140" align="center"><b>SERIAL</b></th>
+                          <th width="102" align="center"><b>MONTO EN $US.</b></th>
+                          <th width="102" align="center"><b>CONDICIÓN</b></th>
+                        </tr>
+                 </table>';
+                 $numero = 1;
+                 foreach ($nro_partes as $indice=>$partes){
+                 $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
+                           <tr>
+                               <td width="50" align="center"><li>'.$numero.'</li></td>
+                               <td width="150" align="center"><li>'.$partes.'</li></td>
+                               <td width="150" align="center"><li>'.$descripcion[$indice].'</li></td>
+                               <td width="140" align="center"><li>'.$serial[$indice].'</li></td>
+                               <td width="102" align="right"><li>'.$precio_total[$indice].'</li></td>
+                               <td width="102" align="center"><li>'.$cd[$indice].'</li></td>
+                           </tr>
+                       </table>';
+                     $numero++;
+                  }
+           }
+
+
 
                $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
                        <tr>

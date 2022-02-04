@@ -42,6 +42,7 @@ DECLARE
     v_total_detalle					numeric;
 	v_compra						record;
 	v_id_funcionario_adquisiciones	integer;
+    v_suma_data						record;
 
 BEGIN
 
@@ -254,6 +255,161 @@ BEGIN
             --recupera datos del detalle e inserta en detalle de obligacion
             -----------------------------------------------------------------------------
 
+            if (v_registros_solicitud_mat.origen_pedido = 'Reparación de Repuestos') then
+
+            	/*Creamos una tabla temporal para insertar y sumar los datos*/
+                create temp table datos_reparacion (
+        										  nro_parte_cot varchar,
+                                                  cantidad_det numeric,
+                                                  precio_unitario numeric,
+                                                  precio_unitario_mb numeric,
+                                                  id_concepto_ingas integer,
+                                                  id_centro_costo integer,
+                                                  id_partida integer,
+                                                  id_cuenta integer,
+                                                  id_auxiliar integer,
+                                                  id_partida_ejecucion integer,
+                                                  descripcion varchar,
+                                                  id_orden_trabajo integer
+                                                )on commit drop;
+
+
+                insert into datos_reparacion (nro_parte_cot,
+                                                  cantidad_det,
+                                                  precio_unitario,
+                                                  precio_unitario_mb,
+                                                  id_concepto_ingas,
+                                                  id_centro_costo,
+                                                  id_partida,
+                                                  id_cuenta,
+                                                  id_auxiliar,
+                                                  id_partida_ejecucion,
+                                                  descripcion,
+                                                  id_orden_trabajo )
+
+
+                select
+                      det.nro_parte_cot,
+                      det.cantidad_det,
+                      det.precio_unitario,
+                      det.precio_unitario_mb,
+                      ds.id_concepto_ingas,
+                      ds.id_centro_costo,
+                      ds.id_partida,
+                      ds.id_cuenta,
+                      ds.id_auxiliar,
+                      ds.id_partida_ejecucion,
+                      (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion,
+                      ds.id_orden_trabajo
+              from mat.tcotizacion_detalle det
+              left join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
+              left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle
+              where cot.id_solicitud = p_id_solicitud and ds.id_partida is not null;
+                /************************************************************/
+
+            /*Cuando se inserta en la tabla sumamos los datos pendientes*/
+            for v_suma_data in (select
+                                        det.nro_parte_cot,
+                                        sum(det.precio_unitario_mb) as total,
+                                        (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion
+                                from mat.tcotizacion_detalle det
+                                left join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
+                                left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle
+                                where cot.id_solicitud = p_id_solicitud and ds.id_partida is null
+                                group by  det.nro_parte_cot,
+                                          det.descripcion_cot,
+                                          det.referencia_cot
+                                          ) LOOP
+
+
+                                update datos_reparacion set
+                                	precio_unitario = (precio_unitario_mb+v_suma_data.total),
+                                    precio_unitario_mb = (precio_unitario_mb+v_suma_data.total),
+                                    cantidad_det = 1,
+                                    descripcion = descripcion||', '||v_suma_data.descripcion
+            					where nro_parte_cot = v_suma_data.nro_parte_cot;
+
+            END LOOP;
+            /************************************************************/
+
+
+            	FOR v_registros in (
+                                    	select *
+                                        from datos_reparacion
+
+                                   )LOOP
+
+
+                                   -- inserta detalle obligacion
+
+
+                                           INSERT INTO
+                                            tes.tobligacion_det
+                                          (
+                                            id_usuario_reg,
+                                            fecha_reg,
+                                            estado_reg,
+                                            id_obligacion_pago,
+
+                                            id_concepto_ingas,
+                                            id_centro_costo,
+                                            id_partida,
+                                            id_cuenta,
+                                            id_auxiliar,
+                                            id_partida_ejecucion_com,
+
+                                            monto_pago_mo,
+                                            monto_pago_mb,
+                                            descripcion,
+                                            id_orden_trabajo)
+                                          VALUES (
+                                            p_id_usuario,
+                                            now(),
+                                            'activo',
+                                            v_id_obligacion_pago,
+
+                                            v_registros.id_concepto_ingas,
+                                            v_registros.id_centro_costo,
+                                            v_registros.id_partida,
+                                            v_registros.id_cuenta,
+                                            v_registros.id_auxiliar,
+                                            v_registros.id_partida_ejecucion,
+
+                                            --(v_registros.cantidad_sol *v_registros.precio_unitario),
+                                            --(v_registros.cantidad_sol *v_registros.precio_unitario_mb),
+                                            (v_registros.cantidad_det *v_registros.precio_unitario),
+                                            (v_registros.cantidad_det *v_registros.precio_unitario_mb),
+                                            v_registros.descripcion,
+                                            v_registros.id_orden_trabajo
+                                          )RETURNING id_obligacion_det into v_id_obligacion_det;
+
+
+                                END LOOP;
+
+
+
+
+                                  /*select 	det.nro_parte_cot,
+                                            det.cantidad_det,
+                                            det.precio_unitario,
+                                            det.precio_unitario_mb,
+                                          ds.id_concepto_ingas,
+                                          ds.id_centro_costo,
+                                          ds.id_partida,
+                                          ds.id_cuenta,
+                                          ds.id_auxiliar,
+                                          ds.id_partida_ejecucion,
+                                          (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion,
+                                          ds.id_orden_trabajo
+
+
+                                  from mat.tdetalle_sol ds
+                                  inner join mat.tcotizacion_detalle det on det.id_detalle = ds.id_detalle
+                                  inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
+                                  left join HazmatData detHaz on detHaz.id_detalle = ds.id_detalle
+                                  where ds.id_solicitud = p_id_solicitud*/
+            else
+
             FOR v_registros in (
                                   /*select 	ds.nro_parte,
                                             ds.cantidad_sol,
@@ -423,6 +579,8 @@ BEGIN
 
 
             END LOOP;
+
+            end if;
 
 
 			   --UPDATE DATOS OP-GM

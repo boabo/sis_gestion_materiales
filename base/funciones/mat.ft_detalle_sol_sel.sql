@@ -179,7 +179,24 @@ BEGIN
 
 
     		--Sentencia de la consulta
-			v_consulta:='select
+			v_consulta:='
+            			with serial_ref as (
+                        select det.nro_parte_cot,
+                               det.cd,
+                               det.referencia_cot
+                        from mat.tcotizacion_detalle det
+                        where det.id_cotizacion = (select
+                                                          detcot.id_cotizacion
+                                                  /****************************************************/
+                                                  from mat.tdetalle_sol det
+                                                  inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si''
+                                                  where  det.id_solicitud = '||v_parametros.id_solicitud||'
+                                                  group by detcot.id_cotizacion)
+                        and det.cd != ''B.E.R.'')
+
+
+
+            			select
 						det.id_detalle,
 						det.id_solicitud,
 						--det.descripcion,
@@ -188,8 +205,13 @@ BEGIN
 						det.id_unidad_medida,
 						--det.nro_parte,
                         detcot.explicacion_detallada_part_cot,
-						--det.referencia,
-                        detcot.referencia_cot,
+						(case
+                            when ser.referencia_cot is not null then
+                                ser.referencia_cot
+                            else
+                                detcot.referencia_cot
+                        end)::varchar as referencia_cot,
+                        --detcot.referencia_cot,
 						det.nro_parte_alterno,
 						det.id_moneda,
 						det.precio_unitario,
@@ -242,7 +264,8 @@ BEGIN
                         left join pre.tpresupuesto pre on pre.id_centro_costo = cc.id_centro_costo
                         left join pre.vcategoria_programatica c on c.id_categoria_programatica = pre.id_categoria_prog
 
-                        left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = detcot.id_cotizacion_det
+                        left join serial_ref ser on ser.nro_parte_cot = detcot.explicacion_detallada_part_cot
+
 
                         where  det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             else
@@ -372,6 +395,8 @@ BEGIN
                         left join param.tconcepto_ingas ingas on ingas.id_concepto_ingas = det.id_concepto_ingas
                         left join conta.torden_trabajo orden on orden.id_orden_trabajo = det.id_orden_trabajo
 
+                        left join serial_ref ser on ser.nro_parte_cot = detcot.explicacion_detallada_part_cot
+
                         /*Comentando esta parte para que no muestre (Ismael Valdivia 14/02/2020)*/
                          /*
                           left join pre.tpartida par on par.id_partida = det.id_partida
@@ -398,8 +423,6 @@ BEGIN
                         left join param.vcentro_costo cc on cc.id_centro_costo = det.id_centro_costo
                         left join param.tconcepto_ingas ingas on ingas.id_concepto_ingas = det.id_concepto_ingas
                         left join conta.torden_trabajo orden on orden.id_orden_trabajo = det.id_orden_trabajo
-
-                        left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = detcot.id_cotizacion_det
 
                         /*Comentando esta parte para que no muestre (Ismael Valdivia 14/02/2020)*/
                          /*
