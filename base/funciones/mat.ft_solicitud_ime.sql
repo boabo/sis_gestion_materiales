@@ -2204,7 +2204,7 @@ END IF;
                 where cot.id_solicitud = v_parametros.id_solicitud and det.referencial = 'Si';
 
                 if (v_existe_referencia = 0) then
-                	raise exception 'No se encontraron precios referenciales para la solicitud, favor verificar la información.';
+                	--raise exception 'No se encontraron precios referenciales para la solicitud, favor verificar la información.';
                 end if;
 
 
