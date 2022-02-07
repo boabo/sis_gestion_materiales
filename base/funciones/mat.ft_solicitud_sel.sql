@@ -4492,7 +4492,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    sol.estado,
                    sol.codigo_forma_pago_alkym,
                    sol.codigo_condicion_entrega_alkym,
-                   (COALESCE(sol.tiempo_entrega_estimado,0)+COALESCE(sol.tiempo_entrega,0))
+                   (COALESCE(sol.tiempo_entrega_estimado,0)+COALESCE(sol.tiempo_entrega,0)),
+                   sol.tipo_evaluacion
                    into
                    v_id_solicitud_rec,
                    v_id_funcionario_solicitante,
@@ -4507,7 +4508,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_estado_actual,
                    v_payment_terms,
                    v_incoterms,
-                   v_tiempo_entrega
+                   v_tiempo_entrega,
+                   v_tipo_evaluacion
             from mat.tsolicitud sol
             where sol.id_proceso_wf = v_parametros.id_proceso_wf;
             /************************************************/
@@ -4694,7 +4696,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||COALESCE(v_ship_to,'')||''')::varchar as ship_to,
                       ('''||v_funcionario_sol_oficial||''')::varchar as aprobado_por,
                       ('''||v_funcionario_pre||''')::varchar as preparado_por,
-                      ('||v_dias_sumados||')::integer as tiempo_entrega';
+                      ('||v_dias_sumados||')::integer as tiempo_entrega,
+                      ('''||v_tipo_evaluacion||''')::varchar as tipo_evaluacion';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;

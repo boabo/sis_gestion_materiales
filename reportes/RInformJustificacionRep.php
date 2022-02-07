@@ -50,15 +50,44 @@ class RInformJustificacionRep extends  ReportePDF
           $inciso = 'b, efectua el presente proceso de contratación directa. para la contratación de servicio denominado';
         }
 
+        if ($this->datos[0]['evaluacion'] == 'Calibracion') {
+          $inciso = 'b, efectua el presente proceso de contratación directa. para la contratación de servicio denominado';
+        }
+
+
+
+
         /*Aqui controlamos los textos de acuerdo a la evaluacion*/
         if ($this->datos[0]['evaluacion'] == NULL) {
           $texto = 'COMPLETAR INFORMACION ADJUDICADA';
         } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
           $texto_ref = 'en '.$this->datos[0]['evaluacion'];
+          $texto_detalle = 'de acuerdo a partes removidas entregadas por parte de la
+          Gerencia de Mantenimiento, al Almacén de la unidad de Abastecimientos, con su respectiva Tarjeta verde "Parte Reparable" MOM-005 del manual de Organización
+          de Mantenimiento "MOM", en la que indica el motivo de la falla y las instrucciones para su reparación, es que la Unidad de Abastecimientos requiere enviar
+          dichos componentes a talleres o empresas establecidos en los Estados Unidos de Norte América. Que procedan con la gestión  de reparación. De acuerdo a las normas
+          y procedimientos establecidos por la Federal Aviation Administration "FFAA". Y su posterior regreso a Bolivia, con la documentación de respaldo correspondiente.';
         } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
           $texto_ref = 'las reparaciones';
+          $texto_detalle = 'de acuerdo a partes removidas entregadas por parte de la
+          Gerencia de Mantenimiento, al Almacén de la unidad de Abastecimientos, con su respectiva Tarjeta verde "Parte Reparable" MOM-005 del manual de Organización
+          de Mantenimiento "MOM", en la que indica el motivo de la falla y las instrucciones para su reparación, es que la Unidad de Abastecimientos requiere enviar
+          dichos componentes a talleres o empresas establecidos en los Estados Unidos de Norte América. Que procedan con la gestión  de reparación. De acuerdo a las normas
+          y procedimientos establecidos por la Federal Aviation Administration "FFAA". Y su posterior regreso a Bolivia, con la documentación de respaldo correspondiente.';
+
+
+        } elseif ($this->datos[0]['evaluacion'] == 'Calibracion') {
+          $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE CALIBRACION DE EQUIPOS LOTE '.$nro_lote.'';
+          $texto_ref = 'las calibraciones';
+          $texto_detalle = 'de acuerdo a equipos y/o herramientas entregadas por parte de la Gerencia de Mantenimiento, al Almacén de la Unidad de Abastecimientos,
+          en donde solicitan que las mismas sean enviadas para su respectiva calibración, es que la Unidad de Abastecimientos requiere enviar dichas unidades a talleres o
+          empresas establecidos en los Estados Unidos de Norte América, que procedan con la gestión de la calibración, de acuerdo a normas y procedimientos establecidos por la Federal Aviation Administration "FAA",
+          y su posterior regreso a Bolivia, con la documentación de respaldo correspondiente.';
+
+
+
         }
 
         $incluyeBerTexto = 'NO';
@@ -104,11 +133,7 @@ class RInformJustificacionRep extends  ReportePDF
                 <th align="left" style="font-size:14px; border-right:1px solid #000000;">En cumplimiento a Circular Instructiva <b>OB.GG.CI.002/2020</b> de <b>05/01/2021</b> que establece el procedimiento interno
                   para la Contratación de Bienes. Obras y Servicios Especializados en el Extranjero, <b>RESABS-EE</b> BoA. La Unidad de Abastecimientos.
                   acorde al numeral IV "Causales para la Contratación Directa", inciso '.$inciso.':
-                  <b>'.$texto.'</b> de acuerdo a partes removidas entregadas por parte de la
-                  Gerencia de Mantenimiento, al Almacén de la unidad de Abastecimientos, con su respectiva Tarjeta verde "Parte Reparable" MOM-005 del manual de Organización
-                  de Mantenimiento "MOM", en la que indica el motivo de la falla y las instrucciones para su reparación, es que la Unidad de Abastecimientos requiere enviar
-                  dichos componentes a talleres o empresas establecidos en los Estados Unidos de Norte América. Que procedan con la gestión  de reparación. De acuerdo a las normas
-                  y procedimientos establecidos por la Federal Aviation Administration "FFAA". Y su posterior regreso a Bolivia, con la documentación de respaldo correspondiente.
+                  <b>'.$texto.'</b> '.$texto_detalle.'
                 </th>
               </tr>
            </table>
@@ -163,7 +188,7 @@ class RInformJustificacionRep extends  ReportePDF
                   </table>
                   <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                           <tr>
-                            <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
+                            <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a la Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
                              obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que el taller nos informa que la o las unidades fueron declaradas B.E.R (BEYOND ECONOMICAL REPAIR) y nos ofrece reemplazar las mismas con otras unidades, de acuerdo al siguiente cuadro:</th>
                           </tr>
                   </table>
@@ -202,7 +227,7 @@ class RInformJustificacionRep extends  ReportePDF
                   </table>
                   <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                           <tr>
-                            <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a al Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
+                            <th align="left">En fecha <b>'.$this->datos[0]["fecha_envio"].'</b> se procedió a invitar via correo electrónico a la Empresa <b>'.$this->datos[0]["nom_provee"].'</b>
                              obteniendo respuesta via correo electrónico el día <b>'.$this->datos[0]["fecha_cotizacion"].'</b> en la que cotiza '.$texto_ref.' de acuerdo al siguiente cuadro:</th>
                           </tr>
                   </table>
@@ -278,9 +303,11 @@ class RInformJustificacionRep extends  ReportePDF
           $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
         } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
+        } elseif ($this->datos[0]['evaluacion'] == 'Calibracion') {
+          $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE CALIBRACION DE EQUIPOS LOTE '.$nro_lote.'';
         }
 
-        
+
 
         $incluyeBerTexto = 'NO';
         foreach ($nro_partes as $indice=>$partes){

@@ -1257,6 +1257,7 @@ class MODSolicitud extends MODbase
         $this->captura('aprobado_por', 'varchar');
         $this->captura('preparado_por', 'varchar');
         $this->captura('tiempo_entrega', 'integer');
+        $this->captura('tipo_evaluacion', 'varchar');
         //$this->captura('direccion_entrega', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();

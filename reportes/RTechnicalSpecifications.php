@@ -11,7 +11,7 @@ class RTechnicalSpecifications extends  ReportePDF
         $this->MultiCell(0, 25, "\n" . $this->datos[0]['num_tramite']."\n", 1, 'C', 0, '', '');
         $this->Image(dirname(__FILE__) . '/../../pxp/lib/images/Logo-BoA.png', 12, 15, 36);
     }
-    function ReporteOrdenRaparacion(){ 
+    function ReporteOrdenRaparacion(){
         $this->AddPage();
         $funcionario_aprobado = $this->datos[0]["aprobado_por"];
         $fun_aprobado = explode('|', $funcionario_aprobado);
@@ -48,7 +48,7 @@ class RTechnicalSpecifications extends  ReportePDF
         /*************************************************************************/
 
         if ($this->datos[0]["num_part"] != '' || $this->datos[0]["num_part"] != null) {
-            $repair = 'FOR REPAIR';
+              $repair = 'FOR REPAIR';
         } else {
             $repair = '';
         }
@@ -61,6 +61,7 @@ class RTechnicalSpecifications extends  ReportePDF
         $cd = explode(',',$this->datos[0]["cd"]);
         $precio_unitario = explode(',',$this->datos[0]["precio_unitario"]);
         $precio_total = explode(',',$this->datos[0]["precio_total"]);
+
 
         $tb_funcio ='<table cellspacing="0" cellpadding="3" style="font-size:11px; border:1px solid #000000;">
                       <tr>
@@ -176,14 +177,26 @@ class RTechnicalSpecifications extends  ReportePDF
                             <tr>
                               <th  align="left" ><b>Tel: 305-477-4041</b></th>
                             </tr>
-                      </table>
-                      <table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
-                            <tr>
-                              <th align="left" ><b>OBSERVATIONS: The repair instruction was performed out of the request of the performing
-                              technitian and under the supervisor authorization, attached Form MOM-005 (Tarjeta Parte Reparable)</b></th>
-                            </tr>
-                      </table>
-                      <table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
+                      </table>';
+
+                      if ($this->datos[0]["tipo_evaluacion"] == 'Calibracion') {
+                        $tb_funcio.='<table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
+                                            <tr>
+                                              <th align="left" ><b>OBSERVATIONS: The repair instruction was performed out of the request of the performing
+                                              technitian and under the supervisor authorization.</b></th>
+                                            </tr>
+                                      </table>';
+                      } else {
+                        $tb_funcio.='<table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
+                                            <tr>
+                                              <th align="left" ><b>OBSERVATIONS: The repair instruction was performed out of the request of the performing
+                                              technitian and under the supervisor authorization, attached Form MOM-005 (Tarjeta Parte Reparable)</b></th>
+                                            </tr>
+                                      </table>';
+                      }
+
+
+                      $tb_funcio.= '<table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
                           <tr> <br>
                               <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Prepared by:</b> </td>
                               <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Aproved by:</b><br></td>
