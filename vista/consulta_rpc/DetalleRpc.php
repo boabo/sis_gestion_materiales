@@ -524,18 +524,27 @@ header("content-type: text/javascript; charset=UTF-8");
     		},
 
         anularProceso:function(){
-          var rec = this.sm.getSelected();
-          Phx.CP.loadingShow();
-          Ext.Ajax.request({
-              url : '../../sis_gestion_materiales/control/Solicitud/eliminarSolicitud',
-              params : {
-                'id_solicitud' : rec.data.id_solicitud
-              },
-              success : this.successSinc,
-              failure : this.conexionFailure,
-              timeout : this.timeout,
-              scope : this
-            });
+          var rec = this.sm.getSelected();          
+          if (confirm("Esta seguro de anular el proceso "+rec.data.nro_tramite+" esta acción no se puede revertir")) {
+            if (confirm("¿Esta realmente seguro?")) {
+              Phx.CP.loadingShow();
+              Ext.Ajax.request({
+                  url : '../../sis_gestion_materiales/control/Solicitud/eliminarSolicitud',
+                  params : {
+                    'id_solicitud' : rec.data.id_solicitud
+                  },
+                  success : this.successSinc,
+                  failure : this.conexionFailure,
+                  timeout : this.timeout,
+                  scope : this
+                });
+            }
+
+          }
+
+
+
+
         },
 
         successSinc:function(resp){

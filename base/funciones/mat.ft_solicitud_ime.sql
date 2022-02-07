@@ -234,6 +234,7 @@ DECLARE
     v_existe_referencia				numeric;
     v_verificar_relacion			record;
     v_proveedor_hazmat				varchar;
+    v_presu_comprometido			varchar;
     /****************************************/
 
 BEGIN
@@ -748,13 +749,15 @@ END IF;
         		ma.id_estado_wf,
                 ma.estado,
                 ma.id_solicitud,
-                ma.nro_tramite
+                ma.nro_tramite,
+                ma.presu_comprometido
                 into
                 v_id_proceso_wf,
                 v_id_estado_wf,
         		v_codigo_estado,
                 v_id_solicitud,
-                v_codigo
+                v_codigo,
+                v_presu_comprometido
         from mat.tsolicitud ma
         where ma.id_solicitud = v_parametros.id_solicitud;
 
@@ -793,6 +796,20 @@ END IF;
                  id_usuario_ai = v_parametros._id_usuario_ai,
                  usuario_ai = v_parametros._nombre_usuario_ai
                where ma.id_solicitud  = v_parametros.id_solicitud;
+
+        /*Revertimos presupuestos*/
+         IF v_presu_comprometido = 'si' THEN
+         	-- Comprometer Presupuesto
+                IF not mat.f_gestionar_presupuesto_solicitud(v_parametros.id_solicitud, p_id_usuario, 'revertir')  THEN
+                     raise exception 'Error al comprometer el presupuesto';
+                END IF;
+
+                --modifca bandera de comprometido
+                 update mat.tsolicitud  set
+                      presu_comprometido =  'no'
+                 where id_solicitud = v_parametros.id_solicitud;
+         END IF;
+        /*************************/
 
         --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud eliminado(a)');
