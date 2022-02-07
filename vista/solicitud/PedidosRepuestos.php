@@ -368,21 +368,21 @@ header("content-type: text/javascript; charset=UTF-8");
                     //this.mostrarComponente(this.Cmp.taller_asignado);
                     //this.ocultarComponente(this.Cmp.observacion_nota);
                     this.Cmp.observaciones_sol.setValue('Se puede aceptar unidad(es) cotizada(s) en Flat Exchange');
-                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange REP-'+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
+                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange o remplazo REP-'+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
                     this.Cmp.motivo_solicitud.setValue('COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) REQUERIDO PARA FLOTA BOA ');
                     this.mostrarComponente(this.Cmp.observaciones_sol);
                 }if (record.data.ID == 4){
                     //this.ocultarComponente(this.Cmp.taller_asignado);
                     //this.ocultarComponente(this.Cmp.observacion_nota);
                     this.Cmp.observaciones_sol.setValue('Se puede aceptar unidad(es) cotizada(s) en Flat Exchange');
-                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange REP-'+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
+                    this.Cmp.mensaje_correo.setValue('Favor cotizar el Flat Exchange o remplazo REP-'+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
                     this.Cmp.motivo_solicitud.setValue('COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) REQUERIDO PARA FLOTA BOA ');
                     this.mostrarComponente(this.Cmp.observaciones_sol);
                 }if (record.data.ID == 5){
                     //this.ocultarComponente(this.Cmp.taller_asignado);
                     //this.ocultarComponente(this.Cmp.observacion_nota);
                     this.Cmp.mensaje_correo.setValue('Favor cotizar la calibración REP-'+data['nro_po']+' de la(s) siguiente(s) unidad(es) según Especificación Técnica adjunta, llenando con los datos según tabla:');
-                    this.Cmp.motivo_solicitud.setValue('CONTRATACIÓN DE SERVICIO DE CALIBRACIÓN DE EQUIPOS');                    
+                    this.Cmp.motivo_solicitud.setValue('CONTRATACIÓN DE SERVICIO DE CALIBRACIÓN DE EQUIPOS');
                     this.Cmp.observaciones_sol.reset();
                     this.Cmp.observaciones_sol.allowBlank = true;
                     this.ocultarComponente(this.Cmp.observaciones_sol);
