@@ -46,10 +46,13 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
         } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
           $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';
 
+        } elseif ($this->datos[0]['evaluacion'] == 'Calibracion') {
+          $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de calibración denominado <b>"(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE CALIBRACION DE EQUIPOS LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';
+
         }
 
         if ($this->datos[0]['tiene_bear'] == 'SI') {
-          $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO EN REEMPLAZO DE UNIDAD DECLARADA B.E.R REQUERIDO PARA FLOTA BOA LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';          
+          $texto = 'De esta manera, en cumplimiento a los procedimientos internos del Reglamento Específico para la Contratación de Bienes, Obras y Servicios Especializados en el Extranjero - BoA, se adjudica el servicio de reparación denominado <b>"(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO EN REEMPLAZO DE UNIDAD DECLARADA B.E.R REQUERIDO PARA FLOTA BOA LOTE '.$this->datos[0]['lote_rep'].'"</b> por un monto de <b>$us.'.$this->datos[0]['total_venta_rep'].'</b>';
         }
 
 
