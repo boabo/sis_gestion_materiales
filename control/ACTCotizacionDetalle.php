@@ -17,6 +17,10 @@ class ACTCotizacionDetalle extends ACTbase{
          $this->objParam->addFiltro("trim(cde.nro_parte_cot) != ''HAZMAT'' ");
      }
 
+		 if($this->objParam->getParametro('FiltroDetalleBear') != '') {
+          $this->objParam->addFiltro("trim(cde.cd) != ''B.E.R.'' ");
+      }
+
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
@@ -26,16 +30,23 @@ class ACTCotizacionDetalle extends ACTbase{
 
 			$this->res=$this->objFunc->listarCotizacionDetalle($this->objParam);
 		}
-        $temp = Array();
-        $temp['nro_parte_alterno_cot'] = 'TOTAL';
-        $temp['precio_unitario'] = $this->res->extraData['total_precio_unitario'];
-        $temp['precio_unitario_mb'] = $this->res->extraData['total_precio'];
-        $temp['tipo_reg'] = 'summary';
-        $temp['id_cotizacion_det'] = 0;
 
-        $this->res->total++;
 
-        $this->res->addLastRecDatos($temp);
+		if ($this->objParam->getParametro('FiltroDetalle') == '' && $this->objParam->getParametro('FiltroDetalleBear') == '') {
+			$temp = Array();
+			$temp['nro_parte_alterno_cot'] = 'TOTAL';
+			$temp['precio_unitario'] = $this->res->extraData['total_precio_unitario'];
+			$temp['precio_unitario_mb'] = $this->res->extraData['total_precio'];
+			$temp['tipo_reg'] = 'summary';
+			$temp['id_cotizacion_det'] = 0;
+
+			$this->res->total++;
+
+			$this->res->addLastRecDatos($temp);
+		}
+
+
+
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 

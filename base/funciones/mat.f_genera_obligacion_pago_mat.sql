@@ -270,7 +270,8 @@ BEGIN
                                                   id_auxiliar integer,
                                                   id_partida_ejecucion integer,
                                                   descripcion varchar,
-                                                  id_orden_trabajo integer
+                                                  id_orden_trabajo integer,
+                                                  id_detalle_hazmat integer
                                                 )on commit drop;
 
 
@@ -285,7 +286,8 @@ BEGIN
                                                   id_auxiliar,
                                                   id_partida_ejecucion,
                                                   descripcion,
-                                                  id_orden_trabajo )
+                                                  id_orden_trabajo,
+                                                  id_detalle_hazmat )
 
 
                 select
@@ -300,7 +302,8 @@ BEGIN
                       ds.id_auxiliar,
                       ds.id_partida_ejecucion,
                       (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion,
-                      ds.id_orden_trabajo
+                      ds.id_orden_trabajo,
+                      det.id_detalle_hazmat
               from mat.tcotizacion_detalle det
               left join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
               left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle
@@ -311,14 +314,16 @@ BEGIN
             for v_suma_data in (select
                                         det.nro_parte_cot,
                                         sum(det.precio_unitario_mb) as total,
-                                        (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion
+                                        (' P/N: ' ||det.nro_parte_cot||' '|| det.descripcion_cot ||' '||' S/N: ' || det.referencia_cot) as descripcion,
+                                        det.id_cotizacion_det
                                 from mat.tcotizacion_detalle det
                                 left join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
                                 left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle
                                 where cot.id_solicitud = p_id_solicitud and ds.id_partida is null
                                 group by  det.nro_parte_cot,
                                           det.descripcion_cot,
-                                          det.referencia_cot
+                                          det.referencia_cot,
+                                          det.id_cotizacion_det
                                           ) LOOP
 
 
@@ -327,7 +332,7 @@ BEGIN
                                     precio_unitario_mb = (precio_unitario_mb+v_suma_data.total),
                                     cantidad_det = 1,
                                     descripcion = descripcion||', '||v_suma_data.descripcion
-            					where nro_parte_cot = v_suma_data.nro_parte_cot;
+            					where id_detalle_hazmat = v_suma_data.id_cotizacion_det;
 
             END LOOP;
             /************************************************************/

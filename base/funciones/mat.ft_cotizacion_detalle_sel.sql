@@ -61,7 +61,8 @@ BEGIN
                         relacionHazmat as (
                         select
                         cde.id_cotizacion_det,
-                        cde.nro_parte_cot
+                        cde.nro_parte_cot,
+                        cde.referencia_cot
                         from mat.tcotizacion_detalle cde
                         inner join mat.tcotizacion_detalle deta on deta.id_detalle_hazmat = cde.id_cotizacion_det
                         where cde.id_cotizacion = '||v_parametros.id_cotizacion||'
@@ -103,7 +104,7 @@ BEGIN
 
                         (CASE
                         	WHEN trim(rel_hazmat.nro_parte_cot) != '''' THEN
-                            ''Relacionado al Nro de Parte: ''||trim(rel_hazmat.nro_parte_cot)
+                            ''Relacionado al Nro de Parte: ''||trim(rel_hazmat.nro_parte_cot)||'' (''||rel_hazmat.referencia_cot||'')''
                             ELSE
                             ''''
                         END)::varchar as relacionado

@@ -31,7 +31,10 @@ DECLARE
     v_fill				varchar;
     v_fil_func			varchar;
     v_id_funcionario_recu	integer;
-
+    v_existe_hazmat		numeric;
+    v_registros			record;
+	v_origen_pedido		varchar;
+    v_existe_vacios		numeric;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_listado_control_rpc';
@@ -115,8 +118,8 @@ BEGIN
                                      s.id_estado_wf::numeric
                            from  mat.tsolicitud s
                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
-                           inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
-                           inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion and d.revisado = ''si''
+                           inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
+                           inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion --and d.revisado = ''si''
                            inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
                            inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf
                            inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado and t.codigo = ''vb_rpcd''
@@ -209,8 +212,8 @@ BEGIN
            v_consulta:='	select	 count(s.nro_tramite)
                            from  mat.tsolicitud s
                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
-                           inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
-                           inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion and d.revisado = ''si''
+                           inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
+                           inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion --and d.revisado = ''si''
                            inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
                            inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf
                            inner join wf.ttipo_estado t on t.id_tipo_estado = e.id_tipo_estado and t.codigo = ''vb_rpcd''
@@ -236,35 +239,315 @@ BEGIN
 
 		begin
 
+        	select sol.origen_pedido into v_origen_pedido
+            from mat.tsolicitud sol
+            where sol.id_solicitud = v_parametros.id_solicitud;
+
+
+        	/*Aqui iremos totalizando los datos en los casos del Hazmat(Compras) y B.E.A.R(Reparaciones)*/
+
+            if (v_origen_pedido != 'Reparación de Repuestos') then
+
+            /*Verificamos si tiene Hazmat*/
+            select	count(det.nro_parte_cot) into v_existe_hazmat
+            from  mat.tsolicitud s
+            inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+            inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+            left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+            left join mat.tday_week day on day.id_day_week = det.id_day_week
+            left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+            left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+            left join pre.tpartida pp on deta.id_partida = pp.id_partida
+            where s.id_solicitud = v_parametros.id_solicitud and det.nro_parte_cot = 'HAZMAT';
+            /*****************************/
+
+            if (v_existe_hazmat > 0) THEN
+
+            create temp table datos_acumulados (
+        										  nro_parte_cot varchar,
+                                                  explicacion_detallada_part_cot varchar,
+                                                  cantidad_det integer,
+                                                  precio_unitario numeric,
+                                                  cantidad_dias varchar,
+                                                  centro_costo varchar,
+                                                  matricula varchar,
+                                                  partida varchar,
+                                                  id_cotizacion_det integer
+                                                )on commit drop;
+
+            insert into datos_acumulados (nro_parte_cot,
+                                              explicacion_detallada_part_cot,
+                                              cantidad_det,
+                                              precio_unitario,
+                                              cantidad_dias,
+                                              centro_costo,
+                                              matricula,
+                                              partida,
+                                              id_cotizacion_det)
+
+              select	det.nro_parte_cot,
+                      det.explicacion_detallada_part_cot,
+                      det.cantidad_det,
+                      det.precio_unitario,
+                      day.codigo_tipo as cantidad_dias,
+                      (cc.ep || ' - ' || cc.nombre_uo)::varchar as centro_costo,
+                      COALESCE (ot.desc_orden,' ')::varchar as matricula,
+                      (pp.codigo || ' - ' || pp.nombre_partida)::varchar as partida,
+                      det.id_cotizacion_det
+              from  mat.tsolicitud s
+              inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+              inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+              left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+              left join mat.tday_week day on day.id_day_week = det.id_day_week
+              left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+              left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+              left join pre.tpartida pp on deta.id_partida = pp.id_partida
+              where s.id_solicitud = v_parametros.id_solicitud and det.nro_parte_cot != 'HAZMAT';
+
+
+            for v_registros in (select	det.nro_parte_cot,
+                                        det.explicacion_detallada_part_cot,
+                                        1::integer as cantidad,
+                                        sum(det.cantidad_det * det.precio_unitario) as total_hazmat,
+                                        ''::varchar as cantidad_dias,
+                                        ''::varchar as centro_costo,
+                                        ''::varchar as matricula,
+                                        ''::varchar as partida,
+                                        det.id_detalle_hazmat
+                                from  mat.tsolicitud s
+                                inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+                                inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+                                left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                                left join mat.tday_week day on day.id_day_week = det.id_day_week
+                                left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                                left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                                left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                                where s.id_solicitud = v_parametros.id_solicitud and det.nro_parte_cot = 'HAZMAT'
+                                group by det.nro_parte_cot,det.explicacion_detallada_part_cot, det.id_cotizacion_det)
+
+            loop
+            			/*Iremos Actualizando para totalizar los que tengan relacion Hazmat*/
+                        update datos_acumulados set
+                        	precio_unitario = ((cantidad_det*precio_unitario) + v_registros.total_hazmat),
+                        	cantidad_det = 1
+                        where id_cotizacion_det = v_registros.id_detalle_hazmat;
+            			/*******************************************************************/
+
+
+
+            end loop;
+
+
+            else
+        		create temp table datos_acumulados (
+        										  nro_parte_cot varchar,
+                                                  explicacion_detallada_part_cot varchar,
+                                                  cantidad_det integer,
+                                                  precio_unitario numeric,
+                                                  cantidad_dias varchar,
+                                                  centro_costo varchar,
+                                                  matricula varchar,
+                                                  partida varchar,
+                                                  id_cotizacion_det integer
+                                                )on commit drop;
+
+                insert into datos_acumulados (nro_parte_cot,
+                                                  explicacion_detallada_part_cot,
+                                                  cantidad_det,
+                                                  precio_unitario,
+                                                  cantidad_dias,
+                                                  centro_costo,
+                                                  matricula,
+                                                  partida,
+                                                  id_cotizacion_det)
+
+                  select	det.nro_parte_cot,
+                          det.explicacion_detallada_part_cot,
+                          det.cantidad_det,
+                          det.precio_unitario,
+                          day.codigo_tipo as cantidad_dias,
+                          (cc.ep || ' - ' || cc.nombre_uo)::varchar as centro_costo,
+                          COALESCE (ot.desc_orden,' ')::varchar as matricula,
+                          (pp.codigo || ' - ' || pp.nombre_partida)::varchar as partida,
+                          det.id_cotizacion_det
+                  from  mat.tsolicitud s
+                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+                  inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+                  left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                  left join mat.tday_week day on day.id_day_week = det.id_day_week
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                  left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                  where s.id_solicitud = v_parametros.id_solicitud;
+
+            end if;
+
+            else
+
+                  select	count(det.nro_parte_cot) into v_existe_vacios
+                  from  mat.tsolicitud s
+                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+                  inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+                  left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                  left join mat.tday_week day on day.id_day_week = det.id_day_week
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                  left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                  where s.id_solicitud = v_parametros.id_solicitud and pp.id_partida is null
+                  group by det.nro_parte_cot,det.explicacion_detallada_part_cot;
+
+                  if (v_existe_vacios > 0) then
+
+
+                  create temp table datos_acumulados (
+        										  nro_parte_cot varchar,
+                                                  explicacion_detallada_part_cot varchar,
+                                                  cantidad_det integer,
+                                                  precio_unitario numeric,
+                                                  cantidad_dias varchar,
+                                                  centro_costo varchar,
+                                                  matricula varchar,
+                                                  partida varchar,
+                                                  id_relacion_ber integer
+                                                )on commit drop;
+
+                insert into datos_acumulados (nro_parte_cot,
+                                                  explicacion_detallada_part_cot,
+                                                  cantidad_det,
+                                                  precio_unitario,
+                                                  cantidad_dias,
+                                                  centro_costo,
+                                                  matricula,
+                                                  partida,
+                                                  id_relacion_ber)
+
+            	select	det.nro_parte_cot,
+                        det.explicacion_detallada_part_cot,
+                        det.cantidad_det,
+                        det.precio_unitario,
+                        day.codigo_tipo as cantidad_dias,
+                        (cc.ep || ' - ' || cc.nombre_uo)::varchar as centro_costo,
+                        COALESCE (ot.desc_orden,' ')::varchar as matricula,
+                        (pp.codigo || ' - ' || pp.nombre_partida)::varchar as partida,
+                        det.id_detalle_hazmat
+                  from  mat.tsolicitud s
+                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+                  inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+                  left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                  left join mat.tday_week day on day.id_day_week = det.id_day_week
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                  left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                  where s.id_solicitud = v_parametros.id_solicitud and pp.id_partida is not null;
+
+
+                  /*Aqui totalizamos los datos*/
+                  for v_registros in (select	det.nro_parte_cot,
+                                                det.explicacion_detallada_part_cot,
+                                                1::integer as cantidad,
+                                                sum(det.cantidad_det * det.precio_unitario) as total_reparaciones,
+                                                ''::varchar as cantidad_dias,
+                                                ''::varchar as centro_costo,
+                                                ''::varchar as matricula,
+                                                ''::varchar as partida,
+                                                det.id_cotizacion_det   ---Aqui continuar
+                                        from  mat.tsolicitud s
+                                        inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+                                        inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+                                        left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                                        left join mat.tday_week day on day.id_day_week = det.id_day_week
+                                        left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                                        left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                                        left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                                        where s.id_solicitud = v_parametros.id_solicitud and pp.id_partida is null
+                                        group by det.nro_parte_cot,det.explicacion_detallada_part_cot,det.id_cotizacion_det)
+                  loop
+                  		/*Iremos Actualizando para totalizar los que tengan relacion Hazmat*/
+                        update datos_acumulados set
+                        	precio_unitario = ((cantidad_det*precio_unitario) + v_registros.total_reparaciones),
+                        	cantidad_det = 1
+                        where id_relacion_ber = v_registros.id_cotizacion_det;
+            			/*******************************************************************/
+                  end loop;
+                  /****************************/
+
+             else
+
+                  create temp table datos_acumulados (
+        										  nro_parte_cot varchar,
+                                                  explicacion_detallada_part_cot varchar,
+                                                  cantidad_det integer,
+                                                  precio_unitario numeric,
+                                                  cantidad_dias varchar,
+                                                  centro_costo varchar,
+                                                  matricula varchar,
+                                                  partida varchar,
+                                                  condicion varchar
+                                                )on commit drop;
+
+                insert into datos_acumulados (nro_parte_cot,
+                                                  explicacion_detallada_part_cot,
+                                                  cantidad_det,
+                                                  precio_unitario,
+                                                  cantidad_dias,
+                                                  centro_costo,
+                                                  matricula,
+                                                  partida,
+                                                  condicion)
+
+            	select	det.nro_parte_cot,
+                        det.explicacion_detallada_part_cot,
+                        det.cantidad_det,
+                        det.precio_unitario,
+                        day.codigo_tipo as cantidad_dias,
+                        (cc.ep || ' - ' || cc.nombre_uo)::varchar as centro_costo,
+                        COALESCE (ot.desc_orden,' ')::varchar as matricula,
+                        (pp.codigo || ' - ' || pp.nombre_partida)::varchar as partida,
+                        det.cd
+                  from  mat.tsolicitud s
+                  inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = 'si'
+                  inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
+                  left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
+                  left join mat.tday_week day on day.id_day_week = det.id_day_week
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
+                  left join pre.tpartida pp on deta.id_partida = pp.id_partida
+                  where s.id_solicitud = v_parametros.id_solicitud;
+                end if;
+            end if;
+
+
+
+
+
+
+
+
+
+
+        	/********************************************************************************************/
+
+
+
+
+
 
            v_consulta:='
                           SELECT	TO_JSON(ROW_TO_JSON(jsonD) :: TEXT) #>> ''{}'' as jsonData
                                                     FROM (
-
+						  select
+                          (
                           SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(detalle))) as detalle_solicitud
                           FROM(
+                          select *
+                          from datos_acumulados) detalle) as detalle_solicitud,
 
-
-                          select det.nro_parte_cot,
-                                 det.explicacion_detallada_part_cot,
-                                 det.cantidad_det,
-                                 det.precio_unitario,
-                                 day.codigo_tipo as cantidad_dias,
-                                 (cc.ep || '' - '' || cc.nombre_uo)::varchar as centro_costo,
-                                 COALESCE (ot.desc_orden,'' '')::varchar as matricula,
-                                 (pp.codigo || '' - '' || pp.nombre_partida)::varchar as partida
-                          from mat.tcotizacion cot
-                          inner join mat.tcotizacion_detalle det on det.id_solicitud = cot.id_solicitud
-                          inner join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
-                          left join mat.tday_week day on day.id_day_week = det.id_day_week
-                          inner join mat.tsolicitud sol on sol.id_solicitud = cot.id_solicitud
-                          left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
-                          left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
-                          left join pre.tpartida pp on deta.id_partida = pp.id_partida
-                          where cot.id_solicitud = '||v_parametros.id_solicitud||'
-                          and cot.adjudicado = ''si''
-
-                          ) detalle
+                          ( SELECT TO_JSON(cabecera) as cabecera_solicitud
+                            FROM(
+                                select sol.nro_tramite
+                                from mat.tsolicitud sol
+                                where sol.id_solicitud = '||v_parametros.id_solicitud||'
+                           )cabecera ) as cabecera
                           ) jsonD';
 
 			return v_consulta;
@@ -295,6 +578,7 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
 
 ALTER FUNCTION mat.ft_listado_control_rpc (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)

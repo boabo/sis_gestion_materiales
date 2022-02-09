@@ -165,6 +165,21 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
       						tooltip: '<b>Relaciona el Hazmat con el detalle</b>'
       				});
 
+              this.addButton('relacionarBEAR',{
+      						//grupo:[8,3],
+      						// argument: {estado: 'inicio'},
+      						text:'Relacionar B.E.R.',
+      						iconCls: 'bupload',
+      						disabled:true,
+      						hidden:true,
+      						handler:this.FormularioRelacionBEAR,
+      						tooltip: '<b>Relaciona el Hazmat con el detalle</b>'
+      				});
+
+
+
+
+
             this.bbar.el.dom.style.background='#80D7FF';
             this.tbar.el.dom.style.background='#80D7FF';
             this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#B7E8FF';
@@ -985,8 +1000,8 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
         var tb =this.tbar;
 				var rec = this.getSelectedData();
         Phx.vista.CotizacionDetalle.superclass.preparaMenu.call(this,n);
-
-
+        console.log("aqui llega datos",rec);
+        //relacionarBEAR
 
 				if (rec.nro_parte_cot == 'HAZMAT') {
 	        this.getBoton('relacionarHazmat').setVisible(true);
@@ -996,6 +1011,16 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
 					this.getBoton('relacionarHazmat').setVisible(false);
           this.cm.setHidden(3, true);
 				}
+
+        if (rec.cd == 'B.E.R.') {
+          this.getBoton('relacionarBEAR').setVisible(true);
+          this.cm.setHidden(3, false);
+        } else {
+          this.getBoton('relacionarBEAR').setVisible(false);
+          this.cm.setHidden(3, true);
+        }
+
+
 
         return tb;
     },
@@ -1101,6 +1126,119 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
 				this.reload();
 
 				formu_relacion_hazmat.hide();
+				//Phx.CP.loadingHide();
+			/**********************************************************************/
+		},
+
+
+    FormularioRelacionBEAR: function (that) {
+
+				var rec = this.getSelectedData();
+
+				var id_solicitud_envio = rec.id_cotizacion;
+
+				var simple = new Ext.FormPanel({
+				 labelWidth: 75, // label settings here cascade unless overridden
+				 frame:true,
+				 bodyStyle:'padding:5px 5px 0; background:linear-gradient(45deg, #a7cfdf 0%,#a7cfdf 100%,#23538a 100%);',
+				 width: 300,
+				 height:70,
+				 defaultType: 'ComboBox',
+				 items: [
+					 new Ext.form.ComboBox({
+																	 name: 'id_cotizacion_det',
+																	 fieldLabel: 'Items Detalle',
+																	 allowBlank: false,
+																	 emptyText: 'Detalle Items...',
+																	 store: new Ext.data.JsonStore({
+																			 url: '../../sis_gestion_materiales/control/CotizacionDetalle/listarCotizacionDetalle',
+																			 id: 'id_cotizacion_det',
+																			 root: 'datos',
+																			 sortInfo: {
+																					 field: 'id_cotizacion_det',
+																					 direction: 'ASC'
+																			 },
+																			 totalProperty: 'total',
+																			 fields: ['id_cotizacion_det', 'nro_parte_cot','referencia_cot'],
+																			 remoteSort: true,
+																			 baseParams: {par_filtro: 'cdo.nro_parte_cot', id_cotizacion: id_solicitud_envio, FiltroDetalleBear:'si'}
+																	 }),
+																	 valueField: 'id_cotizacion_det',
+																	 displayField: 'nro_parte_cot',
+																	 gdisplayField: 'nro_parte_cot',
+																	 hiddenName: 'id_cotizacion_det',
+																	 forceSelection: true,
+                                   tpl: new Ext.XTemplate([
+                                       '<tpl for=".">',
+                                       '<div class="x-combo-list-item">',
+                                       '<p><b>Nro. Parte:</b><span style="color: green; font-weight:bold;"> {nro_parte_cot}</span></p></p>',
+                                       '<p><b>Serial:</b><span style="color: green; font-weight:bold;"> {referencia_cot}</span></p></p>',
+                                       '</div></tpl>'
+                                     ]),
+																	 typeAhead: false,
+																	 triggerAction: 'all',
+																	 lazyRender: true,
+																	 mode: 'remote',
+																	 resizable:true,
+																	 pageSize: 15,
+																	 queryDelay: 1000,
+																	 anchor: '100%',
+																	 width : 250,
+																	 listWidth:'600',
+																	 minChars: 2 ,
+																	 disabled:false,
+
+																}),
+									]
+
+		 					});
+
+				this.formu_relacion_bear = simple;
+
+				var formu_relacion_bear = new Ext.Window({
+					title: '<h1 style="height:20px; font-size:15px;">Relacionar B.E.R..<p></h1>', //the title of the window
+					width:320,
+					height:150,
+					//closeAction:'hide',
+					modal:true,
+					plain: true,
+					items:simple,
+					buttons: [{
+											text:'Guardar',
+											scope:this,
+											handler: function(){
+													this.relacionarbear(formu_relacion_bear);
+											}
+									},{
+											text: 'Cancelar',
+											handler: function(){
+													formu_relacion_bear.hide();
+											}
+									}]
+
+				});
+				formu_relacion_bear.show();
+		},
+
+    relacionarbear : function(formu_relacion_bear){
+			//Phx.CP.loadingShow();
+			var rec=this.sm.getSelected();
+			/*Recuperamos de la venta detalle si existe algun concepto con excento*/
+			Ext.Ajax.request({
+					url : '../../sis_gestion_materiales/control/DetalleSol/RelacionarHazmat',
+					params : {
+						'id_hazmat' : rec.data.id_cotizacion_det,
+						'id_cotizacion_det': this.formu_relacion_bear.items.items[0].getValue()
+					},
+					success : this.successSave,
+					failure : this.conexionFailure,
+					timeout : this.timeout,
+					scope : this
+				});
+
+				this.reload();
+
+				formu_relacion_bear.hide();
 				//Phx.CP.loadingHide();
 			/**********************************************************************/
 		},

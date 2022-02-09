@@ -524,7 +524,7 @@ header("content-type: text/javascript; charset=UTF-8");
     		},
 
         anularProceso:function(){
-          var rec = this.sm.getSelected();          
+          var rec = this.sm.getSelected();
           if (confirm("Esta seguro de anular el proceso "+rec.data.nro_tramite+" esta acción no se puede revertir")) {
             if (confirm("¿Esta realmente seguro?")) {
               Phx.CP.loadingShow();
@@ -612,7 +612,7 @@ header("content-type: text/javascript; charset=UTF-8");
           if(columnIndex==1){
             var data = this.sm.getSelected().data;
             Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/consulta_rpc/DetalleSolicitud.php',
-            '<span style="font-size:14pt;padding-left: 35%;letter-spacing: 12px;">DETALLE SOLICITUD</span>', {
+            '', {
               width:'90%',
               height:'90%'
               }, {

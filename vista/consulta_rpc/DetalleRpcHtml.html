@@ -1,0 +1,207 @@
+<style type="text/css" rel="stylesheet">
+
+  #table-header{
+    font-size: 11px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  #totales{
+    font-size: 12px;
+    color:#ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  #cuerpo{
+    background: #f2f2f2;
+  }
+
+</style>
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <script src="../../../lib/jsGanttImproved-jsgantt-improved/jquery-3.3.1.js"></script>
+    <title>Hello, world!</title>
+  </head>
+  <body id="cuerpo">
+    <!-- Aqui armamos el script para traer datos -->
+      <script type="text/javascript">
+        // Recuperamos el Id para hacer la peticion
+          function getUrlVars1() {
+              var vars = {};
+              var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                  vars[key] = value;
+              });
+              return vars;
+          }
+          var id_solicitud = getUrlVars1()["id_solicitud"];
+        /******************************************************/
+
+        //Armamos para llamar al modelo y recuperar datos
+        $.ajax({
+            // la URL para la petición
+            url : '../../../lib/lib_control/Intermediario.php',
+            // la información a enviar
+            // (también es posible utilizar una cadena de datos)
+            data:'p={"id_solicitud":"'+id_solicitud+'"}'
+                +'&x=../../sis_gestion_materiales/control/Solicitud/consultaDetalleSolicitud',
+
+            // especifica si será una petición POST o GET
+            type : 'POST',
+
+            // el tipo de información que se espera de respuesta
+            dataType : 'json',
+
+            // código a ejecutar si la petición es satisfactoria;
+            // la respuesta es pasada como argumento a la función
+            success : function(json) {
+
+                var resp = JSON.parse(json.datos[0].jsondata);
+
+                var dibujarTabla = '';
+                calculoTotal = 0;
+
+
+                tituloDetalle = document.getElementById("titulo");
+                cuerpoBody = document.getElementById("cuerpoBody");
+
+                tituloDetalle.innerHTML = '<b>Detalle del Trámite Nro. '+resp.cabecera.nro_tramite+'</b>';
+
+                cabeza = document.getElementById("cabezaTabla");
+                cuerpoBody.innerHTML = '';
+
+
+                for (var i = 0; i < resp.detalle_solicitud.length; i++) {
+
+                  tabladet = document.getElementById("detalleTabla");
+
+                  dibujarTabla2 = '<tr><td align="right">'+resp.detalle_solicitud[i].nro_parte_cot+'</td>'+
+                                 '<td align="right">'+resp.detalle_solicitud[i].explicacion_detallada_part_cot+'</td>'+
+                                 '<td align="right">'+resp.detalle_solicitud[i].cantidad_det+'</td>'+
+                                 '<td align="right">'+Intl.NumberFormat("de-DE").format(resp.detalle_solicitud[i].precio_unitario)+'</td>'+
+                                 '<td align="right">'+Intl.NumberFormat("de-DE").format((resp.detalle_solicitud[i].cantidad_det*resp.detalle_solicitud[i].precio_unitario))+'</td>'+
+                                 '<td>'+resp.detalle_solicitud[i].cantidad_dias+'</td>'+
+                                 '<td>'+resp.detalle_solicitud[i].centro_costo+'</td>'+
+                                 '<td>'+resp.detalle_solicitud[i].matricula+'</td>'+
+                                 '<td>'+resp.detalle_solicitud[i].partida+'</td></tr>';
+
+                  dibujarTabla = dibujarTabla + dibujarTabla2;
+
+                  calculoTotal = (calculoTotal + (resp.detalle_solicitud[i].cantidad_det*resp.detalle_solicitud[i].precio_unitario));
+
+
+
+                }
+                //console.log("aqui dibujar tabla",dibujarTabla);
+                // Aqui Ponemos el total
+                total = '<tr class="bg-info" id="totales"><td colspan="4" align="right"><b>Total:</b></td><td align="right"><b>'+Intl.NumberFormat("de-DE").format(calculoTotal)+'</b></td></tr>';
+
+                dibujarTabla = dibujarTabla + total;
+
+                tabladet.innerHTML = dibujarTabla;
+
+                cabeza.innerHTML = '<tr class="bg-success">'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Nro. Parte</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Nro. Parte Alterna</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Cantidad</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Precio Unitario</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Precio Total</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Tiempo de Entrega</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Centro de Costo</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Orden de Trabajo</center></th>'+
+                                   '<th scope="col" style="width: 100px; color:#ffffff;"><center>Partida</center></th>'+
+                                  '</tr>';
+
+
+
+                // return	tramite=json.datos[0]['tramite'];
+                // //document.write(tramite);
+                // //console.log(tramite);
+                // $('<h1/>').text(json.title).appendTo('body');
+                // $('<div class="content"/>')
+                //     .html(json.html).appendTo('body');
+            },
+
+            error : function(xhr, status) {
+                cuerpoBody = document.getElementById("cuerpoBody");
+                cuerpoBody.innerHTML = '';
+
+                Alerta = document.getElementById("Alerta");
+                Alerta.innerHTML = '<div class="alert alert-warning" role="alert"><b>Mensaje:</b> '+xhr.responseJSON.ROOT.detalle.mensaje+' Favor contactarse con Sistemas.</div>';
+
+
+
+
+
+            },
+
+
+        });
+
+
+
+
+
+      </script>
+    <!-- --------------------------------------- -->
+    <div id="Alerta">
+
+    </div>
+
+
+      <div class="card bg-light">
+        <div class="card-header">
+        <center><h6 id="titulo"></h6></center>
+        </div>
+        <div class="card-body">
+          <div id="cuerpoBody">
+            <div class="text-center">
+              <div class="spinner-grow text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-success" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-danger" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-warning" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-info" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-light" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-dark" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-striped" id="table-header">
+            <thead id="cabezaTabla">
+
+            </thead>
+            <tbody id="detalleTabla">
+
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+
+  </body>
+</html>
