@@ -4499,7 +4499,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_id_funcionario_solicitante,
                    v_id_fun_pre,
                    v_num_tramite_rep,
-                   v_tipo_evaluacion,
+                   v_condicion_sol,
                    v_rep,
                    v_fecha_solicitud,
                    v_fecha_order,
@@ -4680,7 +4680,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
           v_consulta:='select
            			  ('''||v_num_tramite_rep||''')::varchar as num_tramite,
-                      ('''||COALESCE(v_tipo_evaluacion,'')||''')::varchar as po_type,
+                      ('''||COALESCE(v_condicion_sol,'')||''')::varchar as po_type,
                       ('''||v_rep||''')::varchar as rep,
                       ('''||v_fecha_solicitud||''')::varchar as fecha_order,
                       ('''||upper(v_prioridad)||''')::varchar as priority,

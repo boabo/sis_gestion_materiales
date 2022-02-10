@@ -94,6 +94,42 @@ BEGIN
                               </tr>
                             </tbody>';
         END LOOP;
+
+        elsif (v_tipo_evaluacion = 'Calibracion') then
+        	v_resp = '<table border="1">
+                      <tbody>
+                            <tr>
+                            <th style="text-align: center; vertical-align: middle;"><b>PART NUMBER</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>QTY</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>DESCRIPTION</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>SERIAL</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>REPAIR INSTRUCTION</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>MONTO $US</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>SERVICE TO BE PERFORMED</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>DELIVERY TIME</b></th>
+                            <th style="text-align: center; vertical-align: middle;"><b>WARRANTY</b></th>
+                            </tr>';
+
+
+          FOR v_record IN (SELECT tds.nro_parte, tds.referencia, tds.descripcion, tds.condicion_det, tds.cantidad_sol, tum.codigo
+                          FROM  mat.tdetalle_sol tds
+                          INNER JOIN mat.tunidad_medida tum ON tum.id_unidad_medida = tds.id_unidad_medida
+                          WHERE tds.id_solicitud = p_id_solicitud)
+          LOOP
+              v_resp = v_resp ||'<tr>
+                                    <td style="text-align: center; vertical-align: middle;">'||v_record.nro_parte||'</td>
+                                    <td style="text-align: center; vertical-align: middle;">'||v_record.cantidad_sol||'</td>
+                                    <td style="text-align: center; vertical-align: middle;">'||v_record.descripcion||'</td>
+                                    <td style="text-align: center; vertical-align: middle;">'||v_record.referencia||'</td>
+                                    <td style="text-align: center; vertical-align: middle;">'||v_record.condicion_det||'</td>
+                                    <td style="text-align: center; vertical-align: middle;"> </td>
+                                    <td style="text-align: center; vertical-align: middle;"> </td>
+                                    <td style="text-align: center; vertical-align: middle;"> </td>
+                                    <td style="text-align: center; vertical-align: middle;"> </td>
+                                </tr>
+                              </tbody>';
+          END LOOP;
+
         else
 
         v_resp = '<table border="1">

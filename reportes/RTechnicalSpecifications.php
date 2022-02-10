@@ -88,20 +88,37 @@ class RTechnicalSpecifications extends  ReportePDF
                           <tr>
                             <th width="695" align="left" >INCOTERMS: '.$this->datos[0]['incoterms'].'</th>
                           </tr>
-                    </table>
-                    <table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;" >
-                       <tr>
-                           <td width="50" align="center"><b>ITEM</b></td>
-                           <td width="120" align="center"><b>PART NUMBER</b></td>
-                           <td width="50" align="center"><b>QTY</b></td>
-                           <td width="170" align="center"><b>DESCRIPTION</b></td>
-                           <td width="100" align="center"><b>SERIAL</b></td>
-                           <td width="75" align="center"><b>CD</b></td>
-                           <td width="130" align="center"><b>REPAIR INSTRUCTION</b></td>
-                       </tr>
                     </table>';
 
+                    if ($this->datos[0]["tipo_evaluacion"] == 'Calibracion') {
+
+                    $tb_funcio .= '<table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;" >
+                                   <tr>
+                                       <td width="50" align="center"><b>ITEM</b></td>
+                                       <td width="120" align="center"><b>PART NUMBER</b></td>
+                                       <td width="50" align="center"><b>QTY</b></td>
+                                       <td width="170" align="center"><b>DESCRIPTION</b></td>
+                                       <td width="100" align="center"><b>SERIAL</b></td>
+                                       <td width="205" align="center"><b>REPAIR INSTRUCTION</b></td>
+                                   </tr>
+                                </table>';
+                    }else {
+                      $tb_funcio .= '<table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;" >
+                                     <tr>
+                                         <td width="50" align="center"><b>ITEM</b></td>
+                                         <td width="120" align="center"><b>PART NUMBER</b></td>
+                                         <td width="50" align="center"><b>QTY</b></td>
+                                         <td width="170" align="center"><b>DESCRIPTION</b></td>
+                                         <td width="100" align="center"><b>SERIAL</b></td>
+                                         <td width="75" align="center"><b>CD</b></td>
+                                         <td width="130" align="center"><b>REPAIR INSTRUCTION</b></td>
+                                     </tr>
+                                  </table>';
+                    }
+
+
                     $numero = 1;
+                    if ($this->datos[0]["tipo_evaluacion"] == 'Calibracion') {
                     foreach ($nro_partes as $indice=>$partes){
                     $tb_funcio.= '
                         <table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
@@ -111,13 +128,30 @@ class RTechnicalSpecifications extends  ReportePDF
                                 <td width="50" align="center"><li>'.$cantidad[$indice].'</li></td>
                                 <td width="170" align="center"><li>'.$descripcion[$indice].'</li></td>
                                 <td width="100" align="center"><li>'.$serial[$indice].'</li></td>
-                                <td width="75" align="center"><li>AR</li></td>
-                                <td width="130" align="center"><li>'.$cd[$indice].'</li></td>
+                                <td width="205" align="center"><li>'.$cd[$indice].'</li></td>
                             </tr>
                         </table>
                             ';
                         $numero++;
                      }
+                   } else {
+                     foreach ($nro_partes as $indice=>$partes){
+                     $tb_funcio.= '
+                         <table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
+                             <tr>
+                                 <td width="50" align="center"><li>'.$numero.'</li></td>
+                                 <td width="120" align="center"><li>'.$partes.'</li></td>
+                                 <td width="50" align="center"><li>'.$cantidad[$indice].'</li></td>
+                                 <td width="170" align="center"><li>'.$descripcion[$indice].'</li></td>
+                                 <td width="100" align="center"><li>'.$serial[$indice].'</li></td>
+                                 <td width="75" align="center"><li>AR</li></td>
+                                 <td width="130" align="center"><li>'.$cd[$indice].'</li></td>
+                             </tr>
+                         </table>
+                             ';
+                         $numero++;
+                   }
+                 }
 
                      $tb_funcio.= '
                       <table cellspacing="0" cellpadding="1" border="1" style="font-size:11px;">
