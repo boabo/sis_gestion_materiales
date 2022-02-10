@@ -122,7 +122,7 @@ BEGIN
 
             if (v_tipo_proceso = 'Consumibles') then
             	v_funcionario_almacen = pxp.f_get_variable_global('gm_encargado_almacen_consumible');
-            elsif (v_tipo_proceso = 'Rotables') then
+            elsif (v_tipo_proceso = 'Rotables' or v_tipo_proceso = 'Herramientas') then
                 v_funcionario_almacen = pxp.f_get_variable_global('gm_encargado_almacen_rotable');
             end if;
 
