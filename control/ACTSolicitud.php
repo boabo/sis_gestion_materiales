@@ -1740,7 +1740,7 @@ class ACTSolicitud extends ACTbase{
 
             }
 
-            
+
             $cont_grup = 0;
             foreach ($arrayResp as $value2) {
                 $grup_desc_centro_costo = "";
@@ -2239,6 +2239,11 @@ class ACTSolicitud extends ACTbase{
           } elseif ($this->objParam->getParametro('pes_estado') == 'firmados') {
             $this->objParam->addFiltro(" (acta.revisado = ''si'') ");
           }
+       }
+
+
+       if ($this->objParam->getParametro('id_gestion') != '') {
+         $this->objParam->addFiltro("sol.id_gestion = ".$this->objParam->getParametro('id_gestion'));
        }
 
        $this->objFunc=$this->create('MODSolicitud');

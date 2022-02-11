@@ -15,9 +15,30 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
+		this.initButtons=[this.cmbGestion];
 		Phx.vista.ActaConformidadFinal.superclass.constructor.call(this,config);
 		this.init();
 		this.store.baseParams.pes_estado = 'sin_firma';
+
+
+		var añoActual = new Date().getFullYear();
+    this.cmbGestion.store.load({params:{start:0,limit:50},
+           callback : function (r) {
+             for (var i = 0; i < r.length; i++) {
+               if (r[i].data.gestion == añoActual) {
+                 this.cmbGestion.setValue(r[i].data.id_gestion);
+                 this.cmbGestion.fireEvent('select', this.cmbGestion,this.cmbGestion.store.getById(r[i].data.id_gestion));
+               }
+             }
+            }, scope : this
+        });
+
+
+		this.cmbGestion.on('select', function( combo, record, index){
+        this.capturaFiltros();
+    },this);
+
+
 
 		this.addButton('btnConformidad', {
 				text: 'Conformidad',
@@ -40,9 +61,20 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 		);
 
 
-		this.load({params:{start:0, limit:this.tam_pag}});
+		//this.load({params:{start:0, limit:this.tam_pag}});
 
 	},
+
+	capturaFiltros:function(combo, record, index){
+
+      //if(this.validarFiltros()){
+
+          this.store.baseParams.id_gestion = this.cmbGestion.getValue();
+
+					this.load();
+      //}
+
+  },
 
 
 	preparaMenu: function (n) {
@@ -314,10 +346,45 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 
 	actualizarSegunTab: function(name, indice){
  					 this.store.baseParams.pes_estado = name;
- 					 this.load({params:{start:0, limit:this.tam_pag}});
+
+					 if (this.cmbGestion.getValue()) {
+						 this.load({params:{start:0, limit:this.tam_pag}});
+					 }
+ 					 //this.load({params:{start:0, limit:this.tam_pag}});
  	},
 
-
+	cmbGestion: new Ext.form.ComboBox({
+				      fieldLabel: 'Gestion',
+				      grupo:[1,2,3],
+				      allowBlank: false,
+				      blankText:'... ?',
+				      emptyText:'Gestion...',
+				      name:'id_gestion',
+				      store:new Ext.data.JsonStore(
+				          {
+				              url: '../../sis_parametros/control/Gestion/listarGestion',
+				              id: 'id_gestion',
+				              root: 'datos',
+				              sortInfo:{
+				                  field: 'gestion',
+				                  direction: 'DESC'
+				              },
+				              totalProperty: 'total',
+				              fields: ['id_gestion','gestion'],
+				              // turn on remote sorting
+				              remoteSort: true,
+				              baseParams:{par_filtro:'gestion'}
+				          }),
+				      valueField: 'id_gestion',
+				      triggerAction: 'all',
+				      displayField: 'gestion',
+				      hiddenName: 'id_gestion',
+				      mode:'remote',
+				      pageSize:50,
+				      queryDelay:500,
+				      listWidth:'280',
+				      width:80
+				  }),
 
 	Atributos:[
 		{
