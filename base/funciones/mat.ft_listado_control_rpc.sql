@@ -255,7 +255,7 @@ BEGIN
             inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
             left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
             left join mat.tday_week day on day.id_day_week = det.id_day_week
-            left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+            left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
             left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
             left join pre.tpartida pp on deta.id_partida = pp.id_partida
             where s.id_solicitud = v_parametros.id_solicitud and det.nro_parte_cot = 'HAZMAT';
@@ -299,7 +299,7 @@ BEGIN
               inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
               left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
               left join mat.tday_week day on day.id_day_week = det.id_day_week
-              left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+              left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
               left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
               left join pre.tpartida pp on deta.id_partida = pp.id_partida
               where s.id_solicitud = v_parametros.id_solicitud and det.nro_parte_cot != 'HAZMAT';
@@ -319,7 +319,7 @@ BEGIN
                                 inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
                                 left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
                                 left join mat.tday_week day on day.id_day_week = det.id_day_week
-                                left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                                left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
                                 left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
                                 left join pre.tpartida pp on deta.id_partida = pp.id_partida
                                 where s.id_solicitud = v_parametros.id_solicitud and det.nro_parte_cot = 'HAZMAT'
@@ -375,7 +375,7 @@ BEGIN
                   inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
                   left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
                   left join mat.tday_week day on day.id_day_week = det.id_day_week
-                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
                   left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
                   left join pre.tpartida pp on deta.id_partida = pp.id_partida
                   where s.id_solicitud = v_parametros.id_solicitud;
@@ -390,7 +390,7 @@ BEGIN
                   inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
                   left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
                   left join mat.tday_week day on day.id_day_week = det.id_day_week
-                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
                   left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
                   left join pre.tpartida pp on deta.id_partida = pp.id_partida
                   where s.id_solicitud = v_parametros.id_solicitud and pp.id_partida is null
@@ -435,7 +435,7 @@ BEGIN
                   inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
                   left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
                   left join mat.tday_week day on day.id_day_week = det.id_day_week
-                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
                   left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
                   left join pre.tpartida pp on deta.id_partida = pp.id_partida
                   where s.id_solicitud = v_parametros.id_solicitud and pp.id_partida is not null;
@@ -456,7 +456,7 @@ BEGIN
                                         inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
                                         left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
                                         left join mat.tday_week day on day.id_day_week = det.id_day_week
-                                        left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                                        left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
                                         left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
                                         left join pre.tpartida pp on deta.id_partida = pp.id_partida
                                         where s.id_solicitud = v_parametros.id_solicitud and pp.id_partida is null
@@ -509,7 +509,7 @@ BEGIN
                   inner join mat.tcotizacion_detalle det on det.id_cotizacion = c.id_cotizacion
                   left join mat.tdetalle_sol deta on deta.id_detalle = det.id_detalle
                   left join mat.tday_week day on day.id_day_week = det.id_day_week
-                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
+                  left join conta.torden_trabajo ot on ot.id_orden_trabajo = deta.id_orden_trabajo
                   left join param.vcentro_costo cc on  deta.id_centro_costo = cc.id_centro_costo
                   left join pre.tpartida pp on deta.id_partida = pp.id_partida
                   where s.id_solicitud = v_parametros.id_solicitud;
