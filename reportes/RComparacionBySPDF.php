@@ -431,10 +431,8 @@ EOF;
           $nombre_archivo .= '';
         }
 
-        $nombre_archivo.=$nombre_archivo.trim($separando_infor[2]);
-        /*************************************/
-
-
+        $nombre_archivo.= trim($separando_infor[2]);
+        /*************************************/        
 
         $funcionario_qr =  'Funcionario: '.$separando_infor[0]. "\n";
         $cargo_qr =  'Cargo: '.$separando_infor[1]. "\n";
