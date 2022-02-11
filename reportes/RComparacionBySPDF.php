@@ -407,6 +407,35 @@ EOF;
       if ($this->datos[0]["fecha_solicitud"] >= $this->datos[0]["fecha_salida"]) {
 
         $separando_infor = explode('|', $nac);
+        $nombre_archivo = '';
+        /*Aqui creamos para reducir los datos*/
+        if (trim($separando_infor[0]) != '') {
+              $separar_nombre = explode(' ', trim($separando_infor[0]));
+              $cantidad_data = count($separar_nombre);
+              for ($i=0; $i < $cantidad_data ; $i++) {
+                $iniciales = $separar_nombre[$i][0];
+                $nombre_archivo .= $iniciales;
+              }
+        } else {
+          $nombre_archivo .= 'vacio'.$separando_infor[2];
+        }
+
+        if (trim($separando_infor[1]) != '') {
+          $separar_cargo = explode(' ', trim($separando_infor[1]));
+          $cantidad_cargo = count($separar_cargo);
+          for ($i=0; $i < $cantidad_data ; $i++) {
+            $iniciales_cargo = $separar_cargo[$i][0];
+            $nombre_archivo .= $iniciales_cargo;
+          }
+        } else {
+          $nombre_archivo .= '';
+        }
+
+        $nombre_archivo.=$nombre_archivo.trim($separando_infor[2]);
+        /*************************************/
+
+
+
         $funcionario_qr =  'Funcionario: '.$separando_infor[0]. "\n";
         $cargo_qr =  'Cargo: '.$separando_infor[1]. "\n";
         $tramite_qr =  'Tramite: '.strtoupper($separando_infor[2]). "\n";
@@ -418,13 +447,13 @@ EOF;
         $im = imagecreatefromstring($png);
         if ($im !== false) {
             header('Content-Type: image/png');
-            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $nac . ".png");
+            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $nombre_archivo . ".png");
             imagedestroy($im);
 
         } else {
             echo 'A ocurrido un Error.';
         }
-        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $nac . ".png"; //$this->objParam->getParametro('nombre_archivo')
+        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $nombre_archivo . ".png"; //$this->objParam->getParametro('nombre_archivo')
 
         return $url_archivo;
       } else {

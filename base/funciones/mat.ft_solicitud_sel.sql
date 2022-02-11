@@ -296,6 +296,8 @@ DECLARE
      v_id_solicitud_reporte	integer;
      v_existe_bear			integer;
      v_tiene_bear			varchar;
+     v_id_uo_padre			integer;
+     v_nivel_organizacional	integer;
     /**************************************************/
 BEGIN
 
@@ -2731,6 +2733,21 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               v_funcionario	    = remplaso.funcion;
           end if;
 
+          /*Aumentando consulta para recuperar padre uo (Ismael Valdivia 11/02/2021) */
+          SELECT est.id_uo_padre into v_id_uo_padre
+          FROM orga.testructura_uo est
+          WHERE est.id_uo_hijo = (select car.id_uo
+          						  from orga.vfuncionario_cargo car
+                                  where car.id_funcionario = v_id_funcionario_oficial
+                                  and v_fecha_solicitud::date between car.fecha_asignacion and COALESCE(car.fecha_finalizacion,now())
+                                  );
+
+          SELECT uo.id_nivel_organizacional into v_nivel_organizacional
+          FROM orga.tuo uo
+          where uo.id_uo = v_id_uo_padre;
+          /************************************************/
+
+
           WITH RECURSIVE gerencia(id_uo, id_nivel_organizacional, nombre_unidad, nombre_cargo) AS (
               SELECT tu.id_uo, tu.id_nivel_organizacional, tu.nombre_unidad, tu.nombre_cargo
               FROM orga.tuo  tu
@@ -2747,11 +2764,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               FROM orga.testructura_uo teu
               INNER JOIN gerencia g ON g.id_uo = teu.id_uo_hijo
               INNER JOIN orga.tuo tu1 ON tu1.id_uo = teu.id_uo_padre
-              WHERE g.id_nivel_organizacional <> 3
+              WHERE g.id_nivel_organizacional <> v_nivel_organizacional
           	)
             SELECT  pxp.aggarray( nombre_unidad )
             INTO v_nom_unidad
             FROM gerencia;
+
+
 
 		WITH RECURSIVE firmas(id_estado_fw, id_estado_anterior,fecha_reg, codigo, id_funcionario) AS (
                               SELECT tew.id_estado_wf, tew.id_estado_anterior , tew.fecha_reg, te.codigo, tew.id_funcionario
@@ -2832,7 +2851,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
         WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbgerencia' */
         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_dpto_administrativo'
 
-              and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+              and  v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
         ORDER BY  twf.fecha_reg DESC
             limit 1;
@@ -2873,7 +2892,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
         WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_dpto_administrativo'
 
-        and  v_vbgerencia.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+        and  v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
         GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg
         ORDER BY  twf.fecha_reg DESC
             limit 1;
@@ -2959,10 +2978,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vb_rpcd'
 
-            and v_vbrpc.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+            and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
         	GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
             ORDER BY  twf.fecha_reg DESC
             limit 1;
+
+
 	else
     SELECT  twf.id_funcionario,
     		vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
