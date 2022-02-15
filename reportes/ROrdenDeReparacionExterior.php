@@ -232,7 +232,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                       <table cellspacing="0" cellpadding="5" style="font-size:11px; border:1px solid #000000;">
                             <tr>
                             <th align="center" style="font-family: Calibri; font-size: 9px;">
-                                <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_preparado_0, $fun_preparado_1,$fun_preparado_4,$fun_preparado_3).'" alt="Logo">
+                                <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_preparado_0, $fun_preparado_1,$this->datos[0]['fecha_order'],$fun_preparado_3).'" alt="Logo">
                                 <br>'.$fun_preparado_0.'
                             </th>
                             </tr>

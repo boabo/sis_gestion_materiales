@@ -2093,6 +2093,7 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_cotizacion', 'varchar');
         $this->captura('evaluacion', 'varchar');
         $this->captura('tiene_bear', 'varchar');
+        $this->captura('fecha_po', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

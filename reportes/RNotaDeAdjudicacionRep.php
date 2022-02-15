@@ -88,7 +88,7 @@ class RNotaDeAdjudicacionRep extends  ReportePDF
         $tb_funcio =' <table cellspacing="0" cellpadding="5" style="font-size:11px;">
               <tr>
               <th align="center" style="font-family: Calibri; font-size: 9px;">
-                  <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($firma_rpc_0, $firma_rpc_1,$firma_rpc_4,$firma_rpc_3).'" alt="Logo">
+                  <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($firma_rpc_0, $firma_rpc_1,$firma_rpc_4,$this->datos[0]['fecha_po']).'" alt="Logo">
                   <br> <br>'.$firma_rpc_0.'
               </th>
               </tr>

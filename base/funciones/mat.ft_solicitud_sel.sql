@@ -5780,7 +5780,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_fecha_literal||''')::varchar as fecha_literal,
                       ('''||v_fecha_cotizacion_rep||''')::varchar as fecha_cotizacion,
                       ('''||v_tipo_evaluacion||''')::varchar as tipo_evaluacion,
-                      ('''||v_tiene_bear||''')::varchar as tiene_bear';
+                      ('''||v_tiene_bear||''')::varchar as tiene_bear,
+                      ('''||COALESCE(v_fecha_po,'')||''')::varchar as fecha_po';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
