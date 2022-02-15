@@ -3669,8 +3669,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             left JOIN pre.tentidad_transferencia tet ON tet.id_entidad_transferencia = tppe.id_entidad_transferencia
 
             /*Aumentando para el HAZMAT*/
-            inner join mat.tcotizacion_detalle det on det.id_detalle = tsd.id_detalle and det.referencial = ''Si''
-			left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = det.id_cotizacion_det
+            --inner join mat.tcotizacion_detalle det on det.id_detalle = tsd.id_detalle --and det.referencial = ''Si''
+			--left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = det.id_cotizacion_det
 
             /***************************/
 
