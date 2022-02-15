@@ -1912,7 +1912,7 @@ END IF;
                         where te.id_tipo_estado = v_id_tipo_estado_siguiente
                         and te.estado_reg = 'activo'
                         and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                        order by te.id_tipo_estado ASC
+                        order by te.id_funcionario_tipo_estado ASC
                         limit 1;
 
                         insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
@@ -1956,7 +1956,7 @@ END IF;
                           and te.id_funcionario not in (v_ultimo_funcionario_asignado)
                           and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
                           and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                          order by te.id_tipo_estado ASC
+                          order by te.id_funcionario_tipo_estado ASC
                           limit 1;
 
                           if (v_id_funcionario_tipo_estado_asignacion is not null) then
@@ -1992,7 +1992,7 @@ END IF;
                         where te.id_tipo_estado = v_id_tipo_estado_siguiente
                         and te.estado_reg = 'activo'
                         and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                        order by te.id_tipo_estado ASC
+                        order by te.id_funcionario_tipo_estado ASC
                         limit 1;
 
                         insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
