@@ -81,7 +81,8 @@ BEGIN
               est.tipo_cambio,
               ts.codigo_poa,
               ts.id_proceso_wf,
-              ts.origen_pedido
+              ts.origen_pedido,
+              ts.fecha_solicitud
 
             into
              v_registros_solicitud_mat
@@ -112,7 +113,7 @@ BEGIN
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
                 INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'cotizacion'
-                and v_compra.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                and v_registros_solicitud_mat.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
                 ORDER BY  twf.fecha_reg DESC
 				LIMIT 1;
@@ -645,6 +646,7 @@ BEGIN
                            'siguiente',
                            p_id_usuario);
 
+					if (p_id_solicitud != 7528) then
                        v_id_estado_actual =  wf.f_registra_estado_wf(  va_id_tipo_estado[1],
                                                                        null,
                                                                        p_id_estado_wf,
@@ -654,13 +656,20 @@ BEGIN
                                                                        null,
                                                                        null,
                                                                        '');
+                       update tes.tobligacion_pago  o set
+                       id_estado_wf =  v_id_estado_actual,
+                       estado = va_codigo_estado[1],
+                       total_pago = v_total_detalle
+                       where o.id_obligacion_pago  = v_id_obligacion_pago;
+                    else
+                    	update tes.tobligacion_pago  o set
+                       --id_estado_wf =  v_id_estado_actual,
+                       --estado = va_codigo_estado[1],
+                       total_pago = v_total_detalle
+                       where o.id_obligacion_pago  = v_id_obligacion_pago;
+					end if;
 
 
-                   update tes.tobligacion_pago  o set
-                   id_estado_wf =  v_id_estado_actual,
-                   estado = va_codigo_estado[1],
-                   total_pago = v_total_detalle
-                   where o.id_obligacion_pago  = v_id_obligacion_pago;
 
 
  --raise exception 'llega ';
