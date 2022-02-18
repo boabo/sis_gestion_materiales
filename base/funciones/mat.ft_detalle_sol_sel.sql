@@ -264,7 +264,8 @@ BEGIN
                         left join pre.tpresupuesto pre on pre.id_centro_costo = cc.id_centro_costo
                         left join pre.vcategoria_programatica c on c.id_categoria_programatica = pre.id_categoria_prog
 
-                        left join serial_ref ser on ser.nro_parte_cot = detcot.explicacion_detallada_part_cot
+                        --left join serial_ref ser on ser.nro_parte_cot = detcot.explicacion_detallada_part_cot
+                        left join serial_ref ser on ser.referencia_cot = detcot.referencia_cot
 
 
                         where  det.id_solicitud = '||v_parametros.id_solicitud||' and ';
