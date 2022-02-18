@@ -29,7 +29,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config.maestro;
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             this.store.baseParams.pes_estado = 'consulta_op';
-            this.load({params:{start:0, limit:this.tam_pag}});
+            //this.load({params:{start:0, limit:this.tam_pag}});
 
             this.getBoton('sig_estado').setVisible(false);
             this.getBoton('ant_estado').setVisible(false);
