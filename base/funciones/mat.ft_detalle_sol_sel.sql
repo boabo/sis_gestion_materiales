@@ -181,18 +181,16 @@ BEGIN
     		--Sentencia de la consulta
 			v_consulta:='
             			with serial_ref as (
-                        select det.nro_parte_cot,
-                               det.cd,
-                               det.referencia_cot
-                        from mat.tcotizacion_detalle det
-                        where det.id_cotizacion = (select
-                                                          detcot.id_cotizacion
-                                                  /****************************************************/
-                                                  from mat.tdetalle_sol det
-                                                  inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si''
-                                                  where  det.id_solicitud = '||v_parametros.id_solicitud||'
-                                                  group by detcot.id_cotizacion)
-                        and det.cd != ''B.E.R.'')
+                                                select
+                                            detcot.id_cotizacion_det,
+                                            detcot.referencia_cot,
+                                            detcot.id_detalle
+                                            /****************************************************/
+                                            from mat.tcotizacion_detalle detcot
+                                            left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
+                                            where  detcot.id_solicitud = '||v_parametros.id_solicitud||'
+                                            and detcot.id_detalle_hazmat is null
+                        )
 
 
 
@@ -206,10 +204,10 @@ BEGIN
 						--det.nro_parte,
                         detcot.explicacion_detallada_part_cot,
 						(case
-                            when ser.referencia_cot is not null then
-                                ser.referencia_cot
+                            when serial.referencia_cot is not null then
+                                serial.referencia_cot
                             else
-                                detcot.referencia_cot
+                                det.referencia
                         end)::varchar as referencia_cot,
                         --detcot.referencia_cot,
 						det.nro_parte_alterno,
@@ -252,7 +250,7 @@ BEGIN
                         inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                         inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
 
-                        inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si''
+                        inner join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle --and detcot.referencial = ''Si''
 
                         /*Aumentando para recuperar detalles (Ismael Valdivia 31/01/2020)*/
                         left join param.vcentro_costo cc on cc.id_centro_costo = det.id_centro_costo
@@ -265,8 +263,8 @@ BEGIN
                         left join pre.vcategoria_programatica c on c.id_categoria_programatica = pre.id_categoria_prog
 
                         --left join serial_ref ser on ser.nro_parte_cot = detcot.explicacion_detallada_part_cot
-                        left join serial_ref ser on ser.referencia_cot = detcot.referencia_cot
-
+                        --left join serial_ref ser on ser.referencia_cot = detcot.referencia_cot
+						left join serial_ref serial on serial.id_cotizacion_det = detcot.id_detalle_hazmat
 
                         where  det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             else
