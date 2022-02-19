@@ -50,7 +50,8 @@ DECLARE
     v_fecha_nuevo_flujo				date;
     remplaso				record;
     v_fecha_solicitud		date;
-
+    v_fecha_conformidad		date;
+	v_aplica_nuevo_flujo	varchar;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_acta_conformidad_final_sel';
@@ -152,10 +153,22 @@ BEGIN
                         v_cargo_encargado_almacen = SPLIT_PART(remplaso.desc_funcionario1, '|', 2);
                 end if;
             end if;
-
-
-
             /************************************************************************************************/
+
+            select
+                  acta.fecha_conformidad
+                  into
+                  v_fecha_conformidad
+            from mat.tsolicitud sol
+            left join mat.tacta_conformidad_final acta on acta.id_solicitud = sol.id_solicitud
+            where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+            if (v_fecha_conformidad >= '02/02/2022') then
+				v_aplica_nuevo_flujo = 'si';
+            else
+                v_aplica_nuevo_flujo = 'no';
+            end if;
 
 
     		--Sentencia de la consulta
@@ -181,7 +194,8 @@ BEGIN
                                  /*Firma encargado almacen*/
                                 '''||v_funcionario_encargado_almacen||'''::varchar as encargado_almacen,
                                 '''||v_cargo_encargado_almacen||'''::varchar as cargo_encargado_almacen,
-                                ''''::varchar as oficina_encargado_almacen
+                                ''''::varchar as oficina_encargado_almacen,
+                                '''||v_aplica_nuevo_flujo||'''::varchar as aplica_nuevo_flujo
                                 /******************************/
 
 
@@ -190,7 +204,9 @@ BEGIN
                           left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
                           left join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                           left join mat.tacta_conformidad_final acta on acta.id_solicitud = sol.id_solicitud
-                          left join orga.vfuncionario_cargo fun on fun.id_funcionario = acta.id_funcionario_firma and sol.fecha_solicitud between fun.fecha_asignacion and COALESCE(fun.fecha_finalizacion,now()::date)
+
+                          left join tes.tobligacion_pago op on op.num_tramite = sol.nro_tramite and op.estado_reg = ''activo''
+                          left join orga.vfuncionario_cargo fun on fun.id_funcionario = op.id_funcionario and sol.fecha_solicitud between fun.fecha_asignacion and COALESCE(fun.fecha_finalizacion,now()::date)
                           inner join orga.tcargo car on car.id_cargo = fun.id_cargo
                           inner join orga.toficina ofi on ofi.id_oficina = car.id_oficina
                           where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
@@ -258,7 +274,8 @@ BEGIN
                 from segu.vusuario usu
                 inner join orga.vfuncionario fun on fun.id_persona = usu.id_persona
                 where usu.id_usuario = p_id_usuario;
-            	v_filtro_user = 'acta.id_funcionario_firma = '||v_id_funcionario||'';
+            	--v_filtro_user = 'acta.id_funcionario_firma = '||v_id_funcionario||'';
+                v_filtro_user = 'op.id_funcionario = '||v_id_funcionario||'';
             end if;
 
     		--Sentencia de la consulta
@@ -283,9 +300,12 @@ BEGIN
                           inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
                           inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
                           inner join mat.tacta_conformidad_final acta on acta.id_solicitud = sol.id_solicitud
-                          inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = acta.id_funcionario_firma
-                          inner join orga.vfuncionario funcio on funcio.id_funcionario = acta.id_funcionario_firma
+
+                          left join tes.tobligacion_pago op on op.num_tramite = sol.nro_tramite and op.estado_reg = ''activo''
+                          inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = op.id_funcionario
+                          inner join orga.vfuncionario funcio on funcio.id_funcionario = op.id_funcionario
                           inner join segu.vusuario usu on usu.id_persona = funcio.id_persona
+
                           where '||v_filtro_user||' and ';
 
 			--Devuelve la respuesta
@@ -328,7 +348,9 @@ BEGIN
                 from segu.vusuario usu
                 inner join orga.vfuncionario fun on fun.id_persona = usu.id_persona
                 where usu.id_usuario = p_id_usuario;
-            	v_filtro_user = 'acta.id_funcionario_firma = '||v_id_funcionario||'';
+            	--v_filtro_user = 'acta.id_funcionario_firma = '||v_id_funcionario||'';
+                v_filtro_user = 'op.id_funcionario = '||v_id_funcionario||'';
+
             end if;
 
     		--Sentencia de la consulta
@@ -339,9 +361,12 @@ BEGIN
                           inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
                           inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
                           inner join mat.tacta_conformidad_final acta on acta.id_solicitud = sol.id_solicitud
-                          inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = acta.id_funcionario_firma
-                          inner join orga.vfuncionario funcio on funcio.id_funcionario = acta.id_funcionario_firma
+
+                          left join tes.tobligacion_pago op on op.num_tramite = sol.nro_tramite and op.estado_reg = ''activo''
+                          inner join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = op.id_funcionario
+                          inner join orga.vfuncionario funcio on funcio.id_funcionario = op.id_funcionario
                           inner join segu.vusuario usu on usu.id_persona = funcio.id_persona
+
                           where '||v_filtro_user||' and ';
 
 			--Devuelve la respuesta

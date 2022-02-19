@@ -2133,6 +2133,7 @@ class MODSolicitud extends MODbase
         $this->captura('encargado_almacen', 'varchar');
         $this->captura('cargo_encargado_almacen', 'varchar');
         $this->captura('oficina_encargado_almacen', 'varchar');
+        $this->captura('aplica_nuevo_flujo', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
