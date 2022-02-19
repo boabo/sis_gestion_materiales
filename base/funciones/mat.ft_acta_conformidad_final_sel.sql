@@ -164,7 +164,7 @@ BEGIN
             where sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
 
-            if (v_fecha_conformidad >= '02/02/2022') then
+            if (v_fecha_conformidad >= '01/02/2022') then
 				v_aplica_nuevo_flujo = 'si';
             else
                 v_aplica_nuevo_flujo = 'no';
