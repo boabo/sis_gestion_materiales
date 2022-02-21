@@ -203,13 +203,13 @@ BEGIN
 						det.id_unidad_medida,
 						--det.nro_parte,
                         detcot.explicacion_detallada_part_cot,
-						(case
-                            when serial.referencia_cot is not null then
-                                serial.referencia_cot
-                            else
-                                det.referencia
-                        end)::varchar as referencia_cot,
-                        --detcot.referencia_cot,
+						--(case
+                          --  when serial.referencia_cot is not null then
+                         --       serial.referencia_cot
+                          --  else
+                          --      detcot.referencia_cot
+                        --end)::varchar as referencia_cot,
+                        detcot.referencia_cot,
 						det.nro_parte_alterno,
 						det.id_moneda,
 						det.precio_unitario,
