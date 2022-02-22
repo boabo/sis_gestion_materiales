@@ -1084,6 +1084,7 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_solicitud', 'date');
         $this->captura('estado_firma', 'varchar');
         $this->captura('fecha_salida', 'date');
+        $this->captura('firma_tecnico_abastecimiento', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -1117,6 +1118,7 @@ class MODSolicitud extends MODbase
         $this->captura('firma_rpce', 'varchar');
         $this->captura('firma_auxiliar', 'varchar');
         $this->captura('firma_jefe_departamento', 'varchar');
+        $this->captura('firma_tecnico_abastecimiento', 'varchar');
         $this->captura('nro_tramite', 'varchar');
 
         //Ejecuta la instruccion
@@ -1402,6 +1404,8 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_salida','date');
         $this->captura('pn_cotizacion','varchar');
         $this->captura('mayor','varchar');
+        $this->captura('nuevo_flujo','varchar');
+        $this->captura('funcionario_auxiliar_abas','varchar');
 
 
         $this->armarConsulta();
@@ -2133,6 +2137,7 @@ class MODSolicitud extends MODbase
         $this->captura('encargado_almacen', 'varchar');
         $this->captura('cargo_encargado_almacen', 'varchar');
         $this->captura('oficina_encargado_almacen', 'varchar');
+        $this->captura('aplica_nuevo_flujo', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

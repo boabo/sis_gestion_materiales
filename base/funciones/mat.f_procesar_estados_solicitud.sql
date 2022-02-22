@@ -185,6 +185,19 @@ group by c.adjudicado;
     		where id_proceso_wf = p_id_proceso_wf;
     	end;
     /*****************************************************************************/
+    /******Aumentando para el estado intermedio Ismael Valdivia (16/02/2022)******/
+    elsif(p_codigo_estado in ('revision_tecnico_abastecimientos')) then
+    	begin
+    		update mat.tsolicitud s set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+    /*****************************************************************************/
         elsif(p_codigo_estado in ('departamento_ceac')) then
     	begin
     		update mat.tsolicitud s set

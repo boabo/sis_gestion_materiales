@@ -387,7 +387,7 @@ END IF;
             id_moneda,
             presu_comprometido,
             presupuesto_aprobado,
-            id_funcionario_solicitante,
+            --id_funcionario_solicitante,
             codigo_poa,
             nro_lote,
             id_forma_pago_alkym,
@@ -431,7 +431,7 @@ END IF;
             2,
             'no',
             'verificar',
-            v_parametros.id_funcionario_solicitante,--v_id_funcionario_solicitante,
+            --v_parametros.id_funcionario_solicitante,--v_id_funcionario_solicitante,
             v_codigo_poa,
             v_parametros.nro_lote,
             v_parametros.id_forma_pago,
@@ -1348,7 +1348,6 @@ END IF;
         where id_proceso_wf = v_parametros.id_proceso_wf_act;
 
 
-
         if (v_solicitud.estado = 'comite_unidad_abastecimientos') then
         		/*Aumentando para que el registro pase los estados de aeronavegabilidad y rpc automatico (Ismael Valdivia 20/09/2020)*/
              	--Recuperamos el id_tipo_proceso_wf para obtener el siguiente estado
@@ -1728,11 +1727,8 @@ END IF;
                         from wf.ttipo_estado es
                         LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
                         where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'compra';
-
-
-                  else
-
-                          select es.id_tipo_estado,
+				  else
+                  		select es.id_tipo_estado,
                                    es.codigo
                             into v_id_tipo_estado_siguiente,
                                  v_codigo_estado_siguiente_auto
@@ -1768,6 +1764,27 @@ END IF;
                             order by te.id_funcionario_tipo_estado ASC
                             limit 1;
 
+
+
+                            /*Insertamos en la tabla de asignacion*/
+                            insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                                   fecha_reg,
+                                                                                   id_solicitud,
+                                                                                   nro_tramite,
+                                                                                   id_funcionario_asignado,
+                                                                                   id_tipo_estado,
+                                                                                   ultima_asignacion
+                                                                                  )
+                                                                           values(p_id_usuario,
+                                                                                  now(),
+                                                                                  v_datos_solicitud.id_solicitud,
+                                                                                  v_datos_solicitud.nro_tramite,
+                                                                                  v_funcionario_encargado,
+                                                                                  v_id_tipo_estado_asignacion,
+                                                                                  'si'
+                                                                           );
+
+
                             else
 
                             select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
@@ -1796,6 +1813,22 @@ END IF;
 
                               if (v_id_funcionario_tipo_estado_asignacion is not null) then
                                     v_funcionario_encargado = v_id_funcionario_asignacion;
+                                    insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                           fecha_reg,
+                                                                           id_solicitud,
+                                                                           nro_tramite,
+                                                                           id_funcionario_asignado,
+                                                                           id_tipo_estado,
+                                                                           ultima_asignacion
+                                                                          )
+                                                                   values(p_id_usuario,
+                                                                          now(),
+                                                                          v_datos_solicitud.id_solicitud,
+                                                                          v_datos_solicitud.nro_tramite,
+                                                                          v_id_funcionario_asignacion,
+                                                                          v_id_tipo_estado_asignacion,
+                                                                          'si'
+                                                                   );
                                else
 
                                   select te.id_tipo_estado,
@@ -1812,28 +1845,38 @@ END IF;
                                 and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
                                 order by te.id_funcionario_tipo_estado ASC
                                 limit 1;
+
+                                insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                       fecha_reg,
+                                                                       id_solicitud,
+                                                                       nro_tramite,
+                                                                       id_funcionario_asignado,
+                                                                       id_tipo_estado,
+                                                                       ultima_asignacion
+                                                                       )
+                                                                   values(p_id_usuario,
+                                                                          now(),
+                                                                          v_datos_solicitud.id_solicitud,
+                                                                          v_datos_solicitud.nro_tramite,
+                                                                          v_funcionario_encargado,
+                                                                          v_id_tipo_estado_asignacion,
+                                                                          'si'
+                                                                   );
                               end if;
                             end if;
 
-                            /******************************/
+                            update mat.tasginacion_automatica_abastecimiento set
+                            ultima_asignacion = 'no'
+                            where id_asignacion = v_id_asignacion;
+
+                        /******************************/
 
                   end if;
-
                   /********************************************************************************************************/
 
 
-
-                    /*select
-                    esta.id_funcionario into v_funcionario_encargado
-                    from wf.testado_wf esta
-                    inner join wf.ttipo_estado es on es.id_tipo_estado = esta.id_tipo_estado
-                    where esta.id_proceso_wf = v_id_proceso_wf and es.codigo = 'cotizacion_solicitada';*/
-
-
-                    ---------------------------------------------------------------------------
-
                       ---------------------------------------------------------------------------
-                    --raise exception 'Aqui llega %',v_codigo_estado_siguiente_auto;
+
                      v_acceso_directo_automatico = '';
                      v_clase_automatico = '';
                      v_parametros_ad_automatico = '';
@@ -1876,159 +1919,31 @@ END IF;
                 from mat.tsolicitud sol
                 where id_proceso_wf = v_parametros.id_proceso_wf_act;
 
-                if (v_solicitud_actual.origen_pedido != 'Reparación de Repuestos') then
 
-                ELSE
+                /*Aqui Para Insertar y asignar automaticamente el funcionario de abastecimiento Ismael Valdivia (29/09/2021)*/
 
-                	/*Aqui Para Insertar y asignar automaticamente el funcionario de abastecimiento Ismael Valdivia (29/09/2021)*/
+                  select auto.id_funcionario_asignado,
+                         auto.id_asignacion
+                         into
+                         v_ultimo_funcionario_asignado,
+                         v_id_asignacion
+                  from mat.tasginacion_automatica_abastecimiento auto
+                  where auto.ultima_asignacion = 'si'
+                  and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
 
-                      select auto.id_funcionario_asignado,
-                             auto.id_asignacion
-                             into
-                             v_ultimo_funcionario_asignado,
-                             v_id_asignacion
-                      from mat.tasginacion_automatica_abastecimiento auto
-                      where auto.ultima_asignacion = 'si'
-                      and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
+                  select
+                      esta.id_funcionario into v_funcionario_encargado_rpcd
+                  from wf.testado_wf esta
+                  inner join wf.ttipo_estado es on es.id_tipo_estado = esta.id_tipo_estado
+                  where esta.id_proceso_wf = v_id_proceso_wf and es.codigo = 'vb_rpcd';
 
-                      select
-                          esta.id_funcionario into v_funcionario_encargado_rpcd
-                      from wf.testado_wf esta
-                      inner join wf.ttipo_estado es on es.id_tipo_estado = esta.id_tipo_estado
-                      where esta.id_proceso_wf = v_id_proceso_wf and es.codigo = 'vb_rpcd';
-
-                      /*Si es Nulo entonces registramos el dato con el funcionario Asignado*/
-                      if (v_ultimo_funcionario_asignado is null) then
-
-                        select te.id_tipo_estado,
-                               te.id_funcionario,
-                               te.id_funcionario_tipo_estado
-                               into
-                               v_id_tipo_estado_asignacion,
-                               v_id_funcionario_asignacion,
-                               v_id_funcionario_tipo_estado_asignacion
-                        from wf.tfuncionario_tipo_estado te
-                        INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                        where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                        and te.estado_reg = 'activo'
-                        and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                        order by te.id_funcionario_tipo_estado ASC
-                        limit 1;
-
-                        insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
-                                                                               fecha_reg,
-                                                                               id_solicitud,
-                                                                               nro_tramite,
-                                                                               id_funcionario_asignado,
-                                                                               id_tipo_estado,
-                                                                               id_funcionario_rpc,
-                                                                               ultima_asignacion
-                                                                              )
-                                                                       values(p_id_usuario,
-                                                                              now(),
-                                                                              v_solicitud_actual.id_solicitud,
-                                                                              v_solicitud_actual.nro_tramite,
-                                                                              v_id_funcionario_asignacion,
-                                                                              v_id_tipo_estado_asignacion,
-                                                                              v_funcionario_encargado_rpcd,
-                                                                              'si'
-                                                                       );
-                      else
-
-                          select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
-                          from wf.tfuncionario_tipo_estado te
-                          where te.id_funcionario = v_ultimo_funcionario_asignado
-                          and te.estado_reg = 'activo'
-                          and te.id_tipo_estado = v_id_tipo_estado_siguiente;
+                  /*Si es Nulo entonces registramos el dato con el funcionario Asignado*/
+                  update mat.tasginacion_automatica_abastecimiento set
+                  id_funcionario_rpc = v_funcionario_encargado_rpcd
+                  where id_solicitud = v_solicitud_actual.id_solicitud;
+                  /************************************************************************************************************/
 
 
-                          select te.id_tipo_estado,
-                                 te.id_funcionario,
-                                 te.id_funcionario_tipo_estado
-                                 into
-                                 v_id_tipo_estado_asignacion,
-                                 v_id_funcionario_asignacion,
-                                 v_id_funcionario_tipo_estado_asignacion
-                          from wf.tfuncionario_tipo_estado te
-                          INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                          where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                          and te.estado_reg = 'activo'
-                          and te.id_funcionario not in (v_ultimo_funcionario_asignado)
-                          and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
-                          and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                          order by te.id_funcionario_tipo_estado ASC
-                          limit 1;
-
-                          if (v_id_funcionario_tipo_estado_asignacion is not null) then
-                          insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
-                                                                               fecha_reg,
-                                                                               id_solicitud,
-                                                                               nro_tramite,
-                                                                               id_funcionario_asignado,
-                                                                               id_tipo_estado,
-                                                                               id_funcionario_rpc,
-                                                                               ultima_asignacion
-                                                                              )
-                                                                       values(p_id_usuario,
-                                                                              now(),
-                                                                              v_solicitud_actual.id_solicitud,
-                                                                              v_solicitud_actual.nro_tramite,
-                                                                              v_id_funcionario_asignacion,
-                                                                              v_id_tipo_estado_asignacion,
-                                                                              v_funcionario_encargado_rpcd,
-                                                                              'si'
-                                                                       );
-                          else
-
-                          select te.id_tipo_estado,
-                               te.id_funcionario,
-                               te.id_funcionario_tipo_estado
-                               into
-                               v_id_tipo_estado_asignacion,
-                               v_id_funcionario_asignacion,
-                               v_id_funcionario_tipo_estado_asignacion
-                        from wf.tfuncionario_tipo_estado te
-                        INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
-                        where te.id_tipo_estado = v_id_tipo_estado_siguiente
-                        and te.estado_reg = 'activo'
-                        and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
-                        order by te.id_funcionario_tipo_estado ASC
-                        limit 1;
-
-                        insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
-                                                                               fecha_reg,
-                                                                               id_solicitud,
-                                                                               nro_tramite,
-                                                                               id_funcionario_asignado,
-                                                                               id_tipo_estado,
-                                                                               id_funcionario_rpc,
-                                                                               ultima_asignacion
-                                                                              )
-                                                                       values(p_id_usuario,
-                                                                              now(),
-                                                                              v_solicitud_actual.id_solicitud,
-                                                                              v_solicitud_actual.nro_tramite,
-                                                                              v_id_funcionario_asignacion,
-                                                                              v_id_tipo_estado_asignacion,
-                                                                              v_funcionario_encargado_rpcd,
-                                                                              'si'
-                                                                       );
-
-                          end if;
-
-                          update mat.tasginacion_automatica_abastecimiento set
-                          ultima_asignacion = 'no'
-                          where id_asignacion = v_id_asignacion;
-
-
-                      end if;
-
-
-
-
-                      /************************************************************************************************************/
-
-                END IF;
 
 
                 SELECT		twf.id_funcionario
@@ -2041,7 +1956,7 @@ END IF;
                     INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_solicitud_actual.id_proceso_wf
-                      AND  te.codigo = 'cotizacion'
+                      AND  te.codigo = 'revision_tecnico_abastecimientos'
                       AND twf.fecha_reg between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion, now())
                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
                 order by twf.fecha_reg desc
@@ -2168,341 +2083,602 @@ END IF;
 
 
         else
-        	select
-            ew.id_tipo_estado ,
-            te.pedir_obs,
-            ew.id_estado_wf
-           into
-            v_id_tipo_estado,
-            v_pedir_obs,
-            v_id_estado_wf
 
-          from wf.testado_wf ew
-          inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
-          where ew.id_estado_wf =  v_parametros.id_estado_wf_act;
-
-
-           -- obtener datos tipo estado siguiente //codigo=borrador
-           select te.codigo into
-             v_codigo_estado_siguiente
-           from wf.ttipo_estado te
-           where te.id_tipo_estado = v_parametros.id_tipo_estado;
-
-
-           IF  pxp.f_existe_parametro(p_tabla,'id_depto_wf') THEN
-           	 v_id_depto = v_parametros.id_depto_wf;
-           END IF;
-
-           IF  pxp.f_existe_parametro(p_tabla,'obs') THEN
-           	 v_obs = v_parametros.obs;
-           ELSE
-           	 v_obs='---';
-           END IF;
-
-             --configurar acceso directo para la alarma
-             v_acceso_directo = '';
-             v_clase = '';
-             v_parametros_ad = '';
-             v_tipo_noti = 'notificacion';
-             v_titulo  = 'Visto Boa';
-
-
-             /*Poniendo Control para que pase al estado vb_dpto_administrativo con la cotizacion adjudicada (Ismael Valdivia 19/02/2020)*/
-
-             IF (v_codigo_estado_siguiente = 'comite_unidad_abastecimientos') THEN
-             	select count(cot.id_cotizacion) into v_existe_proveedor_adjudicado
-                from mat.tcotizacion cot
-                where cot.id_solicitud = v_parametros.id_solicitud and cot.adjudicado = 'si';
-
-
-                select count(cot.id_cotizacion) into v_existe_referencia
-                from mat.tcotizacion cot
-                inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
-                where cot.id_solicitud = v_parametros.id_solicitud and det.referencial = 'Si';
-
-                if (v_existe_referencia = 0) then
-                	--raise exception 'No se encontraron precios referenciales para la solicitud, favor verificar la información.';
-                end if;
-
-
-
-                /*Control para completar los datos del detalle (Ismael Valdivia 28/02/2020)*/
-                select count (*) into v_datos_incompletos
-                 from mat.tdetalle_sol det
-                 where det.nro_parte != 'HAZMAT' and
-                 det.id_solicitud = v_parametros.id_solicitud and (det.id_auxiliar is null or det.id_centro_costo is null or det.id_orden_trabajo is null or det.id_partida is null or det.id_concepto_ingas is null );
-
-
-                IF (v_datos_incompletos > 0) THEN
-                	RAISE EXCEPTION 'No se puede cambiar de estado porque debe completar datos del detalle de la solicitud';
-                END IF;
-                /*****************************************************************************/
-
-
-
-                /*Verificamos si existen adjudicados para dejar pasar al siguiente estado si no saltar alerta*/
-                IF (v_existe_proveedor_adjudicado = 0) THEN
-                	RAISE EXCEPTION 'No se encontraron proveedores adjudicados en la cotización, debe adjudicar proveedores';
-
-                ELSE
-                	select sum (cot.monto_total) into v_monto_adjudicado
-                    from mat.tcotizacion cot
-                    where cot.id_solicitud = v_parametros.id_solicitud and cot.adjudicado = 'si';
-
-                    select sum (det.precio_total) into v_monto_referencial
-                    from mat.tdetalle_sol det
-                    where det.id_solicitud = v_parametros.id_solicitud;
-
-                    /*Aqui ponemos la condicion para controlar que el monto adjudicado no sea mayor al referencial*/
-                    if (v_monto_adjudicado > v_monto_referencial) then
-                    	Raise exception 'El monto Adjudicado no puede ser mayor al monto referencial. el monto adjudicado es: % y el monto referencial es: %',v_monto_adjudicado,v_monto_referencial;
-                    end if;
-
-
-                end if;
-                /*********************************************************************************************/
-
-                /*Verificamos si el HAZMAT esta relacionado*/
-                for v_verificar_relacion in (select cot.id_cotizacion
-                                            from mat.tcotizacion cot
-                                            inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
-                                            where cot.id_solicitud = v_parametros.id_solicitud and det.id_detalle_hazmat is null
-                                            and det.nro_parte_cot = 'HAZMAT') loop
-
-                    if (v_parametros.id_solicitud is not null) then
-
-                          select pro.rotulo_comercial into v_proveedor_hazmat
-                          from param.vproveedor pro
-                          where pro.id_proveedor = (select cot.id_proveedor
-                                                    from mat.tcotizacion cot
-                                                    where cot.id_cotizacion = v_verificar_relacion.id_cotizacion);
-
-
-                           raise exception 'El Hazmat de la cotización para el proveedor %, no esta relacionado a ningun part number.',v_proveedor_hazmat;
-
-
-                    end if;
-
-
-
-
-
-
-
-
-
-
-                end loop;
-                /*******************************************/
-
-
-
-
-
-             END IF;
-
-
-             /***************************************************************************************************************************/
-
-
-             IF   v_codigo_estado_siguiente not in('borrador','vobo_area','revision','cotizacion')   THEN
-
-                  v_acceso_directo = '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php';
-                  v_clase = 'Solicitud';
-                  v_parametros_ad = '{filtro_directo:{campo:"mat.id_proceso_wf",valor:"'||
-                  v_parametros.id_proceso_wf_act::varchar||'"}}';
-                  v_tipo_noti = 'notificacion';
-                  v_titulo  = 'Notificacion';
-             END IF;
-
-             -- hay que recuperar el supervidor que seria el estado inmediato...
-            	v_id_estado_actual =  wf.f_registra_estado_wf(v_parametros.id_tipo_estado,
-                                                             v_parametros.id_funcionario_wf,
-                                                             v_parametros.id_estado_wf_act,
-                                                             v_parametros.id_proceso_wf_act,
-                                                             p_id_usuario,
-                                                             v_parametros._id_usuario_ai,
-                                                             v_parametros._nombre_usuario_ai,
-                                                             v_id_depto,
-                                                             COALESCE(v_solicitud.nro_tramite,'--')||' Obs:'||v_obs,
-                                                             v_acceso_directo ,
-                                                             v_clase,
-                                                             v_parametros_ad,
-                                                             v_tipo_noti,
-                                                             v_titulo);
-
-
-              -- ini bvp 06/02/2020 aumento para verificacion presupuestaria
-
-               v_mat_comprometer_presupuesto =  pxp.f_get_variable_global('mat_comprometer_presupuesto');
-
-               IF v_codigo_estado_siguiente in('comite_unidad_abastecimientos') THEN
-
-               		IF not mat.f_gestionar_presupuesto_solicitud(v_solicitud.id_solicitud, p_id_usuario, 'verificar')  THEN
-                           raise exception 'Error al verificar  el presupeusto';
-                    END IF;
-
-                     -- comprometer
-
-                     IF v_solicitud.presu_comprometido = 'no' and v_mat_comprometer_presupuesto = 'si' THEN
-
-                            -- Comprometer Presupuesto
-                            IF not mat.f_gestionar_presupuesto_solicitud(v_solicitud.id_solicitud, p_id_usuario, 'comprometer')  THEN
-                                 raise exception 'Error al comprometer el presupuesto';
-                            END IF;
-
-                            --modifca bandera de comprometido
-                             update mat.tsolicitud  set
-                                  presu_comprometido =  'si'
-                             where id_solicitud = v_solicitud.id_solicitud;
-                     END IF;
-
-               END IF;
-
-
-         		IF mat.f_procesar_estados_solicitud(p_id_usuario,
-           											v_parametros._id_usuario_ai,
-                                            		v_parametros._nombre_usuario_ai,
-                                            		v_id_estado_actual,
-                                            		v_parametros.id_proceso_wf_act,
-                                            		v_codigo_estado_siguiente) THEN
-
-         			RAISE NOTICE 'PASANDO DE ESTADO';
-
-          		END IF;
-               -- end bvp
-
-
-               /*Cambiando la condicion para que las firmas se disparen en el estado vb_dpto_administrativo y no revision (Ismael Valdivia 18/02/2020)*/
-               IF (v_codigo_estado_siguiente='comite_unidad_abastecimientos')THEN
-    			FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
-
-                select 	tp.codigo,
-                		tp.codigo_llave
-                        into
-                        v_codigo_tipo_pro,
-                        v_codigo_llave
-                        from wf.ttipo_proceso tp
-                        where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
-
-
-                  IF NOT mat.f_disparo_firma(	p_id_usuario,
-                                              v_parametros._id_usuario_ai,
-                                              v_parametros._nombre_usuario_ai,
-                                              v_solicitud.id_solicitud,
-                                              v_id_estado_actual::integer,
-                                              v_registros_proc.id_funcionario_wf_pro::integer,
-                                              v_registros_proc.obs_pro,
-                                              v_registros_proc.id_depto_wf_pro)then
-
-                  raise exception 'Error al generar disparo';
-                  END IF;
-                END LOOP;
-			END IF;
-            /************************************************************************************************/
-
-          IF (v_codigo_estado_siguiente='despachado')THEN
-
-          	if ((v_solicitud.fecha_po is null) ) then
-            	raise exception 'La fecha del (PO/REP) no puede ser vacia, favor verificar';
-            end if;
-
-
-            if (pxp.f_get_variable_global('interviene_presupuesto') = 'si') then
-              /*Aqui ponemos un control para que presupuesto (Ismael valdivia 27/04/2020)*/
-               if (v_solicitud.revisado_presupuesto = 'no') then
-                  raise exception 'La solicitud actual aún se encuentra en revisión por parte de presupuestos.';
-               end if;
-              /***************************************************************************/
-            end if;
-          	--RAISE EXCEPTION 'ENTRA';
-              FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
-
-                         -- Obtenemos el codigo de tipo proceso
-                         select
-                            tp.codigo,
-                            tp.codigo_llave
-                         into
-                            v_codigo_tipo_pro,
-                            v_codigo_llave
-                         from wf.ttipo_proceso tp
-                          where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
-
-
-                        --MAY descomentar disparo
-              			 -- disparar creacion de procesos seleccionados
-                        SELECT
-                                 ps_id_proceso_wf,
-                                 ps_id_estado_wf,
-                                 ps_codigo_estado,
-                                 ps_nro_tramite
+			/*Cambiando para que la asignacion automatica sea en el estado revision tecnico de abastecimientos*/
+        --Ismael Valdivia
+        --16/02/2022
+        if (v_solicitud.estado = 'revision_tecnico_abastecimientos') then
+
+
+        	select sol.* into v_datos_solicitud
+            from mat.tsolicitud sol
+            where id_solicitud = v_parametros.id_solicitud;
+
+            select pr.id_tipo_proceso into v_id_tipo_proceso_wf
+            from wf.tproceso_wf pr
+            where pr.id_proceso_wf = v_datos_solicitud.id_proceso_wf;
+
+            select sol.id_proceso_wf into v_id_proceso_wf
+            from mat.tsolicitud sol
+            where sol.id_solicitud = v_datos_solicitud.id_solicitud;
+
+
+            /*Control para completar los datos del detalle (Ismael Valdivia 28/02/2020)*/
+            select count (*) into v_datos_incompletos
+             from mat.tdetalle_sol det
+             where det.nro_parte != 'HAZMAT' and
+             det.id_solicitud = v_parametros.id_solicitud and (det.id_auxiliar is null or det.id_centro_costo is null or det.id_orden_trabajo is null or det.id_partida is null or det.id_concepto_ingas is null );
+
+
+            IF (v_datos_incompletos > 0) THEN
+                RAISE EXCEPTION 'No se puede cambiar de estado porque debe completar datos del detalle de la solicitud';
+            END IF;
+            /*****************************************************************************/
+
+            /*Aumentando para poner condicion de reparaciones y compra de repuestos*/
+            --Ismael Valdivia 21/02/2022
+
+            if (v_datos_solicitud.origen_pedido = 'Reparación de Repuestos') then
+            	 SELECT  twf.id_funcionario
+                INTO
+                      v_funcionario_encargado
+                FROM wf.testado_wf twf
+                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                WHERE twf.id_proceso_wf = v_datos_solicitud.id_proceso_wf AND te.codigo = 'revision_tecnico_abastecimientos'
+                and v_datos_solicitud.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
+                ORDER BY  twf.fecha_reg DESC
+                LIMIT 1;
+
+                select es.id_tipo_estado,
+                       es.codigo
+                into v_id_tipo_estado_siguiente,
+                     v_codigo_estado_siguiente_auto
+                from wf.ttipo_estado es
+                LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'cotizacion'
+                limit 1;
+
+            else
+            	select es.id_tipo_estado,
+                       es.codigo
+                into v_id_tipo_estado_siguiente,
+                     v_codigo_estado_siguiente_auto
+                from wf.ttipo_estado es
+                LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'cotizacion'
+                limit 1;
+
+                select auto.id_funcionario_asignado,
+                       auto.id_asignacion
+                       into
+                       v_ultimo_funcionario_asignado,
+                       v_id_asignacion
+                from mat.tasginacion_automatica_abastecimiento auto
+                where auto.ultima_asignacion = 'si'
+                and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
+
+
+                if (v_ultimo_funcionario_asignado is null) then
+
+                select te.id_tipo_estado,
+                       te.id_funcionario,
+                       te.id_funcionario_tipo_estado
+                       into
+                       v_id_tipo_estado_asignacion,
+                       v_funcionario_encargado,
+                       v_id_funcionario_tipo_estado_asignacion
+                from wf.tfuncionario_tipo_estado te
+                INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                and te.estado_reg = 'activo'
+                and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                order by te.id_funcionario_tipo_estado ASC
+                limit 1;
+
+                /*Insertamos en la tabla de asignacion*/
+                insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                       fecha_reg,
+                                                                       id_solicitud,
+                                                                       nro_tramite,
+                                                                       id_funcionario_asignado,
+                                                                       id_tipo_estado,
+                                                                       ultima_asignacion
+                                                                      )
+                                                               values(p_id_usuario,
+                                                                      now(),
+                                                                      v_datos_solicitud.id_solicitud,
+                                                                      v_datos_solicitud.nro_tramite,
+                                                                      v_funcionario_encargado,
+                                                                      v_id_tipo_estado_asignacion,
+                                                                      'si'
+                                                               );
+
+
+                else
+
+                select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
+                from wf.tfuncionario_tipo_estado te
+                where te.id_funcionario = v_ultimo_funcionario_asignado
+                and te.estado_reg = 'activo'
+                and te.id_tipo_estado = v_id_tipo_estado_siguiente;
+
+
+                select te.id_tipo_estado,
+                       te.id_funcionario,
+                       te.id_funcionario_tipo_estado
+                       into
+                       v_id_tipo_estado_asignacion,
+                       v_id_funcionario_asignacion,
+                       v_id_funcionario_tipo_estado_asignacion
+                from wf.tfuncionario_tipo_estado te
+                INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                and te.estado_reg = 'activo'
+                and te.id_funcionario not in (v_ultimo_funcionario_asignado)
+                and te.id_funcionario_tipo_estado >= v_id_funcionario_tipo_estado
+                and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                order by te.id_funcionario_tipo_estado ASC
+                limit 1;
+
+                  if (v_id_funcionario_tipo_estado_asignacion is not null) then
+                        v_funcionario_encargado = v_id_funcionario_asignacion;
+
+                        insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                               fecha_reg,
+                                                                               id_solicitud,
+                                                                               nro_tramite,
+                                                                               id_funcionario_asignado,
+                                                                               id_tipo_estado,
+                                                                               ultima_asignacion
+                                                                              )
+                                                                       values(p_id_usuario,
+                                                                              now(),
+                                                                              v_datos_solicitud.id_solicitud,
+                                                                              v_datos_solicitud.nro_tramite,
+                                                                              v_id_funcionario_asignacion,
+                                                                              v_id_tipo_estado_asignacion,
+                                                                              'si'
+                                                                       );
+
+
+                   else
+
+                      select te.id_tipo_estado,
+                           te.id_funcionario,
+                           te.id_funcionario_tipo_estado
                            into
-                                 v_id_proceso_wf,
-                                 v_id_estado_wf,
-                                 v_codigo_estado,
-                                 v_nro_tramite
-                        FROM wf.f_registra_proceso_disparado_wf(
-                                 p_id_usuario,
-                                 v_parametros._id_usuario_ai,
-                                 v_parametros._nombre_usuario_ai,
-                                 v_id_estado_actual::integer,
-                                 v_registros_proc.id_funcionario_wf_pro::integer,
-                                 v_registros_proc.id_depto_wf_pro::integer,
-                                 v_nro_tramite||v_registros_proc.obs_pro,
-                                 v_codigo_tipo_pro,
-                                 v_codigo_tipo_pro);
+                           v_id_tipo_estado_asignacion,
+                           v_funcionario_encargado,
+                           v_id_funcionario_tipo_estado_asignacion
+                    from wf.tfuncionario_tipo_estado te
+                    INNER JOIN orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario = te.id_funcionario
+                    where te.id_tipo_estado = v_id_tipo_estado_siguiente
+                    and te.estado_reg = 'activo'
+                    and (fun.fecha_finalizacion is null or current_date <= fun.fecha_finalizacion)
+                    order by te.id_funcionario_tipo_estado ASC
+                    limit 1;
+
+                    insert into mat.tasginacion_automatica_abastecimiento (id_usuario_reg,
+                                                                           fecha_reg,
+                                                                           id_solicitud,
+                                                                           nro_tramite,
+                                                                           id_funcionario_asignado,
+                                                                           id_tipo_estado,
+                                                                           ultima_asignacion
+                                                                           )
+                                                                       values(p_id_usuario,
+                                                                              now(),
+                                                                              v_datos_solicitud.id_solicitud,
+                                                                              v_datos_solicitud.nro_tramite,
+                                                                              v_funcionario_encargado,
+                                                                              v_id_tipo_estado_asignacion,
+                                                                              'si'
+                                                                       );
 
 
-					--(MAY) 03-02-2020 el codigo de llave obligacion_pago es para que su flujo cambie aobligaciones de pago ya no adqui
-                     --IF v_codigo_llave = 'SOLICITUD' THEN
-                     IF v_codigo_llave = 'obligacion_pago' THEN
-                            /*raise exception 'v_id_proceso_wf: %, v_id_estado_wf %, v_codigo_estado %, v_nro_tramite %, v_codigo_tipo_pro: %',
-                    		v_id_proceso_wf, v_id_estado_wf, v_codigo_estado, v_nro_tramite, v_codigo_tipo_pro;*/
-                            --
-                            /*IF NOT mat.f_disparar_adquisiciones(
-                                                          p_id_usuario,
-                                                          v_parametros._id_usuario_ai,
-                                                          v_parametros._nombre_usuario_ai,
-                                                          v_solicitud.id_solicitud,
-                                                          v_id_estado_actual::integer,
-                                                          v_registros_proc.id_funcionario_wf_pro::integer,
-                                                          v_registros_proc.obs_pro,
-                                                          v_codigo_llave,
-                                                          v_registros_proc.id_depto_wf_pro
 
-                                                         ) THEN
-
-                              raise exception 'Error al generar obligacion de pago';
-
-                            END IF;*/
-
-                            IF NOT mat.f_genera_obligacion_pago_mat(
-                                                        p_id_usuario,
-                                                        v_parametros._id_usuario_ai,
-                                                        v_parametros._nombre_usuario_ai,
-                                                        v_solicitud.id_solicitud,
-                                                        v_id_proceso_wf,
-                                                        v_id_estado_wf,
-                                                        v_codigo_estado,
-                                                        v_codigo_llave,
-                                                        v_registros_proc.id_depto_wf_pro) THEN
-
-                          			raise exception 'Error al generar obligacion de pago';
-
-                          	END IF;
+                  end if;
+                end if;
+            end if;
 
 
-                     ELSE
-
-                        raise exception 'Codigo llave no reconocido  verifique el WF (%)', v_codigo_llave;
 
 
-                     END IF;
 
 
-              END LOOP;
+             v_acceso_directo_automatico = '';
+             v_clase_automatico = '';
+             v_parametros_ad_automatico = '';
+             v_tipo_noti_automatico = 'notificacion';
+             v_titulo_automatico  = 'Visto Boa';
+             v_obs_automatico ='Asignacion Automatica';
+             ------------------------------------------pasamos el estado a vb_dpto_administrativo
 
-          END IF;
+
+             v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
+                                                     v_funcionario_encargado,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
+                                                     v_datos_solicitud.id_estado_wf,
+                                                     v_datos_solicitud.id_proceso_wf,
+                                                     p_id_usuario,
+                                                     v_parametros._id_usuario_ai,
+                                                     v_parametros._nombre_usuario_ai,
+                                                     v_id_depto,
+                                                     COALESCE(v_datos_solicitud.nro_tramite,'--')||' Obs:'||v_obs_automatico,
+                                                     v_acceso_directo_automatico,
+                                                     v_clase_automatico,
+                                                     v_parametros_ad_automatico,
+                                                     v_tipo_noti_automatico,
+                                                     v_titulo_automatico);
+
+             IF mat.f_procesar_estados_solicitud(p_id_usuario,
+                                            v_parametros._id_usuario_ai,
+                                            v_parametros._nombre_usuario_ai,
+                                            v_id_estado_actual,
+                                            v_datos_solicitud.id_proceso_wf,
+                                            v_codigo_estado_siguiente_auto) THEN
+
+            RAISE NOTICE 'PASANDO DE ESTADO';
+            end if;
+
+            if (v_id_asignacion is not null) then
+              update mat.tasginacion_automatica_abastecimiento set
+              ultima_asignacion = 'no'
+              where id_asignacion = v_id_asignacion;
+            end if;
+
+		ELSE
+
+			select
+				ew.id_tipo_estado ,
+				te.pedir_obs,
+				ew.id_estado_wf
+			   into
+				v_id_tipo_estado,
+				v_pedir_obs,
+				v_id_estado_wf
+
+			  from wf.testado_wf ew
+			  inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
+			  where ew.id_estado_wf =  v_parametros.id_estado_wf_act;
+
+
+			   -- obtener datos tipo estado siguiente //codigo=borrador
+			   select te.codigo into
+				 v_codigo_estado_siguiente
+			   from wf.ttipo_estado te
+			   where te.id_tipo_estado = v_parametros.id_tipo_estado;
+
+
+			   IF  pxp.f_existe_parametro(p_tabla,'id_depto_wf') THEN
+				 v_id_depto = v_parametros.id_depto_wf;
+			   END IF;
+
+			   IF  pxp.f_existe_parametro(p_tabla,'obs') THEN
+				 v_obs = v_parametros.obs;
+			   ELSE
+				 v_obs='---';
+			   END IF;
+
+				 --configurar acceso directo para la alarma
+				 v_acceso_directo = '';
+				 v_clase = '';
+				 v_parametros_ad = '';
+				 v_tipo_noti = 'notificacion';
+				 v_titulo  = 'Visto Boa';
+
+
+				 /*Poniendo Control para que pase al estado vb_dpto_administrativo con la cotizacion adjudicada (Ismael Valdivia 19/02/2020)*/
+
+				 IF (v_codigo_estado_siguiente = 'comite_unidad_abastecimientos') THEN
+					select count(cot.id_cotizacion) into v_existe_proveedor_adjudicado
+					from mat.tcotizacion cot
+					where cot.id_solicitud = v_parametros.id_solicitud and cot.adjudicado = 'si';
+
+
+					select count(cot.id_cotizacion) into v_existe_referencia
+					from mat.tcotizacion cot
+					inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
+					where cot.id_solicitud = v_parametros.id_solicitud and det.referencial = 'Si';
+
+					if (v_existe_referencia = 0) then
+						--raise exception 'No se encontraron precios referenciales para la solicitud, favor verificar la información.';
+					end if;
+
+
+
+					/*Control para completar los datos del detalle (Ismael Valdivia 28/02/2020)*/
+					select count (*) into v_datos_incompletos
+					 from mat.tdetalle_sol det
+					 where det.nro_parte != 'HAZMAT' and
+					 det.id_solicitud = v_parametros.id_solicitud and (det.id_auxiliar is null or det.id_centro_costo is null or det.id_orden_trabajo is null or det.id_partida is null or det.id_concepto_ingas is null );
+
+
+					IF (v_datos_incompletos > 0) THEN
+						RAISE EXCEPTION 'No se puede cambiar de estado porque debe completar datos del detalle de la solicitud';
+					END IF;
+					/*****************************************************************************/
+
+
+
+					/*Verificamos si existen adjudicados para dejar pasar al siguiente estado si no saltar alerta*/
+					IF (v_existe_proveedor_adjudicado = 0) THEN
+						RAISE EXCEPTION 'No se encontraron proveedores adjudicados en la cotización, debe adjudicar proveedores';
+
+					ELSE
+						select sum (cot.monto_total) into v_monto_adjudicado
+						from mat.tcotizacion cot
+						where cot.id_solicitud = v_parametros.id_solicitud and cot.adjudicado = 'si';
+
+						select sum (det.precio_total) into v_monto_referencial
+						from mat.tdetalle_sol det
+						where det.id_solicitud = v_parametros.id_solicitud;
+
+						/*Aqui ponemos la condicion para controlar que el monto adjudicado no sea mayor al referencial*/
+						if (v_monto_adjudicado > v_monto_referencial) then
+							Raise exception 'El monto Adjudicado no puede ser mayor al monto referencial. el monto adjudicado es: % y el monto referencial es: %',v_monto_adjudicado,v_monto_referencial;
+						end if;
+
+
+					end if;
+					/*********************************************************************************************/
+
+					/*Verificamos si el HAZMAT esta relacionado*/
+					for v_verificar_relacion in (select cot.id_cotizacion
+												from mat.tcotizacion cot
+												inner join mat.tcotizacion_detalle det on det.id_cotizacion = cot.id_cotizacion
+												where cot.id_solicitud = v_parametros.id_solicitud and det.id_detalle_hazmat is null
+												and det.nro_parte_cot = 'HAZMAT') loop
+
+						if (v_parametros.id_solicitud is not null) then
+
+							  select pro.rotulo_comercial into v_proveedor_hazmat
+							  from param.vproveedor pro
+							  where pro.id_proveedor = (select cot.id_proveedor
+														from mat.tcotizacion cot
+														where cot.id_cotizacion = v_verificar_relacion.id_cotizacion);
+
+
+							   raise exception 'El Hazmat de la cotización para el proveedor %, no esta relacionado a ningun part number.',v_proveedor_hazmat;
+
+
+						end if;
+
+
+
+
+
+
+
+
+
+
+					end loop;
+					/*******************************************/
+
+
+
+
+
+				 END IF;
+
+
+				 /***************************************************************************************************************************/
+
+				 /*Aqui actualizamos el campo de funcionario solicitante Ismael Valdivia (17/02/2022)*/
+                 if(v_codigo_estado_siguiente = 'revision_tecnico_abastecimientos') then
+                    update mat.tsolicitud  set
+                           id_funcionario_solicitante =  v_parametros.id_funcionario_wf
+                    where id_solicitud = v_solicitud.id_solicitud;
+                 end if;
+                 /*************************************************************************************/
+
+
+				 IF   v_codigo_estado_siguiente not in('borrador','vobo_area','revision','cotizacion')   THEN
+
+					  v_acceso_directo = '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php';
+					  v_clase = 'Solicitud';
+					  v_parametros_ad = '{filtro_directo:{campo:"mat.id_proceso_wf",valor:"'||
+					  v_parametros.id_proceso_wf_act::varchar||'"}}';
+					  v_tipo_noti = 'notificacion';
+					  v_titulo  = 'Notificacion';
+				 END IF;
+
+				 -- hay que recuperar el supervidor que seria el estado inmediato...
+					v_id_estado_actual =  wf.f_registra_estado_wf(v_parametros.id_tipo_estado,
+																 v_parametros.id_funcionario_wf,
+																 v_parametros.id_estado_wf_act,
+																 v_parametros.id_proceso_wf_act,
+																 p_id_usuario,
+																 v_parametros._id_usuario_ai,
+																 v_parametros._nombre_usuario_ai,
+																 v_id_depto,
+																 COALESCE(v_solicitud.nro_tramite,'--')||' Obs:'||v_obs,
+																 v_acceso_directo ,
+																 v_clase,
+																 v_parametros_ad,
+																 v_tipo_noti,
+																 v_titulo);
+
+
+				  -- ini bvp 06/02/2020 aumento para verificacion presupuestaria
+
+				   v_mat_comprometer_presupuesto =  pxp.f_get_variable_global('mat_comprometer_presupuesto');
+
+				   IF v_codigo_estado_siguiente in('comite_unidad_abastecimientos') THEN
+
+						IF not mat.f_gestionar_presupuesto_solicitud(v_solicitud.id_solicitud, p_id_usuario, 'verificar')  THEN
+							   raise exception 'Error al verificar  el presupeusto';
+						END IF;
+
+						 -- comprometer
+
+						 IF v_solicitud.presu_comprometido = 'no' and v_mat_comprometer_presupuesto = 'si' THEN
+
+								-- Comprometer Presupuesto
+								IF not mat.f_gestionar_presupuesto_solicitud(v_solicitud.id_solicitud, p_id_usuario, 'comprometer')  THEN
+									 raise exception 'Error al comprometer el presupuesto';
+								END IF;
+
+								--modifca bandera de comprometido
+								 update mat.tsolicitud  set
+									  presu_comprometido =  'si'
+								 where id_solicitud = v_solicitud.id_solicitud;
+						 END IF;
+
+				   END IF;
+
+
+					IF mat.f_procesar_estados_solicitud(p_id_usuario,
+														v_parametros._id_usuario_ai,
+														v_parametros._nombre_usuario_ai,
+														v_id_estado_actual,
+														v_parametros.id_proceso_wf_act,
+														v_codigo_estado_siguiente) THEN
+
+						RAISE NOTICE 'PASANDO DE ESTADO';
+
+					END IF;
+				   -- end bvp
+
+
+				   /*Cambiando la condicion para que las firmas se disparen en el estado vb_dpto_administrativo y no revision (Ismael Valdivia 18/02/2020)*/
+				   IF (v_codigo_estado_siguiente='comite_unidad_abastecimientos')THEN
+					FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
+
+					select 	tp.codigo,
+							tp.codigo_llave
+							into
+							v_codigo_tipo_pro,
+							v_codigo_llave
+							from wf.ttipo_proceso tp
+							where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
+
+
+					  IF NOT mat.f_disparo_firma(	p_id_usuario,
+												  v_parametros._id_usuario_ai,
+												  v_parametros._nombre_usuario_ai,
+												  v_solicitud.id_solicitud,
+												  v_id_estado_actual::integer,
+												  v_registros_proc.id_funcionario_wf_pro::integer,
+												  v_registros_proc.obs_pro,
+												  v_registros_proc.id_depto_wf_pro)then
+
+					  raise exception 'Error al generar disparo';
+					  END IF;
+					END LOOP;
+				END IF;
+				/************************************************************************************************/
+
+			  IF (v_codigo_estado_siguiente='despachado')THEN
+
+				if ((v_solicitud.fecha_po is null) ) then
+					raise exception 'La fecha del (PO/REP) no puede ser vacia, favor verificar';
+				end if;
+
+
+				if (pxp.f_get_variable_global('interviene_presupuesto') = 'si') then
+				  /*Aqui ponemos un control para que presupuesto (Ismael valdivia 27/04/2020)*/
+				   if (v_solicitud.revisado_presupuesto = 'no') then
+					  raise exception 'La solicitud actual aún se encuentra en revisión por parte de presupuestos.';
+				   end if;
+				  /***************************************************************************/
+				end if;
+				--RAISE EXCEPTION 'ENTRA';
+				  FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
+
+							 -- Obtenemos el codigo de tipo proceso
+							 select
+								tp.codigo,
+								tp.codigo_llave
+							 into
+								v_codigo_tipo_pro,
+								v_codigo_llave
+							 from wf.ttipo_proceso tp
+							  where  tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
+
+
+							--MAY descomentar disparo
+							 -- disparar creacion de procesos seleccionados
+							SELECT
+									 ps_id_proceso_wf,
+									 ps_id_estado_wf,
+									 ps_codigo_estado,
+									 ps_nro_tramite
+							   into
+									 v_id_proceso_wf,
+									 v_id_estado_wf,
+									 v_codigo_estado,
+									 v_nro_tramite
+							FROM wf.f_registra_proceso_disparado_wf(
+									 p_id_usuario,
+									 v_parametros._id_usuario_ai,
+									 v_parametros._nombre_usuario_ai,
+									 v_id_estado_actual::integer,
+									 v_registros_proc.id_funcionario_wf_pro::integer,
+									 v_registros_proc.id_depto_wf_pro::integer,
+									 v_nro_tramite||v_registros_proc.obs_pro,
+									 v_codigo_tipo_pro,
+									 v_codigo_tipo_pro);
+
+
+						--(MAY) 03-02-2020 el codigo de llave obligacion_pago es para que su flujo cambie aobligaciones de pago ya no adqui
+						 --IF v_codigo_llave = 'SOLICITUD' THEN
+						 IF v_codigo_llave = 'obligacion_pago' THEN
+								/*raise exception 'v_id_proceso_wf: %, v_id_estado_wf %, v_codigo_estado %, v_nro_tramite %, v_codigo_tipo_pro: %',
+								v_id_proceso_wf, v_id_estado_wf, v_codigo_estado, v_nro_tramite, v_codigo_tipo_pro;*/
+								--
+								/*IF NOT mat.f_disparar_adquisiciones(
+															  p_id_usuario,
+															  v_parametros._id_usuario_ai,
+															  v_parametros._nombre_usuario_ai,
+															  v_solicitud.id_solicitud,
+															  v_id_estado_actual::integer,
+															  v_registros_proc.id_funcionario_wf_pro::integer,
+															  v_registros_proc.obs_pro,
+															  v_codigo_llave,
+															  v_registros_proc.id_depto_wf_pro
+
+															 ) THEN
+
+								  raise exception 'Error al generar obligacion de pago';
+
+								END IF;*/
+
+								IF NOT mat.f_genera_obligacion_pago_mat(
+															p_id_usuario,
+															v_parametros._id_usuario_ai,
+															v_parametros._nombre_usuario_ai,
+															v_solicitud.id_solicitud,
+															v_id_proceso_wf,
+															v_id_estado_wf,
+															v_codigo_estado,
+															v_codigo_llave,
+															v_registros_proc.id_depto_wf_pro) THEN
+
+										raise exception 'Error al generar obligacion de pago';
+
+								END IF;
+
+
+						 ELSE
+
+							raise exception 'Codigo llave no reconocido  verifique el WF (%)', v_codigo_llave;
+
+
+						 END IF;
+
+
+				  END LOOP;
+
+			  END IF;
+
+
+
+			end if;
+        /**************************************************************************************************/
 
         end if;
 

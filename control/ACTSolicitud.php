@@ -104,9 +104,14 @@ class ACTSolicitud extends ACTbase{
         }
 
         if ($this->objParam->getParametro('tipo_interfaz') == 'VistoBueno' ) {
-            //$this->objParam->addFiltro("sol.estado_firma  in (''vobo_area'',''vobo_aeronavegabilidad'',''vobo_dpto_abastecimientos'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'')");
-        /*Aumentando esta parte del codigo para filtrar en la interfaz los vb_dpto_abastecimientos y vb_rpcd Ismael Valdivia (03/02/2020)*/
-           $this->objParam->addFiltro("(sol.estado  in (''vb_dpto_administrativo'',''vb_rpcd''))");
+              /*Aumentando esta parte del codigo para filtrar en la interfaz los vb_dpto_abastecimientos y vb_rpcd Ismael Valdivia (03/02/2020)*/
+           if($this->objParam->getParametro('pes_estado') == 'pedido_revision'){
+             $this->objParam->addFiltro("(sol.estado  in (''revision_tecnico_abastecimientos''))");
+           }
+
+           if($this->objParam->getParametro('pes_estado') == 'pedido_iniciado'){
+             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''compra'',''despachado''))");             
+           }
         }
         if ($this->objParam->getParametro('tipo_interfaz') == 'SolicitudvoboComite') {
             /*Aumentando la condicion para que muestre directamente en la interfaz voboComite (Ismael Valdivia 19/02/2020)*/

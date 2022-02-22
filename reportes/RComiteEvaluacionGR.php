@@ -90,7 +90,7 @@ class RComiteEvaluacionGR extends  ReportePDF
         $funcionario_rpc = $this->datos[0]["firma_rpce"];
         $fun_rpc = explode('|', $funcionario_rpc);
         /*Aqui ponemos las condiciones para que no genere el error por las firmas*/
-        if ($funcionario_auxiliar == NULL) {
+        if ($funcionario_rpc == NULL) {
           $fun_rpc_0 = ' ';
           $fun_rpc_1 = '';
           $fun_rpc_3 = '';
@@ -103,6 +103,22 @@ class RComiteEvaluacionGR extends  ReportePDF
         }
 
         /*************************************************************************/
+
+        $tecnico_abastecimiento = $this->datos[0]["firma_tecnico_abastecimiento"];
+        $fun_tecnico_abastecimientos = explode('|', $tecnico_abastecimiento);
+        /*Aqui ponemos las condiciones para que no genere el error por las firmas*/
+        if ($tecnico_abastecimiento == NULL) {
+          $fun_tecnico_abas_0 = ' ';
+          $fun_tecnico_abas_1 = '';
+          $fun_tecnico_abas_3 = '';
+          $fun_tecnico_abas_4 = '';
+        } else {
+          $fun_tecnico_abas_0 = $fun_tecnico_abastecimientos[0];
+          $fun_tecnico_abas_1 = $fun_tecnico_abastecimientos[1];
+          $fun_tecnico_abas_3 = $fun_tecnico_abastecimientos[3];
+          $fun_tecnico_abas_4 = $fun_tecnico_abastecimientos[4];
+        }
+
 
         $marcar_compra = '';
         $marcar_reparacion = '';
@@ -262,52 +278,93 @@ class RComiteEvaluacionGR extends  ReportePDF
 
 
       } else {
-        
-        $firmas = '
-        <table border="1" cellpadding="10">
-            <tr>
-                <!--<td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>-->
-                <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
 
-            </tr>
-            <tr>
-                <td align="center" style="font-family: Calibri; font-size: 9px;">
-                    <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
-                    <br>'.$fun_abastecimiento_0.'
-                </td>
-
-             </tr>
-         </table>
-         <table border="1" cellpadding="10">
-             <tr>
-                 <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
-                 <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Elaborado por:</b> </td>
-             </tr>
-             <tr>
-                 <td align="center" style="font-family: Calibri; font-size: 9px;">
-                     <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_aeronavegabilidad_0, $fun_aeronavegabilidad_1,$fun_aeronavegabilidad_4,$fun_aeronavegabilidad_3).'" alt="Logo">
-                     <br>'.$fun_aeronavegabilidad_0.'
-                 </td>
-                 <td align="center" style="font-family: Calibri; font-size: 9px;">
-                     <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_auxiliar_0, $fun_auxiliar_1,$fun_auxiliar_4,$fun_auxiliar_3).'" alt="Logo">
-                     <br>'.$fun_auxiliar_0.'
-                 </td>
-              </tr>
-
-
-              <!--Aqui la Firma de Marco Mendoza encargado RPCE-->
-              <!--
+        if ($tecnico_abastecimiento != '') {
+          $firmas = '
+          <table border="1" cellpadding="10">
               <tr>
-                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> RPCE:</b> </td>
+                  <!--<td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>-->
+
+                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico de Abastecimiento:</b> </td>
+                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico de Adquisiciones:</b> </td>
+
               </tr>
               <tr>
                   <td align="center" style="font-family: Calibri; font-size: 9px;">
-                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_rpc_0, $fun_rpc_1,$fun_rpc_4,$fun_rpc_3).'" alt="Logo">
-                      <br>'.$fun_rpc_0.'
+                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_tecnico_abas_0, $fun_tecnico_abas_1,$fun_tecnico_abas_4,$fun_tecnico_abas_3).'" alt="Logo">
+                      <br>'.$fun_tecnico_abas_0.'
+                  </td>
+
+                  <td align="center" style="font-family: Calibri; font-size: 9px;">
+                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_auxiliar_0, $fun_auxiliar_1,$fun_auxiliar_4,$fun_auxiliar_3).'" alt="Logo">
+                      <br>'.$fun_auxiliar_0.'
                   </td>
                </tr>
-               -->
-          </table>';
+           </table>
+           <table border="1" cellpadding="10">
+               <tr>
+                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
+                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
+               </tr>
+               <tr>
+                   <td align="center" style="font-family: Calibri; font-size: 9px;">
+                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
+                       <br>'.$fun_abastecimiento_0.'
+                   </td>
+                   <td align="center" style="font-family: Calibri; font-size: 9px;">
+                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_aeronavegabilidad_0, $fun_aeronavegabilidad_1,$fun_aeronavegabilidad_4,$fun_aeronavegabilidad_3).'" alt="Logo">
+                       <br>'.$fun_aeronavegabilidad_0.'
+                   </td>
+
+                </tr>
+            </table>';
+        } else {
+          $firmas = '
+          <table border="1" cellpadding="10">
+              <tr>
+                  <!--<td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>-->
+                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
+
+              </tr>
+              <tr>
+                  <td align="center" style="font-family: Calibri; font-size: 9px;">
+                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
+                      <br>'.$fun_abastecimiento_0.'
+                  </td>
+
+               </tr>
+           </table>
+           <table border="1" cellpadding="10">
+               <tr>
+                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
+                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Elaborado por:</b> </td>
+               </tr>
+               <tr>
+                   <td align="center" style="font-family: Calibri; font-size: 9px;">
+                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_aeronavegabilidad_0, $fun_aeronavegabilidad_1,$fun_aeronavegabilidad_4,$fun_aeronavegabilidad_3).'" alt="Logo">
+                       <br>'.$fun_aeronavegabilidad_0.'
+                   </td>
+                   <td align="center" style="font-family: Calibri; font-size: 9px;">
+                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_auxiliar_0, $fun_auxiliar_1,$fun_auxiliar_4,$fun_auxiliar_3).'" alt="Logo">
+                       <br>'.$fun_auxiliar_0.'
+                   </td>
+                </tr>
+
+
+                <!--Aqui la Firma de Marco Mendoza encargado RPCE-->
+                <!--
+                <tr>
+                    <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> RPCE:</b> </td>
+                </tr>
+                <tr>
+                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_rpc_0, $fun_rpc_1,$fun_rpc_4,$fun_rpc_3).'" alt="Logo">
+                        <br>'.$fun_rpc_0.'
+                    </td>
+                 </tr>
+                 -->
+            </table>';
+        }
       }
 
 
@@ -381,7 +438,7 @@ class RComiteEvaluacionGR extends  ReportePDF
     //
     // }
     function generarImagen($nom, $car, $ofi, $fecha){
-        $cadena_qr = 'Nombre: '.$nom. "\n" . 'Cargo: '.$car."\n".'Fecha: '.$fecha ;
+        $cadena_qr = 'Nombre: '.$nom. "\n" . 'Cargo: '.$car."\n".'Oficina: '.$fecha ;
         $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
         $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
         $im = imagecreatefromstring($png);

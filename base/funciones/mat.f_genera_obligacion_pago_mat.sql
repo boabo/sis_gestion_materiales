@@ -43,9 +43,10 @@ DECLARE
 	v_compra						record;
 	v_id_funcionario_adquisiciones	integer;
     v_suma_data						record;
+	v_fecha_nuevo_flujo				date;
 
 BEGIN
-
+	v_fecha_nuevo_flujo = pxp.f_get_variable_global('fecha_nuevo_flujo_gm')::date;
 	v_nombre_funcion='mat.f_genera_obligacion_pago_mat';
 
 
@@ -93,32 +94,37 @@ BEGIN
             WHERE ts.id_solicitud = p_id_solicitud;
 
 
-
-            /*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
-            SELECT  twf.id_funcionario,
-                    twf.fecha_reg
-                  into  v_compra
-            FROM wf.testado_wf twf
-            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-            INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-            WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf
-            AND te.codigo = 'cotizacion'
-            GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
-
-            SELECT  twf.id_funcionario
-          	INTO
-                  v_id_funcionario_adquisiciones
-            FROM wf.testado_wf twf
-                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'cotizacion'
-                and v_registros_solicitud_mat.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
-                GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
-                ORDER BY  twf.fecha_reg DESC
-				LIMIT 1;
-			/****************************************************************************/
-
+            if (v_registros_solicitud_mat.fecha_solicitud >= v_fecha_nuevo_flujo) then
+            	/*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
+                SELECT  twf.id_funcionario
+                INTO
+                      v_id_funcionario_adquisiciones
+                FROM wf.testado_wf twf
+                    INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                    INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                    INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                    WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'revision_tecnico_abastecimientos'
+                    and v_registros_solicitud_mat.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                    GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
+                    ORDER BY  twf.fecha_reg DESC
+                    LIMIT 1;
+                /****************************************************************************/
+            else
+            	/*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
+                SELECT  twf.id_funcionario
+                INTO
+                      v_id_funcionario_adquisiciones
+                FROM wf.testado_wf twf
+                    INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                    INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                    INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                    WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'cotizacion'
+                    and v_registros_solicitud_mat.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                    GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
+                    ORDER BY  twf.fecha_reg DESC
+                    LIMIT 1;
+                /****************************************************************************/
+            end if;
 
 
     		if (v_registros_solicitud_mat.origen_pedido = 'Reparación de Repuestos') then

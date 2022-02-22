@@ -46,6 +46,12 @@ class ROrdenDeReparacionExterior extends  ReportePDF
           $fun_preparado_1 = $fir_rpce[1];
           $fun_preparado_3 = $fir_rpce[3];
           $fun_preparado_4 = $fir_rpce[4];
+
+          if (trim($fun_preparado_3) == 'Boliviana de Aviación - BoA') {
+            $fun_preparado_4 = $fun_preparado_3;
+          }
+
+
         }
 
         $tb_funcio ='<table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">

@@ -113,107 +113,180 @@ class RConformidadActaFinal extends  ReportePDF
             </tr>';
         }
 
-        $html = <<<EOF
-                      <style>
-                      table, th, td {
-                          border: 1px solid black;
-                          border-collapse: collapse;
-                          font-family: "Times New Roman";
-                          font-size: 11pt;
-                      }
-                      </style>
-                      <body>
-                      <table border="1">
-                            <tr>
-                                <td width="65%"><b>Verificado Por:  </b>$nombre_solicitante<br></td>
-                                <td width="35%"> <b>Fecha de Conformidad:  </b>$fecha_conformidad_final<br></td>
-                              </tr>
-                            <tr>
-                                <td width="100%"> <b>Número de Trámite:  </b>$num_tramite<br></td>
-
-                              </tr>
-                            <tr>
-                                <td width="100%"> <b>Proveedor:  </b>$proveedor<br></td>
-                              </tr>
-
-                              $columanPo
-
-                              $columanFecha
+        if ($this->datos[0]['aplica_nuevo_flujo'] == 'si') {
+          $html .= '<style>
+                        table, th, td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                            font-family: "Times New Roman";
+                            font-size: 11pt;
+                        }
+                        </style>
+                        <body>
+                        <table border="1">
                               <tr>
-                                <td width="100%"> <b>Conformidad:  </b>$conformidad_final<br></td>
-                              </tr>
+                                  <td width="65%"><b>Verificado Por:  </b>'.$nombre_solicitante.'<br></td>
+                                  <td width="35%"> <b>Fecha de Conformidad:  </b>'.$fecha_conformidad_final.'<br></td>
+                                </tr>
                               <tr>
-                                <td width="100%" align="justify"  colspan="2">
-                                En cumplimiento al Reglamento Específico de las Normas Básicas del Sistema de Administración de Bienes y Servicios de la Empresa,  doy conformidad a lo solicitado.
-                                <br><br>
-                                <table border="0">
+                                  <td width="100%"> <b>Número de Trámite:  </b>'.$num_tramite.'<br></td>
+
+                                </tr>
+                              <tr>
+                                  <td width="100%"> <b>Proveedor:  </b>'.$proveedor.'<br></td>
+                                </tr>
+
+                                '.$columanPo.'
+
+                                '.$columanFecha.'
                                 <tr>
-                                       <td width="5%" align="center"><b>Nro</b></td>
-                                       <td width="38%" align="center"><b>Concepto</b></td>
-                                       <td width="38%" align="center"><b>Descripción</b></td>
-                                       <td width="18%" align="center"><b>Cantidad Adj.</b></td>
+                                  <td width="100%"> <b>Conformidad:  </b>'.$conformidad_final.'<br></td>
+                                </tr>
+                                <tr>
+                                  <td width="100%" align="justify"  colspan="2">
+                                  En cumplimiento al Reglamento Específico de las Normas Básicas del Sistema de Administración de Bienes y Servicios de la Empresa,  doy conformidad a lo solicitado.
+                                  <br><br>
+                                  <table border="0">
+                                  <tr>
+                                         <td width="5%" align="center"><b>Nro</b></td>
+                                         <td width="38%" align="center"><b>Concepto</b></td>
+                                         <td width="38%" align="center"><b>Descripción</b></td>
+                                         <td width="18%" align="center"><b>Cantidad Adj.</b></td>
 
-                               </tr>
+                                 </tr>
 
-                                $columasconcepto
-                                 </table>
+                                  '.$columasconcepto.'
+                                   </table>
 
-                                <br><br>
-                                El mismo cumple con las características y condiciones requeridas, en calidad y cantidad. La cuál fue adquirida considerando criterios de economía para la obtención de los mejores precios del mercado.
-                                <br><br>
-                                En conformidad de lo anteriormente mencionado firmo a continuación:
-                                </td>
+                                  <br><br>
+                                  El mismo cumple con las características y condiciones requeridas, en calidad y cantidad. La cuál fue adquirida considerando criterios de economía para la obtención de los mejores precios del mercado.
+                                  <br><br>
+                                  En conformidad de lo anteriormente mencionado firmo a continuación:
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="100%" align="center"  colspan="2">
+                                      <b>Técnico Abastecimiento:</b>
+                                    </td>
+                                </tr>
+
+                              <tr>
+                                  <td width="100%" align="center"  colspan="2">   <br><br>
+                                      <img  style="width: 80px;" src="'.$url_firma.'" alt="Logo">
+                                      <br>
+                                      <br>
+                                        '.$nombre_usuario_firma.'
+                                      <br>
+                                  </td>
                               </tr>
 
                               <tr>
-                                  <td width="50%" align="center"  colspan="2">
-                                      <b>Jefe de Unidad de Abastecimiento:</b>
+                                  <td width="100%"> <b>Observaciones:  </b>'.$observaciones.'<br></td>
+                                </tr>
+                          </table>
+                          </body>';
+        } else {
+          $html .= '<style>
+                        table, th, td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                            font-family: "Times New Roman";
+                            font-size: 11pt;
+                        }
+                        </style>
+                        <body>
+                        <table border="1">
+                              <tr>
+                                  <td width="65%"><b>Verificado Por:  </b>'.$nombre_solicitante.'<br></td>
+                                  <td width="35%"> <b>Fecha de Conformidad:  </b>'.$fecha_conformidad_final.'<br></td>
+                                </tr>
+                              <tr>
+                                  <td width="100%"> <b>Número de Trámite:  </b>'.$num_tramite.'<br></td>
+
+                                </tr>
+                              <tr>
+                                  <td width="100%"> <b>Proveedor:  </b>'.$proveedor.'<br></td>
+                                </tr>
+
+                                '.$columanPo.'
+
+                                '.$columanFecha.'
+                                <tr>
+                                  <td width="100%"> <b>Conformidad:  </b>'.$conformidad_final.'<br></td>
+                                </tr>
+                                <tr>
+                                  <td width="100%" align="justify"  colspan="2">
+                                  En cumplimiento al Reglamento Específico de las Normas Básicas del Sistema de Administración de Bienes y Servicios de la Empresa,  doy conformidad a lo solicitado.
+                                  <br><br>
+                                  <table border="0">
+                                  <tr>
+                                         <td width="5%" align="center"><b>Nro</b></td>
+                                         <td width="38%" align="center"><b>Concepto</b></td>
+                                         <td width="38%" align="center"><b>Descripción</b></td>
+                                         <td width="18%" align="center"><b>Cantidad Adj.</b></td>
+
+                                 </tr>
+
+                                  '.$columasconcepto.'
+                                   </table>
+
+                                  <br><br>
+                                  El mismo cumple con las características y condiciones requeridas, en calidad y cantidad. La cuál fue adquirida considerando criterios de economía para la obtención de los mejores precios del mercado.
+                                  <br><br>
+                                  En conformidad de lo anteriormente mencionado firmo a continuación:
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%" align="center"  colspan="2">
+                                        <b>Jefe de Unidad de Abastecimiento:</b>
+                                    </td>
+
+                                    <td width="50%" align="center"  colspan="2">
+                                      <b>Técnico:</b>
+                                    </td>
+                                </tr>
+
+                              <tr>
+                                  <td width="50%" align="center"  colspan="2">   <br><br>
+                                      <img  style="width: 80px;" src="'.$url_firma_jefe_abastecimiento.'" alt="Logo">
+                                      <br>
+                                      <br>
+                                      '.$nombre_jefe_abastecimiento.'
+                                      <br>
                                   </td>
 
-                                  <td width="50%" align="center"  colspan="2">
-                                    <b>Técnico:</b>
+                                  <td width="50%" align="center"  colspan="2">   <br><br>
+                                      <img  style="width: 80px;" src="'.$url_firma.'" alt="Logo">
+                                      <br>
+                                      <br>
+                                        '.$nombre_usuario_firma.'
+                                      <br>
                                   </td>
                               </tr>
 
-                            <tr>
-                                <td width="50%" align="center"  colspan="2">   <br><br>
-                                    <img  style="width: 80px;" src="$url_firma_jefe_abastecimiento" alt="Logo">
-                                    <br>
-                                    <br>
-                                    $nombre_jefe_abastecimiento
-                                    <br>
-                                </td>
-
-                                <td width="50%" align="center"  colspan="2">   <br><br>
-                                    <img  style="width: 80px;" src="$url_firma" alt="Logo">
-                                    <br>
-                                    <br>
-                                      $nombre_usuario_firma
-                                    <br>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td width="100%" align="center"  colspan="2">
-                                  <b>Encargado Almacen:</b>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td width="100%" align="center"  colspan="2">   <br><br>
-                                    <img  style="width: 80px;" src="$url_firma_encargado_almacen" alt="Logo">
-                                    <br><br>
-                                      $encargado_almacen
-                                    <br>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td width="100%"> <b>Observaciones:  </b>$observaciones<br></td>
+                              <tr>
+                                  <td width="100%" align="center"  colspan="2">
+                                    <b>Encargado Almacen:</b>
+                                  </td>
                               </tr>
-                        </table>
-                        </body>
-EOF;
+
+                              <tr>
+                                  <td width="100%" align="center"  colspan="2">   <br><br>
+                                      <img  style="width: 80px;" src="'.$url_firma_encargado_almacen.'" alt="Logo">
+                                      <br><br>
+                                        '.$encargado_almacen.'
+                                      <br>
+                                  </td>
+                              </tr>
+
+                              <tr>
+                                  <td width="100%"> <b>Observaciones:  </b>'.$observaciones.'<br></td>
+                                </tr>
+                          </table>
+                          </body>';
+        }
 
                           $this->setY($this->customy);
                           $this->writeHTML($html);

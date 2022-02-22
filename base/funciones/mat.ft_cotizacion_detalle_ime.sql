@@ -72,7 +72,7 @@ BEGIN
         begin
 
         	/*Aqui aumentamos esta condicion para que se inserte nuevas partes tanto en la cotizacion como Referencial*/
-            select nextval('mat.tdetalle_sol_id_detalle_seq') into v_id_detalle;
+            /*select nextval('mat.tdetalle_sol_id_detalle_seq') into v_id_detalle;
 
                 /*Aqui realizamos la inserccion*/
                 /*Recuperamos el id _gestion para recuperar el centro de costo (Ismael Valdivia 29/04/2020)*/
@@ -178,7 +178,7 @@ BEGIN
                          -----
 
 
-                  end if;
+                  end if;*/
                   /****************************************************************************************************************************/
 
             /**********************************************************************************************************/
@@ -186,7 +186,7 @@ BEGIN
         	--Sentencia de la insercion
         	insert into mat.tcotizacion_detalle(
 			id_cotizacion,
-			id_detalle,
+			--id_detalle,
 			id_solicitud,
 			cantidad_det,
 			precio_unitario,
@@ -211,7 +211,7 @@ BEGIN
             id_unidad_medida_cot
           	) values(
 			v_parametros.id_cotizacion,
-			v_id_detalle,--v_parametros.id_detalle,
+			--v_id_detalle,--v_parametros.id_detalle,
 			v_parametros.id_solicitud,
 			v_parametros.cantidad_det,
 			v_parametros.precio_unitario,
@@ -734,7 +734,7 @@ END;
 $body$
 LANGUAGE 'plpgsql'
 VOLATILE
-CALLED ON NULL INPUT 
+CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
 

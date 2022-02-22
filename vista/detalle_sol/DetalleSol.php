@@ -691,7 +691,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								origen:'CENTROCOSTO',
 								allowBlank: false ,
 								gdisplayField:'desc_centro_costo',
-								disabled: false,
+								disabled: true,
 								width: 200,
 								gwidth: 200,
 								style: {
@@ -713,6 +713,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								sysorigen: 'sis_contabilidad',
 								origen: 'OT' ,
 								width: 200,
+								disabled: true,
 								fieldLabel: '<b style="color:#0003B0; font-size:12px;">Orden Trabajo</b>',
 								allowBlank: false,
 								renderer:function(value, p, record){return String.format('{0}', record.data['desc_orden_trabajo']);},
@@ -768,6 +769,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								queryDelay: 1000,
 								width: 200,
 								listWidth:'500',
+								disabled: true,
 								gwidth: 350,
 								minChars: 2,
 								renderer : function(value, p, record) {
@@ -964,7 +966,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_detalle',
 		direction: 'ASC'
 	},
-	bdel:true,
+	bdel:false,
 	bsave:false,
 	btest: false,
   bnew: false,
@@ -973,13 +975,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             this.maestro = m;
 						this.store.baseParams.tipo_tramite = m.nro_tramite.substr(0, 2);
 						var tb =this.tbar;
-						console.log("aqui llega el maestro",this);
-						//Aqui para oculatar el boton new
-						/*if (m.nro_tramite.substr(0, 2) == 'GM' && (tb.items.get('b-new-' + this.idContenedor) != undefined && tb.items.get('b-new-' + this.idContenedor) != '')){
-								//Phx.vista.MovimientoEntidad.superclass.preparaMenu.call(this);
-								tb.items.get('b-new-' + this.idContenedor).hide();//Ext.getCmp('grupo_alkym').hide();
-								tb.items.get('b-del-' + this.idContenedor).hide();
-						}*/
+						this.interfaz_padre = Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.tipo_interfaz;
+
 
 						if (this.maestro.estado == 'borrador') {
 							this.Cmp.nro_parte_alterno.setDisabled(false);
@@ -998,6 +995,28 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 							this.Cmp.id_orden_trabajo.allowBlank = false;
 						}
 
+						if (this.interfaz_padre == 'VistoBueno') {
+							this.Cmp.precio_unitario.allowBlank = true;
+							this.ocultarComponente(this.Cmp.precio_unitario);
+							this.ocultarComponente(this.Cmp.precio_total);
+							console.log("aqui llega datos");
+							this.Cmp.id_concepto_ingas.setDisabled(false);
+							this.Cmp.id_centro_costo.setDisabled(false);
+							this.Cmp.id_orden_trabajo.setDisabled(false);
+
+							this.Cmp.id_concepto_ingas.allowBlank = false;
+							this.Cmp.id_centro_costo.allowBlank = false;
+							this.Cmp.id_orden_trabajo.allowBlank = false;
+
+						} else {
+							this.Cmp.precio_unitario.allowBlank = false;
+							this.mostrarComponente(this.Cmp.precio_unitario);
+							this.mostrarComponente(this.Cmp.precio_total);
+							this.Cmp.id_concepto_ingas.setDisabled(true);
+							this.Cmp.id_centro_costo.setDisabled(true);
+							this.Cmp.id_orden_trabajo.setDisabled(true);
+						}
+
 
 						//console.log("llega aqui el dato para esconder",m.nro_tramite.substr(0, 2));
 						if (m.nro_tramite.substr(0, 2) == 'GR') {
@@ -1013,6 +1032,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
         loadValoresIniciales: function () {
             this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
             Phx.vista.DetalleSol.superclass.loadValoresIniciales.call(this);
+
         },
     preparaMenu:function(n){
         var tb =this.tbar;
@@ -1024,6 +1044,13 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				this.Cmp.id_centro_costo.store.baseParams.id_gestion = this.maestro.id_gestion;
 				this.Cmp.id_centro_costo.store.baseParams.codigo_subsistema = 'ADQ';
 
+				if (this.interfaz_padre == 'VistoBueno') {
+						if(this.maestro.estado == 'revision_tecnico_abastecimientos' || this.maestro.estado == 'cotizacion' || this.maestro.estado == 'cotizacion_solicitada'){
+
+						}else{
+							this.getBoton('edit').disable();
+						}
+				}
         return tb;
     },
 
@@ -1050,7 +1077,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				this.Cmp.id_producto_alkym.setValue(rec.data.idproducto);
 
 				this.Cmp.descripcion.setValue(rec.data.descripcion);
-				console.log("aqui llega el rec seleccionado PN",rec);
 				this.Cmp.id_unidad_medida.store.baseParams.id_unidad_medida = rec.data.idunidadmedida;
 
 				this.Cmp.id_unidad_medida.store.load({params:{start:0,limit:50},
@@ -1079,13 +1105,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
 			}, this);
 			/******************************************/
-
-
-
-
-
-
-
 			if (this.store.baseParams.tipo_tramite == 'GR') {
 				this.mostrarComponente(this.Cmp.serial);
 				this.ocultarComponente(this.Cmp.referencia);

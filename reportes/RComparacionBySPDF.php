@@ -130,6 +130,25 @@ EOF;
 
         }
 
+        /*Aumentando para sacar la firma de erick*/
+        if($this->datos[0]["funcionario_auxiliar_abas"] != '') {
+
+          if ($this->datos[0]["funcionario_auxiliar_abas"] == '') {
+            $funcionario_auxiliar = '';
+            $qr4 =  '';
+            $fun_auxiliar = '';
+          } else {
+            $funcionario_auxiliar = $this->datos[0]["funcionario_auxiliar_abas"];
+            $qr4 =  $this->generarImagen($funcionario_auxiliar);
+            $fun_auxiliar = explode('|', $funcionario_auxiliar);
+          }
+
+
+        }
+        /***********************************************/
+
+
+
         $nro_items = $this->datos[0]["nro_items"];
         $adjudicado = $this->datos[0]["adjudicado"];
         $motivo_solicitud = $this->datos[0]["motivo_solicitud"];
@@ -304,43 +323,89 @@ EOF;
                                     </table>
                                     ';
                   } else {
-                    $tbl.=      ' <br>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
-                                        <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Deparatamento de Abastecimientos:</b> </td>
-                                         <!--<td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>-->
-                                    </tr>
-                                    <tr>
-                                        <td align="center" style="font-family: Calibri; font-size: 9px;">
-                                            <br><br>
-                                            <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
-                                            <br>'.$fun_admi[0].' <b>Vo.Bo</b>
+
+                    if ($this->datos[0]["nuevo_flujo"] == 'si') {
+
+                      $tbl.=      ' <br>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> '.$fun_auxiliar[1].':</b> </td>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> '.$fun_sol[1].':</b> </td>
+                                      </tr>
+                                      <tr>
+
+                                          <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                              <br><br>
+                                              <img  style="width: 95px; height: 95px;" src="' .$qr4. '" alt="Logo">
+                                              <br>'.$fun_auxiliar[0].' <b>SOLICITANTE</b>
+                                          </td>
+
+                                          <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                              <br><br>
+                                              <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
+                                              <br>'.$fun_sol[0].' <b>VoBo</b>
+                                          </td>
+
+                                       </tr>
+                                       <tr>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> '.$fun_admi[1].':</b><br></td>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> '.$fun_presu[1].':</b><br></td>
+                                      </tr>
+                                       <tr>
+                                       <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                          <br><br>
+                                          <img  style="width: 95px; height: 95px;" src="' . $qr2 . '" alt="Logo">
+                                           <br>'.$fun_admi[0].' <b>VoBo</b>
                                         </td>
                                         <td align="center" style="font-family: Calibri; font-size: 9px;">
-                                            <br><br>
-                                            <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
-                                            <br>'.$fun_sol[0].' <b>'.$solicitante.'</b>
+                                           <br><br>
+                                           <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                            <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
+                                         </td>
+                                      </tr>
+                                      </table>
+                                      ';
+                    } else {
+                      $tbl.=      ' <br>
                                         </td>
-                                         <!--<td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
-                                        <br><br>
-                                        <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
-                                         <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
-                                        </td>-->
-                                     </tr>
-                                     <tr>
-                                        <td style="font-family: Calibri; font-size: 9px; text-align: center;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
-                                    </tr>
-                                     <tr>
-                                     <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
-                                        <br><br>
-                                        <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
-                                         <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
-                                        </td>
-                                    </tr>
-                                    </table>
-                                    ';
+                                      </tr>
+                                      <tr>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Gerencia Administrativa Financiera:</b> </td>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Deparatamento de Abastecimientos:</b> </td>
+                                           <!--<td style="font-family: Calibri; font-size: 9px;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>-->
+                                      </tr>
+                                      <tr>
+                                          <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                              <br><br>
+                                              <img  style="width: 95px; height: 95px;" src="' .$qr2. '" alt="Logo">
+                                              <br>'.$fun_admi[0].' <b>Vo.Bo</b>
+                                          </td>
+                                          <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                              <br><br>
+                                              <img  style="width: 95px; height: 95px;" src="' . $qr . '" alt="Logo">
+                                              <br>'.$fun_sol[0].' <b>'.$solicitante.'</b>
+                                          </td>
+                                           <!--<td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                          <br><br>
+                                          <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                           <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
+                                          </td>-->
+                                       </tr>
+                                       <tr>
+                                          <td style="font-family: Calibri; font-size: 9px; text-align: center;" colspan="2"><b> Autorización de inicio de proceso RPCE:</b><br></td>
+                                      </tr>
+                                       <tr>
+                                       <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                          <br><br>
+                                          <img  style="width: 95px; height: 95px;" src="' . $qr3 . '" alt="Logo">
+                                           <br>'.$fun_presu[0].' <b>'.$RPCE.'</b>
+                                          </td>
+                                      </tr>
+                                      </table>
+                                      ';
+                    }
+
                   }
 
 
@@ -432,7 +497,7 @@ EOF;
         }
 
         $nombre_archivo.= trim($separando_infor[2]);
-        /*************************************/        
+        /*************************************/
 
         $funcionario_qr =  'Funcionario: '.$separando_infor[0]. "\n";
         $cargo_qr =  'Cargo: '.$separando_infor[1]. "\n";

@@ -65,7 +65,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
             this.addButton('ant_estado',{
-                grupo: [3,4,2],//2
+                grupo: [3,4,2,50],//2
                 argument: {estado: 'anterior'},
                 text: 'Anterior',
                 iconCls: 'batras',
@@ -84,7 +84,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             /*Aumentando para que se cambie el icono*/
             this.addButton('autorizar',{
-                grupo: [8],//2
+                grupo: [8,50],//2
                 text:'Autorizar',
                 iconCls: 'bball_green',
                 disabled:true,
@@ -95,14 +95,14 @@ header("content-type: text/javascript; charset=UTF-8");
             /****************************************/
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
-                grupo: [0,1,2,3,4,5,6,7],
+                grupo: [0,1,2,3,4,5,6,7,50,51],
                 iconCls: 'bchecklist',
                 disabled: true,
                 handler: this.loadCheckDocumentosRecWf,
                 tooltip: '<b>Documentos </b><br/>Subir los documetos requeridos.'
             });
             this.addButton('btnObs',{
-                grupo:[2,3,4],
+                grupo:[2,3,4,50,51],
                 text :'Obs Wf.',
                 iconCls : 'bchecklist',
                 disabled: true,

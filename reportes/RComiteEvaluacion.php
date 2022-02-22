@@ -246,6 +246,22 @@ $tb .= '<table border="1">
 
             $CuartaFirma = $this->codigoQr('Funcionario: '.$nombre_rpcs_fun."\n".'Cargo: '.$cargo_rpcs."\n".'Nro Trámite: '.$tramite_rpcs."\n".'Institución: '.$institucion_rpcs."\n".'Fecha: '.$fecha_rpcs, 'cuarto');
         }
+
+        /*Aumentando la firma del tecnico de abastecimiento (Ismael Valdivia 16/02/2022)*/
+        if($this->datos[0]['firma_tecnico_abastecimiento'] != '') {
+            $firma_tecnico_abas = $this->datos[0]['firma_tecnico_abastecimiento'];
+            $tecnico_abastecimiento = explode('|', $firma_tecnico_abas);
+            $nombre_tecnico_abastecimiento = $tecnico_abastecimiento[0];
+            $cargo_tecnico_abastecimiento = $tecnico_abastecimiento[1];
+            $tramite_tecnico_abastecimiento = strtoupper($tecnico_abastecimiento[2]);
+            $institucion_abastecimiento = $tecnico_abastecimiento[3];
+            $fecha_tecnico_abastacieminto = $this->datos[0]['fecha_pres'];
+
+            $firma_qr_tecnico_abastecimiento = $this->codigoQr('Funcionario: '.$nombre_tecnico_abastecimiento."\n".'Cargo: '.$cargo_tecnico_abastecimiento."\n".'Nro Trámite: '.$tramite_tecnico_abastecimiento."\n".'Institución: '.$institucion_abastecimiento."\n".'Fecha: '.$fecha_tecnico_abastacieminto, 'quinta');
+        }
+        /********************************************************************************/
+
+
         //if(  $this->datos[0]["estado_materiales"] != 'comite_aeronavegabilidad' and $this->datos[0]["estado_materiales"] != 'comite_unidad_abastecimientos') {
 //      var_dump('llega' , $this->datos[0]['fecha_solicitud']);exit;
 //      inicia desde el 01-06-2019 para nueva firma del funcionario responsable del tramite
@@ -309,38 +325,82 @@ $tb .= '<table border="1">
           }
 
         } else {
-          $firmas ='
+
+          if ($this->datos[0]['firma_tecnico_abastecimiento'] != '') {
+            $firmas ='
+           <table border="2">
+             <tbody>
+            <tr>
+
+                    <td style="font-family: Calibri;font-size: 11px"align="center"><b>Técnico Abastecimientos</b><br>'.$tecnico_abastecimiento[0].'</td>
+                    '.$v_tit.'
+
+
+
+            </tr>
+            <tr>
+
+                    <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $firma_qr_tecnico_abastecimiento . '" alt="Logo"><br></td>
+                    '.$v_firma.'
+             </tr>
+             </tbody>
+            </table>
+            ';
+          } else {
+            $firmas ='
+           <table border="2">
+             <tbody>
+            <tr>
+                    <!-- <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td> -->
+                    <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_rev[1].'</b><br>'.$fun_rev[0].'</td>
+            </tr>
+            <tr>
+                    <!-- <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $segundaFirma . '" alt="Logo"><br></td> -->
+                    <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $primeraFirma . '" alt="Logo"><br></td>
+             </tr>
+             </tbody>
+            </table>
+            ';
+          }
+
+
+        }
+
+        $fun_presu = explode('|', $aero);
+        if ($this->datos[0]['firma_tecnico_abastecimiento'] != '') {
+          $firmas2 ='
          <table border="2">
            <tbody>
           <tr>
-                  <!-- <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_abas[1].'</b><br>'.$fun_abas[0].'</td> -->
                   <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_rev[1].'</b><br>'.$fun_rev[0].'</td>
+                  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_aero[1].'</b><br>'.$fun_aero[0].'</td>
+
           </tr>
           <tr>
-                  <!-- <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $segundaFirma . '" alt="Logo"><br></td> -->
                   <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $primeraFirma . '" alt="Logo"><br></td>
+                  <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"></td>
+
+           </tr>
+           </tbody>
+          </table>
+          ';
+        } else {
+          $firmas2 ='
+         <table border="2">
+           <tbody>
+          <tr>
+                  <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_aero[1].'</b><br>'.$fun_aero[0].'</td>
+                  '.$v_tit.'
+          </tr>
+          <tr>
+                  <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"></td>
+                  '.$v_firma.'
            </tr>
            </tbody>
           </table>
           ';
         }
 
-        $fun_presu = explode('|', $aero);
-
-        $firmas2 ='
-       <table border="2">
-         <tbody>
-        <tr>
-                <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_aero[1].'</b><br>'.$fun_aero[0].'</td>
-                '.$v_tit.'
-        </tr>
-        <tr>
-                <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $terceraFirma . '" alt="Logo"></td>
-                '.$v_firma.'
-         </tr>
-         </tbody>
-        </table>
-        ';
         // $pie='<table border="1">
         //     <tr>';
         // if ($this->datos[0]["codigo_pres"] == 'vbrpc' or $this->datos[0]["codigo_pres"] == 'suppresu'or $this->datos[0]["codigo_pres"] == 'vbgaf' or $this->datos[0]["codigo_pres"] == 'vbpresupuestos') {
