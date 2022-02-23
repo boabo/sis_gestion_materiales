@@ -85,20 +85,20 @@ class ACTSolicitud extends ACTbase{
         if ($this->objParam->getParametro('tipo_interfaz') == 'ConsultaRequerimientos' ) {
 
             if ($this->objParam->getParametro('pes_estado') == 'consulta_op') {
-                $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''borrador'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
             }
             if ($this->objParam->getParametro('pes_estado') == 'consulta_mal') {
-                $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''borrador'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
             }
             if ($this->objParam->getParametro('pes_estado') == 'consulta_ab') {
-                $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''borrador'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
             }
             if ($this->objParam->getParametro('pes_estado') == 'consulta_ceac') {
-                $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''borrador'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''departamento_ceac'',''comite_dpto_abastecimientos'')");
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''departamento_ceac'',''comite_dpto_abastecimientos'')");
             }
             /*Aumentando para listar las solicitudes de reparaciones*/
             if ($this->objParam->getParametro('pes_estado') == 'consulta_repu') {
-                $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''borrador'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''departamento_ceac'',''comite_dpto_abastecimientos'')");
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''departamento_ceac'',''comite_dpto_abastecimientos'')");
             }
             /********************************************************/
         }
@@ -110,7 +110,7 @@ class ACTSolicitud extends ACTbase{
            }
 
            if($this->objParam->getParametro('pes_estado') == 'pedido_iniciado'){
-             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''compra'',''despachado''))");             
+             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''compra'',''despachado''))");
            }
         }
         if ($this->objParam->getParametro('tipo_interfaz') == 'SolicitudvoboComite') {
