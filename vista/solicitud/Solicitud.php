@@ -1700,6 +1700,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tipo_de_adjudicacion', type: 'string'},
             {name:'remark', type: 'string'},
             {name:'id_obligacion_pago', type: 'numeric'},
+            {name:'nuevo_flujo', type: 'numeric'},
 
 
         ],

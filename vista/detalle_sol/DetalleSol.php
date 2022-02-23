@@ -999,7 +999,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 							this.Cmp.precio_unitario.allowBlank = true;
 							this.ocultarComponente(this.Cmp.precio_unitario);
 							this.ocultarComponente(this.Cmp.precio_total);
-							console.log("aqui llega datos");
 							this.Cmp.id_concepto_ingas.setDisabled(false);
 							this.Cmp.id_centro_costo.setDisabled(false);
 							this.Cmp.id_orden_trabajo.setDisabled(false);
@@ -1009,12 +1008,27 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 							this.Cmp.id_orden_trabajo.allowBlank = false;
 
 						} else {
-							this.Cmp.precio_unitario.allowBlank = false;
-							this.mostrarComponente(this.Cmp.precio_unitario);
-							this.mostrarComponente(this.Cmp.precio_total);
-							this.Cmp.id_concepto_ingas.setDisabled(true);
-							this.Cmp.id_centro_costo.setDisabled(true);
-							this.Cmp.id_orden_trabajo.setDisabled(true);
+
+							if (this.maestro.nuevo_flujo == 'si') {
+								this.Cmp.precio_unitario.allowBlank = false;
+								this.mostrarComponente(this.Cmp.precio_unitario);
+								this.mostrarComponente(this.Cmp.precio_total);
+								this.Cmp.id_concepto_ingas.setDisabled(true);
+								this.Cmp.id_centro_costo.setDisabled(true);
+								this.Cmp.id_orden_trabajo.setDisabled(true);
+							} else {
+								this.Cmp.precio_unitario.allowBlank = false;
+								this.mostrarComponente(this.Cmp.precio_unitario);
+								this.mostrarComponente(this.Cmp.precio_total);
+								this.Cmp.id_concepto_ingas.setDisabled(false);
+								this.Cmp.id_centro_costo.setDisabled(false);
+								this.Cmp.id_orden_trabajo.setDisabled(false);
+								this.Cmp.id_concepto_ingas.allowBlank = false;
+								this.Cmp.id_centro_costo.allowBlank = false;
+								this.Cmp.id_orden_trabajo.allowBlank = false;
+							}
+
+
 						}
 
 

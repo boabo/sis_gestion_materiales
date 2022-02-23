@@ -532,7 +532,14 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.remark::varchar,
                                 /**************************************************************************************/
 
-                                pag.id_obligacion_pago
+                                pag.id_obligacion_pago,
+
+                                (CASE
+                                     WHEN sol.fecha_solicitud::date >= '''||v_fecha_nuevo_flujo||'''::date  THEN
+                                     ''si''
+                                     ELSE
+                                     ''no''
+                                END)::varchar as nuevo_flujo
 
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
