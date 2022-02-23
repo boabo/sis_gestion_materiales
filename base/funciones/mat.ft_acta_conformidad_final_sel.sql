@@ -92,7 +92,7 @@ BEGIN
             INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'revision'
-            and twf.fecha_reg between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+            and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
             GROUP BY vf.desc_funcionario1,
                     vf.nombre_cargo,
                     twf.fecha_reg,
@@ -137,7 +137,7 @@ BEGIN
                    v_id_funcionario_almacen
             from orga.vfuncionario_cargo car
             where car.id_funcionario = v_funcionario_almacen
-            and v_fecha_reg_estado::date between car.fecha_asignacion and coalesce(car.fecha_finalizacion, now())
+            and v_fecha_solicitud::date between car.fecha_asignacion and coalesce(car.fecha_finalizacion, now())
             ORDER BY  car.fecha_asignacion DESC
             limit 1;
 
