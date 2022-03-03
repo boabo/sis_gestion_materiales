@@ -1013,9 +1013,10 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								this.Cmp.precio_unitario.allowBlank = false;
 								this.mostrarComponente(this.Cmp.precio_unitario);
 								this.mostrarComponente(this.Cmp.precio_total);
-								this.Cmp.id_concepto_ingas.setDisabled(true);
-								this.Cmp.id_centro_costo.setDisabled(true);
-								this.Cmp.id_orden_trabajo.setDisabled(true);
+								// {dev:bvasquez, date: 02/03/2022, desc: campos editables, a solicitud Grover velasquez}
+								this.Cmp.id_concepto_ingas.setDisabled(false);
+								this.Cmp.id_centro_costo.setDisabled(false);
+								this.Cmp.id_orden_trabajo.setDisabled(false);
 							} else {
 								this.Cmp.precio_unitario.allowBlank = false;
 								this.mostrarComponente(this.Cmp.precio_unitario);
