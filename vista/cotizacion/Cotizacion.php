@@ -980,7 +980,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 });
 
                 this.Seleccion(rec);
-
+                console.log("aqui llega el dato",rec);
                 if (rec.adjudicado == 'si') {
                   this.mostrarComponente(this.Cmp.id_condicion_entrega);
                   this.mostrarComponente(this.Cmp.id_forma_pago);
@@ -1010,7 +1010,7 @@ header("content-type: text/javascript; charset=UTF-8");
                   } else {
 
                     /*Aqui ponemos la condicion para saber de que sistema es el tramite*/
-                    if (this.origen_solicitud == 'control_mantenimiento') {
+                    //if (this.origen_solicitud == 'control_mantenimiento') {
                       this.mostrarComponente(this.Cmp.id_condicion_entrega);
                       this.mostrarComponente(this.Cmp.id_forma_pago);
                       this.ocultarComponente(this.Cmp.tipo_evaluacion);
@@ -1020,17 +1020,17 @@ header("content-type: text/javascript; charset=UTF-8");
                       this.mostrarComponente(this.Cmp.id_orden_destino);
                       console.log("aqui llega el grupo",Ext.getCmp('data_alkym'));
                       Ext.getCmp('data_alkym').el.dom.style.height = '580px';
-                    } else {
-                      this.ocultarComponente(this.Cmp.id_condicion_entrega);
-                      this.ocultarComponente(this.Cmp.id_forma_pago);
-                      this.ocultarComponente(this.Cmp.tipo_evaluacion);
-                      this.ocultarComponente(this.Cmp.id_modo_envio);
-                      this.ocultarComponente(this.Cmp.id_puntos_entrega);
-                      this.ocultarComponente(this.Cmp.id_tipo_transaccion);
-                      this.ocultarComponente(this.Cmp.id_orden_destino);
-                      Ext.getCmp('data_alkym').el.dom.style.height = '400px';
-                      //Ext.getCmp('data_alkym').show();
-                    }
+                    //} else {
+                    //   this.ocultarComponente(this.Cmp.id_condicion_entrega);
+                    //   this.ocultarComponente(this.Cmp.id_forma_pago);
+                    //   this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                    //   this.ocultarComponente(this.Cmp.id_modo_envio);
+                    //   this.ocultarComponente(this.Cmp.id_puntos_entrega);
+                    //   this.ocultarComponente(this.Cmp.id_tipo_transaccion);
+                    //   this.ocultarComponente(this.Cmp.id_orden_destino);
+                    //   Ext.getCmp('data_alkym').el.dom.style.height = '400px';
+                    //   //Ext.getCmp('data_alkym').show();
+                    // }
                     /******************************************************************/
                   }
 
