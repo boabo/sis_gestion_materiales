@@ -93,7 +93,6 @@ BEGIN
             left join wf.testado_wf est on est.id_estado_wf = ts.id_estado_wf
             WHERE ts.id_solicitud = p_id_solicitud;
 
-
             if (v_registros_solicitud_mat.fecha_solicitud >= v_fecha_nuevo_flujo) then
             	/*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
                 SELECT  twf.id_funcionario
@@ -108,6 +107,23 @@ BEGIN
                     GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
                     ORDER BY  twf.fecha_reg DESC
                     LIMIT 1;
+
+                if (v_id_funcionario_adquisiciones is null) then
+                	SELECT  twf.id_funcionario
+                    INTO
+                          v_id_funcionario_adquisiciones
+                    FROM wf.testado_wf twf
+                        INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                        INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                        WHERE twf.id_proceso_wf = v_registros_solicitud_mat.id_proceso_wf AND te.codigo = 'cotizacion'
+                        and v_registros_solicitud_mat.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                        GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg
+                        ORDER BY  twf.fecha_reg DESC
+                        LIMIT 1;
+                end if;
+
+
                 /****************************************************************************/
             else
             	/*Aumetnando condicion para recuperar al encargado asignado de adquisiciones*/
@@ -126,12 +142,7 @@ BEGIN
                 /****************************************************************************/
             end if;
 
-
     		if (v_registros_solicitud_mat.origen_pedido = 'Reparación de Repuestos') then
-
-
-
-
 
             --  RAC  02/08/2017
             --  marca la obligacion como comproemtido en funcion a variable global de adquisiciones
@@ -652,7 +663,7 @@ BEGIN
                            'siguiente',
                            p_id_usuario);
 
-					if (p_id_solicitud != 7528) then
+					if (p_id_solicitud not in (7528,7613) ) then
                        v_id_estado_actual =  wf.f_registra_estado_wf(  va_id_tipo_estado[1],
                                                                        null,
                                                                        p_id_estado_wf,
