@@ -43,7 +43,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('sig_estado').setVisible(true);
             this.getBoton('Archivado_concluido').setVisible(false);
             this.getBoton('clonar_solicitud').setVisible(false);
-            //this.getBoton('autorizar').setVisible(true);
+            
            // this.getBoton('Consulta_desaduanizacion').setVisible(false);
             //.getBoton('Control_aLmacene').setVisible(false);
             //this.getBoton('btnproveedor').setVisible(false);
@@ -122,7 +122,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 //this.getBoton('ini_estado').enable();
-                this.getBoton('autorizar').enable();
+                //this.getBoton('autorizar').enable();
                 this. enableTabDetalle();
             }
             return tb;

@@ -75,7 +75,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
             this.addButton('sig_estado',{
-                grupo: [0,2,3,4,6],//2
+                grupo: [0,2,3,4,6,50],//2
                 text:'Siguiente',
                 iconCls: 'badelante',
                 disabled:true,
@@ -84,7 +84,7 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             /*Aumentando para que se cambie el icono*/
             this.addButton('autorizar',{
-                grupo: [8,50],//2
+                grupo: [8],//2
                 text:'Autorizar',
                 iconCls: 'bball_green',
                 disabled:true,
