@@ -177,7 +177,7 @@ class RInformJustificacionRep extends  ReportePDF
             }
            }
 
-           if ($incluyeBer == 'SI') {
+           if ($incluyeBer == 'SI' && $this->datos[0]['evaluacion'] != 'Reparacion') {
              $tb.='<table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                      <tr>
                        <th></th>
