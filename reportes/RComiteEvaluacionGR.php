@@ -132,7 +132,7 @@ class RComiteEvaluacionGR extends  ReportePDF
         /*Aqui ponemos para marcar con X la condicion que corresponda (Ismael Valdivia 08/05/2020)*/
         if ($tipo == 'Compra') {
           $marcar_compra = 'X';
-        } elseif ($tipo == 'Reparacion') {
+        } elseif ($tipo == 'Reparacion' || $tipo == 'Calibracion') {
           $marcar_reparacion = 'X';
         } elseif ($tipo == 'Exchange' || $tipo == 'Flat Exchange') {
           $marcar_exchange = 'X';
