@@ -525,6 +525,40 @@ BEGIN
              end if;    */
             /*************************************************************************************/
            IF (v_parametros.adjudicado = 'si') then
+           	  /*Validamos la informacion para ver si falta datos que se envia al Alkym*/
+                if (v_parametros.codigo_condicion_entrega is null or v_parametros.codigo_condicion_entrega = '') then
+                	raise exception 'El campo <b>condicion de entrega</b> no puede ser Vacio favor verifique';
+                end if;
+
+                if (v_parametros.codigo_forma_pago is null or v_parametros.codigo_forma_pago = '') then
+                	raise exception 'El campo <b>forma de pago</b> no puede ser Vacio favor verifique';
+                end if;
+
+                if (v_parametros.codigo_modo_envio is null or v_parametros.codigo_modo_envio = '') then
+                	raise exception 'El campo <b>modo de envio</b> no puede ser Vacio favor verifique';
+                end if;
+
+                if (v_parametros.codigo_puntos_entrega is null or v_parametros.codigo_puntos_entrega = '') then
+                	raise exception 'El campo <b>puntos de entrega</b> no puede ser Vacio favor verifique';
+                end if;
+
+                if (v_parametros.codigo_tipo_transaccion is null or v_parametros.codigo_tipo_transaccion = '') then
+                	raise exception 'El campo <b>tipo transacciones</b> no puede ser Vacio favor verifique';
+                end if;
+
+                if (v_parametros.codigo_tipo_transaccion is null or v_parametros.codigo_tipo_transaccion = '') then
+                	raise exception 'El campo <b>tipo transacciones</b> no puede ser Vacio favor verifique';
+                end if;
+
+                if (v_parametros.codigo_orden_destino is null or v_parametros.codigo_orden_destino = '') then
+                	raise exception 'El campo <b>orden de destino</b> no puede ser Vacio favor verifique';
+                end if;
+           	  /************************************************************************/
+
+
+
+
+
             	update mat.tsolicitud set
                 id_proveedor = v_parametros.id_proveedor,
                 fecha_cotizacion = v_parametros.fecha_cotizacion,

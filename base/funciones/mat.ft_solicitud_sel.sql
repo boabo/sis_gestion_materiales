@@ -5377,7 +5377,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                   INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
                   INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                   WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision_tecnico_abastecimientos'
-                  and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+                  and v_fecha_solicitud::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                   GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
 
 
@@ -5407,7 +5407,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                   INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
                   INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                   WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'cotizacion'
-                  and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+                  and v_fecha_solicitud::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                   GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
 
 
@@ -5490,8 +5490,29 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
             INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'revision_tecnico_abastecimientos'
-            and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+            and v_fecha_solicitud::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
             GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
+
+            if (v_id_funcionario_oficial is null) then
+                SELECT  twf.id_funcionario,
+                        vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||COALESCE (to_char(twf.fecha_reg,'DD-MM-YYYY'),'')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                        vf.desc_funcionario1,
+                        to_char(twf.fecha_reg,'DD-MM-YYYY')as fecha_firma,
+                        vf.nombre_cargo
+                  INTO v_id_funcionario_oficial,
+                        v_funcionario_sol_oficial,
+                        v_funcionario_oficial,
+                        v_fecha_firma_pru,
+                        v_cargo_solicitante
+                FROM wf.testado_wf twf
+                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'cotizacion'
+                and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+                GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
+            end if;
+
 
              if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
             	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_oficial,v_fecha_solicitud);
@@ -5519,7 +5540,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
             INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'cotizacion'
-            and v_fecha_sol_rep between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+            and v_fecha_solicitud::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
             GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg;
 
              if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
