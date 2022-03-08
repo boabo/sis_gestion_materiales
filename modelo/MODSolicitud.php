@@ -1172,6 +1172,7 @@ class MODSolicitud extends MODbase
         $this->captura('observaciones_sol', 'varchar');
         //$this->captura('direccion_entrega', 'varchar');
         $this->captura('firma_rpc', 'varchar');
+        $this->captura('serial_original', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

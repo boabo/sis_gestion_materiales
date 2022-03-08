@@ -427,10 +427,12 @@ BEGIN
 
         begin
         select 	s.nro_tramite,
-        		s.id_solicitud
+        		s.id_solicitud,
+                s.origen_pedido
         into
         v_nro_tramite,
-        v_id_solicitud
+        v_id_solicitud,
+        v_origen_pedido
         from mat.tsolicitud s
        	where s.id_solicitud = v_parametros.id_solicitud;
 
@@ -526,32 +528,34 @@ BEGIN
             /*************************************************************************************/
            IF (v_parametros.adjudicado = 'si') then
            	  /*Validamos la informacion para ver si falta datos que se envia al Alkym*/
-                if (v_parametros.codigo_condicion_entrega is null or v_parametros.codigo_condicion_entrega = '') then
-                	raise exception 'El campo <b>condicion de entrega</b> no puede ser Vacio favor verifique';
-                end if;
+              	if ( v_origen_pedido != 'Reparación de Repuestos') then
+                  if (v_parametros.codigo_condicion_entrega is null or v_parametros.codigo_condicion_entrega = '') then
+                      raise exception 'El campo <b>condicion de entrega</b> no puede ser Vacio favor verifique';
+                  end if;
 
-                if (v_parametros.codigo_forma_pago is null or v_parametros.codigo_forma_pago = '') then
-                	raise exception 'El campo <b>forma de pago</b> no puede ser Vacio favor verifique';
-                end if;
+                  if (v_parametros.codigo_forma_pago is null or v_parametros.codigo_forma_pago = '') then
+                      raise exception 'El campo <b>forma de pago</b> no puede ser Vacio favor verifique';
+                  end if;
 
-                if (v_parametros.codigo_modo_envio is null or v_parametros.codigo_modo_envio = '') then
-                	raise exception 'El campo <b>modo de envio</b> no puede ser Vacio favor verifique';
-                end if;
+                  if (v_parametros.codigo_modo_envio is null or v_parametros.codigo_modo_envio = '') then
+                      raise exception 'El campo <b>modo de envio</b> no puede ser Vacio favor verifique';
+                  end if;
 
-                if (v_parametros.codigo_puntos_entrega is null or v_parametros.codigo_puntos_entrega = '') then
-                	raise exception 'El campo <b>puntos de entrega</b> no puede ser Vacio favor verifique';
-                end if;
+                  if (v_parametros.codigo_puntos_entrega is null or v_parametros.codigo_puntos_entrega = '') then
+                      raise exception 'El campo <b>puntos de entrega</b> no puede ser Vacio favor verifique';
+                  end if;
 
-                if (v_parametros.codigo_tipo_transaccion is null or v_parametros.codigo_tipo_transaccion = '') then
-                	raise exception 'El campo <b>tipo transacciones</b> no puede ser Vacio favor verifique';
-                end if;
+                  if (v_parametros.codigo_tipo_transaccion is null or v_parametros.codigo_tipo_transaccion = '') then
+                      raise exception 'El campo <b>tipo transacciones</b> no puede ser Vacio favor verifique';
+                  end if;
 
-                if (v_parametros.codigo_tipo_transaccion is null or v_parametros.codigo_tipo_transaccion = '') then
-                	raise exception 'El campo <b>tipo transacciones</b> no puede ser Vacio favor verifique';
-                end if;
+                  if (v_parametros.codigo_tipo_transaccion is null or v_parametros.codigo_tipo_transaccion = '') then
+                      raise exception 'El campo <b>tipo transacciones</b> no puede ser Vacio favor verifique';
+                  end if;
 
-                if (v_parametros.codigo_orden_destino is null or v_parametros.codigo_orden_destino = '') then
-                	raise exception 'El campo <b>orden de destino</b> no puede ser Vacio favor verifique';
+                  if (v_parametros.codigo_orden_destino is null or v_parametros.codigo_orden_destino = '') then
+                      raise exception 'El campo <b>orden de destino</b> no puede ser Vacio favor verifique';
+                  end if;
                 end if;
            	  /************************************************************************/
 

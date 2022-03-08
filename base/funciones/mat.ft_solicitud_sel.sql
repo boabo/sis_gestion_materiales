@@ -317,6 +317,7 @@ DECLARE
     v_funcionario_abas				varchar;
     v_id_funcionario_oficial_revision	integer;
     v_funcionario_oficial_revision		varchar;
+    v_serial_original				varchar;
 
 BEGIN
 
@@ -2785,6 +2786,27 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 ORDER BY  twf.fecha_reg DESC
                 limit 1;
 
+                if (v_id_funcionario_oficial is null) then
+                	SELECT 	twf.id_funcionario,
+                            vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                            vf.desc_funcionario1,
+                            to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+                      INTO v_id_funcionario_oficial,
+                            v_funcionario_sol_aux_abas,
+                            v_funcionario_oficial,
+                            v_fecha_firma_aux_abas
+                      FROM wf.testado_wf twf
+                      INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                      INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                      INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                      WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf  AND te.codigo = 'cotizacion_solicitada'
+
+                      and v_revision.fecha_reg::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                      GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
+                      ORDER BY  twf.fecha_reg DESC
+                      limit 1;
+                end if;
+
                 remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_aux_abas,v_fecha_solicitud);
 
                 if(remplaso is null)THEN
@@ -3923,7 +3945,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    sol.estado,
                    (EXTRACT(DAY FROM sol.fecha_entrega)||' de '|| pxp.f_obtener_literal_periodo((EXTRACT(MONTH FROM sol.fecha_entrega))::integer,0) ||' de '||EXTRACT(YEAR FROM sol.fecha_entrega))::varchar,
                    upper(sol.codigo_forma_pago_alkym),
-                   upper(sol.codigo_condicion_entrega_alkym)
+                   upper(sol.codigo_condicion_entrega_alkym),
+                   sol.tipo_evaluacion
                    into
                    v_id_solicitud_rec,
                    v_id_funcionario_solicitante,
@@ -3946,7 +3969,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_estado_actual,
                    v_fecha_entrega,
                    v_payment_terms,
-                   v_incoterms
+                   v_incoterms,
+                   v_tipo_evaluacion
             from mat.tsolicitud sol
             left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
             left join param.tproveedor_contacto procontac on procontac.id_proveedor = pro.id_proveedor
@@ -4022,26 +4046,58 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             where fun.id_funcionario = v_id_funcionario_solicitante and fun.estado_reg = 'activo' and cel.tipo = 'interno';
 
             /*Recuperamos datos del detalle de solicitud Cotizacion*/
-            select list (detcot.nro_parte_cot),
-                   list (detcot.nro_parte_alterno_cot),
-                   list (detcot.cantidad_det::varchar),
-                   list (detcot.descripcion_cot),
-                   list (detcot.referencia_cot),
-                   list (detcot.cd),
-                   list (COALESCE (detcot.precio_unitario,0)::varchar),
-                   list (COALESCE (detcot.precio_unitario_mb,0)::varchar)
-                   INTO
-                   v_num_part,
-                   v_num_part_alt,
-                   v_cantidad,
-                   v_descripcion,
-                   v_serial,
-                   v_cd,
-                   v_precio_unitario,
-                   v_precio_total
-            from mat.tcotizacion cot
-            inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
-            where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+
+            /*Aumentando para poner condicion de flat exchange (Ismael Valdivia 08/02/2022)*/
+            if (v_tipo_evaluacion = 'Flat Exchange' OR v_tipo_evaluacion = 'Exchange') then
+            	select list (detcot.nro_parte_cot),
+                       list (detcot.nro_parte_alterno_cot),
+                       list (detcot.cantidad_det::varchar),
+                       list (detcot.descripcion_cot),
+                       list (detcot.referencia_cot),
+                       list (detcot.cd),
+                       list (COALESCE (detcot.precio_unitario,0)::varchar),
+                       list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
+                       list (det.referencia)
+                       INTO
+                       v_num_part,
+                       v_num_part_alt,
+                       v_cantidad,
+                       v_descripcion,
+                       v_serial,
+                       v_cd,
+                       v_precio_unitario,
+                       v_precio_total,
+                       v_serial_original
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+                inner join mat.tdetalle_sol det on det.id_detalle = detcot.id_detalle
+                where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+            else
+            	select list (detcot.nro_parte_cot),
+                       list (detcot.nro_parte_alterno_cot),
+                       list (detcot.cantidad_det::varchar),
+                       list (detcot.descripcion_cot),
+                       list (detcot.referencia_cot),
+                       list (detcot.cd),
+                       list (COALESCE (detcot.precio_unitario,0)::varchar),
+                       list (COALESCE (detcot.precio_unitario_mb,0)::varchar)
+                       INTO
+                       v_num_part,
+                       v_num_part_alt,
+                       v_cantidad,
+                       v_descripcion,
+                       v_serial,
+                       v_cd,
+                       v_precio_unitario,
+                       v_precio_total
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+                where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+            end if;
+            /*******************************************************************************/
+
+
+
 
             if (v_num_part is null) then
             	v_num_part = '';
@@ -4073,6 +4129,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
             if (v_precio_total is null) then
             	v_precio_total = '0';
+            end if;
+
+
+            if (v_serial_original is null) then
+            	v_serial_original = '';
             end if;
 
 
@@ -4193,7 +4254,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_incoterms||''')::varchar as incoterms,
                       ('''||COALESCE(v_fecha_entrega,'')||''')::varchar as delivery_date,
                       ('''||v_observaciones_sol||''')::varchar as observaciones_sol,
-                      ('''||v_funcionario_sol_rpcd_oficial||''')::varchar as firma_rpc';
+                      ('''||v_funcionario_sol_rpcd_oficial||''')::varchar as firma_rpc,
+                      ('''||v_serial_original||''')::varchar as serial_original';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;

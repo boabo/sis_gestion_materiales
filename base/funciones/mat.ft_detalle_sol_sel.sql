@@ -197,8 +197,8 @@ BEGIN
             			select
 						det.id_detalle,
 						det.id_solicitud,
-						--det.descripcion,
-                        detcot.descripcion_cot,
+						det.descripcion,
+                        --detcot.descripcion_cot,
 						det.estado_reg,
 						det.id_unidad_medida,
 						--det.nro_parte,

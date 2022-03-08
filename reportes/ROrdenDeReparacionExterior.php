@@ -32,6 +32,12 @@ class ROrdenDeReparacionExterior extends  ReportePDF
         //var_dump("el precio es",$precio_unitario);
         $precio_total = explode(',',$this->datos[0]["precio_total"]);
 
+        if ($this->datos[0]["serial_original"] != '') {
+          $serial_original = explode(',',$this->datos[0]["serial_original"]);
+        }
+
+
+
         $firma_rpce = $this->datos[0]["firma_rpc"];
         $fir_rpce = explode('|', $firma_rpce);
 
@@ -137,7 +143,6 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                         }
                       }
 
-
                       if ($cd[$indice] == 'AS-IS') {
                         $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
                                       <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
@@ -157,6 +162,16 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                                         <td colspan="8" align="center"><li><b>'.$descipcion.'</b></li></td>
                                       </tr>
                                       ';
+                      }elseif ($this->datos[0]["serial_original"] != '') {
+                          $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
+                                        <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
+                                        <td width="80" align="right"><li>'.number_format($precio_total[$indice], 2, ',', '.').'</li></td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="8" align="center"><li><b> SE ACEPTA EL INTERCAMBIO (FLAT EXCHANGE) DEL SERIAL ENVIADO S/N: '.$serial_original[$indice].'</b></li></td>
+                                      </tr>
+                                      ';
+
                       } else {
                         $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
                                       <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
