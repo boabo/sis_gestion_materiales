@@ -1957,10 +1957,31 @@ END IF;
                     INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                 WHERE twf.id_proceso_wf = v_solicitud_actual.id_proceso_wf
                       AND  te.codigo = 'revision_tecnico_abastecimientos'
-                      AND twf.fecha_reg between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion, now())
+                      AND v_solicitud_actual.fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion, now())
                 GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
                 order by twf.fecha_reg desc
                 limit 1;
+
+
+                if (v_id_funcionario_tecnico_auxiliar is null) then
+                	SELECT		twf.id_funcionario
+
+                    into
+                                v_id_funcionario_tecnico_auxiliar
+
+                    FROM wf.testado_wf twf
+                        INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                        INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                        INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                    WHERE twf.id_proceso_wf = v_solicitud_actual.id_proceso_wf
+                          AND  te.codigo = 'cotizacion_solicitada'
+                          AND v_solicitud_actual.fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion, now())
+                    GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
+                    order by twf.fecha_reg desc
+                    limit 1;
+                end if;
+
+
 
 				/*Verificamos si existe el acta de conformidad para no crear otra*/
 
