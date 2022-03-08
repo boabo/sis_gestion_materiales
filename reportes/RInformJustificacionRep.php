@@ -316,7 +316,7 @@ class RInformJustificacionRep extends  ReportePDF
           }
          }
 
-         if ($incluyeBerTexto == 'SI') {
+         if ($incluyeBerTexto == 'SI' && $this->datos[0]['evaluacion'] != 'Reparacion') {
            $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO EN REEMPLAZO DE UNIDAD DECLARADA B.E.R REQUERIDO PARA FLOTA BOA LOTE '.$nro_lote.'';
          }
 
