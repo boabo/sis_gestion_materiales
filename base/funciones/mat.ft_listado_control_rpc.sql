@@ -74,7 +74,6 @@ BEGIN
                 	v_fil_estado = 'autorizado';
                     v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
                     v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
-                	v_fil_func = 'e.id_funcionario = '||v_id_funcionario_recu;
 
                     v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf
                                  inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_unidad_abastecimientos''
@@ -86,7 +85,7 @@ BEGIN
                 	v_fil_estado = 'autorizado';
 					v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf_firma';
                     v_ex_estado = 's.estado_firma NOT IN (''comite_aeronavegabilidad'')';
-                    v_fil_func = '0=0';
+
 
                     v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf_firma
                                  inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_aeronavegabilidad''
@@ -109,7 +108,7 @@ BEGIN
             else
             	v_fil_func = '0=0';
 
-                v_fil_estado = '0=0';
+                v_fil_estado = 'vb_rpcd';
 
                 v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
 
