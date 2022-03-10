@@ -29,7 +29,7 @@ header("content-type: text/javascript; charset=UTF-8");
               {
                   config: {
                       name: 'fecha_autorizacion_rpc',
-                      fieldLabel: 'Fecha aprobación RPC',
+                      fieldLabel: 'Fecha aprobación',
                       allowBlank: true,
                       gwidth: 180,
                       maxLength: 1000,
