@@ -966,10 +966,10 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_detalle',
 		direction: 'ASC'
 	},
-	bdel:false,
+	bdel:true,
 	bsave:false,
 	btest: false,
-  bnew: false,
+  bnew: true,
 
         onReloadPage: function (m) {
             this.maestro = m;
@@ -999,6 +999,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 							this.Cmp.precio_unitario.allowBlank = true;
 							this.ocultarComponente(this.Cmp.precio_unitario);
 							this.ocultarComponente(this.Cmp.precio_total);
+
+
 							this.Cmp.id_concepto_ingas.setDisabled(false);
 							this.Cmp.id_centro_costo.setDisabled(false);
 							this.Cmp.id_orden_trabajo.setDisabled(false);
@@ -1007,6 +1009,24 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 							this.Cmp.id_centro_costo.allowBlank = false;
 							this.Cmp.id_orden_trabajo.allowBlank = false;
 
+						} else if (this.interfaz_padre == 'RegistroSolicitud') {
+
+							this.Cmp.precio_unitario.allowBlank = true;
+							// this.ocultarComponente(this.Cmp.precio_unitario);
+							// this.ocultarComponente(this.Cmp.precio_total);
+
+							this.ocultarComponente(this.Cmp.id_concepto_ingas);
+							this.ocultarComponente(this.Cmp.id_centro_costo);
+							this.ocultarComponente(this.Cmp.id_orden_trabajo);
+
+
+							this.Cmp.id_concepto_ingas.setDisabled(true);
+							this.Cmp.id_centro_costo.setDisabled(true);
+							this.Cmp.id_orden_trabajo.setDisabled(true);
+
+							this.Cmp.id_concepto_ingas.allowBlank = true;
+							this.Cmp.id_centro_costo.allowBlank = true;
+							this.Cmp.id_orden_trabajo.allowBlank = true;
 						} else {
 
 							if (this.maestro.nuevo_flujo == 'si') {
@@ -1066,11 +1086,36 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 							this.getBoton('edit').disable();
 						}
 				}
+
+				if (this.interfaz_padre == 'RegistroSolicitud') {
+					this.getBoton('del').show();
+					this.getBoton('new').show();
+				} else {
+					this.getBoton('del').disable();
+					this.getBoton('new').disable();
+					this.getBoton('del').hide();
+					this.getBoton('new').hide();
+				}
+
+
         return tb;
     },
 
     liberaMenu: function() {
         var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
+
+				if (this.interfaz_padre == 'RegistroSolicitud') {
+					this.getBoton('del').show();
+					this.getBoton('new').show();
+				} else {
+					this.getBoton('del').disable();
+					this.getBoton('new').disable();
+					this.getBoton('del').hide();
+					this.getBoton('new').hide();
+				}
+
+
+
         return tb;
     },
 
@@ -1423,6 +1468,9 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				this.Cmp.control_edicion.setValue(this.store.baseParams.condcion_editar);
 			 this.onButtonSave(this);
     	}, this);
+
+			this.getBoton('del').hide();
+			this.getBoton('new').hide();
 		},
 
 		onButtonSave:function(o){

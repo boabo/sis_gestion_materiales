@@ -29,8 +29,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
             return tb;
         },
-        bnew: false,
-        bdel: false,
+        bnew: true,
+        bdel: true,
         bedit: false
     }
 </script>

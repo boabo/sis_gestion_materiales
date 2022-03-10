@@ -107,7 +107,6 @@ BEGIN
         begin
 
 
-
         if ( (pxp.f_existe_parametro(p_tabla,'id_concepto_ingas')) ) then
 
         	 /*Recuperaremos el id_auxiliar, id_cuenta, y el id_partida (Ismael Valdivia 14/02/2020)*/
@@ -132,17 +131,18 @@ BEGIN
            			where g.gestion = EXTRACT(YEAR FROM current_date);
                 end if;
 
+            	if (v_parametros.id_concepto_ingas is not null and v_parametros.id_centro_costo is not null) then
 
-                SELECT
-                  ps_id_partida ,
-                  ps_id_cuenta,
-                  ps_id_auxiliar
-                into
-                  v_id_partida,
-                  v_id_cuenta,
-                  v_id_auxiliar
-               FROM conta.f_get_config_relacion_contable('CUECOMP', v_gestion, v_parametros.id_concepto_ingas, v_parametros.id_centro_costo,  'No se encontro relación contable para el conceto de gasto: '||v_registros_cig.desc_ingas||'. <br> Mensaje: ');
-
+                    SELECT
+                      ps_id_partida ,
+                      ps_id_cuenta,
+                      ps_id_auxiliar
+                    into
+                      v_id_partida,
+                      v_id_cuenta,
+                      v_id_auxiliar
+                   FROM conta.f_get_config_relacion_contable('CUECOMP', v_gestion, v_parametros.id_concepto_ingas, v_parametros.id_centro_costo,  'No se encontro relación contable para el conceto de gasto: '||v_registros_cig.desc_ingas||'. <br> Mensaje: ');
+			   end if;
             /****************************************************************************************/
         	/*Aqui concatenaremos para los repuestos en la condicion detalle el FOR*/
 
