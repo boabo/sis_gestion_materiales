@@ -56,7 +56,7 @@ class ACTSolicitud extends ACTbase{
                 $this->objParam->addFiltro("sol.revisado_presupuesto = (''si'')");
             }
 
-              $this->objParam->addFiltro("sol.estado  not in (''borrador'',''revision'',''cotizacion'',''finalizado'')");
+              $this->objParam->addFiltro("sol.estado  not in (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''finalizado'')");
 
         }
         /*************************************************************************/
