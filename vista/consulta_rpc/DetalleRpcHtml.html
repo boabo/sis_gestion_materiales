@@ -26,7 +26,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/materia/bootstrap.min.css" >
     <script src="../../../lib/jsGanttImproved-jsgantt-improved/jquery-3.3.1.js"></script>
     <title>Hello, world!</title>
   </head>
@@ -66,17 +66,66 @@
                 var resp = JSON.parse(json.datos[0].jsondata);
 
                 var dibujarTabla = '';
+                var dibujarTablaSolicitado = '';
                 calculoTotal = 0;
+                calculoTotalSolicitado = 0;
 
 
                 tituloDetalle = document.getElementById("titulo");
                 cuerpoBody = document.getElementById("cuerpoBody");
 
                 tituloDetalle.innerHTML = '<b>Detalle del Trámite Nro. '+resp.cabecera.nro_tramite+'</b>';
-
-                cabeza = document.getElementById("cabezaTabla");
                 cuerpoBody.innerHTML = '';
 
+                /****************************Armamos la tabla de lo solicitado***********************************/
+                cabezaSolicitado = document.getElementById("cabezaTablaSolicitado");
+
+                subtituloSolicitado = document.getElementById("subtituloSolicitados");
+
+                subtituloSolicitado.innerHTML = '<span><b>Detalle Solicitado</b></span>';
+                console.log("aqui llega el dato para tabla cabeza",resp.detalle_sol);
+                for (var i = 0; i < resp.detalle_sol.length; i++) {
+
+                   tabladetSolicitado = document.getElementById("detalleTablaSolicitado");
+
+                  dibujarTablaSolicitado2 = '<tr><td align="right">'+resp.detalle_sol[i].nro_parte+'</td>'+
+                                 '<td align="right">'+resp.detalle_sol[i].nro_parte_alterno+'</td>'+
+                                 '<td align="right">'+resp.detalle_sol[i].cantidad_sol+'</td>'+
+                                 '<td align="right">'+Intl.NumberFormat("de-DE").format(resp.detalle_sol[i].precio_unitario)+'</td>'+
+                                 '<td align="right">'+Intl.NumberFormat("de-DE").format((resp.detalle_sol[i].cantidad_sol*resp.detalle_sol[i].precio_unitario))+'</td>'+
+                                 '<td>'+resp.detalle_sol[i].centro_costo+'</td>'+
+                                 '<td>'+resp.detalle_sol[i].matricula+'</td>'+
+                                 '<td>'+resp.detalle_sol[i].partida+'</td></tr>';
+
+                  dibujarTablaSolicitado = dibujarTablaSolicitado + dibujarTablaSolicitado2;
+
+                  calculoTotalSolicitado = (calculoTotalSolicitado + (resp.detalle_sol[i].cantidad_sol*resp.detalle_sol[i].precio_unitario));
+
+
+
+                }
+
+                totalSolicitado = '<tr class="bg-warning" id="totales"><td colspan="4" align="right"><b>Total:</b></td><td align="right"><b>'+Intl.NumberFormat("de-DE").format(calculoTotalSolicitado)+'</b></td></tr>';
+
+                dibujarTablaSolicitado = dibujarTablaSolicitado + totalSolicitado;
+
+                tabladetSolicitado.innerHTML = dibujarTablaSolicitado;
+
+                cabezaSolicitado.innerHTML = '<tr class="bg-primary">'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Nro. Parte</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Nro. Parte Alterna</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Cantidad</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Precio Unitario</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Precio Total</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Centro de Costo</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Orden de Trabajo</center></th>'+
+                                             '<th scope="col" style="width: 100px; color:#ffffff;"><center>Partida</center></th>'+
+                                            '</tr>';
+                /******************************************************************************************/
+
+
+                /*Armamos del adjudicado*/
+                cabeza = document.getElementById("cabezaTabla");
 
                 for (var i = 0; i < resp.detalle_solicitud.length; i++) {
 
@@ -99,15 +148,19 @@
 
 
                 }
-                //console.log("aqui dibujar tabla",dibujarTabla);
+
                 // Aqui Ponemos el total
-                total = '<tr class="bg-info" id="totales"><td colspan="4" align="right"><b>Total:</b></td><td align="right"><b>'+Intl.NumberFormat("de-DE").format(calculoTotal)+'</b></td></tr>';
+                total = '<tr class="bg-success" id="totales"><td colspan="4" align="right"><b>Total:</b></td><td align="right"><b>'+Intl.NumberFormat("de-DE").format(calculoTotal)+'</b></td></tr>';
 
                 dibujarTabla = dibujarTabla + total;
 
                 tabladet.innerHTML = dibujarTabla;
 
-                cabeza.innerHTML = '<tr class="bg-success">'+
+                subtituloAdjudicado = document.getElementById("subtituloInicial");
+
+                subtituloAdjudicado.innerHTML = '<span><b>Detalle Adjudicado</b></span>';
+
+                cabeza.innerHTML = '<tr class="bg-primary">'+
                                    '<th scope="col" style="width: 100px; color:#ffffff;"><center>Nro. Parte</center></th>'+
                                    '<th scope="col" style="width: 100px; color:#ffffff;"><center>Nro. Parte Alterna</center></th>'+
                                    '<th scope="col" style="width: 100px; color:#ffffff;"><center>Cantidad</center></th>'+
@@ -119,14 +172,10 @@
                                    '<th scope="col" style="width: 100px; color:#ffffff;"><center>Partida</center></th>'+
                                   '</tr>';
 
+                /*********************************************************/
 
 
-                // return	tramite=json.datos[0]['tramite'];
-                // //document.write(tramite);
-                // //console.log(tramite);
-                // $('<h1/>').text(json.title).appendTo('body');
-                // $('<div class="content"/>')
-                //     .html(json.html).appendTo('body');
+
             },
 
             error : function(xhr, status) {
@@ -189,14 +238,46 @@
               </div>
             </div>
           </div>
-          <table class="table table-bordered table-striped" id="table-header">
-            <thead id="cabezaTabla">
 
-            </thead>
-            <tbody id="detalleTabla">
+          <div class="card border-warning">
+            <h6 id="subtituloSolicitados" style="padding:10px;"></h6>
+            <hr>
+            <div class="card-body">
+              <table class="table table-bordered table-striped" id="table-header">
+                <thead id="cabezaTablaSolicitado">
 
-            </tbody>
-          </table>
+                </thead>
+                <tbody id="detalleTablaSolicitado">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <hr>
+          <div class="card border-primary">
+            <h6 id="subtituloInicial" style="padding:10px;"></h6>
+            <hr>
+            <div class="card-body">
+              <table class="table table-bordered table-striped" id="table-header">
+                <thead id="cabezaTabla">
+
+                </thead>
+                <tbody id="detalleTabla">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+
+
+
+
+
+
+
 
         </div>
       </div>

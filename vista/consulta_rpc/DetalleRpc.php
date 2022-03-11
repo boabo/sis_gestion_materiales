@@ -25,6 +25,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config.maestro;
 
 
+
             this.Atributos = [
               {
                   config: {
@@ -439,6 +440,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.grid.on('cellclick', this.abrirDetalle, this);
 
+            this.getBoton('anularProceso').disable();
+            this.getBoton('anularProceso').setVisible(false);
+
             this.load({params: {start: 0, limit: this.tam_pag}});
 
         },
@@ -476,6 +480,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'funcionario_solicitante', type: 'varchar'},
             {name: 'id_solicitud', type: 'numeric'},
             {name: 'id_estado_wf', type: 'numeric'},
+            {name: 'existe_usuario', type: 'varchar'},
 
         ],
 
@@ -505,16 +510,23 @@ header("content-type: text/javascript; charset=UTF-8");
 
         preparaMenu: function () {
       			var rec = this.sm.getSelected();
-
+            console.log("aqui llega el dato",rec);
             this.getBoton('btnObs').enable();
 
-            if (rec.data.estado == 'borrador' || rec.data.estado == 'revision' || rec.data.estado == 'cotizacion' || rec.data.estado == 'compra' || rec.data.estado == 'finalizado') {
-              this.getBoton('anularProceso').enable();
-              this.getBoton('anularProceso').setVisible(true);
+            if (rec.data.existe_usuario == 1) {
+              if (rec.data.estado == 'borrador' || rec.data.estado == 'revision' || rec.data.estado == 'cotizacion' || rec.data.estado == 'compra' || rec.data.estado == 'finalizado') {
+                this.getBoton('anularProceso').enable();
+                this.getBoton('anularProceso').setVisible(true);
+              } else {
+                this.getBoton('anularProceso').disable();
+                this.getBoton('anularProceso').setVisible(false);
+              }
             } else {
               this.getBoton('anularProceso').disable();
               this.getBoton('anularProceso').setVisible(false);
             }
+
+
       			Phx.vista.DetalleRpc.superclass.preparaMenu.call(this);
       		},
 

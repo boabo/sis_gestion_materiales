@@ -40,6 +40,7 @@ DECLARE
     v_join				varchar;
     v_ex_estado			varchar;
     v_join_2			varchar;
+    v_existe_user		integer;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_listado_control_rpc';
@@ -56,6 +57,7 @@ BEGIN
 
     	begin
     		--Sentencia de la consulta
+
             /*Aumentando para listar solo del RPC Encargado*/
             if (p_administrador != 1) then
             	select fun.id_funcionario into v_id_funcionario_recu
@@ -63,73 +65,86 @@ BEGIN
                 inner join orga.vfuncionario fun on fun.id_persona = us.id_persona
                 where us.id_usuario = p_id_usuario;
 
+                /*Aumentando para verificar si el usuario ingresado es encargado RPC,Comite Aeronavegabilidad o Comite Abastecimientos*/
+                select 1 into v_existe_user
+                where v_id_funcionario_recu in (select
+                                                   fe.id_funcionario
+                                            from wf.ttipo_estado te
+                                            inner join wf.tfuncionario_tipo_estado fe on fe.id_tipo_estado = te.id_tipo_estado
+                                            inner join orga.vfuncionario fun on fun.id_funcionario = fe.id_funcionario
+                                            where te.id_tipo_proceso in (119,125,120,127,117,118,146,182,183,184)
+                                            and te.codigo in ('comite_unidad_abastecimientos','vb_rpcd','comite_aeronavegabilidad')
+                                            group by fe.id_funcionario);
 
-                /*Aqui para saber el cargo si es jefe de abastecimientos solo mostrar comite*/
-                select car.nombre_cargo into v_nom_cargo
-                from orga.vfuncionario_ultimo_cargo car
-                where car.id_funcionario = v_id_funcionario_recu;
-                /****************************************************************************/
+                if (v_existe_user is null) then
+                	v_existe_user = 0;
+                end if;
+                /*********************************************************************************************************************/
 
-                if (trim(v_nom_cargo) = 'Jefe Abastecimientos y Logistica')then
-                	v_fil_estado = 'autorizado';
-                    v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
-                    v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
+                if (v_existe_user = 1) then
 
-                    v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf
-                                 inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_unidad_abastecimientos''
-                                 ';
+                      /*Aqui para saber el cargo si es jefe de abastecimientos solo mostrar comite*/
+                      select car.nombre_cargo into v_nom_cargo
+                      from orga.vfuncionario_ultimo_cargo car
+                      where car.id_funcionario = v_id_funcionario_recu;
+                      /****************************************************************************/
 
-                   v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
+                      if (trim(v_nom_cargo) = 'Jefe Abastecimientos y Logistica')then
+                          v_fil_estado = 'autorizado';
+                          v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
+                          v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
+                          v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf
+                                       inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_unidad_abastecimientos''
+                                       ';
+                         v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
+                      elsif (trim(v_nom_cargo) = 'Director de Aeronavegabilidad Continua') then
+                          v_fil_estado = 'autorizado';
+                          v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf_firma';
+                          v_ex_estado = 's.estado_firma NOT IN (''comite_aeronavegabilidad'')';
+                          v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf_firma
+                                       inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_aeronavegabilidad''
+                                       ';
+                          v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
 
-                elsif (trim(v_nom_cargo) = 'Director de Aeronavegabilidad Continua') then
-                	v_fil_estado = 'autorizado';
-					v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf_firma';
-                    v_ex_estado = 's.estado_firma NOT IN (''comite_aeronavegabilidad'')';
+                      else
+                          v_fil_estado = 'vb_rpcd';
+                          v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
+                          v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
+                          v_fil_func = 'e.id_funcionario = '||v_id_funcionario_recu;
+                          v_join_2 = '';
+                      end if;
 
-
-                    v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf_firma
-                                 inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_aeronavegabilidad''
-                                 ';
-                    v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
-
-
-                else
-                	v_fil_estado = 'vb_rpcd';
-                    v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
-                    v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
-                	v_fil_func = 'e.id_funcionario = '||v_id_funcionario_recu;
-                    v_join_2 = '';
 
                 end if;
-
-
-
-
             else
             	v_fil_func = '0=0';
-
                 v_fil_estado = 'vb_rpcd';
-
                 v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
-
                 v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
                 v_join_2 = '';
+                v_existe_user = 1;
             end if;
             /**********************************************/
 
 
             IF  pxp.f_existe_parametro(p_tabla,'origen_pedido') THEN
-              if (v_parametros.origen_pedido != 'Todos')then
-                    v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+            	if (v_existe_user = 1) then
+                	if (v_parametros.origen_pedido != 'Todos')then
+                          v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+                    else
+                          v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
+                    end if;
+                else
+                		v_fill = ' s.fecha_solicitud::date >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud::date <= '''||v_parametros.fecha_fin||'''';
+                end if;
 
-              else
-                    v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
-              end if;
+
+
             ELSE
               		v_fill = ' e.fecha_reg::date >='''||now()::date||''' and e.fecha_reg::date <= '''||now()::date||''' and c.adjudicado = ''si''';
             END IF;
 
-
+		   if (v_existe_user = 1) then
            v_consulta:='	select	 s.origen_pedido,
                                      s.nro_tramite,
                                      s.estado as estado,
@@ -156,7 +171,8 @@ BEGIN
                                      mon.codigo_internacional::varchar,
          							 func.desc_funcionario1::varchar as funcionario_solicitante,
                                      s.id_solicitud::numeric,
-                                     s.id_estado_wf::numeric
+                                     s.id_estado_wf::numeric,
+                                     '||v_existe_user||'::varchar as existe_usuario
                            from  mat.tsolicitud s
                            inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                            inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
@@ -202,6 +218,75 @@ BEGIN
                                   s.id_estado_wf
                           	order by e.fecha_reg desc
                             ' || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+           else
+
+           		v_consulta:='	select	 s.origen_pedido,
+                                     s.nro_tramite,
+                                     s.estado as estado,
+                                     (upper(f.desc_funcionario1))::varchar as funciaonario,
+                                     to_char(s.fecha_solicitud,''DD/MM/YYYY'')::varchar as fecha_solicitud,
+                                     initcap(s.motivo_solicitud)::varchar as motivo_solicitud,
+                                     initcap(s.observaciones_sol)::varchar as observaciones_sol,
+                                     s.remark::varchar,
+                                     s.justificacion,
+                                     s.nro_justificacion,
+                                     s.tipo_solicitud,
+                                     s.tipo_falla,
+                                     s.tipo_reporte,
+                                     s.mel,
+                                     s.nro_no_rutina,
+                                     c.nro_cotizacion,
+                                     initcap(v.desc_proveedor) as proveedor,
+                                     s.nro_po,
+                                     vu.desc_persona::varchar as aux_abas,
+                                     to_char(s.fecha_solicitud::date, ''DD/MM/YYYY'')::varchar as fecha_autorizacion_rpc,
+                                     ''''::varchar as encargado_rpc,
+                                     sum(d.precio_unitario_mb)::numeric,
+                                     s.id_proceso_wf::numeric,
+                                     mon.codigo_internacional::varchar,
+         							 func.desc_funcionario1::varchar as funcionario_solicitante,
+                                     s.id_solicitud::numeric,
+                                     s.id_estado_wf::numeric,
+                                     '||v_existe_user||'::varchar as existe_usuario
+                           from  mat.tsolicitud s
+                           inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
+                           inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
+                           inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
+                           inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
+                           --left join orga.vfuncionario fun on fun.id_funcionario = e.id_funcionario
+                           left join segu.vusuario vu on c.id_usuario_reg = vu.id_usuario
+                           inner join param.tmoneda mon on mon.id_moneda = s.id_moneda
+                           inner join orga.vfuncionario func on func.id_funcionario = s.id_funcionario_solicitante
+                           where '||v_fill||' and '||v_parametros.filtro||'
+                           and s.estado not in (''borrador'',''revision'',''cotizacion'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''finalizado'')
+                           group by s.origen_pedido,
+                                  s.nro_tramite,
+                                  s.estado,
+                                  f.desc_funcionario1,
+                                  s.fecha_solicitud,
+                                  s.fecha_requerida,
+                                  s.motivo_solicitud,
+                                  s.observaciones_sol,
+                                  s.justificacion,
+                                  s.nro_justificacion,
+                                  s.tipo_solicitud,
+                                  s.tipo_falla,
+                                  s.tipo_reporte,
+                                  s.mel,
+                                  s.nro_no_rutina,
+                                  c.nro_cotizacion,
+                                  v.desc_proveedor,
+                                  vu.desc_persona,
+                                  s.nro_po,
+                                  s.remark,
+                                  s.id_proceso_wf,
+                                  mon.codigo_internacional,
+                                  func.desc_funcionario1,
+                                  s.id_solicitud,
+                                  s.id_estado_wf
+                          	order by s.fecha_solicitud desc
+                            ' || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+           end if;
 
 			return v_consulta;
 
@@ -230,75 +315,82 @@ BEGIN
                 inner join orga.vfuncionario fun on fun.id_persona = us.id_persona
                 where us.id_usuario = p_id_usuario;
 
+                /*Aumentando para verificar si el usuario ingresado es encargado RPC,Comite Aeronavegabilidad o Comite Abastecimientos*/
+                select 1 into v_existe_user
+                where v_id_funcionario_recu in (select
+                                                   fe.id_funcionario
+                                            from wf.ttipo_estado te
+                                            inner join wf.tfuncionario_tipo_estado fe on fe.id_tipo_estado = te.id_tipo_estado
+                                            inner join orga.vfuncionario fun on fun.id_funcionario = fe.id_funcionario
+                                            where te.id_tipo_proceso in (119,125,120,127,117,118,146,182,183,184)
+                                            and te.codigo in ('comite_unidad_abastecimientos','vb_rpcd','comite_aeronavegabilidad')
+                                            group by fe.id_funcionario);
+                /*********************************************************************************************************************/
 
-                /*Aqui para saber el cargo si es jefe de abastecimientos solo mostrar comite*/
-                select car.nombre_cargo into v_nom_cargo
-                from orga.vfuncionario_ultimo_cargo car
-                where car.id_funcionario = v_id_funcionario_recu;
-                /****************************************************************************/
+                if (v_existe_user = 1) then
 
-                if (trim(v_nom_cargo) = 'Jefe Abastecimientos y Logistica')then
-                	v_fil_estado = 'autorizado';
-                    v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
-                    v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
-                	v_fil_func = 'e.id_funcionario = '||v_id_funcionario_recu;
+                      /*Aqui para saber el cargo si es jefe de abastecimientos solo mostrar comite*/
+                      select car.nombre_cargo into v_nom_cargo
+                      from orga.vfuncionario_ultimo_cargo car
+                      where car.id_funcionario = v_id_funcionario_recu;
+                      /****************************************************************************/
 
-                    v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf
-                                 inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_unidad_abastecimientos''
-                                 ';
+                      if (trim(v_nom_cargo) = 'Jefe Abastecimientos y Logistica')then
+                          v_fil_estado = 'autorizado';
+                          v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
+                          v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
+                          v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf
+                                       inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_unidad_abastecimientos''
+                                       ';
+                         v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
+                      elsif (trim(v_nom_cargo) = 'Director de Aeronavegabilidad Continua') then
+                          v_fil_estado = 'autorizado';
+                          v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf_firma';
+                          v_ex_estado = 's.estado_firma NOT IN (''comite_aeronavegabilidad'')';
+                          v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf_firma
+                                       inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_aeronavegabilidad''
+                                       ';
+                          v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
 
-                   v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
-
-                elsif (trim(v_nom_cargo) = 'Director de Aeronavegabilidad Continua') then
-                	v_fil_estado = 'autorizado';
-					v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf_firma';
-                    v_ex_estado = 's.estado_firma NOT IN (''comite_aeronavegabilidad'')';
-                    v_fil_func = '0=0';
-
-                    v_join_2 =  'inner join wf.testado_wf e1 on e1.id_proceso_wf = s.id_proceso_wf_firma
-                                 inner join wf.ttipo_estado t1 on t1.id_tipo_estado = e1.id_tipo_estado and t1.codigo = ''comite_aeronavegabilidad''
-                                 ';
-                    v_fil_func = 'e1.id_funcionario = '||v_id_funcionario_recu;
+                      else
+                          v_fil_estado = 'vb_rpcd';
+                          v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
+                          v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
+                          v_fil_func = 'e.id_funcionario = '||v_id_funcionario_recu;
+                          v_join_2 = '';
+                      end if;
 
 
+                end if;
+            else
+            	v_fil_func = '0=0';
+                v_fil_estado = 'vb_rpcd';
+                v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
+                v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
+                v_join_2 = '';
+                v_existe_user = 1;
+            end if;
+            /**********************************************/
+
+
+            IF  pxp.f_existe_parametro(p_tabla,'origen_pedido') THEN
+            	if (v_existe_user = 1) then
+                	if (v_parametros.origen_pedido != 'Todos')then
+                          v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+                    else
+                          v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
+                    end if;
                 else
-                	v_fil_estado = 'vb_rpcd';
-                    v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
-                    v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
-                	v_fil_func = 'e.id_funcionario = '||v_id_funcionario_recu;
-                    v_join_2 = '';
-
+                		v_fill = ' s.fecha_solicitud::date >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud::date <= '''||v_parametros.fecha_fin||'''';
                 end if;
 
 
 
-
-            else
-            	v_fil_func = '0=0';
-
-                v_fil_estado = '0=0';
-
-                v_join = 'inner join wf.testado_wf e on e.id_proceso_wf = s.id_proceso_wf';
-
-                v_ex_estado = 's.estado NOT IN (''borrador'',''revision'',''revision_tecnico_abastecimientos'',''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'')';
-                v_join_2 = '';
-            end if;
-            /**********************************************/
-
-             IF  pxp.f_existe_parametro(p_tabla,'origen_pedido') THEN
-              if (v_parametros.origen_pedido != 'Todos')then
-                    v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
-
-            else
-                    v_fill = ' e.fecha_reg::date >='''||v_parametros.fecha_ini||''' and e.fecha_reg::date <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
-            end if;
             ELSE
-
-              v_fill = ' e.fecha_reg::date >='''||now()::date||''' and e.fecha_reg::date <= '''||now()::date||''' and c.adjudicado = ''si''';
-
-
+              		v_fill = ' e.fecha_reg::date >='''||now()::date||''' and e.fecha_reg::date <= '''||now()::date||''' and c.adjudicado = ''si''';
             END IF;
 
+			if (v_existe_user = 1) then
            v_consulta:='	with datos as (
 
 							select	 s.origen_pedido,
@@ -372,9 +464,80 @@ BEGIN
                                   s.id_solicitud,
                                   s.id_estado_wf
                           	order by e.fecha_reg desc
-)
-select count(nro_tramite)
-from datos';
+                        )
+                        select count(nro_tramite)
+                        from datos';
+else
+				v_consulta:='	with datos as (
+
+							select	 s.origen_pedido,
+                                     s.nro_tramite,
+                                     s.estado as estado,
+                                     (upper(f.desc_funcionario1))::varchar as funciaonario,
+                                     to_char(s.fecha_solicitud,''DD/MM/YYYY'')::varchar as fecha_solicitud,
+                                     initcap(s.motivo_solicitud)::varchar as motivo_solicitud,
+                                     initcap(s.observaciones_sol)::varchar as observaciones_sol,
+                                     s.remark::varchar,
+                                     s.justificacion,
+                                     s.nro_justificacion,
+                                     s.tipo_solicitud,
+                                     s.tipo_falla,
+                                     s.tipo_reporte,
+                                     s.mel,
+                                     s.nro_no_rutina,
+                                     c.nro_cotizacion,
+                                     initcap(v.desc_proveedor) as proveedor,
+                                     s.nro_po,
+                                     vu.desc_persona::varchar as aux_abas,
+                                     to_char(s.fecha_solicitud::date, ''DD/MM/YYYY'')::varchar as fecha_autorizacion_rpc,
+                                     ''''::varchar as encargado_rpc,
+                                     sum(d.precio_unitario_mb)::numeric,
+                                     s.id_proceso_wf::numeric,
+                                     mon.codigo_internacional::varchar,
+         							 func.desc_funcionario1::varchar as funcionario_solicitante,
+                                     s.id_solicitud::numeric,
+                                     s.id_estado_wf::numeric
+                           from  mat.tsolicitud s
+                           inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
+                           inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
+                           inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion
+                           inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
+                           --left join orga.vfuncionario fun on fun.id_funcionario = e.id_funcionario
+                           left join segu.vusuario vu on c.id_usuario_reg = vu.id_usuario
+                           inner join param.tmoneda mon on mon.id_moneda = s.id_moneda
+                           inner join orga.vfuncionario func on func.id_funcionario = s.id_funcionario_solicitante
+                           where '||v_fill||' and '||v_parametros.filtro||'
+                           and s.estado not in (''borrador'',''revision'',''cotizacion'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''finalizado'')
+                           group by s.origen_pedido,
+                                  s.nro_tramite,
+                                  s.estado,
+                                  f.desc_funcionario1,
+                                  s.fecha_solicitud,
+                                  s.fecha_requerida,
+                                  s.motivo_solicitud,
+                                  s.observaciones_sol,
+                                  s.justificacion,
+                                  s.nro_justificacion,
+                                  s.tipo_solicitud,
+                                  s.tipo_falla,
+                                  s.tipo_reporte,
+                                  s.mel,
+                                  s.nro_no_rutina,
+                                  c.nro_cotizacion,
+                                  v.desc_proveedor,
+                                  vu.desc_persona,
+                                  s.nro_po,
+                                  s.remark,
+                                  s.id_proceso_wf,
+                                  mon.codigo_internacional,
+                                  func.desc_funcionario1,
+                                  s.id_solicitud,
+                                  s.id_estado_wf
+                          	order by s.fecha_solicitud desc
+                        )
+                        select count(nro_tramite)
+                        from datos';
+end if;
 
 			return v_consulta;
 
@@ -700,7 +863,23 @@ from datos';
                                 select sol.nro_tramite
                                 from mat.tsolicitud sol
                                 where sol.id_solicitud = '||v_parametros.id_solicitud||'
-                           )cabecera ) as cabecera
+                           )cabecera ) as cabecera,
+
+                           ( SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(detalleSol))) as detalle_solicitado
+                            FROM(
+                            select det.nro_parte,
+                                   det.nro_parte_alterno,
+                                   det.cantidad_sol,
+                                   det.precio_unitario,
+                                   (cc.ep || '' - '' || cc.nombre_uo)::varchar as centro_costo,
+                                   COALESCE (ot.desc_orden,'' '')::varchar as matricula,
+                                   (pp.codigo || '' - '' || pp.nombre_partida)::varchar as partida
+                            from mat.tdetalle_sol det
+                            left join param.vcentro_costo cc on  det.id_centro_costo = cc.id_centro_costo
+                            left join conta.torden_trabajo ot on ot.id_orden_trabajo = det.id_orden_trabajo
+                            left join pre.tpartida pp on det.id_partida = pp.id_partida
+                            where det.id_solicitud = '||v_parametros.id_solicitud||'
+                            )detalleSol ) as  detalle_sol
                           ) jsonD';
 
 			return v_consulta;

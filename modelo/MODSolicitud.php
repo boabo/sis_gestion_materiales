@@ -2064,6 +2064,7 @@ class MODSolicitud extends MODbase
          $this->captura('funcionario_solicitante','varchar');
          $this->captura('id_solicitud','numeric');
          $this->captura('id_estado_wf','numeric');
+         $this->captura('existe_usuario','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
