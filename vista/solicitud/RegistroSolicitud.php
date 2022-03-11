@@ -100,6 +100,11 @@ header("content-type: text/javascript; charset=UTF-8");
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
+                if(name == 'finalizado_reg'){
+                  this.getBoton('ant_estado').setVisible(true);
+                } else {
+                  this.getBoton('ant_estado').setVisible(false);
+                }
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
 
@@ -110,6 +115,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bactGroups:  [0,1,2],
         btestGroups: [0],
         bexcelGroups: [0,1,2],
+        bganttGroups:[0,1,2],
 
         onButtonNew:function(){
             //abrir formulario de solicitud
@@ -698,7 +704,7 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
 
                 this.getBoton('sig_estado').disable();
-                this.getBoton('ant_estado').setVisible(false);
+                //this.getBoton('ant_estado').setVisible(true);
                 this.getBoton('ini_estado').setVisible(false);
             }
             return tb;
