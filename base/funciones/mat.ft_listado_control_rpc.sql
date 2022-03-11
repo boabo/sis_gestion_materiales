@@ -258,7 +258,7 @@ BEGIN
                            inner join param.tmoneda mon on mon.id_moneda = s.id_moneda
                            inner join orga.vfuncionario func on func.id_funcionario = s.id_funcionario_solicitante
                            where '||v_fill||' and '||v_parametros.filtro||'
-                           and s.estado not in (''borrador'',''revision'',''cotizacion'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''finalizado'')
+                           and s.estado not in (''borrador'',''revision'',''cotizacion'',''cotizacion_solicitada'',''cotizacion_sin_respuesta'',''finalizado'',''anulado'')
                            group by s.origen_pedido,
                                   s.nro_tramite,
                                   s.estado,
