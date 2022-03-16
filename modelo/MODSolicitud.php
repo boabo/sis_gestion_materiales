@@ -2283,6 +2283,28 @@ class MODSolicitud extends MODbase
       //var_dump("aqui llega la respuesta",$this->respuesta);exit;
   		return $this->respuesta;
   	}
+
+
+    function insertarCuce()
+    {
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento = 'mat.ft_solicitud_ime';
+        $this->transaccion = 'MAT_INS_CUCE_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('cuce', 'cuce', 'varchar');
+        $this->setParametro('fecha_publicacion_cuce', 'fecha_publicacion_cuce', 'date');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 }
 
 ?>

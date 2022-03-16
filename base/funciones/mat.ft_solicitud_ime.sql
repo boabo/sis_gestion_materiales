@@ -4496,6 +4496,32 @@ END IF;
             return v_resp;
         end;
 
+        /*********************************
+        #TRANSACCION:  'MAT_INS_CUCE_IME'
+        #DESCRIPCION:	Inserta en el campo cuce
+        #AUTOR:	    Ismael Valdivia
+        #FECHA:		16-03-2022 16:01:32
+        ***********************************/
+
+        elsif(p_transaccion='MAT_INS_CUCE_IME')then
+
+            begin
+
+                    update mat.tsolicitud  set
+                    cuce = v_parametros.cuce,
+                    fecha_publicacion_cuce = v_parametros.fecha_publicacion_cuce
+                    where id_solicitud = v_parametros.id_solicitud;
+
+
+                    --Definicion de la respuesta
+                    v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se insertaron ajustes ');
+                    v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_parametros.id_solicitud::varchar);
+
+              --Devuelve la respuesta
+              return v_resp;
+
+            end;
+
 
 
 

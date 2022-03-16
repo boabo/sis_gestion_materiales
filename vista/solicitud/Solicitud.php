@@ -175,6 +175,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Revertir/Incrementar  presupuestos,  permite ver la evolucón presupuestaria y revertir parcialmente</b>'
             });
 
+            this.addButton('bmodCuce', {
+                text: 'CUCE',
+                grupo: [5],
+                iconCls: 'bengine',
+                disabled: false,
+                hidden:true,
+                handler: this.modCuce,
+                tooltip: '<b>Modificar CUCE</b><br/>Permite modificar el CUCE de un trámite'
+            });
+
 
             this.bbar.el.dom.style.background='#03A27C';
     				this.tbar.el.dom.style.background='#03A27C';
@@ -194,7 +204,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //         scope:this
             //     });
             // }
-
+            this.crearFormCuce();
 
         },
 
@@ -2619,6 +2629,126 @@ header("content-type: text/javascript; charset=UTF-8");
                 height: '70%',
             }, rec.data, this.idContenedor, 'CheckPresupuesto');
         },
+
+
+        /*Aumentando para el CUCE Ismael Valdivia 16/03/2022*/
+        crearFormCuce: function () {
+            var me = this;
+            me.formAjustes = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'cuce',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'CUCE'
+                    },
+                    {
+                        name: 'fecha_publicacion_cuce',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha publicación'
+
+                    },
+                    {
+                        xtype: 'field',
+                        name: 'id_solicitud',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    }
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowAjustes = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Registrar CUCE',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 150,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveAjustes,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarAjustes,
+                        scope: me
+                    }],
+                items: me.formAjustes,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+        saveAjustes: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/insertarCuce',
+                success: me.successAjustes,
+                failure: me.failureAjustes,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'cuce': me.formAjustes.getForm().findField('cuce').getValue(),
+                    'fecha_publicacion_cuce': me.formAjustes.getForm().findField('fecha_publicacion_cuce').getValue()
+
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+        successAjustes: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowAjustes.hide();
+            this.reload();
+
+        },
+
+        failureAjustes: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+
+        },
+        onDeclinarAjustes: function () {
+            this.windowAjustes.hide();
+
+        },
+        modCuce: function () {
+            this.windowAjustes.show();
+            this.formAjustes.getForm().reset();
+            var d = this.sm.getSelected().data;
+            this.formAjustes.getForm().findField('cuce').show();
+            this.formAjustes.getForm().findField('cuce').setValue(d.cuce);
+            this.formAjustes.getForm().findField('fecha_publicacion_cuce').show();
+            this.formAjustes.getForm().findField('fecha_publicacion_cuce').setValue(d.fecha_conclusion);
+
+
+        },
+        /****************************************************/
 
     })
 </script>

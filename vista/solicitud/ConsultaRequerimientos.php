@@ -44,6 +44,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
             this.getBoton('btnCheckPresupeusto').setVisible(true);
+            this.getBoton('bmodCuce').setVisible(true);
 
         },
         gruposBarraTareas:[

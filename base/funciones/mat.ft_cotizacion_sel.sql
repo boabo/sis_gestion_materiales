@@ -69,6 +69,7 @@ DECLARE
     v_es_mayor								varchar;
     v_fecha_nuevo_flujo	varchar;
     v_id_solicitud_reporte integer;
+    v_insertar_datos	varchar;
 
 BEGIN
 	v_rango_fecha = '01/11/2018';
@@ -1019,7 +1020,7 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 		end;
- /*********************************
+    /*********************************
  	#TRANSACCION:  'MAT_CTS_REP'
  	#DESCRIPCION:	Reporte detalle cotizacion
  	#AUTOR:		Miguel Alejandro Mamani Villegas
@@ -1084,6 +1085,163 @@ BEGIN
 
 			return v_consulta;
 		end;
+
+
+
+        /*********************************
+        #TRANSACCION:  'MAT_LIS_ADJ_REP'
+        #DESCRIPCION:	Reporte detalle Adjudicados
+        #AUTOR:		Ismael Valdivia
+        #FECHA:		16-03-2022
+        ***********************************/
+
+        elsif(p_transaccion='MAT_LIS_ADJ_REP')then
+            begin
+
+            if (v_parametros.origen_pedido != 'Todos')then
+                    v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+
+            else
+                    v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
+            end if;
+
+
+            /*Creamos la tabla para ordenar los datos del WF (Ismael Valdivia 16/03/2022)*/
+            create temp table reporte_adjudicados_gm (
+                                                                nro_tramite varchar,
+                                                                justificacion varchar,
+                                                                funcionario_solicitante varchar,
+                                                                proveedor_recomendado varchar,
+                                                                fecha_solicitud varchar,
+                                                                precio_bs numeric,
+                                                                precio_proceso numeric,
+                                                                precio_adjudicado_bs numeric,
+                                                                precio_adjudicado numeric,
+                                                                moneda varchar,
+                                                                contrato varchar,
+                                                                cuce varchar,
+                                                                modalidad_contratacion varchar,
+                                                                departamento varchar,
+                                                                nro_po varchar,
+                                                                id_proceso_wf integer
+                                                              )on commit drop;
+                CREATE INDEX treporte_adjudicados_gm_nro_tramite ON reporte_adjudicados_gm
+                USING btree (nro_tramite);
+
+                CREATE INDEX treporte_adjudicados_gm_id_proceso_wf ON reporte_adjudicados_gm
+                USING btree (id_proceso_wf);
+
+                CREATE INDEX treporte_adjudicados_gm_precio_adjudicado_bs ON reporte_adjudicados_gm
+                USING btree (precio_adjudicado_bs);
+            /*****************************************************************************/
+
+            v_insertar_datos = 'insert into reporte_adjudicados_gm (
+                                                  nro_tramite,
+                                                  justificacion,
+                                                  funcionario_solicitante,
+                                                  proveedor_recomendado,
+                                                  fecha_solicitud,
+                                                  precio_bs,
+                                                  precio_proceso,
+                                                  precio_adjudicado_bs,
+                                                  precio_adjudicado,
+                                                  moneda,
+                                                  contrato,
+                                                  cuce,
+                                                  modalidad_contratacion,
+                                                  departamento,
+                                                  nro_po,
+                                                  id_proceso_wf
+                                                )
+
+            	(select
+                             s.nro_tramite,
+                             (CASE
+                                  WHEN s.origen_pedido = ''Reparación de Repuestos''  THEN
+                                     s.motivo_solicitud
+                                  ELSE
+                                    s.remark
+                             END)::varchar as justificacion,
+                             f.desc_funcionario1 as funcionario_solicitante,
+                             initcap(v.desc_proveedor) as proveedor_recomendado,
+                             to_char(s.fecha_solicitud,''DD/MM/YYYY'')as fecha_solicitud,
+                             param.f_convertir_moneda(s.id_moneda,1,sum(d.cantidad_det * d.precio_unitario),s.fecha_solicitud,''O'',2,NULL,''si'')::numeric as precio_bs,
+                             sum(d.cantidad_det * d.precio_unitario) as precio_proceso,
+                             param.f_convertir_moneda(s.id_moneda,1,sum(d.cantidad_det * d.precio_unitario),s.fecha_solicitud,''O'',2,NULL,''si'')::numeric as precio_adjudicado_bs,
+                             sum(d.cantidad_det * d.precio_unitario) as precio_adjudicado,
+                             mon.codigo,
+                             ''Orden de Servicio''::varchar as contrato,
+                             s.cuce,
+                             (CASE
+                                  WHEN s.origen_pedido = ''Reparación de Repuestos''  THEN
+                                     ''Contratación Directa Giro Empresarial''
+                                  ELSE
+                                    ''Contratación Mediante Comparación De Ofertas De Bienes, Obras Y Servicios Especializados En El Extranjero''
+                             END)::varchar as modalidad_contratacion,
+                             depto.nombre,
+                             s.nro_po,
+                             s.id_proceso_wf
+                         from mat.tsolicitud s
+                         inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_solicitante
+                         inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
+                         inner join param.vproveedor v on v.id_proveedor = c.id_proveedor
+                         inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion and d.revisado = ''si''
+                         inner join tes.tobligacion_pago op on op.num_tramite = s.nro_tramite
+                         inner join param.tdepto depto on depto.id_depto = op.id_depto
+                         inner join param.tmoneda mon on mon.id_moneda = s.id_moneda
+                         where '||v_fill||'
+                         group by s.nro_tramite,
+                                  s.remark,
+                                  f.desc_funcionario1,
+                                  v.desc_proveedor,
+                                  s.fecha_solicitud,
+                                  s.nro_po,
+                                  mon.codigo,
+                                  s.origen_pedido,
+                                  s.motivo_solicitud,
+                                  s.id_proceso_wf,
+                                  s.id_moneda,
+                                  depto.nombre,
+                                  s.cuce);';
+            execute v_insertar_datos;
+
+           v_consulta:='
+                        select   gm.nro_tramite,
+                                 gm.justificacion,
+                                 gm.funcionario_solicitante,
+                                 (SELECT
+                                      vf.desc_funcionario1
+                                  FROM wf.testado_wf twf
+                                  INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                                  INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                                  WHERE twf.id_proceso_wf = gm.id_proceso_wf
+                                  AND te.codigo = ''cotizacion''
+                                  and gm.fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                                  GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg
+                                  ORDER BY  twf.fecha_reg DESC
+                                  limit 1)::varchar as tecnico_adquisiciones,
+                                 gm.proveedor_recomendado,
+                                 gm.proveedor_recomendado as proveedor_adjudicado,
+                                 gm.fecha_solicitud,
+                                 gm.precio_bs,
+                                 gm.precio_proceso,
+                                 gm.precio_adjudicado_bs,
+                                 gm.precio_adjudicado,
+                                 gm.moneda,
+                                 gm.contrato,
+                                 gm.cuce,
+                                 gm.modalidad_contratacion,
+                                 gm.departamento,
+                                 gm.nro_po
+                        from reporte_adjudicados_gm gm
+                        where gm.precio_adjudicado_bs >= '||v_parametros.monto_mayor||'
+                        order by gm.fecha_solicitud::date, gm.nro_tramite';
+
+                return v_consulta;
+            end;
+
+
+
 
 
 

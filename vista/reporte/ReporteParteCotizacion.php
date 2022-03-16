@@ -24,7 +24,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     triggerAction: 'all',
                     lazyRender:true,
                     mode: 'local',
-                    anchor: '35%',
+                    width:300,
                     gwidth: 230,
                     store:['Todos','Gerencia de Operaciones','Gerencia de Mantenimiento','Almacenes Consumibles o Rotables','Centro de Entrenamiento Aeronautico Civil']
 
@@ -38,10 +38,24 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config:{
+                    name: 'monto_mayor',
+                    fieldLabel: 'Montos mayor a (Bs.)',
+                    allowBlank: true,
+                    width:300,
+                    gwidth: 80,
+                    maxLength:6
+                },
+                type:'NumberField',
+                valorInicial: 1,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
                     name: 'fecha_ini',
                     fieldLabel: 'Fecha Inicio',
                     allowBlank: false,
-                    anchor: '30%',
+                    width:300,
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -57,7 +71,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'fecha_fin',
                     fieldLabel: 'Fecha Fin',
                     allowBlank: false,
-                    anchor: '30%',
+                    width:300,
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -92,7 +106,7 @@ header("content-type: text/javascript; charset=UTF-8");
         agregarArgsExtraSubmit: function() {
 
             this.argumentExtraSubmit.origen = this.Cmp.origen_pedido.getRawValue();
-   
+
         }
 
     })

@@ -99,6 +99,13 @@ class ACTCotizacion extends ACTbase{
 
         $this->objFunc=$this->create('MODCotizacion');
         $this->res=$this->objFunc->ControlPartesCotizacion ($this->objParam);
+				$this->objParam->addParametro('datos',$this->res->datos);
+
+
+				$this->objFunc=$this->create('MODCotizacion');
+        $this->res=$this->objFunc->ListadoAdjudicados ($this->objParam);
+				$this->objParam->addParametro('adjudicados',$this->res->datos);
+
         //obtener titulo de reporte
         $titulo ='Control Partes';
         //Genera el nombre del archivo (aleatorio + titulo)
@@ -106,10 +113,12 @@ class ACTCotizacion extends ACTbase{
 
         $nombreArchivo.='.xls';
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
-        $this->objParam->addParametro('datos',$this->res->datos);
         //Instancia la clase de excel
         $this->objReporteFormato=new RControlParteCotizacion($this->objParam);
         $this->objReporteFormato->generarDatos();
+				$this->objReporteFormato->imprimeAdjudicados();
+
+
         $this->objReporteFormato->generarReporte();
 
         $this->mensajeExito=new Mensaje();

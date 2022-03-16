@@ -539,5 +539,45 @@ class MODCotizacion extends MODbase{
 			return $this->respuesta;
 		}
 
+
+		function ListadoAdjudicados(){
+
+        $this->procedimiento ='mat.ft_cotizacion_sel';
+        $this->transaccion='MAT_LIS_ADJ_REP';
+        $this->tipo_procedimiento='SEL';
+
+        $this->setParametro('origen_pedido','origen_pedido','varchar');
+        $this->setParametro('fecha_ini','fecha_ini','date');
+				$this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('monto_mayor','monto_mayor','numeric');
+        $this->setCount(false);
+
+				$this->captura('nro_tramite','varchar');
+				$this->captura('justificacion','varchar');
+				$this->captura('funcionario_solicitante','varchar');
+				$this->captura('tecnico_adquisiciones','varchar');
+				$this->captura('proveedor_recomendado','varchar');
+				$this->captura('proveedor_adjudicado','varchar');
+				$this->captura('fecha_solicitud','varchar');
+				$this->captura('precio_bs','numeric');
+				$this->captura('precio_proceso','numeric');
+				$this->captura('precio_adjudicado_bs','numeric');
+				$this->captura('precio_adjudicado','numeric');
+				$this->captura('moneda','varchar');
+				$this->captura('contrato','varchar');
+				$this->captura('cuce','varchar');
+				$this->captura('modalidad_contratacion','varchar');
+				$this->captura('depto','varchar');
+				$this->captura('nro_po','varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump( $this->respuesta);exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 }
 ?>

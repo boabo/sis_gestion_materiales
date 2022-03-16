@@ -2275,7 +2275,11 @@ class ACTSolicitud extends ACTbase{
      $this->res->imprimirRespuesta($this->res->generarJson());
    }
 
-
+   function insertarCuce(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->insertarCuce($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
 
 }
 

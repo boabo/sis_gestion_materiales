@@ -972,3 +972,16 @@ ALTER TABLE mat.tcotizacion_detalle
 COMMENT ON COLUMN mat.tcotizacion_detalle.id_detalle_hazmat
 IS 'Id que hara la relacion con el Hazmat';
 /***********************************F-SCP-IRVA-MAT-0-01/02/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-16/03/2022****************************************/
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN cuce VARCHAR(250);
+COMMENT ON COLUMN mat.tsolicitud.cuce
+IS 'Campo donde se registra el nro de CUCE que proporciona SICOES';
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN fecha_publicacion_cuce DATE;
+COMMENT ON COLUMN mat.tsolicitud.fecha_publicacion_cuce
+IS 'Fecha de publicacion del CUCE';
+/***********************************F-SCP-IRVA-MAT-0-16/03/2022****************************************/
