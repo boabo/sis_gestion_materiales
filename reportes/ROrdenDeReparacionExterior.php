@@ -40,7 +40,6 @@ class ROrdenDeReparacionExterior extends  ReportePDF
           $id_detalle = explode(',',$this->datos[0]["id_detalle"]);
         }
 
-
         $firma_rpce = $this->datos[0]["firma_rpc"];
         $fir_rpce = explode('|', $firma_rpce);
 
@@ -175,7 +174,15 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                                         <td colspan="8" align="center"><li><b> SE ACEPTA EL INTERCAMBIO (FLAT EXCHANGE) DEL SERIAL ENVIADO S/N: '.$serial_original[$indice].'</b></li></td>
                                       </tr>
                                       ';
-
+                      }elseif (($this->datos[0]['po_type'] == 'Flat Exchange' || $this->datos[0]['po_type'] == 'Exchange')) {
+                          $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
+                                        <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
+                                        <td width="80" align="right"><li>'.number_format($precio_total[$indice], 2, ',', '.').'</li></td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="8" align="center"><li><b> SE ACEPTA EL INTERCAMBIO (FLAT EXCHANGE) DEL SERIAL ENVIADO S/N: '.$serial_original[$indice].'</b></li></td>
+                                      </tr>
+                                      ';
                       } else {
                         $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
                                       <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
