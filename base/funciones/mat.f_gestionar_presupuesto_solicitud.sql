@@ -454,7 +454,8 @@ BEGIN
                                     inner join mat.tdetalle_sol ds on ds.id_solicitud = s.id_solicitud
                                     inner join pre.tpartida par on par.id_partida = ds.id_partida
                                     inner join pre.vpresupuesto_cc p on p.id_centro_costo = ds.id_centro_costo
-                                    inner join mat.tcotizacion_detalle cot on cot.id_solicitud = s.id_solicitud
+                                    /*Comentando para tomar solo del detalle solicitud (Ismael Valdivia 18/03/2022)*/
+                                    --inner join mat.tcotizacion_detalle cot on cot.id_solicitud = s.id_solicitud
                                     where s.id_solicitud = p_id_solicitud
                                         and ds.estado_reg = 'activo'
                                         and ds.cantidad_sol > 0
@@ -602,7 +603,7 @@ $body$
 LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
-SECURITY INVOKER 
+SECURITY INVOKER
 COST 100;
 
 ALTER FUNCTION mat.f_gestionar_presupuesto_solicitud (p_id_solicitud integer, p_id_usuario integer, p_operacion varchar, p_conexion varchar)
