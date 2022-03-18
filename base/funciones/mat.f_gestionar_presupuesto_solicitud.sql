@@ -98,7 +98,8 @@ BEGIN
                             inner join pre.tpresupuesto p on p.id_centro_costo = ds.id_centro_costo
                             where s.id_solicitud = p_id_solicitud
                                 and ds.estado_reg = 'activo'
-                                and ds.cantidad_sol > 0 ) LOOP
+                                and ds.cantidad_sol > 0
+                            ORDER by ds.id_detalle ASC ) LOOP
 
 
                      IF(v_registros.presu_comprometido='si') THEN
