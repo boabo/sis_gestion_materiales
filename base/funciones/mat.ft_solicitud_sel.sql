@@ -4046,19 +4046,29 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             inner join gecom.tnumero_celular cel on cel.id_numero_celular = fun.id_numero_celular
             where fun.id_funcionario = v_id_funcionario_solicitante and fun.estado_reg = 'activo' and cel.tipo = 'interno';
 
+
+            select
+                  count(detcot.id_cotizacion_det)  into v_existe_bear
+            from mat.tcotizacion cot
+            inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+            left join mat.tcotizacion_detalle det on det.id_detalle_hazmat = detcot.id_cotizacion_det
+            where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
+            and detcot.cd = 'B.E.R.';
+
             /*Recuperamos datos del detalle de solicitud Cotizacion*/
 
             /*Aumentando para poner condicion de flat exchange (Ismael Valdivia 08/02/2022)*/
-            /*if (v_tipo_evaluacion = 'Flat Exchange' OR v_tipo_evaluacion = 'Exchange') then
-            	select list (detcot.nro_parte_cot),
-                       list (detcot.nro_parte_alterno_cot),
-                       list (detcot.cantidad_det::varchar),
-                       list (detcot.descripcion_cot),
-                       list (detcot.referencia_cot),
-                       list (detcot.cd),
-                       list (COALESCE (detcot.precio_unitario,0)::varchar),
-                       list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
-                       list (det.referencia)
+            if ((v_tipo_evaluacion = 'Flat Exchange' OR v_tipo_evaluacion = 'Exchange') and (v_existe_bear = 0)) then
+            	select list(detcot.nro_parte_cot),
+                      list(detcot.nro_parte_alterno_cot),
+                      list(detcot.cantidad_det::varchar),
+                      list(detcot.descripcion_cot),
+                      list(detcot.referencia_cot),
+                      list(detcot.cd),
+                      list(COALESCE (detcot.precio_unitario,0)::varchar),
+                      list(COALESCE (detcot.precio_unitario_mb,0)::varchar),
+                      list(COALESCE(detcot.id_detalle,0)::varchar),
+                      list(COALESCE( NULLIF(detsol.referencia,'') ,'/'))
                        INTO
                        v_num_part,
                        v_num_part_alt,
@@ -4068,12 +4078,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                        v_cd,
                        v_precio_unitario,
                        v_precio_total,
+                       v_id_detalle,
                        v_serial_original
                 from mat.tcotizacion cot
                 inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
-                inner join mat.tdetalle_sol det on det.id_detalle = detcot.id_detalle
+                left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
                 where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
-            else*/
+            else
             	select list(detcot.nro_parte_cot),
                       list(detcot.nro_parte_alterno_cot),
                       list(detcot.cantidad_det::varchar),
@@ -4098,9 +4109,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 from mat.tcotizacion cot
                 inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
                 left join mat.tcotizacion_detalle det on det.id_detalle_hazmat = detcot.id_cotizacion_det
-
                 where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
-            --end if;
+            end if;
             /*******************************************************************************/
 
 
