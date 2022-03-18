@@ -36,6 +36,9 @@ class ROrdenDeReparacionExterior extends  ReportePDF
           $serial_original = explode(',',$this->datos[0]["serial_original"]);
         }
 
+        if ($this->datos[0]["id_detalle"] != '') {
+          $id_detalle = explode(',',$this->datos[0]["id_detalle"]);
+        }
 
 
         $firma_rpce = $this->datos[0]["firma_rpc"];
@@ -127,6 +130,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
 
                     $numero = 1;
                     foreach ($nro_partes as $indice=>$partes){
+
                       //B.E.R.
                       if ($cd[$indice] == 'AS-IS') {
                         if ($precio_unitario[$indice] > 0) {
@@ -135,7 +139,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                           $descipcion = 'S/N: '.$serial[$indice].' RETORNARÁ EN CONDICIÓN '.$cd[$indice].' SIN NINGÚN COSTO DE EVALUACIÓN';
                         }
 
-                      } elseif ($cd[$indice] == 'B.E.R.') {
+                      } elseif ($cd[$indice] == 'B.E.R.' && $id_detalle[$indice] != 0) {
                         if ($precio_unitario[$indice] > 0) {
                           $descipcion = 'S/N: '.$serial[$indice].' RETORNARÁ EN CONDICIÓN '.$cd[$indice].' CON UN COSTO DE EVALUACIÓN IGUAL A '.$precio_unitario[$indice];
                         } else {
@@ -153,7 +157,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                                       </tr>
                                       ';
 
-                      } elseif ($cd[$indice] == 'B.E.R.') {
+                      } elseif ($cd[$indice] == 'B.E.R.' && $id_detalle[$indice] != 0) {
                         $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
                                       <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
                                       <td width="80" align="right"><li>'.number_format($precio_total[$indice], 2, ',', '.').'</li></td>
@@ -162,7 +166,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                                         <td colspan="8" align="center"><li><b>'.$descipcion.'</b></li></td>
                                       </tr>
                                       ';
-                      }elseif ($this->datos[0]["serial_original"] != '') {
+                      }elseif (($this->datos[0]['po_type'] == 'Flat Exchange' || $this->datos[0]['po_type'] == 'Exchange') && $id_detalle[$indice] == 0 ) {
                           $condicion = '<td width="75" align="center"><li>'.$cd[$indice].'</li></td>
                                         <td width="80" align="right"><li>'.number_format($precio_unitario[$indice], 2, ',', '.').'</li></td>
                                         <td width="80" align="right"><li>'.number_format($precio_total[$indice], 2, ',', '.').'</li></td>

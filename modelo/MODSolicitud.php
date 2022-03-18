@@ -1173,11 +1173,13 @@ class MODSolicitud extends MODbase
         //$this->captura('direccion_entrega', 'varchar');
         $this->captura('firma_rpc', 'varchar');
         $this->captura('serial_original', 'varchar');
+        $this->captura('id_detalle', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
         //var_dump($this->respuesta);
+
         //Devuelve la respuesta
         return $this->respuesta;
     }
@@ -2305,6 +2307,7 @@ class MODSolicitud extends MODbase
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
 }
 
 ?>
