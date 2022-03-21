@@ -786,7 +786,7 @@ v_consulta:='select		sol.id_solicitud,
                                                             de.id_detalle
                                                             /*****************************************/
                                                             from mat.tsolicitud sol
-                                                            inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
+                                                            inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''  and de.estado_excluido = ''no''
                                                             left join mat.tcotizacion_detalle detcot on detcot.id_detalle = de.id_detalle
                                                             where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'
                                                             group by de.id_detalle)
@@ -827,7 +827,7 @@ v_consulta:='select		sol.id_solicitud,
                                 coti.part_number_alternos::varchar
                                 /*****************************************/
           						from mat.tsolicitud sol
-                                inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''
+                                inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo'' and de.estado_excluido = ''no''
 
                                 inner join part_number_cotizaciones coti on coti.id_detalle = de.id_detalle
 
@@ -2283,13 +2283,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
 
                           left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
-                          left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle
+                          left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle and det.estado_excluido = ''no''
 
 
 
                           inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                           inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud and det.estado_reg = ''activo''
-                          where s.id_proceso_wf = '||v_parametros.id_proceso_wf||'
+                          where det.estado_excluido = ''no'' and s.id_proceso_wf = '||v_parametros.id_proceso_wf||'
                           ORDER BY det.id_detalle desc';
 
             raise notice 'v_consulta %',v_consulta;
@@ -2657,7 +2657,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                 v_observaciones_sol,
                                 v_id_solicitud
                         from mat.tsolicitud sol
-                        inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
+                        inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud and det.estado_excluido = 'no'
                         left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
                         left join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
                         where sol.id_proceso_wf =v_parametros.id_proceso_wf
@@ -3409,7 +3409,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            '''||v_aplica_nuevo_flujo||'''::varchar as nuevo_flujo,
                            '''||initcap(COALESCE(v_funcionario_sol_aux_abas,''))||'''::varchar as funcionario_auxiliar_abas
                           from mat.tsolicitud s
-                          inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo''
+                          inner join mat.tdetalle_sol det on det.id_solicitud = s.id_solicitud and det.estado_reg = ''activo'' and det.estado_excluido = ''no''
 
                           left join mat.tcotizacion cot on cot.id_solicitud = s.id_solicitud and cot.adjudicado = ''si''
 						  left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle
@@ -3817,7 +3817,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             ''''::varchar as tipo,
             '''||v_cotizacion_fecha||'''::varchar as fecha_cotizacion
             FROM mat.tsolicitud ts
-            INNER JOIN mat.tdetalle_sol tsd ON tsd.id_solicitud = ts.id_solicitud
+            INNER JOIN mat.tdetalle_sol tsd ON tsd.id_solicitud = ts.id_solicitud and tsd.estado_excluido = ''no''
             INNER JOIN pre.tpartida tpar ON tpar.id_partida = tsd.id_partida
             /*Aumentando para recueperar la descripcion del codigo_poa*/
             INNER JOIN pre.tobjetivo ob on ob.codigo = ts.codigo_poa
@@ -3872,7 +3872,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             ''''::varchar as tipo,
             ts.fecha_solicitud::varchar as fecha_cotizacion
             FROM mat.tsolicitud ts
-            INNER JOIN mat.tdetalle_sol tsd ON tsd.id_solicitud = ts.id_solicitud
+            INNER JOIN mat.tdetalle_sol tsd ON tsd.id_solicitud = ts.id_solicitud and tsd.estado_excluido = ''no''
             INNER JOIN pre.tpartida tpar ON tpar.id_partida = tsd.id_partida
             /*Aumentando para recueperar la descripcion del codigo_poa*/
             INNER JOIN pre.tobjetivo ob on ob.codigo = ts.codigo_poa
@@ -4506,7 +4506,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_descripcion_det,
                    v_serial_det
             from mat.tsolicitud sol
-            inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
+            inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud and det.estado_excluido = 'no'
             where sol.id_solicitud = v_id_solicitud_rec;
 
             if (v_condicion_sol is null) then
@@ -4859,7 +4859,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    v_precio_unitario,
                    v_precio_total
             from mat.tsolicitud sol
-            inner join mat.tdetalle_sol detsol on detsol.id_solicitud = sol.id_solicitud
+            inner join mat.tdetalle_sol detsol on detsol.id_solicitud = sol.id_solicitud and detsol.estado_excluido = 'no'
             where sol.id_solicitud = v_id_solicitud_rec;
 
 			/*Aumentnado para que se sume los disas estimados en el reporte de especificacion tecnica*/

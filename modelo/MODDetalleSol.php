@@ -325,6 +325,68 @@ class MODDetalleSol extends MODbase{
 			return $this->respuesta;
 		}
 
+		function excluirItem()
+    {
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento = 'mat.ft_exlusion_item_ime';
+        $this->transaccion = 'MAT_UPT_ITEM_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('id_detalle', 'id_detalle', 'int4');
+        $this->setParametro('observacion_exclusion', 'observacion_exclusion', 'varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function incluirItem()
+    {
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento = 'mat.ft_exlusion_item_ime';
+        $this->transaccion = 'MAT_UPT_ADD_ITEM_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('id_detalle', 'id_detalle', 'int4');
+        $this->setParametro('observacion_exclusion', 'observacion_exclusion', 'varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
+		function consultaDetalleExcluidos()
+    {
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento = 'mat.ft_exlusion_item_sel';
+        $this->transaccion = 'MAT_LIST_ITEM_IME';
+        $this->tipo_procedimiento = 'SEL';
+				$this->setCount(false);
+        //Define los parametros para la funcion
+        $this->setParametro('id_detalle', 'id_detalle', 'int4');
+
+				$this->captura('jsonData','text');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+				//var_dump("aqui llega respuesta",$this->respuesta);
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 
 }
 ?>

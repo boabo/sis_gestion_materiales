@@ -187,7 +187,7 @@ BEGIN
                                             detcot.id_detalle
                                             /****************************************************/
                                             from mat.tcotizacion_detalle detcot
-                                            left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
+                                            left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle and detsol.estado_excluido = ''no''
                                             where  detcot.id_solicitud = '||v_parametros.id_solicitud||'
                                             and detcot.id_detalle_hazmat is null
                         )
@@ -266,7 +266,7 @@ BEGIN
                         --left join serial_ref ser on ser.referencia_cot = detcot.referencia_cot
 						left join serial_ref serial on serial.id_cotizacion_det = detcot.id_detalle_hazmat
 
-                        where  det.id_solicitud = '||v_parametros.id_solicitud||' and ';
+                        where det.estado_excluido = ''no'' and det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             else
             	v_consulta:='select
 						det.id_detalle,
@@ -334,7 +334,7 @@ BEGIN
                         inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                         inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
 
-                        left join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si''
+                        left join mat.tcotizacion_detalle detcot on detcot.id_detalle = det.id_detalle and detcot.referencial = ''Si'' and det.estado_excluido = ''no''
 
                         /*Aumentando para recuperar detalles (Ismael Valdivia 31/01/2020)*/
                         left join param.vcentro_costo cc on cc.id_centro_costo = det.id_centro_costo
@@ -348,7 +348,7 @@ BEGIN
 
                         left join mat.tcotizacion_detalle detHazmat on detHazmat.id_detalle_hazmat = detcot.id_cotizacion_det
 
-                        where det.id_solicitud = '||v_parametros.id_solicitud||' and ';
+                        where det.estado_excluido = ''no'' and det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             end if;
 
 			--Definicion de la respuesta
@@ -386,7 +386,7 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
 					    inner join mat.tunidad_medida un on un.id_unidad_medida = det.id_unidad_medida
                         inner join mat.tsolicitud s on s.id_solicitud = det.id_solicitud
-                        left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
+                        left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si'' and det.estado_excluido = ''no''
                         left join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion and det.nro_parte = cotdet.nro_parte_cot
 
                         /*Aumentando para recuperar detalles (Ismael Valdivia 31/01/2020)*/
@@ -404,7 +404,7 @@ BEGIN
                          */
                         /******************************************************************/
 
-                        where det.id_solicitud = '||v_parametros.id_solicitud||' and ';
+                        where det.estado_excluido = ''no'' and det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             else
 
 
@@ -431,7 +431,7 @@ BEGIN
                          */
                         /******************************************************************/
 
-                        where det.id_solicitud = '||v_parametros.id_solicitud||' and ';
+                        where det.estado_excluido = ''no'' and det.id_solicitud = '||v_parametros.id_solicitud||' and ';
             end if;
 
 			--Definicion de la respuesta

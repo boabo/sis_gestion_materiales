@@ -985,3 +985,31 @@ ALTER TABLE mat.tsolicitud
 COMMENT ON COLUMN mat.tsolicitud.fecha_publicacion_cuce
 IS 'Fecha de publicacion del CUCE';
 /***********************************F-SCP-IRVA-MAT-0-16/03/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-21/03/2022****************************************/
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN estado_excluido VARCHAR(10) DEFAULT 'no' NOT NULL;
+COMMENT ON COLUMN mat.tdetalle_sol.estado_excluido
+IS 'Estado para saber si sera excluido o no';
+
+
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN observacion_excluido TEXT;
+COMMENT ON COLUMN mat.tdetalle_sol.observacion_excluido
+IS 'Descripcion del motivo de la exclusion';
+
+
+
+CREATE TABLE mat.tdetalle_excluido_historico (
+  id_historico SERIAL,
+  id_detalle_solicitud INTEGER NOT NULL,
+  id_solicitud INTEGER NOT NULL,
+  observacion TEXT,
+  estado_excluido VARCHAR(10),
+  CONSTRAINT tdetalle_excluido_historico_pkey PRIMARY KEY(id_historico)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+ALTER TABLE mat.tdetalle_excluido_historico
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-0-21/03/2022****************************************/

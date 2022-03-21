@@ -2183,6 +2183,7 @@ END IF;
             select count (*) into v_datos_incompletos
              from mat.tdetalle_sol det
              where det.nro_parte != 'HAZMAT' and
+             det.estado_excluido = 'no' and
              det.id_solicitud = v_parametros.id_solicitud and (det.id_auxiliar is null or det.id_centro_costo is null or det.id_orden_trabajo is null or det.id_partida is null or det.id_concepto_ingas is null );
 
 
@@ -2469,6 +2470,7 @@ END IF;
 					select count (*) into v_datos_incompletos
 					 from mat.tdetalle_sol det
 					 where det.nro_parte != 'HAZMAT' and
+                     det.estado_excluido = 'no' and
 					 det.id_solicitud = v_parametros.id_solicitud and (det.id_auxiliar is null or det.id_centro_costo is null or det.id_orden_trabajo is null or det.id_partida is null or det.id_concepto_ingas is null );
 
 
@@ -2490,7 +2492,7 @@ END IF;
 
 						select sum (det.precio_total) into v_monto_referencial
 						from mat.tdetalle_sol det
-						where det.id_solicitud = v_parametros.id_solicitud;
+						where det.id_solicitud = v_parametros.id_solicitud and det.estado_excluido = 'no';
 
 						/*Aqui ponemos la condicion para controlar que el monto adjudicado no sea mayor al referencial*/
 						if (v_monto_adjudicado > v_monto_referencial) then
@@ -2998,6 +3000,7 @@ END IF;
                                             inner join orga.vfuncionario f on f.id_funcionario = s.id_funcionario_sol
                                             left join conta.torden_trabajo ot on ot.id_orden_trabajo = s.id_matricula
                                             where s.estado != 'finalizado'
+                                            and d.estado_excluido = 'no'
 
      	)LOOP
         if v_control_duplicidad.nro_justificacion !=''then
@@ -3639,7 +3642,8 @@ END IF;
 
         		for v_detalle_clon in (	select *
                 						from mat.tdetalle_sol d
-                                        where d.id_solicitud =v_record_clon.id_solicitud )
+                                        where d.id_solicitud =v_record_clon.id_solicitud
+                                        and d.estado_excluido = 'no' )
                 loop
                 insert into mat.tdetalle_sol( id_solicitud,
                                               descripcion,

@@ -87,7 +87,9 @@ DECLARE
      v_precio_unitario  numeric;
      v_precio_total		numeric;
      v_total_detalle	numeric;
-
+     v_estado_actual	varchar;
+     v_cantidad_actual  integer;
+     v_precio_actual	numeric;
 
 
 BEGIN
@@ -478,6 +480,30 @@ BEGIN
         from mat.tsolicitud s
         inner join mat.tdetalle_sol de on de.id_solicitud = s.id_solicitud
         WHERE s.id_solicitud = v_parametros.id_solicitud;
+
+
+
+      if (v_detalle.estado not in ('borrador','revision','cotizacion','cotizacion_solicitada','revision_tecnico_abastecimientos','finalizado')) then
+
+        	select det.cantidad_sol,
+            	   det.precio_unitario
+            into
+            	   v_cantidad_actual,
+                   v_precio_actual
+            from mat.tdetalle_sol det
+            where det.estado_excluido = 'no' and
+            det.id_detalle = v_parametros.id_detalle;
+
+        	if (v_cantidad_actual != v_parametros.cantidad_sol) then
+            	raise exception 'No se puede modificar la cantidad ya que se comprometió presupuesto.';
+            end if;
+
+
+            if (v_precio_actual != v_parametros.precio_unitario) then
+            	raise exception 'No se puede modificar el precio ya que se comprometió presupuesto.';
+            end if;
+
+        end if;
 
         /*Aqui concatenaremos para los repuestos en la condicion detalle el FOR*/
         v_condicion = '';

@@ -114,7 +114,7 @@ BEGIN
           FOR v_record IN (SELECT tds.nro_parte, tds.referencia, tds.descripcion, tds.condicion_det, tds.cantidad_sol, tum.codigo
                           FROM  mat.tdetalle_sol tds
                           INNER JOIN mat.tunidad_medida tum ON tum.id_unidad_medida = tds.id_unidad_medida
-                          WHERE tds.id_solicitud = p_id_solicitud)
+                          WHERE tds.estado_excluido = 'no' and tds.id_solicitud = p_id_solicitud)
           LOOP
               v_resp = v_resp ||'<tr>
                                     <td style="text-align: center; vertical-align: middle;">'||v_record.nro_parte||'</td>
@@ -151,7 +151,7 @@ BEGIN
         FOR v_record IN (SELECT tds.nro_parte, tds.referencia, tds.descripcion, tds.condicion_det, tds.cantidad_sol, tum.codigo
                         FROM  mat.tdetalle_sol tds
                         INNER JOIN mat.tunidad_medida tum ON tum.id_unidad_medida = tds.id_unidad_medida
-                        WHERE tds.id_solicitud = p_id_solicitud)
+                        WHERE tds.estado_excluido = 'no' and tds.id_solicitud = p_id_solicitud)
     	LOOP
             v_resp = v_resp ||'<tr>
                                   <td style="text-align: center; vertical-align: middle;">'||v_record.nro_parte||'</td>
@@ -179,7 +179,7 @@ BEGIN
           FOR v_record IN (SELECT tds.nro_parte, tds.referencia, tds.descripcion, tds.cantidad_sol, tum.codigo
                           FROM  mat.tdetalle_sol tds
                           INNER JOIN mat.tunidad_medida tum ON tum.id_unidad_medida = tds.id_unidad_medida
-                          WHERE tds.id_solicitud = p_id_solicitud)LOOP
+                          WHERE tds.estado_excluido = 'no' and tds.id_solicitud = p_id_solicitud)LOOP
               v_resp = v_resp ||'<tr>
                                     <td>'||v_record.nro_parte||'</td>
                                     <td>'||v_record.referencia||'</td>

@@ -207,6 +207,7 @@ BEGIN
                             inner join mat.tdetalle_sol ds on ds.id_solicitud = s.id_solicitud
                             inner join pre.tpresupuesto p on p.id_centro_costo = ds.id_centro_costo
                             where s.id_solicitud = p_id_solicitud
+                            	and ds.estado_excluido = 'no'
                                 and ds.estado_reg = 'activo'
                                 and ds.cantidad_sol > 0) LOOP
 
@@ -328,6 +329,7 @@ BEGIN
                                         inner join pre.tpartida par on par.id_partida = ds.id_partida
                                         inner join pre.vpresupuesto_cc p on p.id_centro_costo = ds.id_centro_costo
                                         where s.id_solicitud = p_id_solicitud
+                                        	and ds.estado_excluido = 'no'
                                             and ds.estado_reg = 'activo'
                                             and ds.cantidad_sol > 0
 
@@ -350,6 +352,7 @@ BEGIN
                                                 v_id_centro_costo
                                           from  mat.tdetalle_sol sd
                                           where  sd.id_solicitud = p_id_solicitud
+                                          and sd.estado_excluido = 'no'
                                           limit 1 offset 0;
 
                                           v_resp_pre = pre.f_verificar_presupuesto_partida ( v_registros.id_centro_costos[1],
@@ -402,6 +405,7 @@ BEGIN
                                       join param.tcentro_costo p on p.id_centro_costo = ds.id_centro_costo
                                       join param.vtipo_cc_techo tcc on tcc.id_tipo_cc = p.id_tipo_cc
                                       where s.id_solicitud = p_id_solicitud
+                                      	  and ds.estado_excluido = 'no'
                                           and ds.estado_reg = 'activo'
                                           and ds.cantidad_sol > 0
 
@@ -458,6 +462,7 @@ BEGIN
                                     /*Comentando para tomar solo del detalle solicitud (Ismael Valdivia 18/03/2022)*/
                                     --inner join mat.tcotizacion_detalle cot on cot.id_solicitud = s.id_solicitud
                                     where s.id_solicitud = p_id_solicitud
+                                    	and ds.estado_excluido = 'no'
                                         and ds.estado_reg = 'activo'
                                         and ds.cantidad_sol > 0
 
@@ -479,7 +484,8 @@ BEGIN
                                             INTO
                                                 v_id_centro_costo
                                           from  mat.tdetalle_sol ds
-                                          where  ds.id_solicitud = p_id_solicitud;
+                                          where  ds.id_solicitud = p_id_solicitud
+                                          and ds.estado_excluido = 'no';
 
                                           v_resp_pre = pre.f_verificar_presupuesto_partida ( v_id_centro_costo,
                                                                     v_registros.id_partida,
@@ -528,6 +534,7 @@ BEGIN
                                           inner join pre.tpartida par on par.id_partida = ds.id_partida
                                           inner join pre.vpresupuesto_cc p on p.id_centro_costo = ds.id_centro_costo
                                           where s.id_solicitud = p_id_solicitud
+                                          	  and ds.estado_excluido = 'no'
                                               and ds.estado_reg = 'activo'
                                               and ds.cantidad_sol > 0
 
@@ -549,7 +556,8 @@ BEGIN
                                             INTO
                                                 v_id_centro_costo
                                           from  mat.tdetalle_sol sd
-                                          where  sd.id_solicitud = p_id_solicitud;
+                                          where  sd.id_solicitud = p_id_solicitud
+                                          and sd.estado_excluido = 'no';
 
                                           v_resp_pre = pre.f_verificar_presupuesto_partida_centro_costo(v_id_centro_costo,
                                                                     v_registros.id_partida,

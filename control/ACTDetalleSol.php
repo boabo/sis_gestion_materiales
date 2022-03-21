@@ -12,9 +12,17 @@ class ACTDetalleSol extends ACTbase{
 	function listarDetalleSol(){
 		$this->objParam->defecto('ordenacion','id_detalle');
         $this->objParam->defecto('dir_ordenacion','asc');
-       if($this->objParam->getParametro('id_solicitud') != '') {
+
+				if($this->objParam->getParametro('id_solicitud') != '') {
             $this->objParam->addFiltro(" det.id_solicitud = " . $this->objParam->getParametro('id_solicitud'));
-        }
+
+					if ($this->objParam->getParametro('excluido') != '') {
+							$this->objParam->addFiltro(" det.estado_excluido = ''" . $this->objParam->getParametro('excluido')."''");
+					} else {
+						$this->objParam->addFiltro(" det.estado_excluido = ''no''");
+					}
+
+				}
 
        /* if($this->objParam->getParametro('parte') != '') {
            var_dump($this->objParam->addParametro('parte', 'parte')); exit;
@@ -106,6 +114,25 @@ class ACTDetalleSol extends ACTbase{
 				$this->res->imprimirRespuesta($this->res->generarJson());
 		}
 
+		/*Funcion para Exluir Item (Ismael Valdivia 17/03/2022)*/
+    function excluirItem(){
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->excluirItem($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function incluirItem(){
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->incluirItem($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+		function consultaDetalleExcluidos(){
+        $this->objFunc=$this->create('MODDetalleSol');
+        $this->res=$this->objFunc->consultaDetalleExcluidos($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    /*******************************************************/
 
 }
 

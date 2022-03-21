@@ -395,7 +395,8 @@ BEGIN
                       v_id_detalle_recu
                 from mat.tdetalle_sol d
                 inner JOIN mat.tunidad_medida med on med.id_unidad_medida = d.id_unidad_medida
-                where d.id_solicitud = v_parametros.id_solicitud::integer and d.estado_reg = 'activo';
+                where d.id_solicitud = v_parametros.id_solicitud::integer and d.estado_reg = 'activo'
+                and d.estado_excluido = 'no';
 
 
                 --Definicion de la respuesta

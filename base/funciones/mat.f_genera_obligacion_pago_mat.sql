@@ -324,7 +324,7 @@ BEGIN
                       det.id_detalle_hazmat
               from mat.tcotizacion_detalle det
               left join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
-              left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle
+              left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle and ds.estado_excluido = 'no'
               where cot.id_solicitud = p_id_solicitud and ds.id_partida is not null;
                 /************************************************************/
 
@@ -336,7 +336,7 @@ BEGIN
                                         det.id_cotizacion_det
                                 from mat.tcotizacion_detalle det
                                 left join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
-                                left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle
+                                left join mat.tdetalle_sol ds on ds.id_detalle = det.id_detalle and ds.estado_excluido = 'no'
                                 where cot.id_solicitud = p_id_solicitud and ds.id_partida is null
                                 group by  det.nro_parte_cot,
                                           det.descripcion_cot,
@@ -508,6 +508,7 @@ BEGIN
                                                       inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
                                                       left join mat.tcotizacion_detalle detHaz on detHaz.id_detalle_hazmat = det.id_cotizacion_det
                                                       where ds.id_solicitud = p_id_solicitud
+                                                      and ds.estado_excluido = 'no'
                                                       group by ds.id_detalle
 
                                                       )
@@ -551,6 +552,7 @@ BEGIN
                                   inner join mat.tcotizacion cot on cot.id_cotizacion = det.id_cotizacion and cot.adjudicado = 'si'
                                   left join HazmatData detHaz on detHaz.id_detalle = ds.id_detalle
                                   where ds.id_solicitud = p_id_solicitud
+                                  and ds.estado_excluido = 'no'
 
 
 

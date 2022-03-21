@@ -55,7 +55,7 @@ DECLARE
     v_existencia_pac		integer;
     v_id_gestion			integer;
     v_id_centro_costo		integer;
-
+	v_estado_actual			varchar;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_cotizacion_detalle_ime';
@@ -610,6 +610,18 @@ BEGIN
               from mat.tcotizacion_detalle
               where id_cotizacion_det = v_parametros.id_cotizacion_det;
 
+			  select sol.estado into v_estado_actual
+              from mat.tsolicitud sol
+              where sol.id_solicitud = v_id_solicitud;
+
+
+              if (v_estado_actual not in ('borrador','revision','cotizacion','cotizacion_solicitada','revision_tecnico_abastecimientos','finalizado')) then
+              	raise exception 'No se puede modificar el precio Referencial ya que se comprometió presupuesto.';
+              end if;
+
+
+
+
               if v_valor = 'Si' then
 
                   update mat.tcotizacion_detalle  set
@@ -621,7 +633,8 @@ BEGIN
                   update mat.tdetalle_sol set
                   	     cantidad_sol = v_cantidad,
                          precio_unitario = 0,
-                         precio_total = 0
+                         precio_total = 0,
+                         fecha_mod = now()
                   where id_detalle = v_id_detalle;
                   /********************************************************************************************/
 
@@ -655,12 +668,14 @@ BEGIN
                   update mat.tdetalle_sol set
                   	     cantidad_sol = v_cantidad,
                          precio_unitario = v_precio_unitario,
-                         precio_total = v_precio_total
+                         precio_total = v_precio_total,
+                         fecha_mod = now()
                   where id_detalle = v_id_detalle;
                   /********************************************************************************************/
                         select sum(COALESCE (det.precio_total,0)) into v_suma_total
                         from mat.tdetalle_sol det
-                        where det.id_solicitud = v_id_solicitud;
+                        where det.id_solicitud = v_id_solicitud
+                        and det.estado_excluido = 'no';
 
                        if (v_suma_total > 0) then
 

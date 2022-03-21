@@ -1,25 +1,30 @@
 <?php
 /**
 *@package pXP
-*@file gen-DetalleSol.php
+*@file gen-ItemsExcluidos.php
 *@author  (admin)
-*@date 23-12-2016 13:13:01
+*@date 17-03-2022 10:00:01
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.ItemsExcluidos=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 				this.maestro=config.maestro;
-        Phx.vista.DetalleSol.superclass.constructor.call(this,config);
+        Phx.vista.ItemsExcluidos.superclass.constructor.call(this,config);
         this.init();
-				this.bbar.el.dom.style.background='#03A27C';
-				this.tbar.el.dom.style.background='#03A27C';
+				this.bbar.el.dom.style.background='#5B91FF';
+				this.tbar.el.dom.style.background='#5B91FF';
 				this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#E9E9E9';
 				this.grid.body.dom.firstChild.firstChild.lastChild.style.background='#F6F6F6';
 				this.iniciarEventos();
+
+        this.store.baseParams = {id_solicitud: this.maestro.id_solicitud,
+                                 excluido: 'si'};
+
+        this.load({params:{start:0, limit:this.tam_pag}})
     },
 
 		Grupos: [
@@ -966,204 +971,44 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_detalle',
 		direction: 'ASC'
 	},
-	bdel:true,
+	bdel:false,
 	bsave:false,
 	btest: false,
-  bnew: true,
+	bnew: false,
+  bedit: false,
 
-        onReloadPage: function (m) {
-            this.maestro = m;
-						this.store.baseParams.tipo_tramite = m.nro_tramite.substr(0, 2);
-						var tb =this.tbar;
-						this.interfaz_padre = Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.tipo_interfaz;
+    loadValoresIniciales: function () {
+        this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
+        Phx.vista.ItemsExcluidos.superclass.loadValoresIniciales.call(this);
 
-
-						if (this.maestro.estado == 'borrador') {
-							this.Cmp.nro_parte_alterno.setDisabled(false);
-							this.Cmp.nro_parte.setDisabled(false);
-							this.Cmp.precio_unitario.allowBlank = true;
-							this.Cmp.id_concepto_ingas.allowBlank = true;
-							this.Cmp.id_centro_costo.allowBlank = true;
-							this.Cmp.id_orden_trabajo.allowBlank = true;
-
-						} else {
-							this.Cmp.nro_parte_alterno.setDisabled(true);
-							this.Cmp.nro_parte.setDisabled(true);
-							this.Cmp.precio_unitario.allowBlank = false;
-							this.Cmp.id_concepto_ingas.allowBlank = false;
-							this.Cmp.id_centro_costo.allowBlank = false;
-							this.Cmp.id_orden_trabajo.allowBlank = false;
-						}
-
-						if (this.interfaz_padre == 'VistoBueno') {
-							this.Cmp.precio_unitario.allowBlank = true;
-							this.ocultarComponente(this.Cmp.precio_unitario);
-							this.ocultarComponente(this.Cmp.precio_total);
-
-
-							this.Cmp.id_concepto_ingas.setDisabled(false);
-							this.Cmp.id_centro_costo.setDisabled(false);
-							this.Cmp.id_orden_trabajo.setDisabled(false);
-
-							this.Cmp.id_concepto_ingas.allowBlank = false;
-							this.Cmp.id_centro_costo.allowBlank = false;
-							this.Cmp.id_orden_trabajo.allowBlank = false;
-
-						} else if (this.interfaz_padre == 'RegistroSolicitud') {
-
-							this.Cmp.precio_unitario.allowBlank = true;
-							this.ocultarComponente(this.Cmp.id_concepto_ingas);
-							this.ocultarComponente(this.Cmp.id_centro_costo);
-							this.ocultarComponente(this.Cmp.id_orden_trabajo);
-
-
-							this.Cmp.id_concepto_ingas.setDisabled(true);
-							this.Cmp.id_centro_costo.setDisabled(true);
-							this.Cmp.id_orden_trabajo.setDisabled(true);
-
-							this.Cmp.id_concepto_ingas.allowBlank = true;
-							this.Cmp.id_centro_costo.allowBlank = true;
-							this.Cmp.id_orden_trabajo.allowBlank = true;
-						} else {
-
-							if (this.maestro.nuevo_flujo == 'si') {
-								this.Cmp.precio_unitario.allowBlank = false;
-								this.mostrarComponente(this.Cmp.precio_unitario);
-								this.mostrarComponente(this.Cmp.precio_total);
-								// {dev:bvasquez, date: 02/03/2022, desc: campos editables, a solicitud Grover velasquez}
-								this.Cmp.id_concepto_ingas.setDisabled(false);
-								this.Cmp.id_centro_costo.setDisabled(false);
-								this.Cmp.id_orden_trabajo.setDisabled(false);
-							} else {
-								this.Cmp.precio_unitario.allowBlank = false;
-								this.mostrarComponente(this.Cmp.precio_unitario);
-								this.mostrarComponente(this.Cmp.precio_total);
-								this.Cmp.id_concepto_ingas.setDisabled(false);
-								this.Cmp.id_centro_costo.setDisabled(false);
-								this.Cmp.id_orden_trabajo.setDisabled(false);
-								this.Cmp.id_concepto_ingas.allowBlank = false;
-								this.Cmp.id_centro_costo.allowBlank = false;
-								this.Cmp.id_orden_trabajo.allowBlank = false;
-							}
-
-
-						}
-
-
-						//console.log("llega aqui el dato para esconder",m.nro_tramite.substr(0, 2));
-						if (m.nro_tramite.substr(0, 2) == 'GR') {
-							this.cm.setHidden(2, false);
-						} else {
-							this.cm.setHidden(2, true);
-						}
-						this.store.baseParams = {id_solicitud: this.maestro.id_solicitud,
-																	   condcion_editar: 'grilla',
-																	   tipo_tramite : m.nro_tramite.substr(0, 2)};
-            this.load({params: {start: 0, limit: 50}});
-        },
-        loadValoresIniciales: function () {
-            this.Cmp.id_solicitud.setValue(this.maestro.id_solicitud);
-            Phx.vista.DetalleSol.superclass.loadValoresIniciales.call(this);
-
-        },
+    },
     preparaMenu:function(n){
         var tb =this.tbar;
 				var rec = this.getSelectedData();
-        Phx.vista.DetalleSol.superclass.preparaMenu.call(this,n);
+        Phx.vista.ItemsExcluidos.superclass.preparaMenu.call(this,n);
 				this.Cmp.id_concepto_ingas.store.baseParams.id_gestion = this.maestro.id_gestion;
 				this.Cmp.id_concepto_ingas.modificado = true;
 				this.Cmp.id_centro_costo.store.baseParams.id_depto = this.maestro.id_depto;
 				this.Cmp.id_centro_costo.store.baseParams.id_gestion = this.maestro.id_gestion;
 				this.Cmp.id_centro_costo.store.baseParams.codigo_subsistema = 'ADQ';
 
-				if (this.interfaz_padre == 'VistoBueno') {
-						if(this.maestro.estado == 'revision_tecnico_abastecimientos' || this.maestro.estado == 'cotizacion' || this.maestro.estado == 'cotizacion_solicitada'){
+				if (rec) {
+					this.getBoton('add_item').show();
+					this.getBoton('add_item').enable();
 
-						}else{
-							this.getBoton('edit').disable();
-						}
+					this.getBoton('log_excluidos').show();
+					this.getBoton('log_excluidos').enable();
+
 
 				}
 
-
-
-				/*Condicion para los botones para mostrar en ciertos estados (Ismael Valdivia 21/03/2022)*/
-				if (this.maestro.estado == 'revision_tecnico_abastecimientos' || this.maestro.estado == 'cotizacion' || this.maestro.estado == 'cotizacion_solicitada') {
-					if (rec) {
-						this.getBoton('excluir_item').show();
-						this.getBoton('excluir_item').enable();
-
-						this.getBoton('items_excluidos').show();
-						this.getBoton('items_excluidos').enable();
-
-						this.getBoton('log_excluidos').show();
-						this.getBoton('log_excluidos').enable();
-					} else {
-						this.getBoton('excluir_item').hide();
-						this.getBoton('excluir_item').disable();
-
-						this.getBoton('items_excluidos').hide();
-						this.getBoton('items_excluidos').disable();
-
-
-						this.getBoton('log_excluidos').hide();
-						this.getBoton('log_excluidos').disable();
-					}
-
-				} else {
-
-					this.getBoton('excluir_item').hide();
-					this.getBoton('excluir_item').disable();
-
-					this.getBoton('items_excluidos').hide();
-					this.getBoton('items_excluidos').disable();
-
-
-					this.getBoton('log_excluidos').hide();
-					this.getBoton('log_excluidos').disable();
-				}
-				/*****************************************************************************************/
-
-				if (this.interfaz_padre == 'RegistroSolicitud') {
-					this.getBoton('del').show();
-					this.getBoton('new').show();
-				} else {
-					this.getBoton('del').disable();
-					this.getBoton('new').disable();
-					this.getBoton('del').hide();
-					this.getBoton('new').hide();
-				}
 
         return tb;
     },
 
     liberaMenu: function() {
-        var tb = Phx.vista.DetalleSol.superclass.liberaMenu.call(this);
+        var tb = Phx.vista.ItemsExcluidos.superclass.liberaMenu.call(this);
 
-				if (this.interfaz_padre == 'RegistroSolicitud') {
-					this.getBoton('del').show();
-					this.getBoton('new').show();
-				} else {
-					this.getBoton('del').disable();
-					this.getBoton('new').disable();
-					this.getBoton('del').hide();
-					this.getBoton('new').hide();
-				}
-
-
-				/*Condicion para los botones para mostrar en ciertos estados (Ismael Valdivia 21/03/2022)*/
-
-					this.getBoton('excluir_item').hide();
-					this.getBoton('excluir_item').disable();
-
-					this.getBoton('items_excluidos').hide();
-					this.getBoton('items_excluidos').disable();
-
-
-					this.getBoton('log_excluidos').hide();
-					this.getBoton('log_excluidos').disable();
-
-				/*****************************************************************************************/
 
 
 
@@ -1172,7 +1017,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
 		/*Aumentando esta parte para recuperar el centro de costo Ismael Valdivia (31/01/2020)*/
 		onButtonNew: function() {
-			Phx.vista.DetalleSol.superclass.onButtonNew.call(this);
+			Phx.vista.ItemsExcluidos.superclass.onButtonNew.call(this);
 
 			this.Cmp.nro_parte.setDisabled(false);
 			this.Cmp.nro_parte_alterno.setDisabled(false);
@@ -1357,7 +1202,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		},
 
 		onButtonEdit: function() {
-			Phx.vista.DetalleSol.superclass.onButtonEdit.call(this);
+			Phx.vista.ItemsExcluidos.superclass.onButtonEdit.call(this);
 			this.Cmp.control_edicion.setValue('botonEditar');
 			if (this.store.baseParams.tipo_tramite == 'GR') {
 				this.mostrarComponente(this.Cmp.serial);
@@ -1459,41 +1304,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
 
 
-			// this.Cmp.id_concepto_ingas.on('select', function (cmp, rec) {
-			// 	/*Habilitamos el campo centro de concepto cuando seleccionemos el centro de costo*/
-			// 	this.Cmp.id_orden_trabajo.el.dom.style.background='#FFCD8C';
-			//
-			// 	this.Cmp.id_orden_trabajo.store.baseParams = Ext.apply(this.Cmp.id_orden_trabajo.store.baseParams, {
-			// 																							 filtro_ot:rec.data.filtro_ot,
-			// 													 requiere_ot:rec.data.requiere_ot,
-			// 													 id_grupo_ots:rec.data.id_grupo_ots
-			// 												});
-			// 	this.Cmp.id_orden_trabajo.modificado = true;
-			//
-			//
-			// 	this.Cmp.id_orden_trabajo.reset();
-			//
-			//
-			// 	this.Cmp.id_orden_trabajo.store.load({params:{start:0,limit:50},
-			// 		 callback : function (r) {
-			// 					if (this.Cmp.id_centro_costo.getValue() != this.store.baseParams.id_centro_costo_rec && r.length == 1) {
-			// 							this.Cmp.id_orden_trabajo.setValue(r[0].data.id_orden_trabajo);
-			// 							this.Cmp.id_orden_trabajo.fireEvent('select',this.Cmp.id_orden_trabajo, this.Cmp.id_orden_trabajo.store.getById(r[0].data.id_orden_trabajo));
-			//
-			//
-			// 					} else if (this.Cmp.id_centro_costo.getValue() != this.store.baseParams.id_centro_costo_rec && r.length > 1) {
-			// 						this.Cmp.id_orden_trabajo.setValue('');
-			// 					}
-			// 					// else if (this.Cmp.id_centro_costo.getValue() == this.store.baseParams.id_centro_costo_rec) {
-			// 			 	  // this.Cmp.id_orden_trabajo.setValue(this.maestro.id_matricula);
-			// 					// this.Cmp.id_orden_trabajo.fireEvent('select',this.Cmp.id_orden_trabajo, this.Cmp.id_orden_trabajo.store.getById(this.maestro.id_matricula));
-			// 					// }
-			// 			}, scope : this
-			// 	});
-			//
-			// 	/*******************************************************************/
-			// }, this);
-
 			if (this.Cmp.id_orden_trabajo.getValue() != '' || this.Cmp.id_orden_trabajo.getValue() != null) {
 				this.Cmp.id_orden_trabajo.el.dom.style.background='#FFCD8C';
 			}
@@ -1520,39 +1330,23 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 			 this.onButtonSave(this);
     	}, this);
 
-			this.getBoton('del').hide();
-			this.getBoton('new').hide();
-
-			this.addButton('excluir_item',{
+			this.addButton('add_item',{
 					//grupo: [0,2,3,4,6,50],//2
-					text:'Excluir Item',
-					iconCls: 'btag_deny',
+					text:'Habilitar Item',
+					iconCls: 'btag_accept',
 					disabled:true,
-					hidden:true,
-					handler:this.excluirItem,
-					tooltip: '<b>ExcluirItem</b>'
+					handler:this.addItem,
+					tooltip: '<b>Add Item</b>'
 			});
 
-
-			this.addButton('items_excluidos',{
-					//grupo: [0,2,3,4,6,50],//2
-					text:'Items Excluidos',
-					iconCls: 'bsee',
-					disabled:true,
-					hidden:true,
-					handler:this.detalleItemsExcluidos,
-					tooltip: '<b>ExcluirItem</b>'
-			});
 
 			this.addButton('log_excluidos', {
 					text : 'Historial Exclusion',
 					iconCls : 'blist',
 					disabled : true,
-					hidden:true,
 					handler : this.logExcluidos,
 					tooltip : '<b>Historial</b> de cierre, apertura y apertura temporal del periodo de Comisionistas.'
 			});
-
 
 			this.crearFormExclusion();
 
@@ -1560,18 +1354,26 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		},
 
 
-		detalleItemsExcluidos: function(){
-			var rec = {maestro: this.sm.getSelected().data}
-			Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/items_excluidos/ItemsExcluidos.php',
-					'Items Excluidos',
-					{
-							width:1200,
-							height:600
-					},
-					rec,
-					this.idContenedor,
-					'ItemsExcluidos');
-		},
+		logExcluidos: function(){
+            var rec = this.getSelectedData();
+            var NumSelect=this.sm.getCount();
+						console.log("aqui llega los datos",rec);
+            if (NumSelect != 0 ){
+							Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/items_excluidos/PanelLogExcluidos.php',
+							'', {
+								width:'90%',
+								height:'90%'
+								}, {
+									id_detalle: rec.id_detalle,
+									link: true
+								},
+								this.idContenedor,
+								'PanelLogExcluidos'
+							);
+            }else{
+                Ext.MessageBox.alert('Alerta', 'Antes debe seleccionar un item.');
+            }
+    },
 
 		/*Aumentando para excluir Items (Ismael Valdivia 17/03/2022)*/
 		crearFormExclusion: function () {
@@ -1579,7 +1381,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				me.formExcluir = new Ext.form.FormPanel({
 						//id: me.idContenedor + '_AJUSTES',
 						//margins: ' ',
-						bodyStyle:'margin-left:-7px; margin-top:-7px; padding:10px 10px 0; background:#03A27C;',
+						bodyStyle:'margin-left:-7px; margin-top:-7px; padding:10px 10px 0; background:#5B91FF;',
 						items: [
 
 								{
@@ -1591,7 +1393,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 											height: '100px',
 											//margin:'5px'
 										},
-										fieldLabel: 'Motivo Exclusión'
+										fieldLabel: 'Motivo Habilitación'
 
 								},
 								{
@@ -1649,7 +1451,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				console.log('llega1',d)
 				Phx.CP.loadingShow();
 				Ext.Ajax.request({
-						url: '../../sis_gestion_materiales/control/DetalleSol/excluirItem',
+						url: '../../sis_gestion_materiales/control/DetalleSol/incluirItem',
 						success: me.successAjustes,
 						failure: me.failureAjustes,
 						params: {
@@ -1668,19 +1470,20 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				Phx.CP.loadingHide();
 				this.windowAjustes.hide();
 				this.reload();
+				Phx.CP.getPagina(this.idContenedorPadre).reload();
 
 		},
 
 		failureAjustes: function (resp) {
 				Phx.CP.loadingHide();
-				Phx.vista.DetalleSol.superclass.conexionFailure.call(this, resp);
+				Phx.vista.ItemsExcluidos.superclass.conexionFailure.call(this, resp);
 
 		},
 		onDeclinarAjustes: function () {
 				this.windowAjustes.hide();
 
 		},
-		excluirItem: function () {
+		addItem: function () {
 				this.windowAjustes.show();
 				this.formExcluir.getForm().reset();
 				var d = this.sm.getSelected().data;
@@ -1691,26 +1494,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		},
 		/*******************************************************/
 
-		logExcluidos: function(){
-            var rec = this.getSelectedData();
-            var NumSelect=this.sm.getCount();
-						console.log("aqui llega los datos",rec);
-            if (NumSelect != 0 ){
-							Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/items_excluidos/PanelLogExcluidos.php',
-							'', {
-								width:'90%',
-								height:'90%'
-								}, {
-									id_detalle: rec.id_detalle,
-									link: true
-								},
-								this.idContenedor,
-								'PanelLogExcluidos'
-							);
-            }else{
-                Ext.MessageBox.alert('Alerta', 'Antes debe seleccionar un item.');
-            }
-    },
+
 
 
 
@@ -1740,7 +1524,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
     },
 
 		successSave:function(resp){
-				Phx.vista.DetalleSol.superclass.successSave.call(this,resp);
+				Phx.vista.ItemsExcluidos.superclass.successSave.call(this,resp);
 				this.store.commitChanges();
 				Phx.CP.getPagina(this.idContenedorPadre).reload();
 				Phx.CP.loadingHide();
