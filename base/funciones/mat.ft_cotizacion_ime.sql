@@ -80,6 +80,7 @@ DECLARE
      v_id_auxiliar_recu	integer;
      v_recuperar_datos_detalle varchar;
      v_origen_pedido	varchar;
+     v_tiene_po			varchar;
 
 BEGIN
 
@@ -231,6 +232,22 @@ BEGIN
 
 		begin
 
+        	 /*Aqui verificamos si ya se tiene un proveedor adjudicado y si el proceso ya tiene un PO por tanto no se deberia
+              modificar el adjudicado*/
+              select sol.nro_po into v_tiene_po
+              from mat.tsolicitud sol
+              where sol.id_solicitud = v_parametros.id_solicitud;
+              /***************************************************************************************************************/
+
+
+              if (v_tiene_po != '') then
+                  raise exception 'No se puede realizar modificaciones ya que se Generó un PO, y la obligacion de pago.';
+              end if;
+
+
+
+
+
         	/*Aqui actualizamos el tipo de evaluacion*/
         	update mat.tsolicitud set
             tipo_evaluacion = v_parametros.tipo_evaluacion,
@@ -320,6 +337,23 @@ BEGIN
                 v_proveedor
         from mat.tcotizacion c
         where c.id_cotizacion = v_parametros.id_cotizacion;
+
+
+        /*Aqui verificamos si ya se tiene un proveedor adjudicado y si el proceso ya tiene un PO por tanto no se deberia
+        modificar el adjudicado*/
+        select sol.nro_po into v_tiene_po
+        from mat.tsolicitud sol
+        where sol.id_solicitud = v_proveedor.id_solicitud;
+        /***************************************************************************************************************/
+
+
+        if (v_tiene_po != '') then
+        	raise exception 'No se puede modificar el proveedor adjudicado ya que se Generó un PO, y la obligacion de pago.';
+        end if;
+
+
+
+
       -- raise exception 'll %',v_proveedor.id_solicitud;
 			select adjudicado
             		into
