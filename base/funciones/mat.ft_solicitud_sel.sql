@@ -1875,12 +1875,12 @@ v_consulta:='select		sol.id_solicitud,
           FROM wf.testado_wf twf
           	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
             INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-          	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	AND te.codigo = 'comite_dpto_abastecimientos'
                 --27-04-2021 (may) la condicion fecha finalizacion no es solo que este null ya tiene valor
                 --and vf.fecha_finalizacion is null
-                and (vf.fecha_finalizacion >= v_fecha_solicitud::date OR vf.fecha_finalizacion is null)
+                and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite;
 
   	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial,v_fecha_po);
@@ -1895,8 +1895,9 @@ v_consulta:='select		sol.id_solicitud,
                 	v_fecha_firma_abas_qr
           FROM wf.testado_wf twf
           	INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-          	INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-          	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_dpto_abastecimientos' and vf.fecha_finalizacion is null
+          	INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_dpto_abastecimientos'
+            and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
           	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
   	remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_abas_qr_oficial);
@@ -1923,12 +1924,12 @@ v_consulta:='select		sol.id_solicitud,
         	FROM wf.testado_wf twf
                   INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                   INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                  INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                  INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                   WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                   	AND te.codigo = 'comite_unidad_abastecimientos'
                     --27-04-2021 (may) la condicion fecha finalizacion no es solo que este null ya tiene valor
                     --and vf.fecha_finalizacion is null
-                    and (vf.fecha_finalizacion >= v_fecha_solicitud::date OR vf.fecha_finalizacion is null)
+                    and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
                   GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite;
 
     	remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_po);
@@ -1943,8 +1944,9 @@ v_consulta:='select		sol.id_solicitud,
     					v_fecha_firma_rev_qr
         	FROM wf.testado_wf twf
                   INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                  INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                  WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'and vf.fecha_finalizacion is null
+                  INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                  WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'
+                  and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
                   GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo;
 
     	remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial);
@@ -2005,8 +2007,9 @@ v_consulta:='select		sol.id_solicitud,
         	FROM wf.testado_wf twf
         		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-        		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc' and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
+        		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'
+                and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
         		GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,pro.nro_tramite,twf.fecha_reg;
                 /*IF(v_codigo_rpc = 'vbrpc') then
 					RAISE EXCEPTION 'a: %, b: %, c: %, d: %',v_id_funcionario_presu_qr_oficial,
@@ -2027,8 +2030,9 @@ v_consulta:='select		sol.id_solicitud,
         			v_fecha_firma_presu_qr
         	FROM wf.testado_wf twf
         		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-        		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-        		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'and ( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
+        		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+        		WHERE twf.id_proceso_wf = v_id_proceso_wf_adq AND te.codigo = 'vbrpc'
+                and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
         		GROUP BY twf.id_funcionario, vf.desc_funcionario1,te.codigo,vf.nombre_cargo,twf.fecha_reg;
 
     	remplaso = mat.f_firma_original(v_id_proceso_wf_adq,v_id_funcionario_presu_qr_oficial);
@@ -2059,10 +2063,10 @@ v_consulta:='select		sol.id_solicitud,
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
                 INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
           	WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	  AND  te.codigo = 'cotizacion'
-                  AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
+                  and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
            	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
             ORDER BY  twf.fecha_reg DESC
 			LIMIT 1;
@@ -2080,10 +2084,10 @@ v_consulta:='select		sol.id_solicitud,
                 		v_fecha_firma_resp_qr
           	FROM wf.testado_wf twf
           		INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-          		INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+          		INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
             WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
             	 AND  te.codigo ='cotizacion'
-                 AND( vf.fecha_finalizacion is null or vf.fecha_finalizacion >= now())
+                 and v_fecha_solicitud::date between vf.fecha_asignacion and COALESCE(vf.fecha_finalizacion,now()::date)
            	GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo
             ORDER BY  twf.fecha_reg DESC
 			LIMIT 1;
