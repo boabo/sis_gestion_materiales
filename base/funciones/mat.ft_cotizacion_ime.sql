@@ -234,14 +234,16 @@ BEGIN
 
         	 /*Aqui verificamos si ya se tiene un proveedor adjudicado y si el proceso ya tiene un PO por tanto no se deberia
               modificar el adjudicado*/
-              select sol.nro_po into v_tiene_po
+              select sol.nro_po, sol.origen_pedido into v_tiene_po, v_origen_pedido
               from mat.tsolicitud sol
               where sol.id_solicitud = v_parametros.id_solicitud;
               /***************************************************************************************************************/
 
 
-              if (v_tiene_po != '') then
-                  raise exception 'No se puede realizar modificaciones ya que se Generó un PO, y la obligacion de pago.';
+              if (v_origen_pedido != 'Reparación de Repuestos') then
+              	if (v_tiene_po != '') then
+                    raise exception 'No se puede realizar modificaciones ya que se Generó un PO, y la obligacion de pago.';
+                end if;
               end if;
 
 
