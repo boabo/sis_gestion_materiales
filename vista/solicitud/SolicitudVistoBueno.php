@@ -554,9 +554,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
         onOpenObs:function() {
             var rec=this.sm.getSelected();
+            console.log("aqui llega seleccionado",rec);
                 var data = {
-                    id_proceso_wf: rec.data.id_proceso_wf_firma,
-                    id_estado_wf: rec.data.id_estado_wf_firma,
+                    id_proceso_wf: rec.data.id_proceso_wf,
+                    id_estado_wf: rec.data.id_estado_wf,
                     num_tramite: rec.data.nro_tramite
                 };
             Phx.CP.loadWindows('../../../sis_workflow/vista/obs/Obs.php',
