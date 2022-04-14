@@ -968,14 +968,22 @@ END IF;
                         where pr.id_proceso_wf = v_solicitud.id_proceso_wf;
 
                 select es.id_tipo_estado,
-                       es.codigo,
-                       fun.id_funcionario
+                       es.codigo
                 into v_id_tipo_estado_siguiente,
-                     v_codigo_estado_siguiente_auto,
-                     v_funcionario_encargado
+                     v_codigo_estado_siguiente_auto
                 from wf.ttipo_estado es
                 LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
                 where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'cotizacion_solicitada';
+
+
+                SELECT    twf.id_funcionario  into v_funcionario_encargado
+                FROM wf.testado_wf twf
+                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'cotizacion_solicitada'
+                GROUP BY twf.id_funcionario, twf.fecha_reg
+                ORDER BY  twf.fecha_reg DESC
+                limit 1;
 
                v_acceso_directo_automatico = '';
                v_clase_automatico = '';
@@ -984,7 +992,6 @@ END IF;
                v_titulo_automatico  = 'Visto Boa';
                v_obs_automatico ='Desde el estado Compra';
                ------------------------------------------pasamos el estado a vb_dpto_administrativo
-
 
                v_id_estado_actual =  wf.f_registra_estado_wf(	 v_id_tipo_estado_siguiente,--id del estado siguiente revision
                                                        v_funcionario_encargado,--id del funcionario Solicitante Mavy trigo (Definir de donde recuperaremos)
@@ -1060,6 +1067,32 @@ END IF;
                        fecha_mod = now()
                 where id_proceso_wf_firma = v_solicitud.id_proceso_wf_firma;
                 /***********************************************************/
+
+            /*Aumentando para revertir presupuesto en caso de retroceder el proceso*/
+			select sol.presu_comprometido into v_presu_comprometido
+            from mat.tsolicitud sol
+            where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+           /*Revertimos presupuestos*/
+             IF v_presu_comprometido = 'si' THEN
+                -- Comprometer Presupuesto
+                    IF not mat.f_gestionar_presupuesto_solicitud(v_registros_mat.id_solicitud, p_id_usuario, 'revertir')  THEN
+                         raise exception 'Error al comprometer el presupuesto';
+                    END IF;
+
+                    --modifca bandera de comprometido
+                     update mat.tsolicitud  set
+                          presu_comprometido =  'no'
+                     where id_solicitud = v_registros_mat.id_solicitud;
+             END IF;
+           /*************************/
+
+
+            /***********************************************************************/
+
+
+
+
 		   elsif (v_registros_mat.estado = 'anulado') then
            		select sol.*
                       into v_solicitud
@@ -1240,6 +1273,12 @@ END IF;
  					where sol.id_proceso_wf =  v_parametros.id_proceso_wf;
                     v_id_proceso_wf = v_registros_mat.id_proceso_wf;
 
+           select 	sol.presu_comprometido
+                     into v_presu_comprometido
+ 					from mat.tsolicitud sol
+ 					inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = sol.id_proceso_wf
+ 					where sol.id_proceso_wf =  v_parametros.id_proceso_wf;
+
            /*Aqui para retroceder el estado de la firma en paralelo*/
             /*Aumentando para retroceder cuando este en estado Compra*/
            if (v_registros_mat.estado not in ('revision','cotizacion','cotizacion_solicitada')) then
@@ -1373,6 +1412,21 @@ END IF;
                 raise exception 'Error al retroceder estado';
 
                 END IF;
+
+                /*Revertimos presupuestos*/
+                 IF v_presu_comprometido = 'si' THEN
+                    -- Comprometer Presupuesto
+                        IF not mat.f_gestionar_presupuesto_solicitud(v_registros_mat.id_solicitud, p_id_usuario, 'revertir')  THEN
+                             raise exception 'Error al comprometer el presupuesto';
+                        END IF;
+
+                        --modifca bandera de comprometido
+                         update mat.tsolicitud  set
+                              presu_comprometido =  'no'
+                         where id_solicitud = v_registros_mat.id_solicitud;
+                 END IF;
+                /*************************/
+
 
 
              -- si hay mas de un estado disponible  preguntamos al usuario
