@@ -81,6 +81,10 @@ DECLARE
      v_recuperar_datos_detalle varchar;
      v_origen_pedido	varchar;
      v_tiene_po			varchar;
+     v_observacion		varchar;
+     v_recomendacion	varchar;
+     v_datos_solicitud	record;
+     v_datos_cotizacion	record;
 
 BEGIN
 
@@ -239,15 +243,120 @@ BEGIN
               where sol.id_solicitud = v_parametros.id_solicitud;
               /***************************************************************************************************************/
 
-
               if (v_origen_pedido != 'Reparación de Repuestos') then
               	if (v_tiene_po != '') then
-                    raise exception 'No se puede realizar modificaciones ya que se Generó un PO, y la obligacion de pago.';
+
+                	/*Aumentando condicion para la modificar ciertos campos*/
+
+                    select sol.* into
+                    	   v_datos_solicitud
+                    from mat.tsolicitud sol
+                    where sol.id_solicitud = v_parametros.id_solicitud;
+
+                     if (v_datos_solicitud.tipo_evaluacion != v_parametros.tipo_evaluacion) then
+                    	raise exception 'No se puede modificar el tipo de Evaluación de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.id_condicion_entrega_alkym != v_parametros.id_condicion_entrega) then
+                    	raise exception 'No se puede modificar la condicion de entrega de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.id_forma_pago_alkym != v_parametros.id_forma_pago) then
+                    	raise exception 'No se puede modificar la forma de pago de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.id_modo_envio_alkym != v_parametros.id_modo_envio) then
+                    	raise exception 'No se puede modificar el modo de envio de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.id_puntos_entrega_alkym != v_parametros.id_puntos_entrega) then
+                    	raise exception 'No se puede modificar los puntos de entrega de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                     if (v_datos_solicitud.id_tipo_transaccion_alkym != v_parametros.id_tipo_transaccion) then
+                    	raise exception 'No se puede modificar el tipo de transaccion de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.id_orden_destino_alkym != v_parametros.id_orden_destino) then
+                    	raise exception 'No se puede modificar la orden de destino de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.codigo_condicion_entrega_alkym != v_parametros.codigo_condicion_entrega) then
+                    	raise exception 'No se puede modificar condicion de entrega de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.codigo_forma_pago_alkym != v_parametros.codigo_forma_pago) then
+                    	raise exception 'No se puede modificar la forma de pago de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.codigo_modo_envio_alkym != v_parametros.codigo_modo_envio) then
+                    	raise exception 'No se puede modificar el modo de envio de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.codigo_puntos_entrega_alkym != v_parametros.codigo_puntos_entrega) then
+                    	raise exception 'No se puede modificar los puntos de entrega de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.codigo_tipo_transaccion_alkym != v_parametros.codigo_tipo_transaccion) then
+                    	raise exception 'No se puede modificar el tipo de transaccion de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_solicitud.codigo_orden_destino_alkym != v_parametros.codigo_orden_destino) then
+                    	raise exception 'No se puede modificar la orden destino de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    /*Control para la modicacion de la cotizacion*/
+                    select cot.* into
+                    	   v_datos_cotizacion
+                    from mat.tcotizacion cot
+                    where cot.id_cotizacion = v_parametros.id_cotizacion;
+                    /***********************************************************/
+
+                    if (v_datos_cotizacion.id_solicitud != v_parametros.id_solicitud) then
+                    	raise exception 'No se puede modificar la relacion de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_cotizacion.id_moneda != v_parametros.id_moneda) then
+                    	raise exception 'No se puede modificar la moneda de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_cotizacion.fecha_cotizacion != v_parametros.fecha_cotizacion) then
+                    	raise exception 'No se puede modificar la fecha de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_cotizacion.id_proveedor != v_parametros.id_proveedor) then
+                    	raise exception 'No se puede modificar al proveedor de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                    if (v_datos_cotizacion.nro_cotizacion != v_parametros.nro_cotizacion) then
+                    	raise exception 'No se puede modificar el nro de cotización de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+                     if (v_datos_cotizacion.pie_pag != v_parametros.pie_pag) then
+                    	raise exception 'No se puede modificar el pie de página de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
+
+
+                    if (v_datos_cotizacion.recomendacion != v_parametros.recomendacion) then
+                    	--raise exception 'No se puede realizar modificaciones ya que se Generó un PO, y la obligacion de pago.';
+                    end if;
+
+                    if (v_datos_cotizacion.obs != v_parametros.obs) then
+                    	--raise exception 'No se puede realizar modificaciones ya que se Generó un PO, y la obligacion de pago.';
+                    end if;
+
+                    /*******************************************************/
+
+
+
+
+
+
+
+
                 end if;
               end if;
-
-
-
 
 
         	/*Aqui actualizamos el tipo de evaluacion*/
