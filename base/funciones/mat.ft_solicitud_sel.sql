@@ -319,6 +319,7 @@ DECLARE
     v_funcionario_oficial_revision		varchar;
     v_serial_original				varchar;
     v_id_detalle					varchar;
+    v_aplica_cambio_etiqueta		varchar;
 
 BEGIN
 
@@ -1337,6 +1338,18 @@ v_consulta:='select		sol.id_solicitud,
         from mat.tsolicitud sou
         where sou.id_proceso_wf = v_parametros.id_proceso_wf;
 
+
+        /*Aumentando condicion para saber si aplica o no cambio de etiqueta*/
+        v_aplica_cambio_etiqueta = 'no';
+        if (v_fecha_po::date >= '01/03/2022'::date) then
+            v_aplica_cambio_etiqueta = 'si';
+        else
+        	v_aplica_cambio_etiqueta = 'no';
+        end if;
+        /*******************************************************************/
+
+
+
         if (v_fecha_solicitud::date >= v_fecha_salida_gm or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) then
 
         /*Recuperamos el id_proceso_wf_firma para recuperar en el reporte (Ismael Valdivia 09/03/2020)*/
@@ -1779,7 +1792,8 @@ v_consulta:='select		sol.id_solicitud,
                                s.fecha_solicitud::date,
 								s.estado_firma::varchar,
                                 '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                                '''||initcap(v_nombre_funcionario_tecnico_qr_oficial)||'''::varchar as firma_tecnico_abastecimiento
+                                '''||initcap(v_nombre_funcionario_tecnico_qr_oficial)||'''::varchar as firma_tecnico_abastecimiento,
+                                '''||v_aplica_cambio_etiqueta||'''::varchar as cambio_etiqueta
                                 from mat.tsolicitud s
                                 inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
                                 inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion  and d.tipo_cot <> ''Otros Cargos'' and  d.tipo_cot <>''NA'' and d.revisado = ''si'' and d.tipo_cot <> ''Fletes - Otros''
@@ -2164,7 +2178,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                s.fecha_solicitud::date,
 							   s.estado_firma,
                                '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                               ''''::varchar as firma_tecnico_abastecimiento
+                               ''''::varchar as firma_tecnico_abastecimiento,
+                               '''||v_aplica_cambio_etiqueta||'''::varchar as cambio_etiqueta
                                 from mat.tsolicitud s
                                 inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud and c.adjudicado = ''si''
                                 inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion  and d.tipo_cot <> ''Otros Cargos'' and  d.tipo_cot <>''NA'' and d.revisado = ''si''

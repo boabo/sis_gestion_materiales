@@ -277,7 +277,13 @@ $tb .= '<table border="1">
 
              $quintaFirma = $this->codigoQr('Funcionario: '.$nombre_resp_fun."\n".'Cargo: '.$cargo_resp."\n".'Nro Trámite: '.$tramite_resp."\n".'Institución: '.$institucion_resp."\n".'Fecha: '.$fecha_resp, 'quinto');
 
-             $v_tit ='<td style="font-family: Calibri;font-size: 11px"align="center"><b>Técnico Adquisiciones</b><br>'.$fun_resp[0].'</td>';
+             /*Aumentando para cambiar el titulo*/
+             if  ($this->datos[0]['cambio_etiqueta'] == 'si') {
+               $v_tit ='<td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$fun_resp[1].'</b><br>'.$fun_resp[0].'</td>';
+             } else {
+               $v_tit ='<td style="font-family: Calibri;font-size: 11px"align="center"><b>Técnico Adquisiciones</b><br>'.$fun_resp[0].'</td>';
+             }
+             /******************************************************/
              $v_firma = '<td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $quintaFirma . '" alt="Logo"><br></td>';
 
          }else{
@@ -327,25 +333,50 @@ $tb .= '<table border="1">
         } else {
 
           if ($this->datos[0]['firma_tecnico_abastecimiento'] != '') {
-            $firmas ='
-           <table border="2">
-             <tbody>
-            <tr>
 
-                    <td style="font-family: Calibri;font-size: 11px"align="center"><b>Técnico Abastecimientos</b><br>'.$tecnico_abastecimiento[0].'</td>
-                    '.$v_tit.'
+             if  ($this->datos[0]['cambio_etiqueta'] == 'si') {
+               $firmas ='
+              <table border="2">
+                <tbody>
+               <tr>
+
+                       <td style="font-family: Calibri;font-size: 11px"align="center"><b>'.$tecnico_abastecimiento[1].'</b><br>'.$tecnico_abastecimiento[0].'</td>
+                       '.$v_tit.'
 
 
 
-            </tr>
-            <tr>
+               </tr>
+               <tr>
 
-                    <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $firma_qr_tecnico_abastecimiento . '" alt="Logo"><br></td>
-                    '.$v_firma.'
-             </tr>
-             </tbody>
-            </table>
-            ';
+                       <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $firma_qr_tecnico_abastecimiento . '" alt="Logo"><br></td>
+                       '.$v_firma.'
+                </tr>
+                </tbody>
+               </table>
+               ';
+             }else{
+               $firmas ='
+              <table border="2">
+                <tbody>
+               <tr>
+
+                       <td style="font-family: Calibri;font-size: 11px"align="center"><b>Técnico Abastecimientos</b><br>'.$tecnico_abastecimiento[0].'</td>
+                       '.$v_tit.'
+
+
+
+               </tr>
+               <tr>
+
+                       <td align="center"><br><br><img  style="width: 95px; height: 95px;" src="' . $firma_qr_tecnico_abastecimiento . '" alt="Logo"><br></td>
+                       '.$v_firma.'
+                </tr>
+                </tbody>
+               </table>
+               ';
+             }
+
+
           } else {
             $firmas ='
            <table border="2">

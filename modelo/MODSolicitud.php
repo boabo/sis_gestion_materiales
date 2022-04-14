@@ -1086,6 +1086,7 @@ class MODSolicitud extends MODbase
         $this->captura('estado_firma', 'varchar');
         $this->captura('fecha_salida', 'date');
         $this->captura('firma_tecnico_abastecimiento', 'varchar');
+        $this->captura('cambio_etiqueta', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

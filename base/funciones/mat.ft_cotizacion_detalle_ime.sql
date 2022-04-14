@@ -454,16 +454,16 @@ BEGIN
 
             /*Aqui realizamos la inserccion*/
             /*Recuperamos el id _gestion para recuperar el centro de costo (Ismael Valdivia 29/04/2020)*/
-        	select sol.id_gestion into v_id_gestion
+        /*	select sol.id_gestion into v_id_gestion
             from mat.tsolicitud sol
-            where sol.id_solicitud = v_parametros.id_solicitud;
+            where sol.id_solicitud = v_parametros.id_solicitud;*/
         	/*******************************************************************************************/
 
             /*Aqui Recuperamos el centro de costo de acuerdo a la gestion (Ismael Valdivia 29/04/2020)*/
-            select cc.id_centro_costo into v_id_centro_costo
+        /*    select cc.id_centro_costo into v_id_centro_costo
             from param.tcentro_costo cc
             inner join param.ttipo_cc tc on tc.id_tipo_cc = cc.id_tipo_cc
-            where tc.codigo = '845' and cc.id_gestion = v_id_gestion;
+            where tc.codigo = '845' and cc.id_gestion = v_id_gestion;*/
             /******************************************************************************************/
 
 
@@ -484,7 +484,7 @@ BEGIN
 
                                 /*Insertamos en el detalle de la solicitud*/
                                   --Sentencia de la insercion
-                                  insert into mat.tdetalle_sol(
+                                 /* insert into mat.tdetalle_sol(
                                   id_detalle,
                                   id_solicitud,
                                   descripcion,
@@ -526,7 +526,7 @@ BEGIN
                                   v_datos.tipo_cot,
                                   v_datos.explicacion_detallada_part_cot,
                                   v_id_centro_costo
-                                  );
+                                  );*/
                                 /******************************************/
 
                                 insert into mat.tcotizacion_detalle(
