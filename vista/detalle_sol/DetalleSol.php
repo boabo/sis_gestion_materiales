@@ -105,6 +105,16 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             form:true
         },
 				{
+            //configuracion del componente
+            config:{
+                labelSeparator:'',
+                inputType:'hidden',
+                name: 'interfaz_origen'
+            },
+            type:'Field',
+            form:true
+        },
+				{
             config:{
                 labelSeparator:'',
                 inputType:'hidden',
@@ -960,6 +970,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 	{name:'tipo_reg', type: 'string'},
 	{name:'control_edicion', type: 'string'},
 	{name:'condicion_det', type: 'string'},
+	{name:'interfaz_origen', type: 'string'},
 
 	],
 	sortInfo:{
@@ -976,7 +987,6 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 						this.store.baseParams.tipo_tramite = m.nro_tramite.substr(0, 2);
 						var tb =this.tbar;
 						this.interfaz_padre = Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.tipo_interfaz;
-
 
 						if (this.maestro.estado == 'borrador') {
 							this.Cmp.nro_parte_alterno.setDisabled(false);
@@ -997,8 +1007,8 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
 						if (this.interfaz_padre == 'VistoBueno') {
 							this.Cmp.precio_unitario.allowBlank = true;
-							this.ocultarComponente(this.Cmp.precio_unitario);
-							this.ocultarComponente(this.Cmp.precio_total);
+							this.mostrarComponente(this.Cmp.precio_unitario);
+							this.mostrarComponente(this.Cmp.precio_total);
 
 
 							this.Cmp.id_concepto_ingas.setDisabled(false);
@@ -1358,6 +1368,22 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
 		onButtonEdit: function() {
 			Phx.vista.DetalleSol.superclass.onButtonEdit.call(this);
+
+			this.interfaz_padre = Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.tipo_interfaz;
+
+
+			if (this.interfaz_padre == 'VistoBueno') {
+				this.Cmp.interfaz_origen.setValue('Tecnico Abastecimiento');
+			} else if (this.interfaz_padre == 'PedidoMantenimiento' || this.interfaz_padre == 'PedidoOperacion' || this.interfaz_padre == 'PerdidoAlmacen') {
+				this.Cmp.interfaz_origen.setValue('Tecnico Administrativo');
+			} else {
+				this.Cmp.interfaz_origen.setValue(this.interfaz_padre);
+			}
+
+
+
+
+
 			this.Cmp.control_edicion.setValue('botonEditar');
 			if (this.store.baseParams.tipo_tramite == 'GR') {
 				this.mostrarComponente(this.Cmp.serial);

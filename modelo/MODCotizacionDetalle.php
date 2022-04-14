@@ -202,6 +202,7 @@ class MODCotizacionDetalle extends MODbase{
         //Define los parametros para la funcion
         $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
 				$this->setParametro('referencial','referencial','varchar');
+				$this->setParametro('interfaz_origen','interfaz_origen','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -124,6 +124,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
             //llama al constructor de la clase padre
             Phx.vista.CotizacionDetalle.superclass.constructor.call(this, config);
             this.tipoTramite = Phx.CP.getPagina(this.idContenedorPadre).maestro.tipoTramite;
+
             this.init();
             this.grid.addListener('cellclick', this.oncellclick,this);
             this.grid.on('rowcontextmenu', function(grid, rowIndex, e) {
@@ -952,11 +953,23 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
     cambiarReferencia: function(record){
         Phx.CP.loadingShow();
         var d = record.data;
-        console.log("aqui para cambiar el estado",d);
+
+        this.interfaz_padre = Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.interfaz_origen;
+
+
+  			if (this.interfaz_padre == 'VistoBueno') {
+  				this.interfaz_origen = 'Tecnico Abastecimiento';
+  			} else if (this.interfaz_padre == 'PedidoMantenimiento' || this.interfaz_padre == 'PedidoOperacion' || this.interfaz_padre == 'PerdidoAlmacen') {
+  				this.interfaz_origen = 'Tecnico Administrativo';
+  			} else {
+  				this.interfaz_origen = this.interfaz_padre;
+  			}
+
         Ext.Ajax.request({
             url:'../../sis_gestion_materiales/control/CotizacionDetalle/cambiarReferencia',
             params:{ id_cotizacion_det: d.id_cotizacion_det,
-                referencial: d.referencial
+                referencial: d.referencial,
+                interfaz_origen: this.interfaz_origen
             },
             success: this.successReferencia,
             failure: this.conexionFailure,

@@ -23,15 +23,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 //console.log('heee',this.idContenedor);
                 Phx.vista.Cotizacion.superclass.constructor.call(this,config);
                 this.init();
-                this.store.baseParams={id_solicitud:this.id_solicitud,tipo_interfaz: 'Solicitud'};
+                this.store.baseParams={id_solicitud:this.id_solicitud,tipo_interfaz: 'Solicitud', interfaz_origen: Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.tipo_interfaz};
                 this.load({params:{start:0, limit:this.tam_pag}});
                 this.grid.addListener('cellclick', this.oncellclick,this);
                 this.bbar.el.dom.style.background='#80D7FF';
         				this.tbar.el.dom.style.background='#80D7FF';
         				this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#B7E8FF';
         				this.grid.body.dom.firstChild.firstChild.lastChild.style.background='#D8F9FF';
-
-
                 //this.iniciarEvento();
             },
 

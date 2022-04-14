@@ -87,10 +87,11 @@ DECLARE
      v_precio_unitario  numeric;
      v_precio_total		numeric;
      v_total_detalle	numeric;
-     v_estado_actual	varchar;
+	 v_estado_actual	varchar;
      v_cantidad_actual  integer;
      v_precio_actual	numeric;
-
+     v_interfaz_origen	varchar;
+	 v_precio_recuperado	numeric;
 
 BEGIN
 
@@ -483,7 +484,7 @@ BEGIN
 
 
 
-      if (v_detalle.estado not in ('borrador','revision','cotizacion','cotizacion_solicitada','revision_tecnico_abastecimientos','finalizado')) then
+        if (v_detalle.estado not in ('borrador','revision','cotizacion','cotizacion_solicitada','revision_tecnico_abastecimientos','finalizado')) then
 
         	select det.cantidad_sol,
             	   det.precio_unitario
@@ -635,6 +636,22 @@ BEGIN
           end if;
         /****************************************************************************************/
 
+
+        select deta.interfaz_origen,
+        	   COALESCE(deta.precio_unitario,0)
+        into v_interfaz_origen, v_precio_recuperado
+        from mat.tdetalle_sol deta
+        where deta.id_detalle = v_parametros.id_detalle;
+
+
+        if (v_precio_recuperado > 0) then
+        	if (v_interfaz_origen = 'Tecnico Abastecimiento' or v_interfaz_origen = 'Tecnico Administrativo') then
+            	if (v_interfaz_origen != v_parametros.interfaz_origen) then
+                	raise exception 'El Item ya tiene un precio Referencial registrado por el %, y solo el puede realizar la modificación.',v_interfaz_origen;
+                end if;
+            end if;
+        end if;
+
         --Sentencia de la modificacion
 			update mat.tdetalle_sol set
 			id_solicitud = v_parametros.id_solicitud,
@@ -663,7 +680,8 @@ BEGIN
             precio_unitario = v_parametros.precio_unitario,
             precio_total = (v_parametros.cantidad_sol*v_parametros.precio_unitario),-- v_parametros.precio_total
             condicion_det = v_condicion,
-            id_producto_alkym = v_parametros.id_producto_alkym
+            id_producto_alkym = v_parametros.id_producto_alkym,
+            interfaz_origen = v_parametros.interfaz_origen
             /**********************************************************/
 			where id_detalle=v_parametros.id_detalle;
 

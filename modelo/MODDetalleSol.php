@@ -216,6 +216,7 @@ class MODDetalleSol extends MODbase{
 		$this->setParametro('control_edicion', 'control_edicion', 'varchar');
 		$this->setParametro('condicion_det', 'condicion_det', 'varchar');
 		$this->setParametro('id_producto_alkym','id_producto_alkym','integer');
+		$this->setParametro('interfaz_origen','interfaz_origen','varchar');
 		/*************************************************************************/
 		//Ejecuta la instruccion
 		$this->armarConsulta();
