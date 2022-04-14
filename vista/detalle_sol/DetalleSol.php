@@ -168,7 +168,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								 }),
 								 valueField : 'pn',
  								displayField : 'pn',
- 								gdisplayField : 'pn',
+ 								gdisplayField : 'nro_parte',
  								hiddenName : 'id',
 								forceSelection: true,
 								typeAhead: false,
@@ -570,7 +570,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             filters:{pfiltro:'det.cantidad_sol',type:'numeric'},
             id_grupo:1,
             grid:true,
-						egrid:true,
+						egrid:false,
 						colorEgrid:'red',
             form:true
         },
@@ -602,7 +602,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
             filters:{pfiltro:'det.precio_unitario',type:'numeric'},
             id_grupo:1,
             grid:true,
-						egrid:true,
+						egrid:false,
 						colorEgrid:'red',
             form:true
         },

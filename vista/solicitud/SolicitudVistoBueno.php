@@ -117,7 +117,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
             this.getBoton('Report').setVisible(false);
             //this.getBoton('edit').setVisible(false);
-            this.getBoton('ini_estado').setVisible(false);
+            this.getBoton('ini_estado').setVisible(true);
             this.getBoton('ant_estado').setVisible(true);
             this.getBoton('sig_estado').setVisible(true);
             this.getBoton('Archivado_concluido').setVisible(false);
@@ -200,7 +200,7 @@ header("content-type: text/javascript; charset=UTF-8");
             if(data['estado'] ==  'revision_tecnico_abastecimientos'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
-                //this.getBoton('ini_estado').enable();
+                this.getBoton('ini_estado').enable();
                 //this.getBoton('autorizar').enable();
                 this. enableTabDetalle();
             }
@@ -221,7 +221,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 //this.getBoton('edit').setVisible(false);
                 this.getBoton('Report').setVisible(false);
-                //this.getBoton('ini_estado').setVisible(true);
+                this.getBoton('ini_estado').setVisible(true);
                // this.getBoton('del').disable();
             }
             return tb;
