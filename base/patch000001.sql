@@ -1013,3 +1013,11 @@ WITH (oids = false);
 ALTER TABLE mat.tdetalle_excluido_historico
   OWNER TO postgres;
 /***********************************F-SCP-IRVA-MAT-0-21/03/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-14/04/2022****************************************/
+ALTER TABLE mat.tdetalle_sol
+  ADD COLUMN interfaz_origen VARCHAR(200);
+
+COMMENT ON COLUMN mat.tdetalle_sol.interfaz_origen
+IS 'Campo que identificara el origen de la modificacion';
+/***********************************F-SCP-IRVA-MAT-0-14/04/2022****************************************/
