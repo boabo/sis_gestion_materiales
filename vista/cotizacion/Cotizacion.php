@@ -393,7 +393,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 {
                     config:{
                         name:'tipo_evaluacion',
-                        fieldLabel:'Tipo de Evaluacion',
+                        fieldLabel:'Tipo de Adquisición',
                         style:{
                           background:'#FFCD8C',
                         },
@@ -1011,7 +1011,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //if (this.origen_solicitud == 'control_mantenimiento') {
                       this.mostrarComponente(this.Cmp.id_condicion_entrega);
                       this.mostrarComponente(this.Cmp.id_forma_pago);
-                      this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                      this.mostrarComponente(this.Cmp.tipo_evaluacion);
                       this.mostrarComponente(this.Cmp.id_modo_envio);
                       this.mostrarComponente(this.Cmp.id_puntos_entrega);
                       this.mostrarComponente(this.Cmp.id_tipo_transaccion);

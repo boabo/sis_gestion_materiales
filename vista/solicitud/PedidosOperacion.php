@@ -505,6 +505,8 @@ header("content-type: text/javascript; charset=UTF-8");
                       //this.ocultarComponente(this.Cmp.tiempo_entrega);
                       //this.Cmp.tiempo_entrega.allowBlank=true;
 
+                      this.mostrarComponente(this.Cmp.tipo_evaluacion);
+
                       this.mostrarComponente(this.Cmp.metodo_de_adjudicación);
                       this.Cmp.metodo_de_adjudicación.allowBlank=false;
 
@@ -513,6 +515,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     }else {
                       //this.ocultarComponente(this.Cmp.tiempo_entrega);
                       //this.Cmp.tiempo_entrega.allowBlank=true;
+                      this.ocultarComponente(this.Cmp.tipo_evaluacion);
 
                       this.ocultarComponente(this.Cmp.metodo_de_adjudicación);
                       this.Cmp.metodo_de_adjudicación.allowBlank=true;
