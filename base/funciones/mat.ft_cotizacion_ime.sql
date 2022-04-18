@@ -253,9 +253,9 @@ BEGIN
                     from mat.tsolicitud sol
                     where sol.id_solicitud = v_parametros.id_solicitud;
 
-                     if (v_datos_solicitud.tipo_evaluacion != v_parametros.tipo_evaluacion) then
-                    	raise exception 'No se puede modificar el tipo de Evaluación de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
-                    end if;
+                    -- if (v_datos_solicitud.tipo_evaluacion != v_parametros.tipo_evaluacion) then
+                    --	raise exception 'No se puede modificar el tipo de Evaluación de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                   -- end if;
 
                     if (v_datos_solicitud.id_condicion_entrega_alkym != v_parametros.id_condicion_entrega) then
                     	raise exception 'No se puede modificar la condicion de entrega de la solicitud ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
