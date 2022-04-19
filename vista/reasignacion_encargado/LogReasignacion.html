@@ -1,0 +1,218 @@
+<style type="text/css" rel="stylesheet">
+
+  #cuerpo{
+    background: #f2f2f2;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+    }
+    .table-wrapper-scroll-y {
+    display: block;
+    }
+
+
+
+thead {
+display:block;
+width:100%;
+}
+
+tbody {
+  display:block;
+  overflow-y:scroll;
+  height:400px;
+}
+td, th {
+  width: 200px;
+}
+
+table {
+  width: 100% !important;
+  font-size: 13px;
+}
+
+
+
+
+</style>
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/cerulean/bootstrap.min.css" >
+    <script src="../../../lib/jsGanttImproved-jsgantt-improved/jquery-3.3.1.js"></script>
+    <title>Hello, world!</title>
+  </head>
+  <body id="cuerpo">
+    <!-- Aqui armamos el script para traer datos -->
+      <script type="text/javascript">
+        // Recuperamos el Id para hacer la peticion
+          function getUrlVars1() {
+              var vars = {};
+              var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                  vars[key] = value;
+              });
+              return vars;
+          }
+          var id_solicitud = getUrlVars1()["id_solicitud"];
+        /******************************************************/
+
+        // //Armamos para llamar al modelo y recuperar datos
+        $.ajax({
+            // la URL para la petición
+            url : '../../../lib/lib_control/Intermediario.php',
+            // la información a enviar
+            // (también es posible utilizar una cadena de datos)
+            data:'p={"id_solicitud":"'+id_solicitud+'"}'
+                +'&x=../../sis_gestion_materiales/control/ReasignacionEncargados/listarLogReasignacion',
+
+            // especifica si será una petición POST o GET
+            type : 'POST',
+
+            // el tipo de información que se espera de respuesta
+            dataType : 'json',
+
+            // código a ejecutar si la petición es satisfactoria;
+            // la respuesta es pasada como argumento a la función
+            success : function(json) {
+              console.log("aqui llega la respuesta",json);
+              var resp = JSON.parse(json.datos[0].jsondata);
+              console.log("aqui llega la respuesta",resp);
+              /*************Carga al iniciar*********************/
+              cuerpoBody = document.getElementById("cuerpoBody");
+              cuerpoBody.innerHTML = '';
+              /**************************************************/
+
+              if (resp.detalle_historico != null && resp.detalle_historico.length > 0) {
+                /*Card Inicial*/
+                tituloCardInicial = document.getElementById("CardInicial");
+                tituloCardInicial.innerHTML = '<div class="card-header bg-success" style="color:#ffffff;"><b><center>Historial Modificaciones</center></b></div>';
+                /**************/
+              } else {
+                /*Card Inicial*/
+                tituloCardInicial = document.getElementById("CardInicial");
+                tituloCardInicial.innerHTML = '<div class="card-header bg-primary" style="color:#ffffff;"><b><center>No se encontraron datos de modificacion</center></b></div>';
+                /**************/
+              }
+
+              /*Detalle de Depositos Registrados*/
+              var dibujarTablaHistorico = '';
+              if (resp.detalle_historico != null && resp.detalle_historico.length > 0) {
+                cardHistorico = document.getElementById("DetalleHistorico");
+
+                historicoCard = '<div class="card-header bg-success" style="color:#ffffff;"><b>Detalle Historial</b></div>'+
+                                '<div class="card-body">'+
+                                  '<table class="table">'+
+                                    '<thead>'+
+                                      '<tr class="table-success">'+
+                                        '<th scope="col" style="width:300px;"><b>Fecha Reasignacion</th></b>'+
+                                        '<th scope="col" style="width:300px;"><b>Funcionario Inicial Asignado</th></b>'+
+                                        '<th scope="col" style="width:300px;"><b>Funcionario Actual Reasignado</th></b>'+
+                                        '<th scope="col" style="width:300px;"><b>Motivo Reasignacion</th></b>'+
+                                        '<th scope="col" style="width:300px;"><b>Reasignado por:</th></b>'+
+                                      '</tr>'+
+                                    '</thead>'+
+                                    '<tbody>';
+
+
+                for (var j = 0; j < resp.detalle_historico.length; j++) {
+                    console.log("aqui llega el FOR",resp.detalle_historico[j].fecha_reasignacion);
+                  dibujarTablaHistorico2 =   '<tr>'+
+                                                '<th scope="row" style="width:300px;">'+resp.detalle_historico[j].fecha_reasignacion+'</th>'+
+                                                '<td style="width:300px;">'+resp.detalle_historico[j].asignado_inicial+'</td>'+
+                                                '<td style="width:300px;">'+resp.detalle_historico[j].asignado_actual+'</td>'+
+                                                '<td style="width:300px;">'+resp.detalle_historico[j].motivo_reasignacion+'</td>'+
+                                                '<td style="width:300px;">'+resp.detalle_historico[j].reasignado_por+'</td>'+
+                                              '</tr>';
+                  dibujarTablaHistorico = dibujarTablaHistorico + dibujarTablaHistorico2;
+              }
+
+
+              dibujarTablaHistorico = historicoCard + dibujarTablaHistorico + '</tbody> </table> </div>';
+
+              cardHistorico.innerHTML = dibujarTablaHistorico;
+            }
+              /**********************************/
+
+
+            },
+
+            error : function(xhr, status) {
+              cuerpoBody = document.getElementById("cuerpoBody");
+              cuerpoBody.innerHTML = '';
+
+              Alerta = document.getElementById("Alerta");
+              Alerta.innerHTML = '<div class="alert alert-warning" role="alert"><b>Mensaje:</b> '+xhr.responseJSON.ROOT.detalle.mensaje+' Favor contactarse con Sistemas.</div>';
+
+
+            },
+
+
+        });
+
+
+
+
+
+      </script>
+    <!-- --------------------------------------- -->
+    <div id="Alerta">
+
+    </div>
+
+
+      <div class="card" id="CardInicial">
+        <!-- Aqui se llenara el titulo del card -->
+      </div>
+        <div class="card-body">
+          <div id="cuerpoBody">
+            <div class="text-center">
+              <div class="spinner-grow text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-success" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-danger" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-warning" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-info" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-light" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="spinner-grow text-dark" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+        <!-- Boletos Revisados -->
+        <div class="card" id="DetalleHistorico" >
+
+        </div>
+        <!-- ----------------- -->
+
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+
+  </body>
+</html>

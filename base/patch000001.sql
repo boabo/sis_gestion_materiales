@@ -1021,3 +1021,27 @@ ALTER TABLE mat.tdetalle_sol
 COMMENT ON COLUMN mat.tdetalle_sol.interfaz_origen
 IS 'Campo que identificara el origen de la modificacion';
 /***********************************F-SCP-IRVA-MAT-0-14/04/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-19/04/2022****************************************/
+CREATE TABLE mat.tlog_reasignacion_funcionario (
+  id_reasignacion SERIAL,
+  id_funcionario_antiguo INTEGER,
+  id_funcionario_nuevo INTEGER,
+  id_solicitud INTEGER,
+  observacion TEXT,
+  CONSTRAINT tlog_reasignacion_funcionario_pkey PRIMARY KEY(id_reasignacion)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+COMMENT ON COLUMN mat.tlog_reasignacion_funcionario.id_funcionario_antiguo
+IS 'Id del funcionario que estaba asignado antes de la reasignacion';
+
+COMMENT ON COLUMN mat.tlog_reasignacion_funcionario.id_funcionario_nuevo
+IS 'Id del funcionario reasignado actual';
+
+COMMENT ON COLUMN mat.tlog_reasignacion_funcionario.observacion
+IS 'Descripcion del motivo de la reasignacion';
+
+ALTER TABLE mat.tlog_reasignacion_funcionario
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-0-19/04/2022****************************************/
