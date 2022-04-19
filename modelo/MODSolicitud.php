@@ -1122,6 +1122,7 @@ class MODSolicitud extends MODbase
         $this->captura('firma_jefe_departamento', 'varchar');
         $this->captura('firma_tecnico_abastecimiento', 'varchar');
         $this->captura('nro_tramite', 'varchar');
+        $this->captura('cambiar_etiqueta', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -1226,6 +1227,7 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_cotizacion', 'varchar');
         $this->captura('fecha_envio', 'varchar');
         $this->captura('mayor', 'varchar');
+        $this->captura('editar_etiqueta', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

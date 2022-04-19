@@ -320,6 +320,7 @@ DECLARE
     v_serial_original				varchar;
     v_id_detalle					varchar;
     v_aplica_cambio_etiqueta		varchar;
+    v_etiqueta						varchar;
 
 BEGIN
 
@@ -2718,6 +2719,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                         inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = coti.id_cotizacion
                         where coti.id_solicitud = v_id_solicitud and coti.adjudicado = 'si';
 
+        	/*Aumentando para cambiar etiqueta*/
+            if (v_fecha_comite >= '01/03/2022') then
+            	v_etiqueta = 'si';
+            else
+            	v_etiqueta = 'no';
+            end if;
+			/***********************************/
+
+
           	v_consulta :='select 	('''||v_evaluacion||''')::varchar as evaluacion,
                                     ('''||v_nro_parte_sol||''')::varchar as parte_solicitada,
                                     ('''||v_nom_provee||''')::varchar as proveedor,
@@ -2733,7 +2743,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     ('''||v_nombre_funcionario_resp_qr_oficial||''')::varchar as firma_auxiliar,
                                     ('''||v_nombre_funcionario_abas_qr_oficial||''')::varchar as firma_jefe_departamento,
                                     ('''||v_nombre_funcionario_tecnico_abastecimiento||''')::varchar as firma_tecnico_abastecimiento,
-                                    ('''||v_nro_tramite||''')::varchar as nro_tramite';
+                                    ('''||v_nro_tramite||''')::varchar as nro_tramite,
+                                    ('''||v_etiqueta||''')::varchar as cambiar_etiqueta';
           	raise notice '%',v_consulta;
 
 			return v_consulta;
@@ -4372,7 +4383,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             select list (detcot.nro_parte_cot),
                    list (detcot.nro_parte_alterno_cot),
                    list (detcot.cantidad_det::varchar),
-                   list (detcot.descripcion_cot),
+                   array_to_string(pxp.aggarray(detcot.descripcion_cot),'|')::varchar,--list (detcot.descripcion_cot),
                    list (detcot.referencia_cot),
                    list (detcot.cd),
                    list (COALESCE (detcot.precio_unitario,0)::varchar),
@@ -4516,7 +4527,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    list (det.condicion_det),
                    list (det.nro_parte),
                    list (det.nro_parte_alterno),
-                   list (det.descripcion),
+                   array_to_string(pxp.aggarray(det.descripcion),'|')::varchar, --list (det.descripcion),
                    list (det.referencia)
                    into
                    v_condicion_sol,
@@ -4750,7 +4761,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 end ) into v_es_mayor;
             /******************************************/
 
-
+			if (v_fecha_cotizacion::date >= '01/03/2022'::date) then
+            	v_etiqueta = 'si';
+            else
+            	v_etiqueta = 'no';
+            end if;
 
           v_consulta:='select
           			  ('''||v_rep||''')::varchar as nro_rep,
@@ -4782,7 +4797,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_nro_lote||''')::varchar as nro_lote,
                       ('''||v_fecha_cotizacion_oficial||''')::varchar as fecha_cotizacion,
                       ('''||v_fecha_firma_envio||''')::varchar as fecha_envio,
-                      ('''||v_es_mayor||''')::varchar as mayor';
+                      ('''||v_es_mayor||''')::varchar as mayor,
+                      ('''||v_etiqueta||''')::varchar as editar_etiqueta';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;

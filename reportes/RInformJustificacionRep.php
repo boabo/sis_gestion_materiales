@@ -27,7 +27,7 @@ class RInformJustificacionRep extends  ReportePDF
         $nro_partes = explode(',',$this->datos[0]["num_part"]);
         $nro_partes_alternas = explode(',',$this->datos[0]["num_part_alt"]);
         $cantidad = explode(',',$this->datos[0]["cantidad"]);
-        $descripcion = explode(',',$this->datos[0]["descripcion"]);
+        $descripcion = explode('|',$this->datos[0]["descripcion"]);
         $serial = explode(',',$this->datos[0]["serial"]);
         $cd = explode(',',$this->datos[0]["cd"]);
         $cd_det = explode(',',$this->datos[0]["condicion_detalle"]);
@@ -36,7 +36,7 @@ class RInformJustificacionRep extends  ReportePDF
 
         $parte_det = explode(',',$this->datos[0]["parte_det"]);
         $parte_alter_det = explode(',',$this->datos[0]["parte_alter_det"]);
-        $desc_det = explode(',',$this->datos[0]["desc_det"]);
+        $desc_det = explode('|',$this->datos[0]["desc_det"]);
         $serial_det = explode(',',$this->datos[0]["serial_det"]);
         $nro_lote = $this->datos[0]["nro_lote"];
 
@@ -393,12 +393,24 @@ class RInformJustificacionRep extends  ReportePDF
               </table>
               ';
               } else {
+
+                if ($this->datos[0]['editar_etiqueta'] == 'si') {
+                  $tb .= '<table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                      <tr>
+                        <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Elaborado Por:</b> </td>
+                        <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> '.$fun_sol_1.':</b><br></td>
+                      </tr>';
+                } else {
+                  $tb .= '<table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                      <tr>
+                        <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Elaborado Por:</b> </td>
+                        <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe Departamento Abastecimiento y Logistica:</b><br></td>
+                      </tr>';
+                }
+
+
                 $tb .=   '
-                <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
-                    <tr>
-                      <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Elaborado Por:</b> </td>
-                      <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe Departamento Abastecimiento y Logistica:</b><br></td>
-                    </tr>
+
                     <tr>
                         <td align="center" style="font-family: Calibri; font-size: 9px;">
                             <br><br>

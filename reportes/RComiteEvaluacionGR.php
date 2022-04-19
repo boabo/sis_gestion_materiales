@@ -280,15 +280,29 @@ class RComiteEvaluacionGR extends  ReportePDF
       } else {
 
         if ($tecnico_abastecimiento != '') {
-          $firmas = '
-          <table border="1" cellpadding="10">
-              <tr>
-                  <!--<td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>-->
 
-                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico de Abastecimiento:</b> </td>
-                  <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico de Adquisiciones:</b> </td>
+          if ($this->datos[0]['cambiar_etiqueta'] == 'si') {
+              $firmas .= '<table border="1" cellpadding="10">
+                  <tr>
 
-              </tr>
+                      <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_tecnico_abas_1.':</b> </td>
+                      <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_auxiliar_1.':</b> </td>
+
+                  </tr>';
+          } else {
+              $firmas .= '<table border="1" cellpadding="10">
+                  <tr>
+                      <!--<td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Unidad del Dpto. Abastecimiento y Logística:</b> </td>-->
+
+                      <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico de Abastecimiento:</b> </td>
+                      <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Técnico de Adquisiciones:</b> </td>
+
+                  </tr>';
+          }
+
+
+          $firmas .= '
+
               <tr>
                   <td align="center" style="font-family: Calibri; font-size: 9px;">
                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_tecnico_abas_0, $fun_tecnico_abas_1,$fun_tecnico_abas_4,$fun_tecnico_abas_3).'" alt="Logo">
@@ -300,12 +314,21 @@ class RComiteEvaluacionGR extends  ReportePDF
                       <br>'.$fun_auxiliar_0.'
                   </td>
                </tr>
-           </table>
-           <table border="1" cellpadding="10">
-               <tr>
-                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
-                   <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
-               </tr>
+           </table>';
+           if ($this->datos[0]['cambiar_etiqueta'] == 'si') {
+               $firmas .= '<table border="1" cellpadding="10">
+                   <tr>
+                       <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_abastecimiento_1.':</b> </td>
+                       <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_aeronavegabilidad_1.':</b><br></td>
+                   </tr>';
+            }else {
+                $firmas .= '<table border="1" cellpadding="10">
+                    <tr>
+                        <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Jefe de Dpto. de Abastecimiento y Logística:</b> </td>
+                        <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
+                    </tr>';
+            }
+           $firmas .= '
                <tr>
                    <td align="center" style="font-family: Calibri; font-size: 9px;">
                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
