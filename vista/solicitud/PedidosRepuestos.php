@@ -495,7 +495,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.fecha_po);
                     this.mostrarComponente(this.Cmp.fecha_entrega);
 
-                    this.mostrarComponente(this.Cmp.tipo_evaluacion);
+                    //this.mostrarComponente(this.Cmp.tipo_evaluacion);
 
                     this.Cmp.observaciones_sol.setDisabled(true);
                     this.Cmp.tiempo_entrega.setDisabled(true);
@@ -520,7 +520,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.fecha_cotizacion.setValue(data['fecha_cotizacion'] );
                 } else {
                   this.ocultarComponente(this.Cmp.fecha_entrega);
-                  this.ocultarComponente(this.Cmp.tipo_evaluacion);
+                  //this.ocultarComponente(this.Cmp.tipo_evaluacion);
                 }
 
             }
