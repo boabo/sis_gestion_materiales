@@ -4879,7 +4879,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             select 	list (detsol.nro_parte),
                     list (detsol.nro_parte_alterno),
                     list (detsol.cantidad_sol::varchar),
-                    list (detsol.descripcion),
+                    array_to_string(pxp.aggarray(detsol.descripcion),'|')::varchar,--list (detsol.descripcion),
                     list (detsol.referencia),
                     list (detsol.condicion_det),
                     list (detsol.precio_unitario::varchar),
