@@ -25,7 +25,7 @@ class ROrdenDeReparacionExterior extends  ReportePDF
         $nro_partes = explode(',',$this->datos[0]["num_part"]);
         $nro_partes_alternas = explode(',',$this->datos[0]["num_part_alt"]);
         $cantidad = explode(',',$this->datos[0]["cantidad"]);
-        $descripcion = explode(',',$this->datos[0]["descripcion"]);
+        $descripcion = explode('|',$this->datos[0]["descripcion"]);
         $serial = explode(',',$this->datos[0]["serial"]);
         $cd = explode(',',$this->datos[0]["cd"]);
         $precio_unitario = explode(',',$this->datos[0]["precio_unitario"]);
