@@ -58,6 +58,7 @@ DECLARE
 	v_estado_actual			varchar;
     v_interfaz_origen	varchar;
 	 v_precio_recuperado	numeric;
+     v_origen_pedido		varchar;
 BEGIN
 
     v_nombre_funcion = 'mat.ft_cotizacion_detalle_ime';
@@ -612,7 +613,7 @@ BEGIN
               from mat.tcotizacion_detalle
               where id_cotizacion_det = v_parametros.id_cotizacion_det;
 
-			  select sol.estado into v_estado_actual
+			  select sol.estado, sol.origen_pedido into v_estado_actual, v_origen_pedido
               from mat.tsolicitud sol
               where sol.id_solicitud = v_id_solicitud;
 
@@ -637,14 +638,16 @@ BEGIN
                     from mat.tdetalle_sol deta
                     where deta.id_detalle = v_id_detalle;
 
-
-                    if (v_precio_recuperado > 0) then
-                        if (v_interfaz_origen = 'Tecnico Abastecimiento' or v_interfaz_origen = 'Tecnico Administrativo') then
-                            if (v_interfaz_origen != v_parametros.interfaz_origen) then
-                                raise exception 'El Item ya tiene un precio Referencial registrado por el %, y solo el puede realizar la modificación.',v_interfaz_origen;
-                            end if;
-                        end if;
+					if (v_origen_pedido != 'Reparación de Repuestos') then
+                      if (v_precio_recuperado > 0) then
+                          if (v_interfaz_origen = 'Tecnico Abastecimiento' or v_interfaz_origen = 'Tecnico Administrativo') then
+                              if (v_interfaz_origen != v_parametros.interfaz_origen) then
+                                  raise exception 'El Item ya tiene un precio Referencial registrado por el %, y solo el puede realizar la modificación.',v_interfaz_origen;
+                              end if;
+                          end if;
+                      end if;
                     end if;
+
 
                   /*Aqui Actualizamos los montos cuando el detalle es referencial (Ismael valdivia 23/03/2020)*/
                   update mat.tdetalle_sol set
@@ -689,15 +692,15 @@ BEGIN
                     from mat.tdetalle_sol deta
                     where deta.id_detalle = v_id_detalle;
 
-
-                    if (v_precio_recuperado > 0) then
-                        if (v_interfaz_origen = 'Tecnico Abastecimiento' or v_interfaz_origen = 'Tecnico Administrativo') then
-                            if (v_interfaz_origen != v_parametros.interfaz_origen) then
-                                raise exception 'El Item ya tiene un precio Referencial registrado por el %, y solo el puede realizar la modificación.',v_interfaz_origen;
-                            end if;
-                        end if;
-                    end if;
-
+					if (v_origen_pedido != 'Reparación de Repuestos') then
+                      if (v_precio_recuperado > 0) then
+                          if (v_interfaz_origen = 'Tecnico Abastecimiento' or v_interfaz_origen = 'Tecnico Administrativo') then
+                              if (v_interfaz_origen != v_parametros.interfaz_origen) then
+                                  raise exception 'El Item ya tiene un precio Referencial registrado por el %, y solo el puede realizar la modificación.',v_interfaz_origen;
+                              end if;
+                          end if;
+                      end if;
+					end if;
 
 
                   update mat.tdetalle_sol set
