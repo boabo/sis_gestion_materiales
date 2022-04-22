@@ -992,6 +992,23 @@ v_consulta:='select		sol.id_solicitud,
       WHERE s.id_proceso_wf = v_parametros.id_proceso_wf;
 
           IF(v_cod_tramite = 'GC') then
+
+           if (v_fecha_solicitud_recu >= v_fecha_nuevo_flujo::date) then
+
+                SELECT
+                           vf.desc_funcionario1
+                            into v_nombre_funcionario_ag_qr
+
+                    FROM wf.ttipo_estado te
+                    inner join wf.tfuncionario_tipo_estado estado on estado.id_tipo_estado = te.id_tipo_estado
+                    INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = estado.id_funcionario
+                    WHERE te.codigo = 'departamento_ceac'
+                    and v_fecha_solicitud_recu::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                    and te.estado_reg = 'activo' and estado.estado_reg = 'activo';
+
+           else
+
+
             SELECT
                       vf.desc_funcionario1
                       into v_nombre_funcionario_ag_qr
@@ -1003,6 +1020,15 @@ v_consulta:='select		sol.id_solicitud,
               GROUP BY twf.id_funcionario, vf.desc_funcionario1, twf.fecha_reg
               ORDER BY  twf.fecha_reg DESC
               limit 1;
+
+            end if;
+
+
+
+
+
+
+
            end if;
 
 
