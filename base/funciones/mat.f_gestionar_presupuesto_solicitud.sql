@@ -99,6 +99,7 @@ BEGIN
                             where s.id_solicitud = p_id_solicitud
                                 and ds.estado_reg = 'activo'
                                 and ds.cantidad_sol > 0
+                                and ds.estado_excluido = 'no'
                             ORDER by ds.id_detalle ASC ) LOOP
 
 
