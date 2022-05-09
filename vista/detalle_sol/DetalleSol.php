@@ -117,7 +117,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				{
             config:{
                 labelSeparator:'',
-                //inputType:'hidden',
+                inputType:'hidden',
                 name: 'id_producto_alkym'
             },
             type:'Field',
