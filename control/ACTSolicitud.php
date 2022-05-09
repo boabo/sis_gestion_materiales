@@ -692,13 +692,33 @@ class ACTSolicitud extends ACTbase{
       }
     }
 
+
+    function verificarEstado($id_estado){
+      $cone = new conexion();
+  		$link = $cone->conectarpdo();
+  		$copiado = false;
+
+  		$consulta ="select codigo
+                  From wf.ttipo_estado
+                  where id_tipo_estado = ".$id_estado." and estado_reg = 'activo'";
+
+  		$res = $link->prepare($consulta);
+  		$res->execute();
+  		$result = $res->fetchAll(PDO::FETCH_ASSOC);
+  		return $result[0]['codigo'];
+    }
+
     function insertarOrdenCompraAlkym(){
       /*Aqui recuperaremos la variable Global para que se decida si se ejecuta los serviciosAlkym o no (Ismael Valdivia 30/04/2020)*/
       $variable_global = $this->conexionAlkym();
       $conexionAlkym = $variable_global->getDatos();
       $respuesta = $conexionAlkym[0]["variable_obtenida"];
 
-      if ($respuesta == 'si') {
+      $verificarEstado = $this->verificarEstado($this->objParam->getParametro('id_tipo_estado'));
+
+
+
+      if ($respuesta == 'si' && $verificarEstado == 'despachado') {
 
         $this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
         $this->objFunc=$this->create('MODSolicitud');
