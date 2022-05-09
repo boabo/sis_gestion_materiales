@@ -117,7 +117,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				{
             config:{
                 labelSeparator:'',
-                inputType:'hidden',
+                //inputType:'hidden',
                 name: 'id_producto_alkym'
             },
             type:'Field',
@@ -1381,7 +1381,9 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 			}
 
 
+			this.Cmp.id_producto_alkym.reset();
 
+			this.Cmp.id_producto_alkym.setValue(rec.data.idproducto);
 
 
 			this.Cmp.control_edicion.setValue('botonEditar');
