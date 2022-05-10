@@ -135,7 +135,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 				{
             config:{
                 labelSeparator:'',
-                inputType:'hidden',
+                //inputType:'hidden',
                 name: 'control_edicion'
             },
             type:'Field',
@@ -1381,10 +1381,44 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 			}
 
 
-			this.Cmp.id_producto_alkym.reset();
+			this.Cmp.nro_parte.on('select', function (cmp, rec) {
 
-			this.Cmp.id_producto_alkym.setValue(rec.data.idproducto);
+				this.Cmp.id_unidad_medida.reset();
+				this.Cmp.tipo.reset();
+				this.Cmp.descripcion.reset();
+				this.Cmp.id_producto_alkym.reset();
 
+				this.Cmp.id_producto_alkym.setValue(rec.data.idproducto);
+
+				this.Cmp.descripcion.setValue(rec.data.descripcion);
+				this.Cmp.id_unidad_medida.store.baseParams.id_unidad_medida = rec.data.idunidadmedida;
+
+				this.Cmp.id_unidad_medida.store.load({params:{start:0,limit:50},
+							 callback : function (r) {
+										if (r.length == 1 ) {
+													this.Cmp.id_unidad_medida.setValue(r[0].data.id_unidad_medida);
+													this.Cmp.id_unidad_medida.fireEvent('select', this.Cmp.id_unidad_medida,r[0],0);
+													this.Cmp.id_unidad_medida.store.baseParams.id_unidad_medida = '';
+											} else {
+												this.Cmp.id_unidad_medida.store.baseParams.id_unidad_medida = '';
+											}
+								}, scope : this
+						});
+
+				this.Cmp.tipo.store.load({params:{start:0,limit:50},
+							 callback : function (r) {
+										 for (var i = 0; i < r.length; i++) {
+											 if (r[i].data.descripcion == rec.data.tipoproducto) {
+												 this.Cmp.tipo.setValue(r[i].data.descripcion);
+												 this.Cmp.tipo.fireEvent('select', this.Cmp.tipo,r[i]);
+											 }
+										 }
+								}, scope : this
+						});
+
+
+			}, this);
+			/******************************************/
 
 			this.Cmp.control_edicion.setValue('botonEditar');
 			if (this.store.baseParams.tipo_tramite == 'GR') {
