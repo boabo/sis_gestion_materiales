@@ -89,7 +89,8 @@ BEGIN
                         orden.desc_orden as desc_orden_trabajo,
 
                         det.precio_total,
-                        det.condicion_det
+                        det.condicion_det,
+                        det.id_producto_alkym
                         /****************************************************/
 						from mat.tdetalle_sol det
 						inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg

@@ -65,6 +65,7 @@ class MODDetalleSol extends MODbase{
 		// $this->captura('desc_auxiliar','varchar');
 		$this->captura('precio_total','numeric');
 		$this->captura('condicion_det','varchar');
+		$this->captura('id_producto_alkym','int4');
 		/***************************************************************/
 
 		//Ejecuta la instruccion
