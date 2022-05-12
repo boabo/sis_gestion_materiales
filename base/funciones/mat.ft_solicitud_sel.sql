@@ -4317,7 +4317,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
           v_corregir_reporte = 'no';
 
-          if (v_fecha_order is not null) then
+          if (v_fecha_order != '') then
 
           	if (v_fecha_order::date >= '01/04/2022'::date) then
             	v_corregir_reporte = 'si';
