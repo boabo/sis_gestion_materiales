@@ -1176,6 +1176,7 @@ class MODSolicitud extends MODbase
         $this->captura('firma_rpc', 'varchar');
         $this->captura('serial_original', 'varchar');
         $this->captura('id_detalle', 'varchar');
+        $this->captura('corregir_reporte', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

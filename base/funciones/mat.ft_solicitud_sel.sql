@@ -321,6 +321,7 @@ DECLARE
     v_id_detalle					varchar;
     v_aplica_cambio_etiqueta		varchar;
     v_etiqueta						varchar;
+    v_corregir_reporte				varchar;
 
 BEGIN
 
@@ -4298,6 +4299,20 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             	v_funcionario_sol_rpcd_oficial = '';
             end if;
 
+          v_corregir_reporte = 'no';
+
+          if (v_fecha_order is not null) then
+
+          	if (v_fecha_order::date >= '01/04/2022'::date) then
+            	v_corregir_reporte = 'si';
+            else
+            	v_corregir_reporte = 'no';
+            end if;
+
+
+          end if;
+
+
           v_consulta:='select
            			  ('''||v_num_tramite_rep||''')::varchar as num_tramite,
                       ('''||v_email_funcionario||''')::varchar as email_fun,
@@ -4329,7 +4344,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_observaciones_sol||''')::varchar as observaciones_sol,
                       ('''||v_funcionario_sol_rpcd_oficial||''')::varchar as firma_rpc,
                       ('''||v_serial_original||''')::varchar as serial_original,
-                      ('''||v_id_detalle||''')::varchar as detalle_sol';
+                      ('''||v_id_detalle||''')::varchar as detalle_sol,
+                      ('''||v_corregir_reporte||''')::varchar as corregir_reporte';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
