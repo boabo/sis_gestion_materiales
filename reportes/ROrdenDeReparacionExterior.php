@@ -212,11 +212,20 @@ class ROrdenDeReparacionExterior extends  ReportePDF
                           <td style="width: 80px; text-align: right;">'.number_format($this->datos[0]['suma_total'], 2, ',', '.').'</td>
                         </tr>
                       </table>
-                      <table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
-                        <tr>
-                          <td style="width: 695px;" colspan="6"><b>OBSERVATIONS:</b> El servicio deberá ser realizado a la especificación técnica, contización y la presente orden</td>
-                        </tr>
-                      </table>
+                      <table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">';
+                      if ($this->datos[0]['corregir_reporte'] == 'no') {
+                        $tb_funcio.= '
+                          <tr>
+                            <td style="width: 695px;" colspan="6"><b>OBSERVATIONS:</b> El servicio deberá ser realizado a la especificación técnica, contización y la presente orden</td>
+                          </tr>';
+                      } else {
+                        $tb_funcio.= '
+                          <tr>
+                            <td style="width: 695px;" colspan="6"><b>OBSERVATIONS:</b> El servicio deberá ser realizado de acuerdo a la especificación técnica, cotización y la presente orden</td>
+                          </tr>';
+                      }
+
+                      $tb_funcio .= '</table>
                       <table cellspacing="0" cellpadding="1" style="font-size:11px; border:1px solid #000000;">
                         <tr>
                           <td style="width: 695px;" colspan="6"><b>NOTA: Según procedimientos y Manual de Mantenimiento el Número de Part Number (P/N)
