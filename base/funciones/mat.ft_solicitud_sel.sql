@@ -4271,6 +4271,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     AND te.codigo = 'vb_rpcd'
                     GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
 
+            if (v_fecha_order != '') then
+
             	  if (v_rpcd.fecha_reg is not null)then
                     if(v_fecha_solicitud::date >= v_rango_fecha::date)THEN
                           SELECT  twf.id_funcionario,
@@ -4287,14 +4289,14 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                           AND te.codigo = 'vb_rpcd'
-                          and v_fecha_solicitud::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
+                          and v_fecha_order::date between vf.fecha_asignacion and  coalesce(vf.fecha_finalizacion,now())
                           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
                           order by twf.fecha_reg DESC
                           limit 1;
 
                           /*Aumentando para el iterinato 25/01/2022*/
                           if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
-                              remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rpcd_oficial,v_fecha_solicitud::varchar);
+                              remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rpcd_oficial,v_fecha_order::varchar);
 
                               if(remplaso is null)THEN
                                     v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
@@ -4310,6 +4312,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 	v_funcionario_sol_rpcd_oficial = '';
                 end if;
             end if;
+        end if;
 
             if (v_funcionario_sol_rpcd_oficial is null) then
             	v_funcionario_sol_rpcd_oficial = '';
@@ -6185,7 +6188,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                     AND te.codigo = 'vb_rpcd'
                     GROUP BY twf.id_funcionario ,pro.nro_tramite,twf.fecha_reg;
 
-            	  if (v_rpcd.fecha_reg is not null)then
+            	  if (v_fecha_po_rep is not null)then
 
                           SELECT  twf.id_funcionario,
                                   vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | '||to_char(twf.fecha_reg,'DD-MM-YYYY')||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -6201,13 +6204,13 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                           AND te.codigo = 'vb_rpcd'
-                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
+                          and v_fecha_po_rep::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion,now())
                           GROUP BY twf.id_funcionario, vf.desc_funcionario1,vf.nombre_cargo,pro.nro_tramite, twf.fecha_reg
                           ORDER BY twf.fecha_reg DESC
                           Limit 1;
 
                           if (v_fecha_solicitud::date >= v_fecha_nuevo_flujo::date) then
-                              remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rpcd_oficial,v_fecha_solicitud_recu::varchar);
+                              remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rpcd_oficial,v_fecha_po_rep::varchar);
 
                               if(remplaso is null)THEN
                                   v_funcionario_sol_rpcd_oficial = v_funcionario_sol_rpcd_oficial;
