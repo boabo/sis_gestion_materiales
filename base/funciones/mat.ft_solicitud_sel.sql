@@ -322,6 +322,8 @@ DECLARE
     v_aplica_cambio_etiqueta		varchar;
     v_etiqueta						varchar;
     v_corregir_reporte				varchar;
+    v_id_estado_aprobado 			integer;
+    v_fecha_aprobacion				date;
 
 BEGIN
 
@@ -1418,7 +1420,81 @@ v_consulta:='select		sol.id_solicitud,
 
         /********************************************************************/
 
-        if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+            if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
+
+                SELECT            	twf.id_funcionario,
+                                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                                    to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma,
+                                    twf.id_estado_wf
+                INTO
+                                v_id_funcionario_rev_qr_oficial,
+                                v_nombre_funcionario_rev_qr_oficial,
+                                v_fecha_firma_rev_qr,
+                                v_id_estado_aprobado
+                    FROM wf.testado_wf twf
+                          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                          INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
+                          AND te.codigo = 'comite_unidad_abastecimientos'
+                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                          GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite, twf.id_estado_wf--Aumentando el id estado (Ismael Valdivia 12/05/2022)
+                          ORDER BY  twf.id_estado_wf DESC
+                          limit 1;
+
+                /*Aumentando para condicionar el reporte del comite del 01/04/2022 al 30/04/2022*/
+                select es.fecha_reg::date into v_fecha_aprobacion
+                from wf.testado_wf es
+                where es.id_estado_anterior = v_id_estado_aprobado;
+
+
+                if ((v_fecha_aprobacion between '01/04/2022' and '30/04/2022') OR (v_fecha_aprobacion >= '01/06/2022') ) then
+                	v_fecha_po = v_fecha_aprobacion;
+                end if;
+
+
+                /********************************************************************************/
+
+
+                remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_po);
+                  if(remplaso is null)THEN
+
+                          v_nombre_funcionario_rev_qr = v_nombre_funcionario_rev_qr_oficial;
+                  else
+                          v_nombre_funcionario_rev_qr = remplaso.desc_funcionario1;
+
+                  end if;
+            else
+
+                SELECT            	twf.id_funcionario,
+                                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Pública Nacional Estratégica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                                    to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
+                INTO
+                                v_id_funcionario_rev_qr_oficial,
+                                v_nombre_funcionario_rev_qr_oficial,
+                                v_fecha_firma_rev_qr
+                    FROM wf.testado_wf twf
+                          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                          INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'
+                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                          GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo
+                          ORDER BY  twf.fecha_reg DESC
+                          limit 1;
+
+                remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial);
+
+                if(remplaso is null)THEN
+
+                          v_nombre_funcionario_rev_qr = v_nombre_funcionario_rev_qr_oficial;
+                  else
+                          v_nombre_funcionario_rev_qr = remplaso.desc_funcionario1;
+
+                  end if;
+            end if;
+
+
+             if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
 
                   SELECT		twf.id_funcionario,
                               vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
@@ -1540,67 +1616,6 @@ v_consulta:='select		sol.id_solicitud,
               else
                       v_nombre_funcionario_abas_qr = remplaso.desc_funcionario1;
               end if;
-            end if;
-
-
-
-
-
-            if(v_fecha_solicitud ::date >= v_rango_fecha::date)THEN
-
-                SELECT            	twf.id_funcionario,
-                                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
-                                    to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
-                INTO
-                                v_id_funcionario_rev_qr_oficial,
-                                v_nombre_funcionario_rev_qr_oficial,
-                                v_fecha_firma_rev_qr
-                    FROM wf.testado_wf twf
-                          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                          INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
-                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
-                          AND te.codigo = 'comite_unidad_abastecimientos'
-                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
-                          GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite
-                          ORDER BY  twf.fecha_reg DESC
-                          limit 1;
-
-                remplaso = mat.f_firma_modif(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial,v_fecha_po);
-                  if(remplaso is null)THEN
-
-                          v_nombre_funcionario_rev_qr = v_nombre_funcionario_rev_qr_oficial;
-                  else
-                          v_nombre_funcionario_rev_qr = remplaso.desc_funcionario1;
-
-                  end if;
-            else
-
-                SELECT            	twf.id_funcionario,
-                                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | Empresa Pública Nacional Estratégica Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
-                                    to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma
-                INTO
-                                v_id_funcionario_rev_qr_oficial,
-                                v_nombre_funcionario_rev_qr_oficial,
-                                v_fecha_firma_rev_qr
-                    FROM wf.testado_wf twf
-                          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                          INNER JOIN orga.vfuncionario_ultimo_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'comite_unidad_abastecimientos'
-                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
-                          GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo
-                          ORDER BY  twf.fecha_reg DESC
-                          limit 1;
-
-                remplaso = mat.f_firma_original(v_parametros.id_proceso_wf,v_id_funcionario_rev_qr_oficial);
-
-                if(remplaso is null)THEN
-
-                          v_nombre_funcionario_rev_qr = v_nombre_funcionario_rev_qr_oficial;
-                  else
-                          v_nombre_funcionario_rev_qr = remplaso.desc_funcionario1;
-
-                  end if;
             end if;
 
 
@@ -1768,13 +1783,14 @@ v_consulta:='select		sol.id_solicitud,
                        group by ce.nro_parte_cot)
         select count(nro_parte_cot) into v_cantidad_items
         from datos;
-
+        v_fecha_po = to_char(v_fecha_po::date,'DD/MM/YYYY');
 			v_consulta:='select s.id_solicitud::integer,
 								initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion)))::varchar as item_selecionados,
                                 initcap(pxp.f_convertir_num_a_letra('||v_cantidad_items||'))::varchar as items_diferentes,
                                 s.nro_tramite::varchar,
                                 s.origen_pedido::varchar,
-                                to_char(s.fecha_po,''DD/MM/YYYY'')::text as fecha_po,
+                                --to_char(s.fecha_po,''DD/MM/YYYY'')::text as fecha_po,
+                                '''||COALESCE(v_fecha_po,'')::text||'''::text as fecha_po,
                                 pxp.aggarray( d.nro_parte_cot)::text as nro_parte,
                                 s.tipo_evaluacion::varchar,
                                 (case
