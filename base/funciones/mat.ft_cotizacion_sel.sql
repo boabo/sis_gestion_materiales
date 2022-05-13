@@ -322,6 +322,10 @@ BEGIN
                 end if;
         	/*************************************************************/
 
+           if (v_fecha_po is null) then
+           	v_fecha_po = '';
+           end if;
+
           v_consulta:='select s.id_solicitud,
 							  d.id_cotizacion,
                               d.nro_parte_cot::varchar as parte,
@@ -339,7 +343,7 @@ BEGIN
                               c.obs,
                               to_char(c.fecha_cotizacion,''DD/MM/YYYY'')::varchar as fecha_cotizacion,
                               --s.fecha_po,
-                              '''||v_fecha_po::varchar||'''::date as fecha_po,
+                              '''||v_fecha_po::varchar||'''::varchar as fecha_po,
                               c.monto_total,
                               (select pxp.list(initcap(p.desc_proveedor))
                               from mat.tgestion_proveedores_new ne
@@ -363,7 +367,7 @@ BEGIN
             v_consulta:=v_consulta||'ORDER BY d.id_cotizacion_det DESC, d.precio_unitario DESC, c.adjudicado DESC';
 			--Devuelve la respuesta
 
-             raise notice 'Aqui llega la fecha dle po %',v_consulta;
+
 			return v_consulta;
 		end;
 
