@@ -233,7 +233,7 @@ class MODCotizacion extends MODbase{
         $this->captura('recomendacion','varchar');
         $this->captura('obs','varchar');
         $this->captura('fecha_cotizacion','varchar');
-        $this->captura('fecha_po','date');
+        $this->captura('fecha_po','varchar');
         $this->captura('monto_total','numeric');
         $this->captura('lista_proveedor','varchar');
         $this->captura('pie_pag','varchar');
