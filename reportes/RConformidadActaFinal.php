@@ -52,48 +52,97 @@ class RConformidadActaFinal extends  ReportePDF
         $proveedor = $this->datos[0]['proveedor'];
         $conformidad_final = $this->datos[0]['conformidad_final'];
         $columasconcepto = '';
-        $nombre_usuario_firma = $nombre_solicitante;
+
         $observaciones = $this->datos[0]['observaciones'];
-        $cargo = $this->datos[0]['nombre_cargo'];
-        $oficina = $this->datos[0]['oficina_nombre'];
 
 
-        /*Aqui para la firma del jefe de abastecimiento*/
-        $nombre_jefe_abastecimiento = $this->datos[0]['jefe_abastecimiento'];
-        $cargo_jefe_abastecimiento = $this->datos[0]['cargo_jefe_abastecimiento'];
-        $oficina_jefe_abastecimiento = $this->datos[0]['oficina_abastecimiento'];
+        if ($this->datos[0]['revisado'] == 'no') {
+          $nombre_usuario_firma = 'PENDIENTE DE REVISIÓN';
+          $cargo = '';
+          $oficina = '';
+
+          $nombre_jefe_abastecimiento = '';
+          $cargo_jefe_abastecimiento = '';
+          $oficina_jefe_abastecimiento = '';
+
+          $encargado_almacen = '';
+          $cargo_encargado_almacen = '';
+          $oficina_encargado_almacen = '';
+
+        } else {
+          $nombre_usuario_firma = $nombre_solicitante;
+          $cargo = $this->datos[0]['nombre_cargo'];
+          $oficina = $this->datos[0]['oficina_nombre'];
 
 
-        $encargado_almacen = $this->datos[0]['encargado_almacen'];
-        $cargo_encargado_almacen = $this->datos[0]['cargo_encargado_almacen'];
-        $oficina_encargado_almacen = $this->datos[0]['oficina_encargado_almacen'];
+          /*Aqui para la firma del jefe de abastecimiento*/
+          $nombre_jefe_abastecimiento = $this->datos[0]['jefe_abastecimiento'];
+          $cargo_jefe_abastecimiento = $this->datos[0]['cargo_jefe_abastecimiento'];
+          $oficina_jefe_abastecimiento = $this->datos[0]['oficina_abastecimiento'];
+
+
+          $encargado_almacen = $this->datos[0]['encargado_almacen'];
+          $cargo_encargado_almacen = $this->datos[0]['cargo_encargado_almacen'];
+          $oficina_encargado_almacen = $this->datos[0]['oficina_encargado_almacen'];
+
+        }
 
 
 
         $maestro = $this->detalle->datos;
         $numeracion_item = 1;
 
-        foreach ($maestro as $datomaestro) {
-            $columasconcepto = $columasconcepto . '<tr>
-                     <td width="5%" align="center">' . $numeracion_item. '</td>
-                     <td width="38%" align="left">' . $datomaestro['concepto'] . '</td>
-                     <td width="38%" align="left">' . $datomaestro['descripcion'] . '</td>
-                     <td width="18%" align="right">' . $datomaestro['cantidad_sol'] . '</td>
-        		 </tr>';
 
-             $numeracion_item ++;
+        if ($this->datos[0]['tipo_pedido'] == 'Reparación de Repuestos' && $this->datos[0]['aumentar_condicion'] == 'si') {
+          foreach ($maestro as $datomaestro) {
+              $columasconcepto = $columasconcepto . '<tr>
+                       <td width="5%" align="center">' . $numeracion_item. '</td>
+                       <td width="38%" align="left">' . $datomaestro['concepto'] . '</td>
+                       <td width="32%" align="left">' . $datomaestro['descripcion'] . '</td>
+                       <td width="11%" align="right">' . $datomaestro['cantidad_sol'] . '</td>
+                       <td width="11%" align="right">' . $datomaestro['condicion'] . '</td>
+          		 </tr>';
+
+               $numeracion_item ++;
+          }
+        }else{
+          foreach ($maestro as $datomaestro) {
+              $columasconcepto = $columasconcepto . '<tr>
+                       <td width="5%" align="center">' . $numeracion_item. '</td>
+                       <td width="38%" align="left">' . $datomaestro['concepto'] . '</td>
+                       <td width="38%" align="left">' . $datomaestro['descripcion'] . '</td>
+                       <td width="18%" align="right">' . $datomaestro['cantidad_sol'] . '</td>
+          		 </tr>';
+
+               $numeracion_item ++;
+          }
         }
+
+
 
 
 
         $this->AddPage();
         $this->SetMargins(10, 50, 10);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $url_firma = $this->generarImagen($nombre_solicitante, $cargo,$oficina,$fecha_conformidad_final);
 
-        $url_firma_jefe_abastecimiento = $this->generarImagen($nombre_jefe_abastecimiento, $cargo_jefe_abastecimiento,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
-        $url_firma_encargado_almacen = $this->generarImagen($encargado_almacen, $cargo_encargado_almacen,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
-        //para el nro de PO se oculte si no hay dato
+        if ($this->datos[0]['revisado'] == 'no') {
+          $url_firma = '';
+          $url_firma_jefe_abastecimiento = '';
+          $url_firma_encargado_almacen = '';
+
+        }else{
+          $url_firma = $this->generarImagen($nombre_solicitante, $cargo,$oficina,$fecha_conformidad_final);
+          $url_firma_jefe_abastecimiento = $this->generarImagen($nombre_jefe_abastecimiento, $cargo_jefe_abastecimiento,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
+          $url_firma_encargado_almacen = $this->generarImagen($encargado_almacen, $cargo_encargado_almacen,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
+
+        }
+
+
+        // $url_firma = $this->generarImagen($nombre_solicitante, $cargo,$oficina,$fecha_conformidad_final);
+        // $url_firma_jefe_abastecimiento = $this->generarImagen($nombre_jefe_abastecimiento, $cargo_jefe_abastecimiento,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
+        // $url_firma_encargado_almacen = $this->generarImagen($encargado_almacen, $cargo_encargado_almacen,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
+        // //para el nro de PO se oculte si no hay dato
         if (empty($this->datos['nro_po']) and empty($this->datos[0]['nro_po'])) {
             $columanPo = '';
         } else {
@@ -112,7 +161,7 @@ class RConformidadActaFinal extends  ReportePDF
             	<td width="50%"> <b>Fecha Fin:  </b>'.$this->datos[0]['fecha_inicio'].'<br></td>
             </tr>';
         }
-
+        //var_dump("aqui llega para dibujar",$this->datos[0]);exit;
         if ($this->datos[0]['aplica_nuevo_flujo'] == 'si') {
           $html .= '<style>
                         table, th, td {
@@ -145,20 +194,41 @@ class RConformidadActaFinal extends  ReportePDF
                                 <tr>
                                   <td width="100%" align="justify"  colspan="2">
                                   En cumplimiento al Reglamento Específico de las Normas Básicas del Sistema de Administración de Bienes y Servicios de la Empresa,  doy conformidad a lo solicitado.
-                                  <br><br>
-                                  <table border="0">
-                                  <tr>
-                                         <td width="5%" align="center"><b>Nro</b></td>
-                                         <td width="38%" align="center"><b>Concepto</b></td>
-                                         <td width="38%" align="center"><b>Descripción</b></td>
-                                         <td width="18%" align="center"><b>Cantidad Adj.</b></td>
+                                  <br><br>';
+                              //Aumentando para aumentar la columna de la condicion
+                              //Ismael Valdivia (16/05/2022)
 
-                                 </tr>
+                              if ($this->datos[0]['tipo_pedido'] == 'Reparación de Repuestos' && $this->datos[0]['aumentar_condicion'] == 'si') {
 
-                                  '.$columasconcepto.'
-                                   </table>
+                                $html.='<table border="0">
+                                        <tr>
+                                               <td width="5%" align="center"><b>Nro</b></td>
+                                               <td width="38%" align="center"><b>Concepto</b></td>
+                                               <td width="32%" align="center"><b>Descripción</b></td>
+                                               <td width="11%" align="center"><b>Cantidad Adj.</b></td>
+                                               <td width="11%" align="center"><b>Condición</b></td>
 
-                                  <br><br>
+                                       </tr>
+
+                                        '.$columasconcepto.'
+                                         </table>';
+                              } else {
+                                $html.='<table border="0">
+                                        <tr>
+                                               <td width="5%" align="center"><b>Nro</b></td>
+                                               <td width="38%" align="center"><b>Concepto</b></td>
+                                               <td width="38%" align="center"><b>Descripción</b></td>
+                                               <td width="18%" align="center"><b>Cantidad Adj.</b></td>
+
+                                       </tr>
+
+                                        '.$columasconcepto.'
+                                         </table>';
+                              }
+
+
+
+                                  $html.= '<br><br>
                                   El mismo cumple con las características y condiciones requeridas, en calidad y cantidad. La cuál fue adquirida considerando criterios de economía para la obtención de los mejores precios del mercado.
                                   <br><br>
                                   En conformidad de lo anteriormente mencionado firmo a continuación:
