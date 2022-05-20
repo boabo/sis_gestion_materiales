@@ -34,6 +34,8 @@ require_once(dirname(__FILE__).'/../reportes/RControlRpc.php');
 require_once(dirname(__FILE__).'/../reportes/RNotaDeAdjudicacionRep.php');
 require_once(dirname(__FILE__).'/../reportes/RConformidadActaFinal.php');
 
+require_once(dirname(__FILE__).'/../reportes/RFORMULARIO3008.php');
+
 
 
 
@@ -110,7 +112,11 @@ class ACTSolicitud extends ACTbase{
            }
 
            if($this->objParam->getParametro('pes_estado') == 'pedido_iniciado'){
-             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''compra'',''despachado''))");
+             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''compra'',''despachado'')) and trim(sol.nro_po) = '''' ");
+           }
+
+           if($this->objParam->getParametro('pes_estado') == 'pedido_tiene_po'){
+             $this->objParam->addFiltro("trim(sol.nro_po) != '''' ");
            }
         }
         if ($this->objParam->getParametro('tipo_interfaz') == 'SolicitudvoboComite') {
@@ -708,6 +714,29 @@ class ACTSolicitud extends ACTbase{
   		return $result[0]['codigo'];
     }
 
+    function verificarEvaluacion($id_solicitud){
+      $cone = new conexion();
+  		$link = $cone->conectarpdo();
+  		$copiado = false;
+
+  		$consulta ="select
+                        (CASE
+                          WHEN tipo_evaluacion = 'Compra'  THEN
+                            1
+                          WHEN (tipo_evaluacion = 'Exchange' or tipo_evaluacion = 'Flat Exchange')  THEN
+                            2
+                          else
+                            3
+                        END) as tipo_evaluacion
+                  From mat.tsolicitud
+                  where id_solicitud = ".$id_solicitud;
+
+  		$res = $link->prepare($consulta);
+  		$res->execute();
+  		$result = $res->fetchAll(PDO::FETCH_ASSOC);
+  		return $result[0]['tipo_evaluacion'];
+    }
+
     function insertarOrdenCompraAlkym(){
       /*Aqui recuperaremos la variable Global para que se decida si se ejecuta los serviciosAlkym o no (Ismael Valdivia 30/04/2020)*/
       $variable_global = $this->conexionAlkym();
@@ -715,6 +744,11 @@ class ACTSolicitud extends ACTbase{
       $respuesta = $conexionAlkym[0]["variable_obtenida"];
 
       $verificarEstado = $this->verificarEstado($this->objParam->getParametro('id_tipo_estado'));
+
+      /*Aumentando para recuperar el tipo de evalucion Compra. Exchange, Reparaciones
+      Ismael Valdivia (16/05/2022)*/
+      $tipoEvaluacion = $this->verificarEvaluacion($this->objParam->getParametro('id_solicitud'));
+      /*******************************************************************************/
 
 
 
@@ -737,6 +771,37 @@ class ACTSolicitud extends ACTbase{
          $item = 1;
 
          for ($i=0; $i<$totalarreglo; $i++) {
+
+           /*Validaciones de Datos*/
+           if ($datosDetalle[$i]["partnumber"] == '') {
+             throw new Exception("El PartNumber del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+
+           if ($datosDetalle[$i]["cantidad"] == '') {
+             throw new Exception("La cantidad del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+
+           if ($datosDetalle[$i]["precio_unitario"] == '') {
+             throw new Exception("El precio unitario del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+
+           if ($datosDetalle[$i]["moneda"] == '') {
+             throw new Exception("La moneda del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+
+           if ($datosDetalle[$i]["condicion"] == '') {
+             throw new Exception("La Condicion Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+
+           if ($datosDetalle[$i]["fechaentrega"] == '') {
+             throw new Exception("La fecha de entrega del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+
+           if ($datosDetalle[$i]["idplancuentacomp"] == '') {
+             throw new Exception("El ID Plan de cuenta Compra del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+           }
+           /**********************/
+
            $DetalleOrdenCompra = array(
                                         "NroItem"=>$item,
                                         "TipoDetalleOrden"=>"1",
@@ -760,23 +825,57 @@ class ACTSolicitud extends ACTbase{
          $datos_arregloHazmat = array();
          $item_Hazmat = 1;
 
-         for ($i=0; $i<$totalarregloHazmat; $i++) {
-           $DetalleHazmat = array(
-                                        "NroItem"=>$item_Hazmat,
-                                        "TipoDetalleOrden"=>"2",
-                                        "PartNumber"=>$datosDetalleHazmat[$i]["partnumber"],
-                                        "Cantidad"=>$datosDetalleHazmat[$i]["cantidad"],
-                                        "PrecioUnitario"=>$datosDetalleHazmat[$i]["precio_unitario"],
-                                        "Moneda" => $datosDetalleHazmat[$i]["moneda"],
-                                        "Condicion"=>$datosDetalleHazmat[$i]["condicion"],
-                                        "FechaEntrega"=>$datosDetalleHazmat[$i]["fechaentrega"],
-                                        "IdPlanCuentaCompra"=>$datosDetalleHazmat[$i]["idplancuentacomp"],
-                                        "Observacion"=>$datosDetalleHazmat[$i]["descripcion"]);
+         if ($totalarregloHazmat > 0){
+           for ($i=0; $i<$totalarregloHazmat; $i++) {
 
-            $DetalleHazmatJson = ($DetalleHazmat);
-            array_push($datos_arreglo_json,$DetalleHazmatJson);
-            $item_Hazmat++;
+             /*Validaciones de Datos*/
+             if ($datosDetalleHazmat[$i]["partnumber"] == '') {
+               throw new Exception("El PartNumber del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+
+             if ($datosDetalleHazmat[$i]["cantidad"] == '') {
+               throw new Exception("La cantidad del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+
+             if ($datosDetalleHazmat[$i]["precio_unitario"] == '') {
+               throw new Exception("El precio unitario del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+
+             if ($datosDetalleHazmat[$i]["moneda"] == '') {
+               throw new Exception("La moneda del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+
+             if ($datosDetalleHazmat[$i]["condicion"] == '') {
+               throw new Exception("La Condicion Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+
+             if ($datosDetalleHazmat[$i]["fechaentrega"] == '') {
+               throw new Exception("La fecha de entrega del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+
+             if ($datosDetalleHazmat[$i]["idplancuentacomp"] == '') {
+               throw new Exception("El ID Plan de cuenta Compra del Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+             }
+             /**********************/
+
+             $DetalleHazmat = array(
+                                          "NroItem"=>$item_Hazmat,
+                                          "TipoDetalleOrden"=>"2",
+                                          "PartNumber"=>$datosDetalleHazmat[$i]["partnumber"],
+                                          "Cantidad"=>$datosDetalleHazmat[$i]["cantidad"],
+                                          "PrecioUnitario"=>$datosDetalleHazmat[$i]["precio_unitario"],
+                                          "Moneda" => $datosDetalleHazmat[$i]["moneda"],
+                                          "Condicion"=>$datosDetalleHazmat[$i]["condicion"],
+                                          "FechaEntrega"=>$datosDetalleHazmat[$i]["fechaentrega"],
+                                          "IdPlanCuentaCompra"=>$datosDetalleHazmat[$i]["idplancuentacomp"],
+                                          "Observacion"=>$datosDetalleHazmat[$i]["descripcion"]);
+
+              $DetalleHazmatJson = ($DetalleHazmat);
+              array_push($datos_arreglo_json,$DetalleHazmatJson);
+              $item_Hazmat++;
+           }
          }
+
 
       //  var_dump("aqui llega el arreglo completo",$datos_arreglo_json);exit;
 
@@ -788,9 +887,51 @@ class ACTSolicitud extends ACTbase{
          $datosCabecera = $DetalleCabecera->getDatos();
          $totalarregloCabecera = count($datosCabecera);
          for ($i=0; $i<$totalarregloCabecera; $i++) {
+           /*Validaciones*/
+           if ($datosCabecera[$i]["fecha_po"] == '') {
+             throw new Exception("La fecha del PO no puede ser vacia");
+           }
+
+           if ($datosCabecera[$i]["id_proveedor"] == '') {
+             throw new Exception("No se encontró el ID proveedor Alkym");
+           }
+
+           if ($datosCabecera[$i]["id_criticidad"] == '') {
+             throw new Exception("No se encontró el ID Criticidad");
+           }
+
+           if ($datosCabecera[$i]["id_condicion_entrega_alkym"] == '') {
+             throw new Exception("No se encontró la Condicion Entrega Alkym en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+
+           if ($datosCabecera[$i]["id_forma_pago_alkym"] == '') {
+             throw new Exception("No se encontró la Forma de Pago en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+
+           if ($datosCabecera[$i]["id_modo_envio_alkym"] == '') {
+             throw new Exception("No se encontró el Modo de Envio en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+
+           if ($datosCabecera[$i]["id_puntos_entrega_alkym"] == '') {
+             throw new Exception("No se encontró el Punto de Entrega en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+
+           if ($datosCabecera[$i]["id_tipo_transaccion_alkym"] == '') {
+             throw new Exception("No se encontró el Tipo de Transacción en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+
+           if ($datosCabecera[$i]["id_proveedor_contacto"] == '') {
+             throw new Exception("No se encontró el Contacto del proveedor en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+
+           if ($datosCabecera[$i]["id_orden_destino_alkym"] == '') {
+             throw new Exception("No se encontró la Orden de Destino en la cabecera de la cotizacion del proveedor adjudicado");
+           }
+           /***************/
+           //var_dump("aqui llega data",$tipoEvaluacion);exit;
                  $CabeceraSolicitud = array(
                                              "Fecha"=>$datosCabecera[$i]["fecha_po"],
-                                             "TipoOrden"=>"1",//1 para orden de compra 2 para orden de reparacion
+                                             "TipoOrden"=>$tipoEvaluacion,//1 para orden de compra 2 para orden de reparacion
                                              "IdProveedor"=>$datosCabecera[$i]["id_proveedor"],
                                              "IdTipoCriticidad"=>$datosCabecera[$i]["id_criticidad"],
                                              "IdCondicionEntrega"=>$datosCabecera[$i]["id_condicion_entrega_alkym"],
@@ -1656,6 +1797,8 @@ class ACTSolicitud extends ACTbase{
       $dataSource->putParameter('desc_cargo_gerente', $datosSolicitud[0]['desc_cargo_gerente']);
       $dataSource->putParameter('nombre_macro', $datosSolicitud[0]['nombre_macro']);
       $dataSource->putParameter('cotizacion_fecha', $datosSolicitud[0]['cotizacion_fecha']);
+      $dataSource->putParameter('funcionario_jefe', $datosSolicitud[0]['funcionario_jefe']);
+      $dataSource->putParameter('cargo_jefe', $datosSolicitud[0]['cargo_jefe']);
 
       //get detalle
       //Reset all extra params:
@@ -2300,6 +2443,35 @@ class ACTSolicitud extends ACTbase{
        $this->res=$this->objFunc->insertarCuce($this->objParam);
        $this->res->imprimirRespuesta($this->res->generarJson());
    }
+
+   /*Aumetando el Formulario 3008 para que se genere en el ERP (Ismael Valdivia 17/05/200)*/
+   function formulario3008 (){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->formulario3008($this->objParam);
+
+       //obtener titulo del reporte
+       $titulo = 'FORM-3008';
+       //Genera el nombre del archivo (aleatorio + titulo)
+       $nombreArchivo=uniqid(md5(session_id()).$titulo);
+       $nombreArchivo.='.pdf';
+       $this->objParam->addParametro('orientacion','P');
+       $this->objParam->addParametro('tamano','LETTER');
+       $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+       //Instancia la clase de pdf
+
+       $this->objReporteFormato=new RFORMULARIO3008($this->objParam);
+       $this->objReporteFormato->setDatos($this->res->datos);
+       $this->objReporteFormato->generarReporte();
+       $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+       $this->mensajeExito=new Mensaje();
+       $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+           'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+       $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+       $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+   }
+   /***************************************************************************************/
 
 }
 

@@ -52,6 +52,10 @@ DECLARE
     v_fecha_solicitud		date;
     v_fecha_conformidad		date;
 	v_aplica_nuevo_flujo	varchar;
+    v_fecha_conformidad_recu	varchar;
+    v_id_solicitud			integer;
+    v_origen_pedido			varchar;
+    v_aplica_cambio			varchar;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_acta_conformidad_final_sel';
@@ -71,7 +75,7 @@ BEGIN
 	if(p_transaccion='MAT_REP_ACTA_CONFOR')then
 
     	begin
-        	select sol.fecha_solicitud into v_fecha_solicitud
+        	select sol.fecha_solicitud, sol.origen_pedido into v_fecha_solicitud, v_origen_pedido
             from mat.tsolicitud sol
             where sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -171,6 +175,14 @@ BEGIN
             end if;
 
 
+            if (v_fecha_conformidad::date >= '01/04/2022'::date) then
+            	v_aplica_cambio = 'si';
+            else
+            	v_aplica_cambio = 'no';
+            end if;
+
+
+
     		--Sentencia de la consulta
 			v_consulta:='select
                                 sol.nro_tramite::varchar,
@@ -195,10 +207,13 @@ BEGIN
                                 '''||v_funcionario_encargado_almacen||'''::varchar as encargado_almacen,
                                 '''||v_cargo_encargado_almacen||'''::varchar as cargo_encargado_almacen,
                                 ''''::varchar as oficina_encargado_almacen,
-                                '''||v_aplica_nuevo_flujo||'''::varchar as aplica_nuevo_flujo
+                                '''||v_aplica_nuevo_flujo||'''::varchar as aplica_nuevo_flujo,
                                 /******************************/
 
+								acta.revisado,
 
+                                '''||v_aplica_cambio||'''::varchar as aplica_cambio,
+                                '''||v_origen_pedido||'''::varchar as origen_pedido
 
                           from mat.tsolicitud sol
                           left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
@@ -226,7 +241,27 @@ BEGIN
 	elsif(p_transaccion='MAT_REP_ACTA_DETA')then
 
     	begin
-    		--Sentencia de la consulta
+
+        	/*Aumentando para mostrar Condicion y los Items de los BOA-REP*/
+
+            select sol.id_solicitud,
+            	   sol.origen_pedido
+            into
+            		v_id_solicitud,
+                    v_origen_pedido
+           from mat.tsolicitud sol
+           where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+            select acta.fecha_conformidad into v_fecha_conformidad_recu
+            from mat.tacta_conformidad_final acta
+            where acta.id_solicitud = v_id_solicitud;
+        	/**************************************************************/
+
+
+
+            if (v_origen_pedido = 'Reparación de Repuestos' and v_fecha_conformidad_recu::date >= '01/04/2022'::date) then
+            	--Sentencia de la consulta
 			v_consulta:='select
                                 ing.desc_ingas::varchar,
                                 (CASE
@@ -243,13 +278,49 @@ BEGIN
                                 ''''
                                 end ))
                                 END)::varchar as descripcion,
-                                det.cantidad_sol::integer
+                                det.cantidad_sol::integer,
+                                detcot.cd::varchar
+                                from mat.tsolicitud sol
+                                inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
+                                inner join param.tconcepto_ingas ing on ing.id_concepto_ingas = det.id_concepto_ingas
+                                inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
+                                left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion --and detcot.id_detalle = det.id_detalle
+                      where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
+
+            else
+            	--Sentencia de la consulta
+			v_consulta:='select
+                                ing.desc_ingas::varchar,
+                                (CASE
+                                WHEN sol.origen_pedido = ''Reparación de Repuestos''  THEN
+                                (''P/N: ''||detcot.explicacion_detallada_part_cot||''  ''||detcot.descripcion_cot||'' S/N: ''||detcot.referencia_cot)
+                                ELSE
+                                (''P/N: ''||detcot.explicacion_detallada_part_cot||''  ''||detcot.descripcion_cot||'' ''||
+
+                                (case when det.tipo = ''Rotables'' THEN
+                                '' Rotable''
+                                when det.tipo = ''Consumibles'' then
+                                '' Consumible''
+                                else
+                                ''''
+                                end ))
+                                END)::varchar as descripcion,
+                                det.cantidad_sol::integer,
+                                ''''::varchar
                                 from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
                                 inner join param.tconcepto_ingas ing on ing.id_concepto_ingas = det.id_concepto_ingas
                                 inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                                 inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle
                       where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
+
+            end if;
+
+
+
+
+
+
 			--raise notice '%',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
@@ -293,7 +364,8 @@ BEGIN
                                  acta.conformidad_final::varchar,
                                  to_char(acta.fecha_inicio,''DD/MM/YYYY'')::varchar,
                                  to_char(acta.fecha_final,''DD/MM/YYYY'')::varchar,
-                                 sol.id_proceso_wf::integer
+                                 sol.id_proceso_wf::integer,
+                                 sol.nro_po::varchar
                           from mat.tsolicitud sol
                           inner join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
                           inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''

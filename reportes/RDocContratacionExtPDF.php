@@ -98,9 +98,23 @@ EOF;
 
         $this->Ln(19);
         $this->writeHTML($tbl);
-        if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
-          $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) después de la invitación."', 0, 'L', 0, 1, '', '');
+
+        /*Aumentando para que se cambie la leyenda a solicitud de patricia y Carla(Jefe Actual de abastecimientos)
+        Cambio realizado por: Ismael Valdivia (16/02/2022)*/
+        if ($this->datos[0]['cambiar_leyenda'] == 'si') {
+            if ($this->datos[0]['tiempo_entrega'] == 0) {
+                $this->MultiCell(200, 5,'"Favor remitir propuestas de forma inmediata."', 0, 'L', 0, 1, '', '');
+            } else {
+                $this->MultiCell(200, 5,'"Favor remitir propuestas en un lapso de '. $this->datos[0]['tiempo_entrega'].' día(s) a partir de la invitación."', 0, 'L', 0, 1, '', '');
+            }
+
+        } else {
+          if ($this->datos[0]['fecha_solicitud'] >= $this->datos[0]['fecha_salida']) {
+            $this->MultiCell(200, 5,'"Plazo de entrega de propuesta hasta '. $this->datos[0]['tiempo_entrega'].' día(s) después de la invitación."', 0, 'L', 0, 1, '', '');
+          }
         }
+
+
         $this->SetFont('', 'B',9);
         $this->MultiCell(200, 5, "\n" . 'FAVOR ENVIAR SU COTIZACIÓN AL CORREO abastecimiento@boa.bo', 0, 'L', 0, '', '');
 

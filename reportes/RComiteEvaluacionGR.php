@@ -282,6 +282,14 @@ class RComiteEvaluacionGR extends  ReportePDF
         if ($tecnico_abastecimiento != '') {
 
           if ($this->datos[0]['cambiar_etiqueta'] == 'si') {
+
+            if ($this->datos[0]['ocultar_administrativo'] == 'si') {
+              $firmas .= '<table border="1" cellpadding="10">
+                  <tr>
+                      <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_tecnico_abas_1.':</b> </td>
+                      <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_abastecimiento_1.':</b> </td>
+                  </tr>';
+            } else {
               $firmas .= '<table border="1" cellpadding="10">
                   <tr>
 
@@ -289,6 +297,7 @@ class RComiteEvaluacionGR extends  ReportePDF
                       <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_auxiliar_1.':</b> </td>
 
                   </tr>';
+            }
           } else {
               $firmas .= '<table border="1" cellpadding="10">
                   <tr>
@@ -300,27 +309,57 @@ class RComiteEvaluacionGR extends  ReportePDF
                   </tr>';
           }
 
+          if ($this->datos[0]['ocultar_administrativo'] == 'si') {
+            $firmas .= '
 
-          $firmas .= '
+                <tr>
+                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_tecnico_abas_0, $fun_tecnico_abas_1,$fun_tecnico_abas_4,$fun_tecnico_abas_3).'" alt="Logo">
+                        <br>'.$fun_tecnico_abas_0.'
+                    </td>
 
-              <tr>
-                  <td align="center" style="font-family: Calibri; font-size: 9px;">
-                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_tecnico_abas_0, $fun_tecnico_abas_1,$fun_tecnico_abas_4,$fun_tecnico_abas_3).'" alt="Logo">
-                      <br>'.$fun_tecnico_abas_0.'
-                  </td>
+                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
+                        <br>'.$fun_abastecimiento_0.'
+                    </td>
+                 </tr>
+             </table>';
+          } else {
+            $firmas .= '
 
-                  <td align="center" style="font-family: Calibri; font-size: 9px;">
-                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_auxiliar_0, $fun_auxiliar_1,$fun_auxiliar_4,$fun_auxiliar_3).'" alt="Logo">
-                      <br>'.$fun_auxiliar_0.'
-                  </td>
-               </tr>
-           </table>';
+                <tr>
+                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_tecnico_abas_0, $fun_tecnico_abas_1,$fun_tecnico_abas_4,$fun_tecnico_abas_3).'" alt="Logo">
+                        <br>'.$fun_tecnico_abas_0.'
+                    </td>
+
+                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_auxiliar_0, $fun_auxiliar_1,$fun_auxiliar_4,$fun_auxiliar_3).'" alt="Logo">
+                        <br>'.$fun_auxiliar_0.'
+                    </td>
+                 </tr>
+             </table>';
+          }
+
+
            if ($this->datos[0]['cambiar_etiqueta'] == 'si') {
+
+             if ($this->datos[0]['ocultar_administrativo'] == 'si') {
+               $firmas .= '<table border="1" cellpadding="10">
+                   <tr>
+                       <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_aeronavegabilidad_1.':</b><br></td>
+                   </tr>';
+             }else{
                $firmas .= '<table border="1" cellpadding="10">
                    <tr>
                        <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_abastecimiento_1.':</b> </td>
                        <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> '.$fun_aeronavegabilidad_1.':</b><br></td>
                    </tr>';
+             }
+
+
+
+
             }else {
                 $firmas .= '<table border="1" cellpadding="10">
                     <tr>
@@ -328,19 +367,34 @@ class RComiteEvaluacionGR extends  ReportePDF
                         <td style="font-family: Calibri; font-size: 11px; text-align: center;"><b> Representante de Gestión de Aeronavegabilidad continua:</b><br></td>
                     </tr>';
             }
-           $firmas .= '
-               <tr>
-                   <td align="center" style="font-family: Calibri; font-size: 9px;">
-                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
-                       <br>'.$fun_abastecimiento_0.'
-                   </td>
-                   <td align="center" style="font-family: Calibri; font-size: 9px;">
-                       <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_aeronavegabilidad_0, $fun_aeronavegabilidad_1,$fun_aeronavegabilidad_4,$fun_aeronavegabilidad_3).'" alt="Logo">
-                       <br>'.$fun_aeronavegabilidad_0.'
-                   </td>
 
-                </tr>
-            </table>';
+            if ($this->datos[0]['ocultar_administrativo'] == 'si') {
+              $firmas .= '
+                  <tr>                      
+                      <td align="center" style="font-family: Calibri; font-size: 9px;">
+                          <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_aeronavegabilidad_0, $fun_aeronavegabilidad_1,$fun_aeronavegabilidad_4,$fun_aeronavegabilidad_3).'" alt="Logo">
+                          <br>'.$fun_aeronavegabilidad_0.'
+                      </td>
+
+                   </tr>
+               </table>';
+            }else{
+              $firmas .= '
+                  <tr>
+                      <td align="center" style="font-family: Calibri; font-size: 9px;">
+                          <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_abastecimiento_0, $fun_abastecimiento_1,$fun_abastecimiento_4,$fun_abastecimiento_3).'" alt="Logo">
+                          <br>'.$fun_abastecimiento_0.'
+                      </td>
+                      <td align="center" style="font-family: Calibri; font-size: 9px;">
+                          <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_aeronavegabilidad_0, $fun_aeronavegabilidad_1,$fun_aeronavegabilidad_4,$fun_aeronavegabilidad_3).'" alt="Logo">
+                          <br>'.$fun_aeronavegabilidad_0.'
+                      </td>
+
+                   </tr>
+               </table>';
+            }
+
+
         } else {
           $firmas = '
           <table border="1" cellpadding="10">

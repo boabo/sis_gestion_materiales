@@ -343,6 +343,7 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 										],
 
 	bactGroups:  [1,2],
+	bexcelGroups:  [1,2],
 
 	actualizarSegunTab: function(name, indice){
  					 this.store.baseParams.pes_estado = name;
@@ -412,6 +413,26 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 				form:true,
         bottom_filter: true
 		},
+		/*Aumentando la columna de NRO PO*/
+		//Ismael Valdivia (16/05/2022)
+		{
+			config:{
+				name: 'nro_po',
+				fieldLabel: 'Nro. PO',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+			},
+				type:'TextField',
+				filters:{pfiltro:'sol.nro_po',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true,
+				bottom_filter: true
+		},
+
+
+		/*********************************/
 		{
 			config:{
 				name: 'estado',
@@ -538,6 +559,7 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_inicio', type: 'varchar'},
 		{name:'fecha_final', type: 'varchar'},
 		{name:'id_proceso_wf', type: 'integer'},
+		{name:'nro_po', type: 'varchar'},
 
 	],
 	sortInfo:{
@@ -549,7 +571,7 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
   btest:false,
   bnew:false,
   bedit:false,
-  bexcel:false
+  bexcel:true
 	}
 )
 </script>

@@ -1123,6 +1123,7 @@ class MODSolicitud extends MODbase
         $this->captura('firma_tecnico_abastecimiento', 'varchar');
         $this->captura('nro_tramite', 'varchar');
         $this->captura('cambiar_etiqueta', 'varchar');
+        $this->captura('ocultar_administrativo', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -1313,6 +1314,7 @@ class MODSolicitud extends MODbase
         $this->captura('tiempo_entrega', 'numeric');
         $this->captura('fecha_salida', 'date');
         $this->captura('pn_cotizacion', 'varchar');
+        $this->captura('cambiar_leyenda', 'varchar');
         //$this->captura('tipo_solicitud', 'varchar');
 
         //Ejecuta la instruccion
@@ -1882,6 +1884,8 @@ class MODSolicitud extends MODbase
       $this->captura('desc_cargo_gerente','varchar');
       $this->captura('nombre_macro','varchar');
       $this->captura('cotizacion_fecha','varchar');
+      $this->captura('funcionario_jefe','varchar');
+      $this->captura('cargo_jefe','varchar');
 
       $this->armarConsulta();
       //var_dump("aqui llegada",$this->respuesta);
@@ -2147,6 +2151,9 @@ class MODSolicitud extends MODbase
         $this->captura('cargo_encargado_almacen', 'varchar');
         $this->captura('oficina_encargado_almacen', 'varchar');
         $this->captura('aplica_nuevo_flujo', 'varchar');
+        $this->captura('revisado', 'varchar');
+        $this->captura('aumentar_condicion', 'varchar');
+        $this->captura('tipo_pedido', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -2168,6 +2175,7 @@ class MODSolicitud extends MODbase
         $this->captura('concepto', 'varchar');
         $this->captura('descripcion', 'varchar');
         $this->captura('cantidad_sol', 'integer');
+        $this->captura('condicion', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -2199,11 +2207,12 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_inicio', 'varchar');
         $this->captura('fecha_final', 'varchar');
         $this->captura('id_proceso_wf', 'integer');
+        $this->captura('nro_po', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         //echo($this->consulta);exit;
         $this->ejecutarConsulta();
-
+        //var_dump("aqui llega data",$this->respuesta);exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }
@@ -2307,6 +2316,50 @@ class MODSolicitud extends MODbase
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
+    function formulario3008()
+    {
+
+        $this->procedimiento = 'mat.ft_solicitud_sel';
+        $this->transaccion = 'MAT_FOR_3008_SEL';
+        $this->tipo_procedimiento = 'SEL';
+        $this->setCount(false);
+
+        $this->setParametro('id_proceso_wf', 'id_proceso_wf', 'int4');
+
+        $this->captura('nombre_empresa', 'varchar');
+        $this->captura('cod_institucional', 'varchar');
+        $this->captura('nro_cuce', 'varchar');
+        $this->captura('nro_tramite', 'varchar');
+        $this->captura('fecha_po', 'varchar');
+        $this->captura('fecha_entrega', 'varchar');
+        $this->captura('plazo', 'varchar');
+        $this->captura('fecha_contratacion', 'varchar');
+        $this->captura('fecha_cuce', 'varchar');
+        $this->captura('monto_total', 'numeric');
+        $this->captura('proveedor', 'varchar');
+        $this->captura('nro_cite', 'varchar');
+        $this->captura('fecha_solicitud', 'varchar');
+        $this->captura('objeto_contratacion', 'varchar');
+        $this->captura('nro_pac', 'varchar');
+        $this->captura('fecha_pac', 'varchar');
+        $this->captura('fecha_precio_referencial', 'varchar');
+        $this->captura('fecha_esp_tecnica', 'varchar');
+        $this->captura('fecha_certificacion_pre', 'varchar');
+        $this->captura('fecha_correo', 'varchar');
+        $this->captura('nro_cotizacion', 'varchar');
+        $this->captura('fecha_cotizacion_adju', 'varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta);
 
         //Devuelve la respuesta
         return $this->respuesta;

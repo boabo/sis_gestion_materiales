@@ -117,7 +117,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
             this.getBoton('Report').setVisible(false);
             //this.getBoton('edit').setVisible(false);
-            this.getBoton('ini_estado').setVisible(true);
+            //this.getBoton('ini_estado').setVisible(true);
             this.getBoton('ant_estado').setVisible(true);
             this.getBoton('sig_estado').setVisible(true);
             this.getBoton('Archivado_concluido').setVisible(false);
@@ -166,12 +166,13 @@ header("content-type: text/javascript; charset=UTF-8");
         gruposBarraTareas:[
           {name:'pedido_revision',title:'<H1 align="center" style="color:#E85C00; font-size:12px;"><i style="font-size:15px;" class="fa fa-pencil-square"></i> Revisión</h1>',grupo:50,height:0},
           {name:'pedido_iniciado',title:'<H1 align="center" style="color:#0023FF; font-size:12px;"><i style="font-size:15px;" class="fa fa-location-arrow"></i> Iniciados</h1>',grupo:51,height:0},
+          {name:'pedido_tiene_po',title:'<H1 align="center" style="color:#31A200; font-size:12px;"><i style="font-size:15px;" class="fa fa-check-square"></i> Tienen PO</h1>',grupo:52,height:0},
         ],
 
 
-        bactGroups:  [50,51],
+        bactGroups:  [50,51,52],
         beditGroups: [50,51],
-        bganttGroups: [50,51],
+        bganttGroups: [50,51,52],
 
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
@@ -200,10 +201,23 @@ header("content-type: text/javascript; charset=UTF-8");
             if(data['estado'] ==  'revision_tecnico_abastecimientos'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
-                this.getBoton('ini_estado').enable();
+
+
+                if (this.store.baseParams.pes_estado == 'pedido_revision') {
+                  this.getBoton('ini_estado').enable();
+                  this.getBoton('ini_estado').setVisible(true);
+                }else{
+                  this.getBoton('ini_estado').disable();
+                  this.getBoton('ini_estado').setVisible(false);
+                }
+
+
                 //this.getBoton('autorizar').enable();
                 this. enableTabDetalle();
             }
+
+
+
 
             if(data['estado'] ==  'cotizacion_solicitada'){
               this.getBoton('Cotizacion').setVisible(true);
@@ -221,7 +235,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 //this.getBoton('edit').setVisible(false);
                 this.getBoton('Report').setVisible(false);
-                this.getBoton('ini_estado').setVisible(true);
+                this.getBoton('Archivado_concluido').enable();
+                this.getBoton('Archivado_concluido').setVisible(true);
+                //this.getBoton('ini_estado').setVisible(true);
                // this.getBoton('del').disable();
             }
             return tb;
@@ -465,28 +481,55 @@ header("content-type: text/javascript; charset=UTF-8");
             var tramite = rec.data['nro_tramite'];
             var tipo_tramite = tramite.substring(0,2);
 
-            this.onSaveWizard(rec);
+            this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+                'Estado de Wf',
+                {
+                    modal: true,
+                    width: 700,
+                    height: 450
+                },
+                {
+                    data: {
+                        id_estado_wf: rec.data.id_estado_wf,
+                        id_proceso_wf: rec.data.id_proceso_wf,
+                        /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                        id_solicitud: rec.data.id_solicitud
+                        /********************************************************************************************/
+                    }
+                }, this.idContenedor, 'FormEstadoWf',
+
+                {
+                    config: [{
+                        event: 'beforesave',
+                        delegate: this.onSaveWizard
+                    }],
+                    scope: this
+                }
+            );
+
+            //this.onSaveWizard(rec);
         },
 
-        onSaveWizard:function(rec){
+        onSaveWizard:function(wizard,resp){
             Phx.CP.loadingShow();
             Ext.Ajax.request({
                 url:'../../sis_gestion_materiales/control/Solicitud/siguienteEstadoSolicitud',
                 params:{
 
-                    id_proceso_wf_act:  rec.data.id_proceso_wf,
-                    id_estado_wf_act:   rec.data.id_estado_wf,
-                    id_tipo_estado:     '',//resp.id_tipo_estado,
-                    id_funcionario_wf:  '',//resp.id_funcionario_wf,
-                    id_depto_wf:        '',//resp.id_depto_wf,
-                    obs:                '',//resp.obs,
-                    json_procesos:      '',//Ext.util.JSON.encode(resp.procesos),
+                    id_proceso_wf_act:  resp.id_proceso_wf_act,
+                    id_estado_wf_act:   resp.id_estado_wf_act,
+                    id_tipo_estado:     resp.id_tipo_estado,
+                    id_funcionario_wf:  resp.id_funcionario_wf,
+                    id_depto_wf:        resp.id_depto_wf,
+                    obs:                resp.obs,
+                    json_procesos:      Ext.util.JSON.encode(resp.procesos),
                     /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
-                    id_solicitud:       rec.data.id_solicitud,
+                    id_solicitud:       wizard.data.id_solicitud,
+                    /********************************************************************************************/
                 },
                 success:this.successWizard,
                 failure: this.conexionFailure,
-                argument:{rec:rec},
+                argument:{wizard:wizard},
                 timeout:this.timeout,
                 scope:this
             });
@@ -496,7 +539,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         successWizard:function(resp){
             Phx.CP.loadingHide();
-            //resp.argument.wizard.panel.destroy();
+            resp.argument.wizard.panel.destroy();
             this.reload();
         },
 

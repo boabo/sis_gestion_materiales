@@ -248,6 +248,14 @@ Class RSolicitudCompraBoARep extends Report {
         //$firma_rpc = $this->getDataSource()->getParameter('desc_funcionario_rpc');
         //$cargo_rpc = $this->getDataSource()->getParameter('cargo_desc_funcionario_rpc');
         $dep_prioridad = $this->getDataSource()->getParameter('dep_prioridad');
+
+        /*Aumentnado para que aparesca la firma del Jefe de Abastecimientos
+        Desarrollado por: Ismael Valdivia (16/05/2022)*/
+        $firma_jefe = $this->getDataSource()->getParameter('funcionario_jefe');
+        $cargo_jefe = $this->getDataSource()->getParameter('cargo_jefe');
+        /*******************************************************************/
+
+
         //$date = date('d/m/Y');
        //var_dump($cargo_solicitante);exit;
 
@@ -256,32 +264,81 @@ Class RSolicitudCompraBoARep extends Report {
 
             $estados_ant_gerencia = array('vbactif', 'vbuti', 'vbgerencia');
 
+            /*Aumentando la condicion para que se muestre la firma del Jefe de Abastecimientos*/
+            //Modificado por Ismael Valdivia (16/05/2022)            
+            if ($firma_jefe != '') {
+              $tbl = '<table>
+                      <tr>
+                      <td style="width: 15%"></td>
+                      <td style="width: 70%">
+                      <table cellspacing="0" cellpadding="1" border="1" style="font-family: Calibri; font-size: 9px;">
+                          <tr>
+                              <td style="font-family: Calibri; font-size: 9px;"><b> Solicitado por: </b>' .$firma_solicitante. '</td>
+                              <td style="font-family: Calibri; font-size: 9px;"><b> VoBo: </b>' .$firma_jefe. '</td>
+                          </tr>
+                          <tr>
+                              <td align="center" >
+                                  <br><br>
+                                  <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_solicitante, $cargo_solicitante, $nro_tramite_qr) . '" alt="Logo">
+                              </td>
+                              <td align="center" >
+                                  <br><br>
+                                  <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_jefe, $cargo_jefe, $nro_tramite_qr) . '" alt="Logo">
+                              </td>
+                          </tr>
 
-                    $tbl = '<table>
-                            <tr>
-                            <td style="width: 15%"></td>
-                            <td style="width: 70%">
-                            <table cellspacing="0" cellpadding="1" border="1" style="font-family: Calibri; font-size: 9px;">
-                                <tr>
-                                    <td style="font-family: Calibri; font-size: 9px;"><b> Solicitado por: </b>' .$firma_solicitante. '</td>
-                                    <td style="font-family: Calibri; font-size: 9px;"><b> Aprobado por: </b>' .$firma_gerente. '</td>
-                                </tr>
-                                <tr>
-                                    <td align="center" >
-                                        <br><br>
-                                        <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_solicitante, $cargo_solicitante, $nro_tramite_qr) . '" alt="Logo">
-                                    </td>
-                                    <td align="center" >
-                                        <br><br>
-                                        <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_gerente, $cargo_gerente, $nro_tramite_qr) . '" alt="Logo">
-                                    </td>
-                                </tr>
-                            </table>
-                            </td>
-                            <td style="width:15%;"></td>
-                            </tr>
-                            </table>
-                        ';
+                          <tr>
+                              <td colspan="2" style="font-family: Calibri; font-size: 9px;" align="center"><b> Aprobado por: </b>' .$firma_gerente. '</td>
+                          </tr>
+
+                          <tr>
+                              <td colspan="2" align="center" >
+                                  <br><br>
+                                  <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_gerente, $cargo_gerente, $nro_tramite_qr) . '" alt="Logo">
+                              </td>
+                          </tr>
+
+                      </table>
+                      </td>
+                      <td style="width:15%;"></td>
+                      </tr>
+                      </table>
+                  ';
+            }else{
+              $tbl = '<table>
+                      <tr>
+                      <td style="width: 15%"></td>
+                      <td style="width: 70%">
+                      <table cellspacing="0" cellpadding="1" border="1" style="font-family: Calibri; font-size: 9px;">
+                          <tr>
+                              <td style="font-family: Calibri; font-size: 9px;"><b> Solicitado por: </b>' .$firma_solicitante. '</td>
+                              <td style="font-family: Calibri; font-size: 9px;"><b> Aprobado por: </b>' .$firma_gerente. '</td>
+                          </tr>
+                          <tr>
+                              <td align="center" >
+                                  <br><br>
+                                  <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_solicitante, $cargo_solicitante, $nro_tramite_qr) . '" alt="Logo">
+                              </td>
+                              <td align="center" >
+                                  <br><br>
+                                  <img  style="width: 110px; height: 110px;" src="' . $this->generarImagen($firma_gerente, $cargo_gerente, $nro_tramite_qr) . '" alt="Logo">
+                              </td>
+                          </tr>
+                      </table>
+                      </td>
+                      <td style="width:15%;"></td>
+                      </tr>
+                      </table>
+                  ';
+            }
+
+
+
+
+            /**********************************************************************************/
+
+
+
                     $pdf->Ln(5);
                     $pdf->writeHTML($tbl, true, false, false, false, '');
 

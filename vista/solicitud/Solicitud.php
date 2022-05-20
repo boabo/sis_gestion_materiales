@@ -147,7 +147,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip : '<b>Reporte Requerimiento de Materiale</b>'
             });
             this.addButton('Archivado_concluido',{
-                grupo: [2,3],
+                grupo: [2,3,50,51,52],
                 text: 'Archivado/Concluido',
                 iconCls: 'bfolder',
                 disabled: false,
@@ -338,8 +338,17 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
                         }  else {
-                          return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
-                              '</font><p style="font-size:14px;"><b style="color:blue;">Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></font></div>';
+
+                          if(record.data['nro_po'] != ''){
+                            return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
+                                '</font><p style="font-size:14px;"><b style="color:blue;">Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b>'+
+                                '<p style="font-size:14px;"><b style="color:red;">Nro PO: </b>'+color+'<b>'+record.data['nro_po']+'</b></p></font></div>'
+                          } else {
+                            return  '<div><p><b>Importe PAC: </b><font color="#dc143c">'+record.data['monto_pac']+' '+record.data['moneda']+
+                                '</font><p style="font-size:14px;"><b style="color:blue;">Tipo Solicitud: </b>'+color+'<b>'+record.data['tipo_solicitud']+'</b></p></font></div>'
+                          }
+
+
                         }
                     }
 

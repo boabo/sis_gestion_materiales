@@ -235,6 +235,7 @@ DECLARE
     v_verificar_relacion			record;
     v_proveedor_hazmat				varchar;
     v_presu_comprometido			varchar;
+    v_codigo_estado_siguiente_revision	varchar;
     /****************************************/
 
 BEGIN
@@ -2217,8 +2218,18 @@ END IF;
 			/*Cambiando para que la asignacion automatica sea en el estado revision tecnico de abastecimientos*/
         --Ismael Valdivia
         --16/02/2022
-        if (v_solicitud.estado = 'revision_tecnico_abastecimientos') then
 
+        select
+               es.codigo
+        into
+             v_codigo_estado_siguiente_revision
+        from wf.ttipo_estado es
+        LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+        where es.id_tipo_estado = v_parametros.id_tipo_estado;
+
+        if (v_solicitud.estado = 'revision_tecnico_abastecimientos' and v_codigo_estado_siguiente_revision = 'cotizacion') then
+
+       -- if (v_codigo_estado_siguiente_revision = 'cotizacion') then
 
         	select sol.* into v_datos_solicitud
             from mat.tsolicitud sol

@@ -287,9 +287,15 @@ class RInformJustificacionRep extends  ReportePDF
 
     }
     function ReporteComiteEvaluacion2(){
+
+
         $this->setPrintHeader(false);
         $this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $this->AddPage();
+
+        if ($this->getNumPages() == 1) {
+          $this->AddPage();
+        }
+
         $funcionario_sol = $this->datos[0]["firma_unidad"];
         $jefeDepartamento = $this->datos[0]["firma_jefe_departamento"];
         $nro_lote = $this->datos[0]["nro_lote"];
