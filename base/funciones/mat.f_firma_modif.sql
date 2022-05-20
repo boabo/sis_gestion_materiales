@@ -78,7 +78,7 @@ $body$
 IF(es_id_cargo_suplente is not null)then
 
 
-     select
+     select f.id_funcionario,
     		f.desc_funcionario1||' | '||f.nombre_cargo||' | '||es_tramite||'| Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
     		f.desc_funcionario1 as funcion
 
