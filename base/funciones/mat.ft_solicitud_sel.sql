@@ -6896,9 +6896,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                   SELECT EXTRACT(YEAR FROM v_fecha_po::date) into v_anio;
 
-                  v_nro_po_recup = 'REP-'||v_nro_po_recup||'-'||v_anio;
+                  v_nro_po_recup = 'OB.DAB.REP.'||v_nro_po_recup||'.'||v_anio;
 
-
+				  v_nro_cite = v_nro_po_recup;
 
                   /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
                    if (v_estado_firma_paralelo = 'autorizado') then
