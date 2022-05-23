@@ -1674,7 +1674,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'fecha_pac',
                     fieldLabel: 'Fecha PAC',
-                    allowBlank: false,
+                    allowBlank: true,
                     width: 200,
                     hidden:true,
                     gwidth: 150,
