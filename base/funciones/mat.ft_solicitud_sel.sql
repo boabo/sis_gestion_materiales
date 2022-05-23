@@ -6780,7 +6780,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 /******************/
 
 
-
+				v_marcar = '';
                 /*Recuperamos la lista de los proveedores segun la condicion que nos dio Jhonny*/
                  if (v_monto_total between 20000 and 100000) then
 
@@ -6828,7 +6828,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                  if (v_nro_cotizacion is null) then
                  	v_nro_cotizacion = '';
                  end if;
-
+				 raise notice '';
                 /*******************************************************************************/
 
                 if (v_fecha_po_recu is null) then
@@ -6952,6 +6952,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 	v_fecha_solicitud_compra = v_fecha_sol_recuperado;
                 end if;
 
+				if (v_fecha_cuce is null) then
+                	v_fecha_cuce = '';
+                end if;
+
+                if (v_fecha_pac is null) then
+                	v_fecha_pac = '';
+                end if;
+
+
 
 
                 v_consulta:='select ('''||v_nombre_empresa||''')::varchar as nombre_empresa,
@@ -6967,20 +6976,20 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     ('''||v_nombre_proveedor||''')::varchar as proveedor,
                                     ('''||v_nro_cite||''')::varchar as nro_cite,
                                     ('''||v_fecha_solicitud_compra||''')::varchar as fecha_solicitud,
-                                    ('''||v_objeto_contratacion||''')::varchar as objeto_contratacion,
-                                    ('''||v_nro_pac||''')::varchar as nro_pac,
-                                    ('''||v_fecha_pac||''')::varchar as fecha_pac,
-                                    ('''||v_fecha_precio_referencial||''')::varchar as fecha_precio_referencial,
-                                    ('''||v_fecha_sol_recuperado||''')::varchar as fecha_esp_tecnica,
-                                    ('''||v_fecha_solicitud_compra||''')::varchar as fecha_certificacion_pre,
-                                    ('''||v_fecha_correo||''')::varchar as fecha_correo,
-                                    ('''||v_nro_cotizacion||''')::varchar as nro_cotizacion,
-                                    ('''||v_fecha_cotizacion_adju||''')::varchar as fecha_cotizacion_adju,
-                                    ('''||v_nro_po_recup||''')::varchar as nro_po,
-                                    ('''||v_nro_confirmacion_cuce||''')::varchar as nro_confirmacion_cuce,
-                                    ('''||v_fecha_comite_form||''')::varchar as fecha_comite_form,
-                                    ('''||v_origen_pedido||''')::varchar as origen_pedido,
-                                    ('''||v_marcar||''')::varchar as marcar ';
+                                    ('''||COALESCE(v_objeto_contratacion,'')||''')::varchar as objeto_contratacion,
+                                    ('''||COALESCE(v_nro_pac,'')||''')::varchar as nro_pac,
+                                    ('''||COALESCE(v_fecha_pac,'')||''')::varchar as fecha_pac,
+                                    ('''||COALESCE(v_fecha_precio_referencial,'')||''')::varchar as fecha_precio_referencial,
+                                    ('''||COALESCE(v_fecha_sol_recuperado,'')||''')::varchar as fecha_esp_tecnica,
+                                    ('''||COALESCE(v_fecha_solicitud_compra,'')||''')::varchar as fecha_certificacion_pre,
+                                    ('''||COALESCE(v_fecha_correo,'')||''')::varchar as fecha_correo,
+                                    ('''||COALESCE(v_nro_cotizacion,'')||''')::varchar as nro_cotizacion,
+                                    ('''||COALESCE(v_fecha_cotizacion_adju,'')||''')::varchar as fecha_cotizacion_adju,
+                                    ('''||COALESCE(v_nro_po_recup,'')||''')::varchar as nro_po,
+                                    ('''||COALESCE(v_nro_confirmacion_cuce,'')||''')::varchar as nro_confirmacion_cuce,
+                                    ('''||COALESCE(v_fecha_comite_form,'')||''')::varchar as fecha_comite_form,
+                                    ('''||COALESCE(v_origen_pedido,'')||''')::varchar as origen_pedido,
+                                    ('''||COALESCE(v_marcar,'')||''')::varchar as marcar ';
 
 
 
