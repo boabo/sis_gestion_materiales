@@ -1643,6 +1643,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: true,
                     width: 200,
                     gwidth: 100,
+                    hidden:true,
                     maxLength:100
                 },
                 type:'TextField',
@@ -1675,6 +1676,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Fecha PAC',
                     allowBlank: false,
                     width: 200,
+                    hidden:true,
                     gwidth: 150,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -1693,6 +1695,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: true,
                     width: 200,
                     gwidth: 100,
+                    hidden:true,
                     maxLength:100
                 },
                 type:'TextArea',
