@@ -34,44 +34,157 @@ class RFORMULARIO3008 extends  ReportePDF
         $this->Ln(2);
         $this->SetFont('', '');
 
-        /**************************************Texto de la justificacion********************************/
-        $justificacion = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 UNIDAD SOLICITANTE';
-        $justificacion2_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 UNIDAD SOLICITANTE Y ART.12';
-        $justificacion5_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 Y ART.24 UNIDAD FINANCIERA';
-        $justificacion6_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.13 Y ART.30 UNIDAD ADMINISTRATIVA';
-        $justificacion7_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30';
-        $justificacion8_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 UNIDAD ADMINISTRATIVA';//Tambien al 9.1
-        $justificcacion16_1 = 'MANUAL DE OPERACIONES DEL SICOES 7.2.11 INC. A)';
-        $justificacion17_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 RPCE ';
-        /*****************************************************************************/
+        if ($this->datos[0]["origen_pedido"] != 'Reparación de Repuestos') {
+          /**************************************Texto de la justificacion********************************/
+          $justificacion = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 UNIDAD SOLICITANTE';
+          $justificacion2_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 UNIDAD SOLICITANTE Y ART.12';
+          $justificacion2_2 = $justificacion;
+          $justificacion2_3 = $justificacion;
+          $justificacion3_1 = $justificacion;
+          $justificacion4_1 = $justificacion;
+          $justificacion5_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 Y ART.24 UNIDAD FINANCIERA';
+          $justificacion6_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.13 Y ART.30 UNIDAD ADMINISTRATIVA';
+          $justificacion7_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30';
+          $justificacion8_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 UNIDAD ADMINISTRATIVA';//Tambien al 9.1
+          $justificacion13_1 = $justificacion8_1;
+          $justificacion14_1 = $justificacion8_1;
+          $justificacion15_1 = $justificacion8_1;
+          $justificcacion16_1 = 'MANUAL DE OPERACIONES DEL SICOES 7.2.11 INC. A)';
+          $justificacion17_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.30 RPCE';
+          /*****************************************************************************/
+
+          /*Texto de las Aclaraciones*/
+          $aclaracion3_1='';
+          $aclaracion6_1='MEDIANTE CORREO ELECTRONICO EN MARCO AL ART.10 DEL REGLAMENTO';
+          $aclaracion7_1='PROPUESTA RECIBIDA A TRAVES DE CORREO ELECTRONICO DE ACUERDO A ART.14. RECEPCION DE PROPUESTA "PODRAN SER RECIBIDAS EN MEDIO FISICO O DIGITAL"';
+          $aclaracion8_1__12_1='NO APLICA POR SER UN SERVICIO ESPECIALIZADO EN EL EXTRANJERO';
+          $aclaracion13_1__15_1='NO APLICA POR SER UN SERVICIO FORMALIZADO  CON ORDEN DE SERVICIO';
+          $aclaracion__15_1='NO APLICA POR SER UN SERVICIO FORMALIZADO  CON ORDEN DE SERVICIO';
+          $aclaracion17_1='INFORME DE EVALUACIÓN';
+          /***************************/
+
+          $nro_tramite3_1 = $this->datos[0]['nro_tramite'];
+          $fecha_3_1 = $this->datos[0]['fecha_precio_referencial'];
+          //$nro_tramite3_1 = $this->datos[0]['nro_tramite'];
+          $nro_tramite6_1 = $this->datos[0]['nro_tramite'];
+          $nro_po_14_1 = $this->datos[0]['nro_po'];
 
 
-        /*Texto de las Aclaraciones*/
-        $aclaracion6_1='MEDIANTE CORREO ELECTRONICO EN MARCO AL ART.10 DEL REGLAMENTO';
-        $aclaracion7_1='PROPUESTA RECIBIDA A TRAVES DE CORREO ELECTRONICO DE ACUERDO A ART.14. RECEPCION DE PROPUESTA "PODRAN SER RECIBIDAS EN MEDIO FISICO O DIGITAL"';
-        $aclaracion8_1__12_1='NO APLICA POR SER UN SERVICIO ESPECIALIZADO EN EL EXTRANJERO';
-        $aclaracion13_1__15_1='NO APLICA POR SER UN SERVICIO FORMALIZADO  CON ORDEN DE SERVICIO';
-        $aclaracion17_1='INFORME DE EVALUACIÓN';
-        /***************************/
+          $marcar_si_3 = '<br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10">';
+          $marcar_no_3 = '';
+
+        } else {
+          /**************************************Texto de la justificacion********************************/
+          $justificacion = 'RE-SABS-EPNE-EE ART.12 Y 29,  CIRCULAR OB.GG.CI.002/2021  PUNTO "V. PROCEDIMIENTO"';
+          $justificacion2 = 'CIRCULAR OB.GG.CI.002/2021  "V. PROCEDIMIENTO" PUNTO 3. B)';
+          $justificacio4 = 'RE-SABS-EPNE-EE ART.29,  CIRCULAR OB.GG.CI.002/2021  PUNTO "V. PROCEDIMIENTO"';
+
+          $justificacion2_1 = $justificacion;
+          $justificacion2_2 = $justificacion;
+          $justificacion2_3 = $justificacion;
+          $justificacion3_1 = $justificacion2;
+          $justificacion4_1 = $justificacio4;
+          $justificacion5_1 = $justificacio4;
+          $justificacion6_1 = $justificacio4;
+          $justificacion7_1 = $justificacio4;
+          $justificacion8_1 = 'RE-SABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART.29 UNIDAD ADMINISTRATIVA ';//Tambien al 9.1
+          $justificacion13_1 = '';
+          $justificacion14_1 = 'RESABS-EPNE-EE ART.29,  CIRCULAR OB.GG.CI.002/2021  PUNTO "V. PROCEDIMIENTO"';
+          $justificacion15_1 = 'REGLAMENTO ESPECIFICO DE CONTRATACION DE BIENES OBRAS Y SERVICIOS ESPECIALIZADOS PARA EL EXTRANJERO';
+          $justificcacion16_1 = 'MANUAL DE OPERACIONES DEL SICOES 7.2.11 INC. A)';
+          $justificacion17_1 = 'RESABS-EPNE-EE (D.S. 26688 Y D.S. 3935) ART. 29 RPCE';
+          /*****************************************************************************/
+
+          /*Texto de las Aclaraciones*/
+          $aclaracion3_1='NO APLICA DE ACUERDO A CIRCULAR CITADA,PUNTO 3 EL PRECIO REFERENCIAL NO SE ESTIMA, SE DEFINE, EN BASE A RESPUESTA A LA INVITACION ENVIADA A POTENCIAL PROPONENTE';
+          $aclaracion6_1='MEDIANTE CORREO ELECTRONICO EN MARCO AL ART.10 DEL REGLAMENTO';
+          $aclaracion7_1='PROPUESTA RECIBIDA A TRAVES DE CORREO ELECTRONICO DE ACUERDO A ART.14. RECEPCION DE PROPUESTA "PODRAN SER RECIBIDAS EN MEDIO FISICO O DIGITAL"';
+          $aclaracion8_1__12_1='NO APLICA POR SER UN SERVICIO ESPECIALIZADO EN EL EXTRANJERO';
+          $aclaracion13_1__15_1='NO APLICA POR SER UN SERVICIO FORMALIZADO  CON ORDEN DE SERVICIO';
+          $aclaracion__15_1='NO APLICA POR SER UN SERVICIO ESPECIALIZADO EN EL EXTRANJERO';
+          $aclaracion17_1='INFORME DE EVALUACIÓN';
+          /***************************/
+
+          $nro_tramite3_1 = '';
+          $fecha_3_1 = '';
+          //$nro_tramite3_1 = 'S/N';
+          $nro_tramite6_1 = 'S/N';
+          $nro_po_14_1 = 'REPAIR ORDER N° '.$this->datos[0]['nro_tramite'];
+
+          if ($this->datos[0]['marcar'] == 'si') {
+            $marcar_no_3 = '<br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10">';
+
+          } else {
+            $marcar_no_3 = '';
+          }
+
+          $marcar_si_3 = '';
+        }
+
+
 
 
         /*Aqui armaremos el detalle de los proveedores*/
         $cantidad_proveedores = explode(',',$this->datos[0]["nro_cotizacion"]);
         $total_array_proveedores = count($cantidad_proveedores);
+        $detalle_proveedores = '';
+
+        $cantidad_fecha_proveedores = explode(',',$this->datos[0]["fecha_cotizacion_adju"]);
+        $total_array_fecha_proveedores = count($cantidad_fecha_proveedores);
+        $detalle__fecha_proveedores = '';
+
+        if ($total_array_proveedores >= 18) {
+          for ($i=0; $i<=17; $i++) {
+            $detalle_proveedores .= '<tr>
+                                      <td>'.$cantidad_proveedores[$i].'</td>
+                                    </tr>';
+          }
+
+          for ($i=0; $i<=17; $i++) {
+            $detalle__fecha_proveedores .= '<tr>
+                                      <td>'.$cantidad_fecha_proveedores[$i].'</td>
+                                    </tr>';
+          }
 
 
-        // for (i=0; i<=17; i++;) {
-        //   $detalle_proveedores .= '<tr>
-        //                             <td>'.$cantidad_proveedores[i].'</td>
-        //                           </tr>';
-        // }
-        //
-        // $detalle_proveedores1 .= '<table>
-        //                             <tbody>
-        //                             '.$detalle_proveedores.'
-        //                             </tbody>
-        //                           </table>';
-        // var_dump("aqui llega los proveedores",$detalle_proveedores1);exit;
+        } else {
+          for ($i=0; $i<$total_array_proveedores; $i++) {
+            $detalle_proveedores .= '<tr>
+                                      <td>'.$cantidad_proveedores[$i].'</td>
+                                    </tr>';
+          }
+
+          for ($i=0; $i<=$total_array_fecha_proveedores; $i++) {
+            $detalle__fecha_proveedores .= '<tr>
+                                      <td>'.$cantidad_fecha_proveedores[$i].'</td>
+                                    </tr>';
+          }
+        }
+
+
+
+        //var_dump("aqui llega data",$detalle_proveedores);exit;
+        if ($this->datos[0]["origen_pedido"] != 'Reparación de Repuestos') {
+        $detalle_proveedores1 .= '<table>
+                                    <tbody>
+                                    '.$detalle_proveedores.'
+                                    </tbody>
+                                  </table>';
+        }else{
+          $detalle_proveedores1 .= '<table>
+                                      <tbody>
+                                      <tr>
+                                          <td>S/N</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>';
+        }
+        $detalle_fecha_proveedores1 .= '<table>
+                                    <tbody>
+                                    '.$detalle__fecha_proveedores.'
+                                    </tbody>
+                                  </table>';
+        //var_dump("aqui llega los proveedores",$detalle_proveedores1);exit;
 
         /****************************************/
 
@@ -121,7 +234,12 @@ class RFORMULARIO3008 extends  ReportePDF
         $this->SetFont('', 'B');
         $this->MultiCell(0, 0, "II. ACTIVIDADES PREVIAS", 0, 'L', 0,1, '', '');
         $this->SetFont('', '');
-        $this->SetFontSize(6.5);
+
+        if ($this->datos[0]["origen_pedido"] != 'Reparación de Repuestos') {
+          $this->SetFontSize(6.5);
+        }else{
+          $this->SetFontSize(5.8);
+        }
         $tablaPrevias = '<table border="1" style="width: 1200px; table-layout: fixed;">
                             <tbody>
                               <tr>
@@ -129,8 +247,8 @@ class RFORMULARIO3008 extends  ReportePDF
                                 <td style="background-color:#A4A4A4; width: 160px; text-align: center; font-weight: bold;" rowspan="2">DESCRIPCIÓN</td>
                                 <td style="background-color:#A4A4A4; width: 25px; text-align: center; font-weight: bold;" rowspan="2">SI</td>
                                 <td style="background-color:#A4A4A4; width: 25px; text-align: center; font-weight: bold;" rowspan="2">NO</td>
-                                <td style="background-color:#A4A4A4; width: 145px; text-align: center; font-weight: bold;" colspan="2">DOCUMENTO</td>
-                                <td style="background-color:#A4A4A4; width: 150px; text-align: center; font-weight: bold;" rowspan="2">JUSTIFICACIÓN <br/>NORMATIVA</td>
+                                <td style="background-color:#A4A4A4; width: 140px; text-align: center; font-weight: bold;" colspan="2">DOCUMENTO</td>
+                                <td style="background-color:#A4A4A4; width: 155px; text-align: center; font-weight: bold;" rowspan="2">JUSTIFICACIÓN <br/>NORMATIVA</td>
                                 <td style="background-color:#A4A4A4; width: 141px; text-align: center; font-weight: bold;" rowspan="2">ACLARACIONES</td>
                               </tr>
                             <tr>
@@ -140,7 +258,7 @@ class RFORMULARIO3008 extends  ReportePDF
                             <tr>
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">1.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">La contratación se encuentra incluida en el Plan Operativo Anual (POA).</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                             </tr>
@@ -156,39 +274,39 @@ class RFORMULARIO3008 extends  ReportePDF
                               <td style="width: 210px; text-align: left;" colspan="3">Programa Anual de Contrataciones (PAC).</td>
                               <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_pac'].'</td>
                               <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_pac'].'</td>
-                              <td style="width: 150px; text-align: left;">'.$justificacion2_1.'</td>
-                              <td style="width: 146px; text-align: left;"></td>
+                              <td style="width: 155px; text-align: left;">'.$justificacion2_1.'</td>
+                              <td style="width: 141px; text-align: left;"></td>
                             </tr>
                             <tr>
                               <td style="width: 25px; text-align: center;">2.2</td>
                               <td style="width: 210px; text-align: left;" colspan="3">Justificación para la Contratación.</td>
                               <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_cite'].'</td>
                               <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_contratacion'].'</td>
-                              <td style="width: 150px; text-align: left;">'.$justificacion.'</td>
-                              <td style="width: 146px; text-align: left;"></td>
+                              <td style="width: 155px; text-align: left;">'.$justificacion2_2.'</td>
+                              <td style="width: 141px; text-align: left;"></td>
                             </tr>
                             <tr>
                               <td style="width: 25px; text-align: center;">2.3</td>
                               <td style="width: 210px; text-align: left;" colspan="3">Solicitud para la contratación.</td>
                               <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
                               <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_solicitud'].'</td>
-                              <td style="width: 150px; text-align: left;">'.$justificacion.'</td>
-                              <td style="width: 146px; text-align: left;"></td>
+                              <td style="width: 155px; text-align: left;">'.$justificacion2_3.'</td>
+                              <td style="width: 141px; text-align: left;"></td>
                             </tr>
                             <tr>
                               <td style="background-color:#DCDCDC; width: 25px; text-align: center;">3.</td>
                               <td style="background-color:#DCDCDC; width: 160px; text-align: left;">Se estimó el precio referencial para la contratación.</td>
-                              <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
-                              <td style="width: 25px; text-align: left;"></td>
+                              <td style="width: 25px; text-align: center;">'.$marcar_si_3.'</td>
+                              <td style="width: 25px; text-align: left;">'.$marcar_no_3.'</td>
                               <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                             </tr>
                             <tr>
                               <td style="width: 25px; text-align: center;">3.1</td>
                               <td style="width: 210px; text-align: left;" colspan="3">Respaldo de cálculo del Precio Referencial.</td>
-                              <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
-                              <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_precio_referencial'].'</td>
-                              <td style="width: 150px; text-align: left;">'.$justificacion.'</td>
-                              <td style="width: 146px;; text-align: left;"></td>
+                              <td style="width: 90px; text-align: left;">'.$nro_tramite3_1.'</td>
+                              <td style="width: 50px; text-align: left;">'.$fecha_3_1.'</td>
+                              <td style="width: 155px; text-align: left;">'.$justificacion3_1.'</td>
+                              <td style="width: 141px; text-align: left;">'.$aclaracion3_1.'</td>
                             </tr>
                             <tr>
                               <td style="background-color:#DCDCDC; width: 25px; text-align: center;">4.</td>
@@ -202,8 +320,8 @@ class RFORMULARIO3008 extends  ReportePDF
                               <td style="width: 210px; text-align: left;" colspan="3">Especificaciones Técnicas / Términos de Referencia.</td>
                               <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
                               <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_esp_tecnica'].'</td>
-                              <td style="width: 150px; text-align: left;">'.$justificacion.'</td>
-                              <td style="width: 146px; text-align: left;"></td>
+                              <td style="width: 155px; text-align: left;">'.$justificacion4_1.'</td>
+                              <td style="width: 141px; text-align: left;"></td>
                             </tr>
                             <tr >
                               <td style="background-color:#DCDCDC; width: 25px; text-align: center;">5.</td>
@@ -217,8 +335,8 @@ class RFORMULARIO3008 extends  ReportePDF
                               <td style="width: 210px; text-align: left;" colspan="3">Certificación Presupuestaria.</td>
                               <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
                               <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_certificacion_pre'].'</td>
-                              <td style="width: 150px; text-align: left;">'.$justificacion5_1.'</td>
-                              <td style="width: 146px; text-align: left;"></td>
+                              <td style="width: 155px; text-align: left;">'.$justificacion5_1.'</td>
+                              <td style="width: 141px; text-align: left;"></td>
                             </tr>
                             </tbody>
                         </table>';
@@ -229,7 +347,11 @@ class RFORMULARIO3008 extends  ReportePDF
           $this->SetFont('', 'B');
           $this->MultiCell(0, 0, "III. PROCESO DE CONTRATACIÓN", 0, 'L', 0,1, '', '');
           $this->SetFont('', '');
-          $this->SetFontSize(6);
+          if ($this->datos[0]["origen_pedido"] != 'Reparación de Repuestos') {
+            $this->SetFontSize(6.5);
+          }else{
+            $this->SetFontSize(5.8);
+          }
           $tablaContratacion = '<table border="1" style="width: 1200px; table-layout: fixed;">
                               <tbody>
                               <tr>
@@ -242,7 +364,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr>
                                 <td style="width: 25px; text-align: center;">6.1</td>
                                 <td style="width: 210px; text-align: left;" colspan="3">Notas de invitación a proponentes.</td>
-                                <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
+                                <td style="width: 90px; text-align: left;">'.$nro_tramite6_1.'</td>
                                 <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_correo'].'</td>
                                 <td style="width: 150px; text-align: left;">'.$justificacion6_1.'</td>
                                 <td style="width: 146px; text-align: left;">'.$aclaracion6_1.'</td>
@@ -276,8 +398,8 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="width: 25px; text-align: center;">7.1</td>
                                 <td style="width: 210px; text-align: left;" colspan="3">Propuesta / Cotización del proponente adjudicado</td>
-                                <td style="width: 90px; text-align: left;">'.$detalle_proveedores.'</td>
-                                <td style="width: 50px; text-align: left;"></td>
+                                <td style="width: 90px; text-align: left;">'.$detalle_proveedores1.'</td>
+                                <td style="width: 50px; text-align: left;">'.$detalle_fecha_proveedores1.'</td>
                                 <td style="width: 150px; text-align: left;">'.$justificacion7_1.'</td>
                                 <td style="width: 146px; text-align: left;">'.$aclaracion7_1.'</td>
                               </tr>
@@ -314,7 +436,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">10.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">La Empresa proponente tiene cuentas pendientes con el Estado.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -329,7 +451,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">11.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">El proponente se encuentra registrado en el Padrón Nacional de Contribuyentes.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -344,7 +466,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">12.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">La Empresa se encuentra inscrita en el Registro de Comercio.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -369,7 +491,7 @@ class RFORMULARIO3008 extends  ReportePDF
                                 <td style="width: 210px; text-align: left;" colspan="3">Contrato.</td>
                                 <td style="width: 90px; text-align: left;"></td>
                                 <td style="width: 50px; text-align: left;"></td>
-                                <td style="width: 150px; text-align: left;">'.$justificacion8_1.'</td>
+                                <td style="width: 150px; text-align: left;">'.$justificacion13_1.'</td>
                                 <td style="width: 146px; text-align: left;">'.$aclaracion13_1__15_1.'</td>
                               </tr>
                               <tr >
@@ -392,9 +514,9 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="width: 25px; text-align: center;">14.1</td>
                                 <td style="width: 210px; text-align: left;" colspan="3">Orden de Compra / Servicio.</td>
-                                <td style="width: 90px; text-align: left;"></td>
-                                <td style="width: 50px; text-align: left;"></td>
-                                <td style="width: 150px; text-align: left;"></td>
+                                <td style="width: 90px; text-align: left;">'.$nro_po_14_1.'</td>
+                                <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_po'].'</td>
+                                <td style="width: 150px; text-align: left;">'.$justificacion14_1.'</td>
                                 <td style="width: 146px; text-align: left;"></td>
                               </tr>
 
@@ -411,8 +533,8 @@ class RFORMULARIO3008 extends  ReportePDF
                                 <td style="width: 210px; text-align: left;" colspan="3">Póliza(s) / Boleta(s) de Garantía.</td>
                                 <td style="width: 90px; text-align: left;"></td>
                                 <td style="width: 50px; text-align: left;"></td>
-                                <td style="width: 150px; text-align: left;">'.$justificacion8_1.'</td>
-                                <td style="width: 146px; text-align: left;">'.$aclaracion13_1__15_1.'</td>
+                                <td style="width: 150px; text-align: left;">'.$justificacion15_1.'</td>
+                                <td style="width: 146px; text-align: left;">'.$aclaracion__15_1.'</td>
                               </tr>
 
                               <tr>
@@ -426,8 +548,8 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr>
                                 <td style="width: 25px; text-align: center;">16.1</td>
                                 <td style="width: 210px; text-align: left;" colspan="3">Registro en SICOES (Formulario N° 400).</td>
-                                <td style="width: 90px; text-align: left;"></td>
-                                <td style="width: 50px; text-align: left;"></td>
+                                <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_confirmacion_cuce'].'</td>
+                                <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_cuce'].'</td>
                                 <td style="width: 150px; text-align: left;">'.$justificcacion16_1.'</td>
                                 <td style="width: 146px; text-align: left;"></td>
                               </tr>
@@ -435,7 +557,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr>
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">17.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">Otros documentos adicionales que se consideren pertinentes.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -444,7 +566,7 @@ class RFORMULARIO3008 extends  ReportePDF
                                 <td style="width: 25px; text-align: center;">17.1</td>
                                 <td style="width: 210px; text-align: left;" colspan="3">Detalle de los documentos adicionales.</td>
                                 <td style="width: 90px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
-                                <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_contratacion'].'</td>
+                                <td style="width: 50px; text-align: left;">'.$this->datos[0]['fecha_comite'].'</td>
                                 <td style="width: 150px; text-align: left;">'.$justificacion17_1.'</td>
                                 <td style="width: 146px; text-align: left;">'.$aclaracion17_1.'</td>
                               </tr>

@@ -1045,3 +1045,40 @@ IS 'Descripcion del motivo de la reasignacion';
 ALTER TABLE mat.tlog_reasignacion_funcionario
   OWNER TO postgres;
 /***********************************F-SCP-IRVA-MAT-0-19/04/2022****************************************/
+/***********************************I-SCP-IRVA-MAT-0-23/05/2022****************************************/
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN nro_pac VARCHAR;
+
+COMMENT ON COLUMN mat.tsolicitud.nro_pac
+IS 'Nro de Pac para que se registre';
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN fecha_pac DATE;
+
+COMMENT ON COLUMN mat.tsolicitud.fecha_pac
+IS 'Fecha del PAC';
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN objeto_contratacion VARCHAR;
+
+COMMENT ON COLUMN mat.tsolicitud.objeto_contratacion
+IS 'Descripcion del objeto de contratacion';
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN fecha_respaldo_precio_referencial DATE;
+
+COMMENT ON COLUMN mat.tsolicitud.fecha_respaldo_precio_referencial
+IS 'Fecha del respaldo del precio referencial';
+
+
+
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN nro_confirmacion VARCHAR;
+
+COMMENT ON COLUMN mat.tsolicitud.nro_confirmacion
+IS 'Nro de confirmacion del formulario 400';
+/***********************************F-SCP-IRVA-MAT-0-23/05/2022****************************************/

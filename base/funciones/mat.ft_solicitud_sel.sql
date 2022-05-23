@@ -352,6 +352,13 @@ DECLARE
     v_fecha_correo					varchar;
     v_nro_cotizacion				varchar;
     v_fecha_cotizacion_adju			varchar;
+
+    v_nro_po_recup					varchar;
+    v_fecha_po_recu					varchar;
+    v_nro_confirmacion_cuce			varchar;
+    v_fecha_comite_form				varchar;
+    v_anio							varchar;
+    v_marcar						varchar;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -573,7 +580,15 @@ v_consulta:='select		sol.id_solicitud,
                                      ''si''
                                      ELSE
                                      ''no''
-                                END)::varchar as nuevo_flujo
+                                END)::varchar as nuevo_flujo,
+
+                                sol.nro_pac,
+                                sol.fecha_pac::date,
+								sol.objeto_contratacion,
+
+                                sol.cuce::varchar,
+                                to_char(sol.fecha_publicacion_cuce,''DD/MM/YYYY'')::varchar,
+                                sol.nro_confirmacion::varchar
 
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
@@ -6704,12 +6719,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                        ((sol.fecha_entrega - sol.fecha_po)+1),
                        to_char(sol.fecha_solicitud::date,'DD/MM/YYYY'),
                        to_char(sol.fecha_publicacion_cuce::date,'DD/MM/YYYY'),
-                       sol.nro_cite_cobs,
+                       COALESCE(sol.nro_cite_cobs,sol.nro_cite_dce),
                        sol.origen_pedido,
                        sol.objeto_contratacion,
                        sol.nro_pac,
                        to_char(sol.fecha_pac,'DD/MM/YYYY'),
-                       to_char(sol.fecha_respaldo_precio_referencial,'DD/MM/YYYY')
+                       to_char(sol.fecha_respaldo_precio_referencial,'DD/MM/YYYY'),
+                       sol.nro_po,
+                       sol.nro_confirmacion
+
                 INTO
                 	   v_nro_cuce,
                        v_nro_tramite,
@@ -6723,7 +6741,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                        v_objeto_contratacion,
                        v_nro_pac,
                        v_fecha_pac,
-                       v_fecha_precio_referencial
+                       v_fecha_precio_referencial,
+                       v_nro_po_recup,
+                       v_nro_confirmacion_cuce
                 from mat.tsolicitud sol
                 --inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
                 where sol.id_proceso_wf = v_parametros.id_proceso_wf;
@@ -6745,75 +6765,6 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
 
-                /*Recuperamos fecha de la solicitud de la compra (Ismael Valdivia 19/05/2022)*/
-                if (v_origen_pedido = 'Reparación de Repuestos') then
-                	select
-                          to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
-                          to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
-                          sou.id_proceso_wf_firma,
-                          sou.estado_firma,
-                          sou.estado,
-                          sou.nro_tramite
-                          into
-                          v_fecha_po,
-                          v_fecha_solicitud,
-                          v_id_proceso_wf_firma,
-                          v_estado_firma_paralelo,
-                          v_estado_actual,
-                          v_nro_tramite
-                  from mat.tsolicitud sou
-                  where sou.id_proceso_wf = v_parametros.id_proceso_wf;
-
-
-
-                  /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
-                   if (v_estado_firma_paralelo = 'autorizado') then
-
-                            SELECT twf.fecha_reg into v_fecha_firma_dc_qr
-                            FROM wf.testado_wf twf
-                            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                            WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND
-                                  te.codigo = 'autorizado'
-                            order by twf.fecha_reg desc
-                            limit 1;
-                    /*************************************************************************/
-                   end if;
-
-
-
-
-                  /*Aqui recuperamos la Firma del encargado del comite de Unidad de abastecimiento*/
-                  if (v_estado_actual != 'comite_unidad_abastecimientos') then
-
-                        SELECT twf.fecha_reg into v_fecha_firma_rev_qr
-                        FROM wf.testado_wf twf
-                        INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                        WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND
-                              te.codigo = 'autorizado'
-                        order by twf.fecha_reg desc
-                        limit 1; --comite abastecimiento
-                  end if;
-                  /*********************************************************************************************************************************/
-
-
-
-                  /*****************************************************/
-                  v_fecha_solicitud_compra = '';
-                  if (v_fecha_firma_dc_qr is not null and v_fecha_firma_rev_qr is not null) THEN
-                      if (v_fecha_firma_dc_qr::date > v_fecha_firma_rev_qr::date) then
-                          v_fecha_solicitud_compra = v_fecha_firma_dc_qr::varchar;
-                      elsif (v_fecha_firma_rev_qr::date > v_fecha_firma_dc_qr::date) then
-                          v_fecha_solicitud_compra = v_fecha_firma_abas_qr::varchar;
-                      elsif (v_fecha_firma_rev_qr::date = v_fecha_firma_dc_qr::date) then
-                          v_fecha_solicitud_compra = v_fecha_firma_rev_qr::varchar;
-                      end if;
-                  end if;
-
-
-
-                else
-                	v_fecha_solicitud_compra = v_fecha_sol_recuperado;
-                end if;
 
 
                 /*****************************************************************************/
@@ -6848,7 +6799,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                              v_fecha_cotizacion_adju
                   from datos;
 
-
+                 v_marcar =  'si';
 
                  elsif (v_monto_total > 100000) then
 
@@ -6866,9 +6817,140 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                v_fecha_cotizacion_adju
                     from datos;
 
+                    v_marcar =  'no';
+
                  end if;
+
+                 if (v_fecha_cotizacion_adju is null) then
+                 	v_fecha_cotizacion_adju = '';
+                 end if;
+
+                 if (v_nro_cotizacion is null) then
+                 	v_nro_cotizacion = '';
+                 end if;
+
                 /*******************************************************************************/
 
+                if (v_fecha_po_recu is null) then
+                	v_fecha_po_recu = '';
+                end if;
+
+
+                /*Fecha del commite de evaluacion*/
+                SELECT            	twf.id_funcionario,
+                                    vf.desc_funcionario1||' | '||vf.nombre_cargo||' | '||pro.nro_tramite||' | Boliviana de Aviación - BoA'::varchar as desc_funcionario1,
+                                    to_char(twf.fecha_reg,'DD/MM/YYYY')as fecha_firma,
+                                    twf.id_estado_wf
+                INTO
+                                v_id_funcionario_rev_qr_oficial,
+                                v_nombre_funcionario_rev_qr_oficial,
+                                v_fecha_firma_rev_qr,
+                                v_id_estado_aprobado
+                    FROM wf.testado_wf twf
+                          INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                          INNER JOIN wf.tproceso_wf pro ON twf.id_proceso_wf = pro.id_proceso_wf
+                          INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                          WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
+                          AND te.codigo = 'comite_unidad_abastecimientos'
+                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                          GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite, twf.id_estado_wf--Aumentando el id estado (Ismael Valdivia 12/05/2022)
+                          ORDER BY  twf.id_estado_wf DESC
+                          limit 1;
+
+                /*Aumentando para condicionar el reporte del comite del 01/04/2022 al 30/04/2022*/
+                select es.fecha_reg::date into v_fecha_aprobacion
+                from wf.testado_wf es
+                where es.id_estado_anterior = v_id_estado_aprobado;
+
+                v_fecha_comite_form = v_fecha_po;
+
+                if ((v_fecha_aprobacion between '01/04/2022' and '30/04/2022') OR (v_fecha_aprobacion >= '01/06/2022') ) then
+                	v_fecha_comite_form = v_fecha_aprobacion;
+                end if;
+                /*********************************/
+
+                if (v_nro_cite is null) then
+                	v_nro_cite = '';
+                end if;
+
+
+                /*Recuperamos fecha de la solicitud de la compra (Ismael Valdivia 19/05/2022)*/
+                if (v_origen_pedido = 'Reparación de Repuestos') then
+                	select
+                          to_char(sou.fecha_po,'DD/MM/YYYY')as fechapo,
+                          to_char(sou.fecha_solicitud,'DD/MM/YYYY')as fechasol,
+                          sou.id_proceso_wf_firma,
+                          sou.estado_firma,
+                          sou.estado,
+                          sou.nro_tramite
+                          into
+                          v_fecha_po,
+                          v_fecha_solicitud,
+                          v_id_proceso_wf_firma,
+                          v_estado_firma_paralelo,
+                          v_estado_actual,
+                          v_nro_tramite
+                  from mat.tsolicitud sou
+                  where sou.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+                  SELECT EXTRACT(YEAR FROM v_fecha_po::date) into v_anio;
+
+                  v_nro_po_recup = 'REP-'||v_nro_po_recup||'-'||v_anio;
+
+
+
+                  /*Aqui recuperamos la Firma del encargado del comite de aeronavegabilidad*/
+                   if (v_estado_firma_paralelo = 'autorizado') then
+
+                            SELECT to_char(twf.fecha_reg,'DD/MM/YYYY') into v_fecha_firma_dc_qr
+                            FROM wf.testado_wf twf
+                            INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                            WHERE twf.id_proceso_wf = v_id_proceso_wf_firma AND
+                                  te.codigo = 'autorizado'
+                            order by twf.fecha_reg desc
+                            limit 1;
+                    /*************************************************************************/
+                   end if;
+
+
+
+
+                  /*Aqui recuperamos la Firma del encargado del comite de Unidad de abastecimiento*/
+                  if (v_estado_actual != 'comite_unidad_abastecimientos') then
+
+                        SELECT to_char(twf.fecha_reg,'DD/MM/YYYY') into v_fecha_firma_rev_qr
+                        FROM wf.testado_wf twf
+                        INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                        WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf AND
+                              te.codigo = 'autorizado'
+                        order by twf.fecha_reg desc
+                        limit 1; --comite abastecimiento
+                  end if;
+                  /*********************************************************************************************************************************/
+
+
+
+                  /*****************************************************/
+                  v_fecha_solicitud_compra = '';
+                  if (v_fecha_firma_dc_qr is not null and v_fecha_firma_rev_qr is not null) THEN
+                      if (v_fecha_firma_dc_qr::date > v_fecha_firma_rev_qr::date) then
+                          v_fecha_solicitud_compra = v_fecha_firma_dc_qr::varchar;
+                      elsif (v_fecha_firma_rev_qr::date > v_fecha_firma_dc_qr::date) then
+                          v_fecha_solicitud_compra = v_fecha_firma_abas_qr::varchar;
+                      elsif (v_fecha_firma_rev_qr::date = v_fecha_firma_dc_qr::date) then
+                          v_fecha_solicitud_compra = v_fecha_firma_rev_qr::varchar;
+                      end if;
+                  end if;
+
+
+                  v_fecha_sol_recuperado = v_fecha_solicitud_compra;
+
+                  v_fecha_comite_form = v_fecha_solicitud_compra;
+
+                else
+                	v_fecha_solicitud_compra = v_fecha_sol_recuperado;
+                end if;
 
 
 
@@ -6893,11 +6975,16 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     ('''||v_fecha_solicitud_compra||''')::varchar as fecha_certificacion_pre,
                                     ('''||v_fecha_correo||''')::varchar as fecha_correo,
                                     ('''||v_nro_cotizacion||''')::varchar as nro_cotizacion,
-                                    ('''||v_fecha_cotizacion_adju||''')::varchar as fecha_cotizacion_adju ';
+                                    ('''||v_fecha_cotizacion_adju||''')::varchar as fecha_cotizacion_adju,
+                                    ('''||v_nro_po_recup||''')::varchar as nro_po,
+                                    ('''||v_nro_confirmacion_cuce||''')::varchar as nro_confirmacion_cuce,
+                                    ('''||v_fecha_comite_form||''')::varchar as fecha_comite_form,
+                                    ('''||v_origen_pedido||''')::varchar as origen_pedido,
+                                    ('''||v_marcar||''')::varchar as marcar ';
 
 
 
-                --raise notice '%',v_consulta;
+                raise notice '%',v_consulta;
                 --Devuelve la respuesta
                 return v_consulta;
 

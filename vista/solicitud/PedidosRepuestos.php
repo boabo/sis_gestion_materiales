@@ -10,6 +10,8 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
     Phx.vista.PedidosRepuestos = {
+      fheight:650,
+      fwidth:1410,
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
         title: 'Solicitud',
@@ -26,33 +28,49 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
 
             this.font();
-            this.interfaz = 'Repuestos';
-            this.Grupos.push( {
-                layout: 'column',
-                border: false,
-                xtype: 'fieldset',
-                autoScroll: false,
-                defaults: {
-                    border: false
-                },
-                style:{
-                      background:'#548DCA',
-                      // height:'245px',
-                      autoHeight: true,
-                      // border:'2px solid red',
-                      marginTop:'-26px',
-                      // marginLeft: '50%'
-                     },
-                items: [
 
+            this.interfaz = 'Repuestos';
+            this.Grupos[0].items.push( {
+              xtype: 'fieldset',
+              id:'datos_pac_rep',
+              hidden:true,
+              style:{
+                    background:'#E1EC00',
+                    width:'330px',
+                    minHeight:'520px',
+                    marginLeft:'2px',
+                    marginTop:'0px',
+                    border:'1px solid black',
+                    borderRadius:'2px',
+
+                   },
+                items: [
                     {
+                        xtype: 'fieldset',
+                        title: ' Datos PAC',
+                        autoHeight: true,
+                        border: false,
+                        autoScroll: false,
+                        collapsible: false,
+                        style:{
+                              background:'#E1EC00',
+                             },
+                        items: [],
+                        id_grupo: 10
+                    }
+
+
+                ]
+            },{
                       xtype: 'fieldset',
                       autoScroll: false,
+                      id:'datos_adquisiciones_rep',
                       style:{
                             background:'#FFB09C',
                             width:'330px',
-                            minHeight:'250px',
+                            minHeight:'520px',
                             border:'1px solid black',
+                            marginLeft:'2px',
                             borderRadius:'2px',
                            },
                         items: [
@@ -62,6 +80,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 autoScroll: false,
                                 title: ' Datos Adquisiciones ',
                                 autoHeight: true,
+                                collapsible: false,
                                 style:{
                                       background:'#FFB09C'
                                      },
@@ -72,37 +91,149 @@ header("content-type: text/javascript; charset=UTF-8");
                         ]
                     },
                     {
-                      xtype: 'fieldset',
-                      style:{
-                            background:'#81D3FF',
-                            width:'330px',
-                            minHeight:'250px',
-                            marginLeft:'2px',
-                            border:'1px solid black',
-                            borderRadius:'2px'
-                           },
-                        items: [
-                            {
-                                xtype: 'fieldset',
-                                title: ' Datos Comité de Evaluación ',
-                                autoHeight: true,
-                                border: false,
-                                autoScroll: false,
-                                style:{
-                                      background:'#81D3FF',
-                                      //border:'2px solid green',
-                                      //width : '100%',
-                                     },
-                                items: [],
-                                id_grupo: 5
+                              xtype: 'fieldset',
+                              id:'datos_comite_rep',
+                              style:{
+                                    background:'#81D3FF',
+                                    width:'330px',
+                                    minHeight:'520px',
+                                    marginLeft:'2px',
+                                    marginTop:'2px',
+                                    border:'1px solid black',
+                                    borderRadius:'2px'
+                                   },
+                                items: [
+                                    {
+                                        xtype: 'fieldset',
+                                        title: ' Datos Comité de Evaluación ',
+                                        autoHeight: true,
+                                        border: false,
+                                        autoScroll: false,
+                                        collapsible: false,
+                                        style:{
+                                              background:'#81D3FF',
+                                              //border:'2px solid green',
+                                              //width : '100%',
+                                             },
+                                        items: [],
+                                        id_grupo: 5
+                                    }
+
+
+                                ]
                             }
 
+                  );
+            // this.Grupos.push( {
+            //     layout: 'column',
+            //     border: false,
+            //     xtype: 'fieldset',
+            //     autoScroll: false,
+            //     defaults: {
+            //         border: false
+            //     },
+            //     style:{
+            //           background:'#548DCA',
+            //           // height:'245px',
+            //           autoHeight: true,
+            //           // border:'2px solid red',
+            //           marginTop:'-26px',
+            //           // marginLeft: '50%'
+            //          },
+            //     items: [
+            //
+            //         {
+            //           xtype: 'fieldset',
+            //           autoScroll: false,
+            //           style:{
+            //                 background:'#FFB09C',
+            //                 width:'330px',
+            //                 minHeight:'250px',
+            //                 border:'1px solid black',
+            //                 borderRadius:'2px',
+            //                },
+            //             items: [
+            //                 {
+            //                     xtype: 'fieldset',
+            //                     border: false,
+            //                     autoScroll: false,
+            //                     title: ' Datos Adquisiciones ',
+            //                     autoHeight: true,
+            //                     style:{
+            //                           background:'#FFB09C'
+            //                          },
+            //                     items: [],
+            //                     id_grupo: 2
+            //                 }
+            //
+            //             ]
+            //         },
+            //         {
+            //           xtype: 'fieldset',
+            //           style:{
+            //                 background:'#81D3FF',
+            //                 width:'330px',
+            //                 minHeight:'250px',
+            //                 marginLeft:'2px',
+            //                 border:'1px solid black',
+            //                 borderRadius:'2px'
+            //                },
+            //             items: [
+            //                 {
+            //                     xtype: 'fieldset',
+            //                     title: ' Datos Comité de Evaluación ',
+            //                     autoHeight: true,
+            //                     border: false,
+            //                     autoScroll: false,
+            //                     style:{
+            //                           background:'#81D3FF',
+            //                           //border:'2px solid green',
+            //                           //width : '100%',
+            //                          },
+            //                     items: [],
+            //                     id_grupo: 5
+            //                 }
+            //
+            //
+            //             ]
+            //         },
+            //
+            //         /*Aumentando para los datos del PAC*/
+            //         {
+            //           xtype: 'fieldset',
+            //           style:{
+            //                 background:'#E1EC00',
+            //                 width:'330px',
+            //                 minHeight:'250px',
+            //                 marginLeft:'0px',
+            //                 marginTop:'6px',
+            //                 border:'1px solid black',
+            //                 borderRadius:'2px',
+            //
+            //                },
+            //             items: [
+            //                 {
+            //                     xtype: 'fieldset',
+            //                     title: ' Datos PAC',
+            //                     autoHeight: true,
+            //                     border: false,
+            //                     autoScroll: false,
+            //                     style:{
+            //                           background:'#E1EC00',
+            //                          },
+            //                     items: [],
+            //                     id_grupo: 10
+            //                 }
+            //
+            //
+            //             ]
+            //         }
+            //         /***********************************/
+            //     ]
+            //
+            // });
 
-                        ]
-                    }
-                ]
-
-            });
+            console.log("aqui llega para el push Concatenado",this.Grupos);
             this.historico = 'no';
             this.tbarItems = ['-',{
                     text: 'Histórico',
@@ -267,6 +398,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             if (this.store.baseParams.pes_estado == 'pedido_re_compra') {
               if (this.store.baseParams.monto_pac > 20000) {
+
                 Ext.Ajax.request({
                       url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
                       params:{id_proceso_wf: data.id_proceso_wf,
@@ -291,7 +423,6 @@ header("content-type: text/javascript; charset=UTF-8");
               } else {
                 this.getBoton('sig_estado').enable();
                 this.noti_documentos.setText('');
-                //this.reload();
               }
             }
             /***********************************************/
@@ -340,13 +471,33 @@ header("content-type: text/javascript; charset=UTF-8");
             return tb;
         },
         onButtonEdit: function() {
-             this.iniciarEvento();
+            this.iniciarEvento();
             Phx.vista.PedidosRepuestos.superclass.onButtonEdit.call(this);
-            //this.Cmp.mensaje_correo.setValue('Favor cotizar según documento Adjunto.');
-            //this.ocultarComponente(this.Cmp.taller_asignado);
             var data = this.getSelectedData();
+          
+            if (this.store.baseParams.monto_pac > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
+              Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '265px';
+              Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '250px';
+
+              Ext.getCmp('datos_pac_rep').show();
+              this.Cmp.nro_pac.allowBlank = false;
+              this.Cmp.fecha_pac.allowBlank = false;
+              this.Cmp.objeto_contratacion.allowBlank = false;
+
+            }else{
+              Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '520px';
+              Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '520px';
+              Ext.getCmp('datos_pac_rep').hide();
+              this.Cmp.nro_pac.allowBlank = true;
+              this.Cmp.fecha_pac.allowBlank = true;
+              this.Cmp.objeto_contratacion.allowBlank = true;
+              this.Cmp.nro_pac.reset();
+              this.Cmp.fecha_pac.reset();
+              this.Cmp.objeto_contratacion.reset();
+            }
+
+
             this.Cmp.observaciones_sol.reset();
-            console.log("aqui llega para poner el nro rep",data);
             this.ocultarComponente(this.Cmp.observacion_nota);
             this.Cmp.tipo_evaluacion.on('select',function(combo, record, index){
                 if (record.data.ID == 1 ){

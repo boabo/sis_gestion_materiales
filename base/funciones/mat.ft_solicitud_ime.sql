@@ -354,6 +354,20 @@ END IF;
         /*************************************************************/
         --raise exception 'llega datos aqui %',v_parametros.id_depto;
 
+        IF (substr(v_nro_tramite,1,2)='GM')THEN
+          v_nro_cite_dce = 'OB.DAB.DCE.GM.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+        ELSIF (substr(v_nro_tramite,1,2)='GA')THEN
+          v_nro_cite_dce = 'OB.DAB.DCE.GA.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+        ELSIF (substr(v_nro_tramite,1,2)='GO')THEN
+          v_nro_cite_dce = 'OB.DAB.DCE.GO.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+        ELSIF (substr(v_nro_tramite,1,2)='GC')THEN
+          v_nro_cite_dce = 'OB.DAB.DCE.GC.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+        /*Incluimos a los BoA REP (Ismael Valdivia 05/05/2020)*/
+        ELSIF (substr(v_nro_tramite,1,2)='GR')THEN
+          v_nro_cite_dce = 'OB.DAB.DCE.GR.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+        /******************************************************/
+        END IF;
+
             --Sentencia de la insercion
         	insert into mat.tsolicitud(
 			id_funcionario_sol,
@@ -365,6 +379,7 @@ END IF;
 			origen_pedido,
 			fecha_requerida,
 			fecha_solicitud,
+            fecha_respaldo_precio_referencial,
 			estado_reg,
 			observaciones_sol,
 			justificacion,
@@ -397,7 +412,8 @@ END IF;
             codigo_condicion_entrega_alkym,
             origen_solicitud,
             mel_observacion,
-            tiempo_entrega_estimado
+            tiempo_entrega_estimado,
+            nro_cite_dce
             /***********************/
           	) values(
 			v_parametros.id_funcionario_sol,
@@ -409,6 +425,7 @@ END IF;
 			v_parametros.origen_pedido,
 			v_parametros.fecha_requerida,
 			v_parametros.fecha_solicitud,
+            v_parametros.fecha_solicitud,
 			'activo',
 			v_parametros.observaciones_sol,
 			v_parametros.justificacion,
@@ -441,7 +458,8 @@ END IF;
             v_parametros.codigo_condicion_entrega,
             'ERP',
             v_parametros.mel_observacion,
-            v_parametros.dias_entrega_estimado
+            v_parametros.dias_entrega_estimado,
+            v_nro_cite_dce
             /****************************************************/
             )RETURNING id_solicitud into v_id_solicitud;
 
@@ -519,6 +537,7 @@ END IF;
 			origen_pedido = v_parametros.origen_pedido,
 			fecha_requerida = v_parametros.fecha_requerida,
 			fecha_solicitud = v_parametros.fecha_solicitud,
+            fecha_respaldo_precio_referencial = v_parametros.fecha_solicitud,
 			observaciones_sol = v_parametros.observaciones_sol,
             fecha_cotizacion = v_parametros.fecha_cotizacion,
 			justificacion = v_parametros.justificacion,
@@ -552,8 +571,14 @@ END IF;
             /*Aumentando campos (Ismael Valdivia 06/10/2021)*/
             metodo_de_adjudicación = v_parametros.metodo_de_adjudicación,
             tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion,
-            remark = v_parametros.remark
+            remark = v_parametros.remark,
             /************************************************/
+
+            /*Aumentando el PAC (Ismael Valdivia 20/05/2022)*/
+            nro_pac = v_parametros.nro_pac,
+            fecha_pac = v_parametros.fecha_pac,
+            objeto_contratacion = v_parametros.objeto_contratacion
+            /*******************************************************/
         	where id_solicitud=v_parametros.id_solicitud;
         ELSE
         	--Sentencia de la modificacion
@@ -568,6 +593,7 @@ END IF;
 			origen_pedido = v_parametros.origen_pedido,
 			fecha_requerida = v_parametros.fecha_requerida,
 			fecha_solicitud = v_parametros.fecha_solicitud,
+            fecha_respaldo_precio_referencial = v_parametros.fecha_solicitud,
 			observaciones_sol = v_parametros.observaciones_sol,
             fecha_cotizacion = v_parametros.fecha_cotizacion,
 			justificacion = v_parametros.justificacion,
@@ -599,8 +625,13 @@ END IF;
             /*Aumentando campos (Ismael Valdivia 06/10/2021)*/
             metodo_de_adjudicación = v_parametros.metodo_de_adjudicación,
             tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion,
-            remark = v_parametros.remark
+            remark = v_parametros.remark,
             /************************************************/
+            /*Aumentando el PAC (Ismael Valdivia 20/05/2022)*/
+            nro_pac = v_parametros.nro_pac,
+            fecha_pac = v_parametros.fecha_pac,
+            objeto_contratacion = v_parametros.objeto_contratacion
+            /*******************************************************/
         	where id_solicitud=v_parametros.id_solicitud;
         end if;
 
@@ -3507,6 +3538,8 @@ END IF;
           	v_nro_cite_dce = 'OB.DAB.DCE.GO.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
              ELSIF (substr(v_nro_tramite,1,2)='GC')THEN
           	v_nro_cite_dce = 'OB.DAB.DCE.GC.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
+          ELSIF (substr(v_nro_tramite,1,2)='GR')THEN
+          	v_nro_cite_dce = 'OB.DAB.DCE.GR.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
           END IF;
 
     FOR v_record_clon in ( 	select *
@@ -4578,6 +4611,7 @@ END IF;
 
                     update mat.tsolicitud  set
                     cuce = v_parametros.cuce,
+                    nro_confirmacion = v_parametros.nro_confirmacion,
                     fecha_publicacion_cuce = v_parametros.fecha_publicacion_cuce
                     where id_solicitud = v_parametros.id_solicitud;
 
@@ -4591,7 +4625,32 @@ END IF;
 
             end;
 
+		/*********************************
+		#TRANSACCION:  'MAT_INS_PAC_IME'
+        #DESCRIPCION:	Inserta en el campo cuce
+        #AUTOR:	    Ismael Valdivia
+        #FECHA:		23-05-2022 09:00:00
+        ***********************************/
 
+        elsif(p_transaccion='MAT_INS_PAC_IME')then
+
+            begin
+
+                    update mat.tsolicitud  set
+                    nro_pac = v_parametros.pac,
+                    fecha_pac = v_parametros.fecha_pac,
+                    objeto_contratacion = v_parametros.objeto_contratacion
+                    where id_solicitud = v_parametros.id_solicitud;
+
+
+                    --Definicion de la respuesta
+                    v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se insertaron ajustes ');
+                    v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_parametros.id_solicitud::varchar);
+
+              --Devuelve la respuesta
+              return v_resp;
+
+            end;
 
 
 

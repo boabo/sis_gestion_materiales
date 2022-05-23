@@ -2444,6 +2444,13 @@ class ACTSolicitud extends ACTbase{
        $this->res->imprimirRespuesta($this->res->generarJson());
    }
 
+
+   function insertarPac(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->insertarPac($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+
    /*Aumetando el Formulario 3008 para que se genere en el ERP (Ismael Valdivia 17/05/200)*/
    function formulario3008 (){
        $this->objFunc=$this->create('MODSolicitud');

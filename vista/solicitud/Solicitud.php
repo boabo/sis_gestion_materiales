@@ -186,6 +186,17 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
 
+            this.addButton('bmodPAC', {
+                text: 'PAC',
+                grupo: [5],
+                iconCls: 'bengine',
+                disabled: false,
+                hidden:true,
+                handler: this.modPac,
+                tooltip: '<b>Modificar PAC</b><br/>Permite modificar el PAC de un trámite'
+            });
+
+
             this.bbar.el.dom.style.background='#03A27C';
     				this.tbar.el.dom.style.background='#03A27C';
     				this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#E9E9E9';
@@ -205,6 +216,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //     });
             // }
             this.crearFormCuce();
+            this.crearFormPac();
 
         },
 
@@ -1618,7 +1630,76 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo:1,
                 grid:true,
                 form:false
-            }
+            },
+
+            /*Aumentando los campos para el PAC (Ismael Valdivia 20/05/2022)*/
+            {
+                config:{
+                    name: 'nro_pac',
+                    fieldLabel: 'Nro. PAC',
+                    allowBlank: true,
+                    width: 200,
+                    gwidth: 100,
+                    maxLength:100
+                },
+                type:'TextField',
+                filters:{pfiltro:'sol.nro_pac',type:'string'},
+                id_grupo:10,
+                grid:false,
+                form:true,
+                bottom_filter:true
+            },
+
+            // {
+            //     config:{
+            //         name: 'fecha_pac',
+            //         fieldLabel: 'Fecha PAC',
+            //         allowBlank: true,
+            //         width: 200,
+            //         gwidth: 100,
+            //         maxLength:100
+            //     },
+            //     type:'TextField',
+            //     filters:{pfiltro:'sol.fecha_pac',type:'string'},
+            //     id_grupo:10,
+            //     grid:false,
+            //     form:true,
+            //     bottom_filter:true
+            // },
+            {
+                config:{
+                    name: 'fecha_pac',
+                    fieldLabel: 'Fecha PAC',
+                    allowBlank: false,
+                    width: 200,
+                    gwidth: 150,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'sol.fecha_pac',type:'date'},
+                id_grupo:10,
+                grid:false,
+                form:true
+            },
+
+            {
+                config:{
+                    name: 'objeto_contratacion',
+                    fieldLabel: 'Objeto de Contratación',
+                    allowBlank: true,
+                    width: 200,
+                    gwidth: 100,
+                    maxLength:100
+                },
+                type:'TextArea',
+                filters:{pfiltro:'sol.objeto_contratacion',type:'string'},
+                id_grupo:10,
+                grid:false,
+                form:true,
+                bottom_filter:true
+            },
+            /***************************************************************/
         ],
         tam_pag:50,
         title:'Solicitud',
@@ -1721,6 +1802,14 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'id_obligacion_pago', type: 'numeric'},
             {name:'nuevo_flujo', type: 'numeric'},
 
+            {name:'nro_pac', type: 'varchar'},
+            {name:'fecha_pac', type: 'date',dateFormat:'Y-m-d'},
+            {name:'objeto_contratacion', type: 'varchar'},
+
+            {name:'cuce', type: 'varchar'},
+            {name:'fecha_cuce', type: 'varchar'},
+            {name:'nro_confirmacion', type: 'varchar'},
+
 
         ],
         sortInfo:{
@@ -1750,6 +1839,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 layout: 'column',
                 border: false,
                 xtype: 'fieldset',
+                region: 'north',
                 autoScroll: false,
                 defaults: {
                     border: false
@@ -1776,6 +1866,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 title: '  Datos Generales ',
                                 border: false,
                                 autoHeight: true,
+                                collapsible: false,
                                 style:{
                                       background:'#5EDE82',
                                      },
@@ -1803,6 +1894,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 title: ' Justificacion de Necesidad ',
                                 //autoHeight: true,
                                 border: false,
+                                collapsible: false,
                                 style:{
                                       background:'#EEDE5A',
                                       //border:'2px solid green',
@@ -2654,6 +2746,12 @@ header("content-type: text/javascript; charset=UTF-8");
                         fieldLabel: 'CUCE'
                     },
                     {
+                        name: 'nro_confirmacion',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'Nro Confirmación'
+                    },
+                    {
                         name: 'fecha_publicacion_cuce',
                         xtype: 'datefield',
                         width: 150,
@@ -2678,7 +2776,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 margins: ' 10 10 10 10',
                 modal: true,
                 width: 400,
-                height: 150,
+                height: 250,
                 bodyStyle: 'padding:5px;',
                 buttonAlign: 'center',
                 layout: 'fit',
@@ -2709,6 +2807,82 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
 
+
+        crearFormPac: function () {
+            var me = this;
+            me.formPac = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'pac',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'CUCE'
+                    },
+                    {
+                        name: 'fecha_pac',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha PAC'
+
+                    },
+                    {
+                        name: 'objeto_contratacion',
+                        xtype: 'textarea',
+                        width: 150,
+                        fieldLabel: 'Objeto de Contratacion'
+                    },
+                    {
+                        xtype: 'field',
+                        name: 'id_solicitud',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    }
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowAjustesPac = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Registrar CUCE',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveAjustesPac,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarAjustesPac,
+                        scope: me
+                    }],
+                items: me.formPac,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+
         saveAjustes: function () {
             var me = this,
                 d = me.sm.getSelected().data;
@@ -2721,6 +2895,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 params: {
                     'id_solicitud': d.id_solicitud,
                     'cuce': me.formAjustes.getForm().findField('cuce').getValue(),
+                    'nro_confirmacion': me.formAjustes.getForm().findField('nro_confirmacion').getValue(),
                     'fecha_publicacion_cuce': me.formAjustes.getForm().findField('fecha_publicacion_cuce').getValue()
 
                 },
@@ -2730,6 +2905,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         },
+
+
+
         successAjustes: function (resp) {
             Phx.CP.loadingHide();
             this.windowAjustes.hide();
@@ -2746,14 +2924,79 @@ header("content-type: text/javascript; charset=UTF-8");
             this.windowAjustes.hide();
 
         },
+
+        onDeclinarAjustesPac: function () {
+            this.windowAjustesPac.hide();
+
+        },
+
+
+        successAjustesPac: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowAjustesPac.hide();
+            this.reload();
+
+        },
+
+        failureAjustesPac: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+
+        },
+
+        saveAjustesPac: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/insertarPac',
+                success: me.successAjustesPac,
+                failure: me.failureAjustesPac,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'pac': me.formPac.getForm().findField('pac').getValue(),
+                    'fecha_pac': me.formPac.getForm().findField('fecha_pac').getValue(),
+                    'objeto_contratacion': me.formPac.getForm().findField('objeto_contratacion').getValue()
+
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+
         modCuce: function () {
             this.windowAjustes.show();
             this.formAjustes.getForm().reset();
             var d = this.sm.getSelected().data;
+
+
             this.formAjustes.getForm().findField('cuce').show();
             this.formAjustes.getForm().findField('cuce').setValue(d.cuce);
+            this.formAjustes.getForm().findField('nro_confirmacion').show();
+            this.formAjustes.getForm().findField('nro_confirmacion').setValue(d.nro_confirmacion);
             this.formAjustes.getForm().findField('fecha_publicacion_cuce').show();
-            this.formAjustes.getForm().findField('fecha_publicacion_cuce').setValue(d.fecha_conclusion);
+            this.formAjustes.getForm().findField('fecha_publicacion_cuce').setValue(d.fecha_cuce);
+
+
+        },
+
+
+        modPac: function () {
+            this.windowAjustesPac.show();
+            this.formPac.getForm().reset();
+            var d = this.sm.getSelected().data;
+
+
+            this.formPac.getForm().findField('pac').show();
+            this.formPac.getForm().findField('pac').setValue(d.nro_pac);
+            this.formPac.getForm().findField('fecha_pac').show();
+            this.formPac.getForm().findField('fecha_pac').setValue(d.fecha_pac);
+            this.formPac.getForm().findField('objeto_contratacion').show();
+            this.formPac.getForm().findField('objeto_contratacion').setValue(d.objeto_contratacion);
 
 
         },

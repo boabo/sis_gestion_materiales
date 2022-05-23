@@ -117,6 +117,14 @@ class MODSolicitud extends MODbase
         $this->captura('remark', 'varchar');
         $this->captura('id_obligacion_pago', 'int4');
         $this->captura('nuevo_flujo', 'varchar');
+
+        $this->captura('nro_pac', 'varchar');
+        $this->captura('fecha_pac', 'date');
+        $this->captura('objeto_contratacion', 'varchar');
+
+        $this->captura('cuce', 'varchar');
+        $this->captura('fecha_cuce', 'varchar');
+        $this->captura('nro_confirmacion', 'varchar');
         /********************************************************************************/
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -251,6 +259,13 @@ class MODSolicitud extends MODbase
         $this->setParametro('tipo_de_adjudicacion', 'tipo_de_adjudicacion', 'varchar');
         $this->setParametro('remark', 'remark', 'text');
         /************************************************************/
+
+        /*Aumentando para mandar el PAC*/
+        $this->setParametro('nro_pac', 'nro_pac', 'varchar');
+        $this->setParametro('fecha_pac', 'fecha_pac', 'date');
+        $this->setParametro('objeto_contratacion', 'objeto_contratacion', 'varchar');
+
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -1891,7 +1906,7 @@ class MODSolicitud extends MODbase
       //var_dump("aqui llegada",$this->respuesta);
       //echo($this->consulta);exit;
       $this->ejecutarConsulta();
-      //var_dump("aqui llegada",$this->respuesta);
+      var_dump("aqui llegada",$this->respuesta);
       return $this->respuesta;
     }
     function conexionAlkym()
@@ -2310,7 +2325,31 @@ class MODSolicitud extends MODbase
         //Define los parametros para la funcion
         $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
         $this->setParametro('cuce', 'cuce', 'varchar');
+        $this->setParametro('nro_confirmacion', 'nro_confirmacion', 'varchar');
         $this->setParametro('fecha_publicacion_cuce', 'fecha_publicacion_cuce', 'date');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
+    function insertarPac()
+    {
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento = 'mat.ft_solicitud_ime';
+        $this->transaccion = 'MAT_INS_PAC_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('pac', 'pac', 'varchar');
+        $this->setParametro('objeto_contratacion', 'objeto_contratacion', 'varchar');
+        $this->setParametro('fecha_pac', 'fecha_pac', 'date');
 
 
         //Ejecuta la instruccion
@@ -2354,6 +2393,11 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_correo', 'varchar');
         $this->captura('nro_cotizacion', 'varchar');
         $this->captura('fecha_cotizacion_adju', 'varchar');
+        $this->captura('nro_po', 'varchar');
+        $this->captura('nro_confirmacion_cuce', 'varchar');
+        $this->captura('fecha_comite', 'varchar');
+        $this->captura('origen_pedido', 'varchar');
+        $this->captura('marcar', 'varchar');
 
 
         //Ejecuta la instruccion
