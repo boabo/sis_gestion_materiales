@@ -474,7 +474,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.iniciarEvento();
             Phx.vista.PedidosRepuestos.superclass.onButtonEdit.call(this);
             var data = this.getSelectedData();
-          
+
             if (this.store.baseParams.monto_pac > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
               Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '265px';
               Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '250px';
@@ -483,6 +483,10 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.nro_pac.allowBlank = false;
               this.Cmp.fecha_pac.allowBlank = false;
               this.Cmp.objeto_contratacion.allowBlank = false;
+
+              this.mostrarComponente(this.Cmp.nro_pac);
+              this.mostrarComponente(this.Cmp.fecha_pac);
+              this.mostrarComponente(this.Cmp.objeto_contratacion);
 
             }else{
               Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '520px';
@@ -494,6 +498,11 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.nro_pac.reset();
               this.Cmp.fecha_pac.reset();
               this.Cmp.objeto_contratacion.reset();
+
+              this.ocultarComponente(this.Cmp.nro_pac);
+              this.ocultarComponente(this.Cmp.fecha_pac);
+              this.ocultarComponente(this.Cmp.objeto_contratacion);
+
             }
 
 

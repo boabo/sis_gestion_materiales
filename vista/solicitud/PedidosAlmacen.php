@@ -493,6 +493,10 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.fecha_pac.allowBlank = false;
               this.Cmp.objeto_contratacion.allowBlank = false;
 
+              this.mostrarComponente(this.Cmp.nro_pac);
+              this.mostrarComponente(this.Cmp.fecha_pac);
+              this.mostrarComponente(this.Cmp.objeto_contratacion);
+
             }else{
               Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '520px';
               Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '520px';
@@ -503,6 +507,11 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.nro_pac.reset();
               this.Cmp.fecha_pac.reset();
               this.Cmp.objeto_contratacion.reset();
+
+
+              this.ocultarComponente(this.Cmp.nro_pac);
+              this.ocultarComponente(this.Cmp.fecha_pac);
+              this.ocultarComponente(this.Cmp.objeto_contratacion);
             }
 
             if (data.remark == '') {
