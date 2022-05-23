@@ -2818,7 +2818,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         name: 'pac',
                         xtype: 'field',
                         width: 150,
-                        fieldLabel: 'CUCE'
+                        fieldLabel: 'Nro Pac'
                     },
                     {
                         name: 'fecha_pac',
@@ -2847,7 +2847,7 @@ header("content-type: text/javascript; charset=UTF-8");
             // Definicion de la ventana que contiene al formulario
             me.windowAjustesPac = new Ext.Window({
                 // id:this.idContenedor+'_W',
-                title: 'Registrar CUCE',
+                title: 'Registrar PAC',
                 margins: ' 10 10 10 10',
                 modal: true,
                 width: 400,
