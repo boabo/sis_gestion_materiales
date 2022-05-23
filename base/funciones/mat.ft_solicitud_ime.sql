@@ -355,16 +355,16 @@ END IF;
         --raise exception 'llega datos aqui %',v_parametros.id_depto;
 
         IF (substr(v_nro_tramite,1,2)='GM')THEN
-          v_nro_cite_dce = 'OB.DAB.DCE.GM.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+          v_nro_cite_dce = 'OB.DAB.DCE.GM.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         ELSIF (substr(v_nro_tramite,1,2)='GA')THEN
-          v_nro_cite_dce = 'OB.DAB.DCE.GA.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+          v_nro_cite_dce = 'OB.DAB.DCE.GA.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         ELSIF (substr(v_nro_tramite,1,2)='GO')THEN
-          v_nro_cite_dce = 'OB.DAB.DCE.GO.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+          v_nro_cite_dce = 'OB.DAB.DCE.GO.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         ELSIF (substr(v_nro_tramite,1,2)='GC')THEN
-          v_nro_cite_dce = 'OB.DAB.DCE.GC.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+          v_nro_cite_dce = 'OB.DAB.DCE.GC.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         /*Incluimos a los BoA REP (Ismael Valdivia 05/05/2020)*/
         ELSIF (substr(v_nro_tramite,1,2)='GR')THEN
-          v_nro_cite_dce = 'OB.DAB.DCE.GR.'||ltrim(substr(v_num_tramite,7,6),'0')||'.'||substr(v_num_tramite,14,17);
+          v_nro_cite_dce = 'OB.DAB.DCE.GR.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         /******************************************************/
         END IF;
 
