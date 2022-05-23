@@ -175,15 +175,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Revertir/Incrementar  presupuestos,  permite ver la evolucón presupuestaria y revertir parcialmente</b>'
             });
 
-            this.addButton('bmodCuce', {
-                text: 'CUCE',
-                grupo: [5],
-                iconCls: 'bengine',
-                disabled: false,
-                hidden:true,
-                handler: this.modCuce,
-                tooltip: '<b>Modificar CUCE</b><br/>Permite modificar el CUCE de un trámite'
-            });
+
 
 
             this.addButton('bmodPAC', {
@@ -194,6 +186,17 @@ header("content-type: text/javascript; charset=UTF-8");
                 hidden:true,
                 handler: this.modPac,
                 tooltip: '<b>Modificar PAC</b><br/>Permite modificar el PAC de un trámite'
+            });
+
+
+            this.addButton('bmodCuce', {
+                text: 'CUCE',
+                grupo: [5],
+                iconCls: 'bengine',
+                disabled: false,
+                hidden:true,
+                handler: this.modCuce,
+                tooltip: '<b>Modificar CUCE</b><br/>Permite modificar el CUCE de un trámite'
             });
 
 
