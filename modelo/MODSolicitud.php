@@ -1906,7 +1906,7 @@ class MODSolicitud extends MODbase
       //var_dump("aqui llegada",$this->respuesta);
       //echo($this->consulta);exit;
       $this->ejecutarConsulta();
-      var_dump("aqui llegada",$this->respuesta);
+      //var_dump("aqui llegada",$this->respuesta);
       return $this->respuesta;
     }
     function conexionAlkym()
@@ -2169,6 +2169,7 @@ class MODSolicitud extends MODbase
         $this->captura('revisado', 'varchar');
         $this->captura('aumentar_condicion', 'varchar');
         $this->captura('tipo_pedido', 'varchar');
+        $this->captura('firma_almacen', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
