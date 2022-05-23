@@ -31,7 +31,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.font();
             this.Grupos[0].items.push( {
               xtype: 'fieldset',
-              id:'datos_pac_rep',
+              id:'datos_pac_op',
               hidden:true,
               style:{
                     background:'#E1EC00',
@@ -63,7 +63,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },{
                       xtype: 'fieldset',
                       autoScroll: false,
-                      id:'datos_adquisiciones_rep',
+                      id:'datos_adquisiciones_op',
                       style:{
                             background:'#FFB09C',
                             width:'330px',
@@ -91,7 +91,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     },
                     {
                               xtype: 'fieldset',
-                              id:'datos_comite_rep',
+                              id:'datos_comite_op',
                               style:{
                                     background:'#81D3FF',
                                     width:'330px',
@@ -459,10 +459,10 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.PedidosOperacion.superclass.onButtonEdit.call(this);
 
             if (this.store.baseParams.monto_pac > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
-              Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '265px';
-              Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '250px';
+              Ext.getCmp('datos_adquisiciones_op').el.dom.style.minHeight = '265px';
+              Ext.getCmp('datos_comite_op').el.dom.style.minHeight = '250px';
 
-              Ext.getCmp('datos_pac_rep').show();
+              Ext.getCmp('datos_pac_op').show();
               this.Cmp.nro_pac.allowBlank = false;
               this.Cmp.fecha_pac.allowBlank = false;
               this.Cmp.objeto_contratacion.allowBlank = false;
@@ -473,9 +473,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             }else{
-              Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '520px';
-              Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '520px';
-              Ext.getCmp('datos_pac_rep').hide();
+              Ext.getCmp('datos_adquisiciones_op').el.dom.style.minHeight = '520px';
+              Ext.getCmp('datos_comite_op').el.dom.style.minHeight = '520px';
+              Ext.getCmp('datos_pac_op').hide();
               this.Cmp.nro_pac.allowBlank = true;
               this.Cmp.fecha_pac.allowBlank = true;
               this.Cmp.objeto_contratacion.allowBlank = true;
