@@ -65,7 +65,7 @@ class RConformidadActaFinal extends  ReportePDF
           $cargo_jefe_abastecimiento = '';
           $oficina_jefe_abastecimiento = '';
 
-          $encargado_almacen = '';
+          $encargado_almacen = 'PENDIENTE DE REVISIÓN';
           $cargo_encargado_almacen = '';
           $oficina_encargado_almacen = '';
 
@@ -134,7 +134,7 @@ class RConformidadActaFinal extends  ReportePDF
         }else{
           $url_firma = $this->generarImagen($nombre_solicitante, $cargo,$oficina,$fecha_conformidad_final);
           $url_firma_jefe_abastecimiento = $this->generarImagen($nombre_jefe_abastecimiento, $cargo_jefe_abastecimiento,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
-          $url_firma_encargado_almacen = $this->generarImagen($encargado_almacen, $cargo_encargado_almacen,$oficina_jefe_abastecimiento,$fecha_conformidad_final);
+          $url_firma_encargado_almacen = $this->generarImagen($encargado_almacen, $cargo_encargado_almacen,$oficina,$fecha_conformidad_final);
 
         }
 
@@ -146,10 +146,37 @@ class RConformidadActaFinal extends  ReportePDF
         if (empty($this->datos['nro_po']) and empty($this->datos[0]['nro_po'])) {
             $columanPo = '';
         } else {
+
+          if ($this->datos[0]['firma_almacen'] == 'si') {
+
+            if ($this->datos[0]['tipo_pedido'] == 'Reparación de Repuestos') {
+              $columanPo = '  <tr>
+                                <td width="50%"> <b>Nro REP:  </b>' . $this->datos[0]['nro_po'] . '<br></td>
+                                <td width="50%"> <b>Fecha REP:  </b>' . $this->datos[0]['fecha_po'] . '<br></td>
+                              </tr>';
+            } else {
+              if ($this->datos[0]['tipo_evaluacion'] == 'Flat Exchange' || $this->datos[0]['tipo_evaluacion'] == 'Exchange') {
+                $columanPo = '  <tr>
+                                  <td width="50%"> <b>Nro EO:  </b>' . $this->datos[0]['nro_po'] . '<br></td>
+                                  <td width="50%"> <b>Fecha EO:  </b>' . $this->datos[0]['fecha_po'] . '<br></td>
+                                </tr>';
+              } else {
+                $columanPo = '  <tr>
+                	<td width="50%"> <b>Nro PO:  </b>' . $this->datos[0]['nro_po'] . '<br></td>
+                	<td width="50%"> <b>Fecha PO:  </b>' . $this->datos[0]['fecha_po'] . '<br></td>
+                </tr>';
+              }
+
+            }
+          }else{
             $columanPo = '  <tr>
             	<td width="50%"> <b>Nro PO:  </b>' . $this->datos[0]['nro_po'] . '<br></td>
             	<td width="50%"> <b>Fecha PO:  </b>' . $this->datos[0]['fecha_po'] . '<br></td>
             </tr>';
+          }
+
+
+
         }
 
 
@@ -233,25 +260,62 @@ class RConformidadActaFinal extends  ReportePDF
                                   <br><br>
                                   En conformidad de lo anteriormente mencionado firmo a continuación:
                                   </td>
-                                </tr>
+                                </tr>';
+                          if($this->datos[0]['firma_almacen'] == 'si'){
+                            $html.= '  <tr>
+                                          <td width="50%" align="center"  colspan="2">
+                                              <b>Técnico Abastecimiento:</b>
+                                          </td>
 
-                                <tr>
-                                    <td width="100%" align="center"  colspan="2">
-                                      <b>Técnico Abastecimiento:</b>
-                                    </td>
-                                </tr>
+                                          <td width="50%" align="center"  colspan="2">
+                                            <b>Encargado Almacen:</b>
+                                          </td>
 
-                              <tr>
-                                  <td width="100%" align="center"  colspan="2">   <br><br>
-                                      <img  style="width: 80px;" src="'.$url_firma.'" alt="Logo">
-                                      <br>
-                                      <br>
-                                        '.$nombre_usuario_firma.'
-                                      <br>
+
+                                      </tr>
+
+                                      <tr>
+
+                                          <td width="50%" align="center"  colspan="2">   <br><br>
+                                              <img  style="width: 80px;" src="'.$url_firma.'" alt="Logo">
+                                              <br>
+                                              <br>
+                                              '.$nombre_usuario_firma.'
+                                              <br>
+                                          </td>
+
+                                          <td width="50%" align="center"  colspan="2">   <br><br>
+                                              <img  style="width: 80px;" src="'.$url_firma_encargado_almacen.'" alt="Logo">
+                                              <br>
+                                              <br>
+                                                '.$encargado_almacen.'
+                                              <br>
+                                          </td>
+
+
+
+
+                                      </tr>';
+                          }else{
+                            $html.= '  <tr>
+                                  <td width="100%" align="center"  colspan="2">
+                                    <b>Técnico Abastecimiento:</b>
                                   </td>
                               </tr>
 
-                              <tr>
+                            <tr>
+                                <td width="100%" align="center"  colspan="2">   <br><br>
+                                    <img  style="width: 80px;" src="'.$url_firma.'" alt="Logo">
+                                    <br>
+                                    <br>
+                                      '.$nombre_usuario_firma.'
+                                    <br>
+                                </td>
+                            </tr>';
+                          }
+
+
+                            $html.= '  <tr>
                                   <td width="100%"> <b>Observaciones:  </b>'.$observaciones.'<br></td>
                                 </tr>
                           </table>

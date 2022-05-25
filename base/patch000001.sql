@@ -1082,3 +1082,11 @@ ALTER TABLE mat.tsolicitud
 COMMENT ON COLUMN mat.tsolicitud.nro_confirmacion
 IS 'Nro de confirmacion del formulario 400';
 /***********************************F-SCP-IRVA-MAT-0-23/05/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-25/05/2022****************************************/
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN fecha_3008 DATE;
+
+COMMENT ON COLUMN mat.tsolicitud.fecha_3008
+IS 'fecha que se mostrará en el reporte al momento de imprimir';
+/***********************************F-SCP-IRVA-MAT-0-25/05/2022****************************************/

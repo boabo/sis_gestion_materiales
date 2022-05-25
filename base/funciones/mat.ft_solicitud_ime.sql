@@ -4652,6 +4652,31 @@ END IF;
 
             end;
 
+    	/*********************************
+        #TRANSACCION:  'MAT_INS_FEC_3008_IME'
+        #DESCRIPCION:	Inserta fecha del Formulario 3008
+        #AUTOR:	    Ismael Valdivia
+        #FECHA:		25-05-2022 11:20:32
+        ***********************************/
+
+        elsif(p_transaccion='MAT_INS_FEC_3008_IME')then
+
+            begin
+
+                    update mat.tsolicitud  set
+                    fecha_3008 = v_parametros.fecha_form_3008
+                    where id_solicitud = v_parametros.id_solicitud;
+
+
+                    --Definicion de la respuesta
+                    v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se insertaron ajustes ');
+                    v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_parametros.id_solicitud::varchar);
+
+              --Devuelve la respuesta
+              return v_resp;
+
+            end;
+
 
 
 else

@@ -568,6 +568,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
                   this.Cmp.id_matricula.store.baseParams.flota = '';
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
+                    this.mostrarComponente(this.Cmp.motivo_solicitud);
                     /*Ocultando los nuevos campos para repuestos*/
                     this.ocultarComponente(this.Cmp.nro_po);
                     //this.ocultarComponente(this.Cmp.fecha_po);
@@ -635,6 +636,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
                   this.Cmp.id_matricula.store.baseParams.flota = '';
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
+                  this.mostrarComponente(this.Cmp.motivo_solicitud);
                   /*Ocultando los nuevos campos para repuestos*/
                   this.ocultarComponente(this.Cmp.nro_po);
                   //this.ocultarComponente(this.Cmp.fecha_po);
@@ -642,6 +644,7 @@ header("content-type: text/javascript; charset=UTF-8");
                   this.Cmp.nro_po.allowBlank = true;
                   //this.Cmp.fecha_po.allowBlank = true;
                   this.Cmp.nro_lote.allowBlank = true;
+                  this.Cmp.id_matricula.allowBlank = false;
                   /********************************************/
                   this.detCmp.id_centro_costo.store.baseParams.id_centro_costo = '';
 
@@ -702,6 +705,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
                   this.Cmp.id_matricula.store.baseParams.flota = '';
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
+                  this.mostrarComponente(this.Cmp.motivo_solicitud);
                   /*Ocultando los nuevos campos para repuestos*/
                   this.ocultarComponente(this.Cmp.nro_po);
                   //this.ocultarComponente(this.Cmp.fecha_po);
@@ -769,6 +773,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 if(this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
                     this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                     this.Cmp.id_matricula.store.baseParams.flota = '';
+                    this.mostrarComponente(this.Cmp.motivo_solicitud);
                     /*Ocultando los nuevos campos para repuestos*/
                     this.ocultarComponente(this.Cmp.nro_po);
                   //  this.ocultarComponente(this.Cmp.fecha_po);
@@ -876,7 +881,7 @@ header("content-type: text/javascript; charset=UTF-8");
                   this.Cmp.tipo_falla.allowBlank = true;
                   this.Cmp.nro_justificacion.allowBlank = true;
                   this.Cmp.justificacion.allowBlank = true;
-                  this.Cmp.id_matricula.allowBlank = true;
+                  this.Cmp.id_matricula.allowBlank = false;
                   this.Cmp.nro_no_rutina.allowBlank = true;
                   this.Cmp.mel.allowBlank = true;
                   this.Cmp.fecha_requerida.allowBlank = true;
@@ -2191,7 +2196,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             else if(ma.Cmp.nro_justificacion.getValue() != nro_justificacion || ma.detCmp.nro_parte.getValue() != nro_parte && ma.Cmp.id_matricula.getValue()==''){
                                 Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                             } else {
-                              Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);                              
+                              Phx.vista.FromFormula.superclass.onSubmit.call(this,o,undefined, true);
                             }
                         },
                         failure: this.conexionFailure,

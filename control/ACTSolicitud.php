@@ -2487,6 +2487,12 @@ class ACTSolicitud extends ACTbase{
        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
    }
+
+   function insertarFecha3008(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->insertarFecha3008($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
    /***************************************************************************************/
 
 }

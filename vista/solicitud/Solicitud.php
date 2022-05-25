@@ -95,14 +95,14 @@ header("content-type: text/javascript; charset=UTF-8");
             /****************************************/
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
-                grupo: [0,1,2,3,4,5,6,7,50,51],
+                grupo: [0,1,2,3,4,5,6,7,50,51,52],
                 iconCls: 'bchecklist',
                 disabled: true,
                 handler: this.loadCheckDocumentosRecWf,
                 tooltip: '<b>Documentos </b><br/>Subir los documetos requeridos.'
             });
             this.addButton('btnObs',{
-                grupo:[2,3,4,50,51],
+                grupo:[2,3,4,50,51,52],
                 text :'Obs Wf.',
                 iconCls : 'bchecklist',
                 disabled: true,
@@ -176,7 +176,15 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
 
-
+            this.addButton('bspacio1', {
+                text : '                        ',
+                grupo: [5],
+                //iconCls: 'bengine',
+                disabled: true,
+                hidden:false,
+                //handler: this.modPac,
+                //tooltip: '<b>Modificar PAC</b><br/>Permite modificar el PAC de un trámite'
+            });
 
             this.addButton('bmodPAC', {
                 text: 'PAC',
@@ -200,6 +208,17 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
 
+            this.addButton('bfecha_impresion_Form3008', {
+                text: 'Fecha 3008',
+                grupo: [5],
+                iconCls: 'bcalendar',
+                disabled: false,
+                hidden:true,
+                handler: this.modFecha3008,
+                tooltip: '<b>Modificar Fecha Impresión'
+            });
+
+
             this.bbar.el.dom.style.background='#03A27C';
     				this.tbar.el.dom.style.background='#03A27C';
     				this.grid.body.dom.firstChild.firstChild.firstChild.firstChild.style.background='#E9E9E9';
@@ -220,6 +239,7 @@ header("content-type: text/javascript; charset=UTF-8");
             // }
             this.crearFormCuce();
             this.crearFormPac();
+            this.crearFormFecha3008();
 
         },
 
@@ -305,12 +325,14 @@ header("content-type: text/javascript; charset=UTF-8");
                             return  '<div><p><b>Tramite: </b><font color="'+color+'">'+record.data['nro_tramite']+' </font><font color="'+color+'">'+record.data['tipo']+'</font></p>' +
                                 '<p><b>Fecha Sol: </b><font color="'+color+'"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</b></font></p>' +
                                 '<p><b>Funcionario Solicitante: </b><font color="'+color+'">'+ record.data['funcionario_solicitante']+'</font></p>' +
-                                '<p><b>Técnico Solicitante: </b><font color="'+color+'">'+ record.data['desc_funcionario1'] +'</font></div>';
+                                '<p><b>Técnico Solicitante: </b><font color="'+color+'">'+ record.data['desc_funcionario1'] +'</font></p>'+
+                                '<p><b>Técnico Administrativo: </b><font color="'+color+'">'+ record.data['funcionario_administrativo'] +'</font></p></div>';
                         }else{
                             return  '<div><p><b>Tramite: </b><font color="'+color+'"><b>'+record.data['nro_tramite']+'</b></font></p>' +
                                 '<p><b>Fecha Sol.: </b><font color="'+color+'"><b>'+ record.data['fecha_solicitud'].dateFormat('d/m/Y') +'</font></p>' +
                                 '<p><b>Funcionario Solicitante: </b><font color="'+color+'">'+ record.data['funcionario_solicitante']+'</font></p>' +
-                                '<p><b>Técnico Solicitante: </b><font color="'+color+'">'+ record.data['desc_funcionario1'] +'</font></div>';
+                                '<p><b>Técnico Solicitante: </b><font color="'+color+'">'+ record.data['desc_funcionario1'] +'</font></p>'+
+                                '<p><b>Técnico Administrativo: </b><font color="'+color+'">'+ record.data['funcionario_administrativo'] +'</font></p></div>';
 
                         }
                     }
@@ -1275,7 +1297,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         data :	[
                             ['1','Compra'],
                             ['2','Reparacion'],
-                            ['3','Exchange'],
+                            //['3','Exchange'],
                             ['4','Flat Exchange'],
                             ['5','Calibracion']
                         ]
@@ -1815,6 +1837,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'cuce', type: 'varchar'},
             {name:'fecha_cuce', type: 'varchar'},
             {name:'nro_confirmacion', type: 'varchar'},
+            {name:'fecha_3008', type: 'varchar'},
+            {name:'funcionario_administrativo', type: 'varchar'},
 
 
         ],
@@ -2990,6 +3014,112 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
 
+
+        modFecha3008: function () {
+            this.windowFecha3008.show();
+            this.formFecha3008.getForm().reset();
+            var d = this.sm.getSelected().data;
+
+
+            this.formFecha3008.getForm().findField('fecha_form_3008').show();
+            this.formFecha3008.getForm().findField('fecha_form_3008').setValue(d.fecha_3008);
+
+
+        },
+
+
+        crearFormFecha3008: function () {
+            var me = this;
+            me.formFecha3008 = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'fecha_form_3008',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha Formulario'
+                    }
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowFecha3008 = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Fecha del Formulario 3008',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveForm3008,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarForm3008,
+                        scope: me
+                    }],
+                items: me.formFecha3008,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+        saveForm3008: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/insertarFecha3008',
+                success: me.successform3008,
+                failure: me.failureform3008,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'fecha_form_3008': me.formFecha3008.getForm().findField('fecha_form_3008').getValue()
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+        onDeclinarForm3008: function () {
+            this.windowFecha3008.hide();
+        },
+
+
+        successform3008: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowFecha3008.hide();
+            this.reload();
+
+        },
+
+        failureform3008: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+
+        },
 
         modPac: function () {
             this.windowAjustesPac.show();

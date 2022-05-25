@@ -56,6 +56,8 @@ DECLARE
     v_id_solicitud			integer;
     v_origen_pedido			varchar;
     v_aplica_cambio			varchar;
+    v_firma_almacen			varchar;
+    v_tipo_evaluacion		varchar;
 BEGIN
 
 	v_nombre_funcion = 'mat.ft_acta_conformidad_final_sel';
@@ -75,7 +77,7 @@ BEGIN
 	if(p_transaccion='MAT_REP_ACTA_CONFOR')then
 
     	begin
-        	select sol.fecha_solicitud, sol.origen_pedido into v_fecha_solicitud, v_origen_pedido
+        	select sol.fecha_solicitud, sol.origen_pedido, sol.tipo_evaluacion into v_fecha_solicitud, v_origen_pedido, v_tipo_evaluacion
             from mat.tsolicitud sol
             where sol.id_proceso_wf = v_parametros.id_proceso_wf;
 
@@ -181,6 +183,13 @@ BEGIN
             	v_aplica_cambio = 'no';
             end if;
 
+            v_firma_almacen = '';
+            if (v_fecha_conformidad::date >= '01/05/2022'::date) then
+            	v_firma_almacen = 'si';
+            else
+            	v_firma_almacen = 'no';
+            end if;
+
 
 
     		--Sentencia de la consulta
@@ -198,22 +207,24 @@ BEGIN
                                 fun.nombre_cargo::varchar,
                                 ofi.nombre as oficina_nombre,
                                 /*Firma de jefe abastecimiento*/
-                                '''||v_nombre_jefe_abastecimiento||'''::varchar as jefe_abastecimiento,
-                                '''||v_cargo_jefe_abastecimiento||'''::varchar as cargo_jefe_abastecimiento,
+                                '''||COALESCE(v_nombre_jefe_abastecimiento,'')||'''::varchar as jefe_abastecimiento,
+                                '''||COALESCE(v_cargo_jefe_abastecimiento,'')||'''::varchar as cargo_jefe_abastecimiento,
                                 ''''::varchar as oficina_abastecimiento,
                                 /******************************/
 
                                  /*Firma encargado almacen*/
-                                '''||v_funcionario_encargado_almacen||'''::varchar as encargado_almacen,
-                                '''||v_cargo_encargado_almacen||'''::varchar as cargo_encargado_almacen,
+                                '''||COALESCE(v_funcionario_encargado_almacen,'')||'''::varchar as encargado_almacen,
+                                '''||COALESCE(v_cargo_encargado_almacen,'')||'''::varchar as cargo_encargado_almacen,
                                 ''''::varchar as oficina_encargado_almacen,
-                                '''||v_aplica_nuevo_flujo||'''::varchar as aplica_nuevo_flujo,
+                                '''||COALESCE(v_aplica_nuevo_flujo,'')||'''::varchar as aplica_nuevo_flujo,
                                 /******************************/
 
 								acta.revisado,
 
-                                '''||v_aplica_cambio||'''::varchar as aplica_cambio,
-                                '''||v_origen_pedido||'''::varchar as origen_pedido
+                                '''||COALESCE(v_aplica_cambio,'')||'''::varchar as aplica_cambio,
+                                '''||COALESCE(v_origen_pedido,'')||'''::varchar as origen_pedido,
+                                '''||COALESCE(v_firma_almacen,'')||'''::varchar as firma_almacen,
+                                '''||COALESCE(v_tipo_evaluacion,'')||'''::varchar as tipo_evaluacion
 
                           from mat.tsolicitud sol
                           left join param.vproveedor2 pro on pro.id_proveedor = sol.id_proveedor
@@ -227,6 +238,7 @@ BEGIN
                           where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
 
 			--Devuelve la respuesta
+            raise notice '%',v_consulta;
 			return v_consulta;
 
 		end;

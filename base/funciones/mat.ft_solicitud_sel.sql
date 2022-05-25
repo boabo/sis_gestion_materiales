@@ -359,6 +359,17 @@ DECLARE
     v_fecha_comite_form				varchar;
     v_anio							varchar;
     v_marcar						varchar;
+    v_fecha_cotizacion_recu			varchar;
+    v_nro_cotizacion_recu			text;
+    v_monto_total_bs				numeric;
+    v_fecha_3008					varchar;
+
+
+    v_dia_3008  					varchar;
+    v_anio_3008     				varchar;
+    v_mes_3008						varchar;
+    v_mes_literal					varchar;
+    v_fecha_formateada				varchar;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -588,7 +599,20 @@ v_consulta:='select		sol.id_solicitud,
 
                                 sol.cuce::varchar,
                                 to_char(sol.fecha_publicacion_cuce,''DD/MM/YYYY'')::varchar,
-                                sol.nro_confirmacion::varchar
+                                sol.nro_confirmacion::varchar,
+                                to_char(sol.fecha_3008,''DD/MM/YYYY'')::varchar,
+
+                                /*Aumentando lo del tecnico administrativo*/
+                                COALESCE((SELECT
+                                     vf.desc_funcionario1
+                                FROM wf.testado_wf twf
+                                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                                WHERE twf.id_proceso_wf = sol.id_proceso_wf AND te.codigo = ''cotizacion''
+                                GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg
+                                ORDER BY  twf.fecha_reg DESC
+                                limit 1),'''')::varchar as desc_funcionario_administrativo
+                                /*************************************************************/
 
                                 from mat.tsolicitud sol
                                 inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
@@ -4459,11 +4483,23 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
             and detcot.cd = 'B.E.R.';
 
+            /*Aumentando para que tomemos el part number cotizacion a partir del 1ro de Mayo
+            a solicitud de Veronica Vargas (Ismael Valdivia 24/05/2022)*/
+            select cot.fecha_cotizacion into v_fecha_cotizacion_recu
+            from mat.tcotizacion cot
+            inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+            left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
+            where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+            /*******************************************************************************/
+
+
             /*Recuperamos datos del detalle de solicitud Cotizacion*/
 
             /*Aumentando para poner condicion de flat exchange (Ismael Valdivia 08/02/2022)*/
             if ((v_tipo_evaluacion = 'Flat Exchange' OR v_tipo_evaluacion = 'Exchange') and (v_existe_bear = 0)) then
-            	select list(detcot.nro_parte_cot),
+
+                if (v_fecha_cotizacion_recu::date >= '01/05/2022') then
+                	select list(detcot.explicacion_detallada_part_cot),
                       list(detcot.nro_parte_alterno_cot),
                       list(detcot.cantidad_det::varchar),
                       array_to_string(pxp.aggarray(detcot.descripcion_cot),'|')::varchar,--list(detcot.descripcion_cot),
@@ -4488,6 +4524,34 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
                 left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
                 where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+                else
+                	select list(detcot.nro_parte_cot),
+                      list(detcot.nro_parte_alterno_cot),
+                      list(detcot.cantidad_det::varchar),
+                      array_to_string(pxp.aggarray(detcot.descripcion_cot),'|')::varchar,--list(detcot.descripcion_cot),
+                      list(detcot.referencia_cot),
+                      list(detcot.cd),
+                      list(COALESCE (detcot.precio_unitario,0)::varchar),
+                      list(COALESCE (detcot.precio_unitario_mb,0)::varchar),
+                      list(COALESCE(detcot.id_detalle,0)::varchar),
+                      list(COALESCE( NULLIF(detsol.referencia,'') ,'/'))
+                       INTO
+                       v_num_part,
+                       v_num_part_alt,
+                       v_cantidad,
+                       v_descripcion,
+                       v_serial,
+                       v_cd,
+                       v_precio_unitario,
+                       v_precio_total,
+                       v_id_detalle,
+                       v_serial_original
+                from mat.tcotizacion cot
+                inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+                left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
+                where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+                end if;
+
             else
             	select list(detcot.nro_parte_cot),
                       list(detcot.nro_parte_alterno_cot),
@@ -4772,29 +4836,67 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             end if;
 
             /*Recuperamos datos del detalle de solicitud Cotizacion*/
-            select list (detcot.nro_parte_cot),
-                   list (detcot.nro_parte_alterno_cot),
-                   list (detcot.cantidad_det::varchar),
-                   array_to_string(pxp.aggarray(detcot.descripcion_cot),'|')::varchar,--list (detcot.descripcion_cot),
-                   list (detcot.referencia_cot),
-                   list (detcot.cd),
-                   list (COALESCE (detcot.precio_unitario,0)::varchar),
-                   list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
-                   to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
-                   INTO
-                   v_num_part,
-                   v_num_part_alt,
-                   v_cantidad,
-                   v_descripcion,
-                   v_serial,
-                   v_cd,
-                   v_precio_unitario,
-                   v_precio_total,
-                   v_fecha_cotizacion_oficial
-            from mat.tcotizacion cot
-            inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
-            where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
-			group by cot.fecha_cotizacion;
+
+
+             /*Aumentando para que tomemos el part number cotizacion a partir del 1ro de Mayo
+              a solicitud de Veronica Vargas (Ismael Valdivia 24/05/2022)*/
+              select cot.fecha_cotizacion into v_fecha_cotizacion_recu
+              from mat.tcotizacion cot
+              inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+              left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
+              where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
+              /*******************************************************************************/
+            if (v_fecha_cotizacion_recu::date >= '01/05/2022' and (v_evaluacion = 'Exchange' or v_evaluacion = 'Flat Exchange')) then
+                      select list (detcot.explicacion_detallada_part_cot),
+                         list (detcot.nro_parte_alterno_cot),
+                         list (detcot.cantidad_det::varchar),
+                         array_to_string(pxp.aggarray(detcot.descripcion_cot),'|')::varchar,--list (detcot.descripcion_cot),
+                         list (detcot.referencia_cot),
+                         list (detcot.cd),
+                         list (COALESCE (detcot.precio_unitario,0)::varchar),
+                         list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
+                         to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
+                         INTO
+                         v_num_part,
+                         v_num_part_alt,
+                         v_cantidad,
+                         v_descripcion,
+                         v_serial,
+                         v_cd,
+                         v_precio_unitario,
+                         v_precio_total,
+                         v_fecha_cotizacion_oficial
+                  from mat.tcotizacion cot
+                  inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+                  where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
+                  group by cot.fecha_cotizacion;
+            else
+                  select list (detcot.nro_parte_cot),
+                         list (detcot.nro_parte_alterno_cot),
+                         list (detcot.cantidad_det::varchar),
+                         array_to_string(pxp.aggarray(detcot.descripcion_cot),'|')::varchar,--list (detcot.descripcion_cot),
+                         list (detcot.referencia_cot),
+                         list (detcot.cd),
+                         list (COALESCE (detcot.precio_unitario,0)::varchar),
+                         list (COALESCE (detcot.precio_unitario_mb,0)::varchar),
+                         to_char(cot.fecha_cotizacion,'DD/MM/YYYY')::varchar
+                         INTO
+                         v_num_part,
+                         v_num_part_alt,
+                         v_cantidad,
+                         v_descripcion,
+                         v_serial,
+                         v_cd,
+                         v_precio_unitario,
+                         v_precio_total,
+                         v_fecha_cotizacion_oficial
+                  from mat.tcotizacion cot
+                  inner join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion
+                  where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si'
+                  group by cot.fecha_cotizacion;
+            end if;
+
+
 
              if (v_num_part is null) then
             	v_num_part = '';
@@ -6726,7 +6828,21 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                        to_char(sol.fecha_pac,'DD/MM/YYYY'),
                        to_char(sol.fecha_respaldo_precio_referencial,'DD/MM/YYYY'),
                        sol.nro_po,
-                       sol.nro_confirmacion
+                       sol.nro_confirmacion,
+                       (CASE
+                         WHEN substr(sol.nro_tramite::text, 1, 2) = 'GM'::text THEN 'GM - '::
+                           text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+                         WHEN substr(sol.nro_tramite::text, 1, 2) = 'GA'::text THEN 'GA - '::
+                           text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+                         WHEN substr(sol.nro_tramite::text, 1, 2) = 'GO'::text THEN 'GO - '::
+                           text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+                         WHEN substr(sol.nro_tramite::text, 1, 2) = 'GC'::text THEN 'GC - '::
+                           text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+                         WHEN substr(sol.nro_tramite::text, 1, 2) = 'GR'::text THEN 'GR - '::
+                           text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+                         ELSE 'SIN GERENCIA'::text
+                       END) AS nro_cotizacion,
+                       sol.fecha_3008
 
                 INTO
                 	   v_nro_cuce,
@@ -6743,11 +6859,59 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                        v_fecha_pac,
                        v_fecha_precio_referencial,
                        v_nro_po_recup,
-                       v_nro_confirmacion_cuce
+                       v_nro_confirmacion_cuce,
+                       v_nro_cotizacion_recu,
+                       v_fecha_3008
                 from mat.tsolicitud sol
                 --inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
                 where sol.id_proceso_wf = v_parametros.id_proceso_wf;
                 /***********************/
+
+
+
+            	/*Aumentamos para hacer el formato de la fecha del reporte*/
+                if (v_fecha_3008 is not null) then
+                	SELECT EXTRACT(DAY FROM v_fecha_3008::date) INTO v_dia_3008;
+
+                	SELECT EXTRACT(YEAR FROM v_fecha_3008::date) INTO v_anio_3008 ;
+
+                    SELECT EXTRACT(MONTH FROM v_fecha_3008::date) INTO v_mes_3008;
+
+
+                    if (v_mes_3008 = '1') THEN
+                    	v_mes_literal = 'Enero';
+                    elsif (v_mes_3008 = '2') then
+                    	v_mes_literal = 'Febrero';
+                    elsif (v_mes_3008 = '3') then
+                    	v_mes_literal = 'Marzo';
+                    elsif (v_mes_3008 = '4') then
+                    	v_mes_literal = 'Abril';
+                    elsif (v_mes_3008 = '5') then
+                    	v_mes_literal = 'Mayo';
+                    elsif (v_mes_3008 = '6') then
+                    	v_mes_literal = 'Junio';
+                    elsif (v_mes_3008 = '7') then
+                    	v_mes_literal = 'Julio';
+                    elsif (v_mes_3008 = '8') then
+                    	v_mes_literal = 'Agosto';
+                    elsif (v_mes_3008 = '9') then
+                    	v_mes_literal = 'Septiembre';
+                    elsif (v_mes_3008 = '10') then
+                    	v_mes_literal = 'Octubre';
+                    elsif (v_mes_3008 = '11') then
+                    	v_mes_literal = 'Noviembre';
+                    elsif (v_mes_3008 = '12') then
+                    	v_mes_literal = 'Diciembre';
+                    ELSE
+                    	v_mes_literal = '';
+                	end if;
+
+                v_fecha_formateada = v_dia_3008||' '||v_mes_literal||' '||v_anio_3008;
+
+
+                end if;
+                /**********************************************************/
+
 
 
             	select sum(cotdet.precio_unitario_mb) into v_monto_total
@@ -6779,10 +6943,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 limit 1;
                 /******************/
 
+				--select param.f_convertir_moneda(2::integer,1::integer,100::numeric,now()::date,'CUS',2, NULL,'si');
 
-				v_marcar = '';
+                v_monto_total_bs = param.f_convertir_moneda(2::integer,1::integer,COALESCE(v_monto_total,0)::numeric,now()::date,'CUS',2, NULL,'si');
+
                 /*Recuperamos la lista de los proveedores segun la condicion que nos dio Jhonny*/
-                 if (v_monto_total between 20000 and 100000) then
+                 if (v_monto_total_bs between 20000 and 100000) then
 
 
                  with datos as (select cot.nro_cotizacion,
@@ -6801,7 +6967,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                  v_marcar =  'si';
 
-                 elsif (v_monto_total > 100000) then
+                 elsif (v_monto_total_bs > 100000) then
 
                  	with datos as (select cot.nro_cotizacion,
                                           to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion
@@ -6828,7 +6994,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                  if (v_nro_cotizacion is null) then
                  	v_nro_cotizacion = '';
                  end if;
-				 raise notice '';
+
                 /*******************************************************************************/
 
                 if (v_fecha_po_recu is null) then
@@ -6970,12 +7136,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     ('''||coalesce(v_fecha_po,'')||''')::varchar as fecha_po,
                                     ('''||coalesce(v_fecha_entrega,'')||''')::varchar as fecha_entrega,
                                     ('''||coalesce(v_plazo,'')||''')::varchar as plazo,
-                                    ('''||v_fecha_sol_recuperado||''')::varchar as fecha_contratacion,
-                                    ('''||v_fecha_cuce||''')::varchar as fecha_cuce,
-                                    ('''||v_monto_total||''')::numeric as monto_total,
-                                    ('''||v_nombre_proveedor||''')::varchar as proveedor,
-                                    ('''||v_nro_cite||''')::varchar as nro_cite,
-                                    ('''||v_fecha_solicitud_compra||''')::varchar as fecha_solicitud,
+                                    ('''||COALESCE(v_fecha_sol_recuperado,'')||''')::varchar as fecha_contratacion,
+                                    ('''||COALESCE(v_fecha_cuce,'')||''')::varchar as fecha_cuce,
+                                    ('''||COALESCE(v_monto_total,0)||''')::numeric as monto_total,
+                                    ('''||COALESCE(v_nombre_proveedor,'')||''')::varchar as proveedor,
+                                    ('''||COALESCE(v_nro_cite,'')||''')::varchar as nro_cite,
+                                    ('''||COALESCE(v_fecha_solicitud_compra,'')||''')::varchar as fecha_solicitud,
                                     ('''||COALESCE(v_objeto_contratacion,'')||''')::varchar as objeto_contratacion,
                                     ('''||COALESCE(v_nro_pac,'')||''')::varchar as nro_pac,
                                     ('''||COALESCE(v_fecha_pac,'')||''')::varchar as fecha_pac,
@@ -6989,7 +7155,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     ('''||COALESCE(v_nro_confirmacion_cuce,'')||''')::varchar as nro_confirmacion_cuce,
                                     ('''||COALESCE(v_fecha_comite_form,'')||''')::varchar as fecha_comite_form,
                                     ('''||COALESCE(v_origen_pedido,'')||''')::varchar as origen_pedido,
-                                    ('''||COALESCE(v_marcar,'')||''')::varchar as marcar ';
+                                    ('''||COALESCE(v_marcar,'')||''')::varchar as marcar,
+                                    ('''||COALESCE(v_nro_cotizacion_recu,'')||''')::varchar as asunto_cotizacion,
+                                    ('''||COALESCE(v_fecha_formateada,'')||''')::varchar as fecha_3008 ';
 
 
 

@@ -556,6 +556,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
               Ext.getCmp('datos_adquisiciones_adqui').el.dom.style.minHeight = '265px';
               Ext.getCmp('datos_comite_adqui').el.dom.style.minHeight = '250px';
+
+              this.mostrarComponente(this.Cmp.nro_pac);
+              this.mostrarComponente(this.Cmp.fecha_pac);
+              this.mostrarComponente(this.Cmp.objeto_contratacion);
             }else{
               Ext.getCmp('datos_adquisiciones_adqui').el.dom.style.minHeight = '520px';
               Ext.getCmp('datos_comite_adqui').el.dom.style.minHeight = '520px';
@@ -568,6 +572,9 @@ header("content-type: text/javascript; charset=UTF-8");
               this.Cmp.fecha_pac.reset();
               this.Cmp.objeto_contratacion.reset();
 
+              this.ocultarComponente(this.Cmp.nro_pac);
+              this.ocultarComponente(this.Cmp.fecha_pac);
+              this.ocultarComponente(this.Cmp.objeto_contratacion);
 
             }
 

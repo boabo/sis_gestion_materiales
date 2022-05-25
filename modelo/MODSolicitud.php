@@ -125,6 +125,8 @@ class MODSolicitud extends MODbase
         $this->captura('cuce', 'varchar');
         $this->captura('fecha_cuce', 'varchar');
         $this->captura('nro_confirmacion', 'varchar');
+        $this->captura('fecha_3008', 'varchar');
+        $this->captura('funcionario_administrativo', 'varchar');
         /********************************************************************************/
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -2170,6 +2172,7 @@ class MODSolicitud extends MODbase
         $this->captura('aumentar_condicion', 'varchar');
         $this->captura('tipo_pedido', 'varchar');
         $this->captura('firma_almacen', 'varchar');
+        $this->captura('tipo_evaluacion', 'varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -2399,12 +2402,34 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_comite', 'varchar');
         $this->captura('origen_pedido', 'varchar');
         $this->captura('marcar', 'varchar');
+        $this->captura('asunto_cotizacion', 'varchar');
+        $this->captura('fecha_3008', 'varchar');
 
 
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
         //var_dump($this->respuesta);
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function insertarFecha3008()
+    {
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento = 'mat.ft_solicitud_ime';
+        $this->transaccion = 'MAT_INS_FEC_3008_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('fecha_form_3008', 'fecha_form_3008', 'date');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
 
         //Devuelve la respuesta
         return $this->respuesta;

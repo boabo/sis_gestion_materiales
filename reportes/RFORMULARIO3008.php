@@ -15,7 +15,7 @@ class RFORMULARIO3008 extends  ReportePDF
     }
     function ReporteOrdenRaparacion(){
       $this->setPrintFooter(false);
-      $this->SetMargins(10,22,10);
+      $this->SetMargins(10,12,10);
       $this->AddPage();
 
         $this->Ln(6);
@@ -66,7 +66,7 @@ class RFORMULARIO3008 extends  ReportePDF
           $nro_tramite3_1 = $this->datos[0]['nro_tramite'];
           $fecha_3_1 = $this->datos[0]['fecha_precio_referencial'];
           //$nro_tramite3_1 = $this->datos[0]['nro_tramite'];
-          $nro_tramite6_1 = $this->datos[0]['nro_tramite'];
+          $nro_tramite6_1 = $this->datos[0]['asunto_cotizacion'];
           $nro_po_14_1 = $this->datos[0]['nro_po'];
 
 
@@ -133,14 +133,14 @@ class RFORMULARIO3008 extends  ReportePDF
         $total_array_fecha_proveedores = count($cantidad_fecha_proveedores);
         $detalle__fecha_proveedores = '';
 
-        if ($total_array_proveedores >= 18) {
-          for ($i=0; $i<=17; $i++) {
+        if ($total_array_proveedores >= 6) {
+          for ($i=0; $i<=5; $i++) {
             $detalle_proveedores .= '<tr>
                                       <td>'.$cantidad_proveedores[$i].'</td>
                                     </tr>';
           }
 
-          for ($i=0; $i<=17; $i++) {
+          for ($i=0; $i<=5; $i++) {
             $detalle__fecha_proveedores .= '<tr>
                                       <td>'.$cantidad_fecha_proveedores[$i].'</td>
                                     </tr>';
@@ -167,7 +167,7 @@ class RFORMULARIO3008 extends  ReportePDF
         if ($this->datos[0]["origen_pedido"] != 'Reparación de Repuestos') {
         $detalle_proveedores1 .= '<table>
                                     <tbody>
-                                    '.$detalle_proveedores.'
+                                      '.$detalle_proveedores.'                                    
                                     </tbody>
                                   </table>';
         }else{
@@ -188,44 +188,44 @@ class RFORMULARIO3008 extends  ReportePDF
 
         /****************************************/
 
-
+        $this->SetFontSize(7.5);
         $tablaDatosBasicos = '<table border="1" style="width: 1200px; table-layout: fixed;" nobr="true">
                                   <tbody>
                                     <tr>
-                                      <td style="width: 280px; text-align: right; font-weight: bold;">Denominación de la Empresa Pública:</td>
-                                      <td style="width: 390px; text-align: left;">'.$this->datos[0]['nombre_empresa'].'</td>
+                                      <td style="width: 185px; text-align: right; font-weight: bold;">Denominación de la Empresa Pública:</td>
+                                      <td style="width: 486px; text-align: left;">'.$this->datos[0]['nombre_empresa'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Código institucional:</td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['cod_institucional'].'</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Código institucional:</td>
+                                    <td style="width: 486px; text-align: left;">'.$this->datos[0]['cod_institucional'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">CUCE: <br/><span style="font-style: italic;">(Para Contrataciones mayores a Bs. 20000)</span></td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['nro_cuce'].'</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">CUCE: <br/><span style="font-style: italic;">(Para Contrataciones mayores a Bs. 20000)</span></td>
+                                    <td style="width: 486px; text-align: left;">'.$this->datos[0]['nro_cuce'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Código interno:</td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Código interno:</td>
+                                    <td style="width: 486px; text-align: left;">'.$this->datos[0]['nro_tramite'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Objeto de contratación:</td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['objeto_contratacion'].'</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Objeto de contratación:</td>
+                                    <td style="width: 486px; text-align: left;">'.$this->datos[0]['objeto_contratacion'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Importe total contratado:</td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['monto_total'].'</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Importe total contratado:</td>
+                                    <td style="width: 486px; text-align: left;">$US. '.$this->datos[0]['monto_total'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Proveedor:</td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['proveedor'].'</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Proveedor:</td>
+                                    <td style="width: 486px; text-align: left;">'.$this->datos[0]['proveedor'].'</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Plazo:</td>
-                                    <td style="width: 390px; text-align: left;">'.$this->datos[0]['plazo'].' DIAS</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Plazo:</td>
+                                    <td style="width: 486px; text-align: left;">'.$this->datos[0]['plazo'].' DIAS</td>
                                     </tr>
                                     <tr>
-                                    <td style="width: 280px; text-align: right; font-weight: bold;">Reglamento Específico utilizado y documento de aprobación:</td>
-                                    <td style="width: 390px; text-align: left;">REGLAMENTO ESPECIFICO DEL SISTEMA DE ADMINISTRACIÓN DE</td>
+                                    <td style="width: 185px; text-align: right; font-weight: bold;">Reglamento Específico utilizado y documento de aprobación:</td>
+                                    <td style="width: 486px; text-align: left;">REGLAMENTO ESPECÍFICO PARA LA CONTRATACIÓN DE BIENES, OBRAS Y SERVICIOS ESPECIALIZADOS EN EL EXTRANJERO "BOLIVIANA DE AVIACIÓN"</td>
                                     </tr>
                                   </tbody>
                               </table>';
@@ -406,7 +406,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">8.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">El proponente adjudicado se encuentra registrado en el Registro Único de Proveedores del Estado (RUPE), y no tiene impedimento para participar en procesos de contratación.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -421,7 +421,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">9.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">El proponente se encuentra registrado como deudor en el Sistema Integral de Pensiones y el Sistema de Contribuciones al Seguro Social Obligatorio de largo plazo.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -436,7 +436,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">10.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">La Empresa proponente tiene cuentas pendientes con el Estado.</td>
-                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -451,7 +451,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">11.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">El proponente se encuentra registrado en el Padrón Nacional de Contribuyentes.</td>
-                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -466,7 +466,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">12.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">La Empresa se encuentra inscrita en el Registro de Comercio.</td>
-                                <td style="width: 25px; text-align: center;"><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -482,7 +482,7 @@ class RFORMULARIO3008 extends  ReportePDF
                               <tr >
                                 <td style="background-color:#DCDCDC; width: 25px; text-align: center;">13.</td>
                                 <td style="background-color:#DCDCDC; width: 160px; text-align: left;">El contrato incluye en su contenido lo establecido en el Artículo 87 del Decreto Supremo 181.</td>
-                                <td style="width: 25px; text-align: center;"><br/><br/><img src="../../../lib/imagenes/icono_awesome/awe_ok.png" width="10" height="10"></td>
+                                <td style="width: 25px; text-align: center;"></td>
                                 <td style="width: 25px; text-align: left;"></td>
                                 <td style="background-color:#DCDCDC; width: 436px; text-align: left;" colspan="4"></td>
                               </tr>
@@ -575,8 +575,9 @@ class RFORMULARIO3008 extends  ReportePDF
             $this->Ln(3);
             $this->writeHTML($tablaContratacion);
 
+
             $this->AddPage();
-            $this->Ln(8);
+            $this->Ln(13);
 
             $this->writeHTML($tablaSegundaHoja);
 
@@ -587,9 +588,9 @@ class RFORMULARIO3008 extends  ReportePDF
             $this->MultiCell(182, 0, "El contenido de la información a registrar en el presente formulario, debe considerar la secuencia y cronología de las actividades realizadas.", 0, 'L', 0,0, '', '');
 
 
-
+            $this->SetMargins(10,17,10);
             $this->AddPage();
-            $this->Ln(8);
+            $this->Ln(10);
 
             $firmas = '<table style="width: 1200px; table-layout: fixed; font-style: italic;" nobr="true">
                           <tbody>
@@ -597,10 +598,10 @@ class RFORMULARIO3008 extends  ReportePDF
                               <td style="width: 700px;" colspan="3">Declaramos que la información registrada en el presente documento constituye Declaracion Jurada, y fue determinada en cuanto a la normativa aplicable para la contratación, siendo la misma fidedigna y que la documentación descrita se encuentra en archivos de la Empresa Pública, encontrándose a disposición para fines de control externo posterior.</td>
                             </tr>
                             <tr>
-                              <td style="width: 700px; text-align: center;" colspan="3"><br/><br/><br/><br/><br/><br/><center>Cochabamba,......de......20......</center></td>
+                              <td style="width: 700px; text-align: center;" colspan="3"><br/><br/><br/><br/><br/><br/><center>Cochabamba,'.$this->datos[0]['fecha_3008'].'</center></td>
                             </tr>
                             <tr>
-                              <td style="width: 300px; text-align: center;"><br/><br/><br/><br/><br/><br/><br/><br/>Responsable del Proceso de Contratación <br/>EMPRESA PÚBLICA</td>
+                              <td style="width: 300px; text-align: center;"><br/><br/><br/><br/><br/><br/><br/><br/>Responsable del Proceso de Contratación <br/>EMPRESA PÚBLICA<br/><img src="../../../lib/imagenes/gestion_materiales/Sello_responsable_3008.png" width="180"></td>
                               <td style="width: 100px;"></td>
                               <td style="width: 300px; text-align: center;"><br/><br/><br/><br/><br/><br/><br/><br/>Titular del Área Administrativa Financiera <br/>EMPRESA PÚBLICA</td>
                             </tr>
