@@ -4728,38 +4728,38 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
           v_consulta:='select
-           			  ('''||v_num_tramite_rep||''')::varchar as num_tramite,
-                      ('''||v_email_funcionario||''')::varchar as email_fun,
-                      ('''||v_tipo_evaluacion||''')::varchar as po_type,
-                      ('''||v_rep||''')::varchar as rep,
-                      ('''||v_fecha_order||''')::varchar as fecha_order,
-                      ('''||upper(v_prioridad)||''')::varchar as priority,
-                      ('''||v_nom_provee||''')::varchar as nom_provee,
-                      ('''||v_nit_proveedor||''')::varchar as dni,
-                      ('''||v_contacto_proveedor||''')::varchar as contacto_proveedor,
-                      ('''||v_direccion_provee||''')::varchar as direcc_provee,
-                      ('''||v_email_provee||''')::varchar as email_provee,
-                      ('''||v_telf_provee||''')::varchar as telf_provee,
-                      ('''||v_fax_provee||''')::varchar as fax_provee,
-                      ('''||v_estado_provee||''')::varchar as estado_provee,
-                      ('''||v_country_provee||''')::varchar as country_provee,
-                      ('''||v_num_part||''')::varchar as num_part,
-                      ('''||v_num_part_alt||''')::varchar as num_part_alt,
-                      ('''||v_cantidad||''')::varchar as cantidad,
-                      ('''||v_descripcion||''')::varchar as descripcion,
-                      ('''||v_serial||''')::varchar as serial,
-                      ('''||v_cd||''')::varchar as cd,
+           			  ('''||COALESCE(v_num_tramite_rep,'')||''')::varchar as num_tramite,
+                      ('''||COALESCE(v_email_funcionario,'')||''')::varchar as email_fun,
+                      ('''||COALESCE(v_tipo_evaluacion,'')||''')::varchar as po_type,
+                      ('''||COALESCE(v_rep,'')||''')::varchar as rep,
+                      ('''||COALESCE(v_fecha_order,'')||''')::varchar as fecha_order,
+                      ('''||COALESCE(upper(v_prioridad),'')||''')::varchar as priority,
+                      ('''||COALESCE(v_nom_provee,'')||''')::varchar as nom_provee,
+                      ('''||COALESCE(v_nit_proveedor,'')||''')::varchar as dni,
+                      ('''||COALESCE(v_contacto_proveedor,'')||''')::varchar as contacto_proveedor,
+                      ('''||COALESCE(v_direccion_provee,'')||''')::varchar as direcc_provee,
+                      ('''||COALESCE(v_email_provee,'')||''')::varchar as email_provee,
+                      ('''||COALESCE(v_telf_provee,'')||''')::varchar as telf_provee,
+                      ('''||COALESCE(v_fax_provee,'')||''')::varchar as fax_provee,
+                      ('''||COALESCE(v_estado_provee,'')||''')::varchar as estado_provee,
+                      ('''||COALESCE(v_country_provee,'')||''')::varchar as country_provee,
+                      ('''||COALESCE(v_num_part,'')||''')::varchar as num_part,
+                      ('''||COALESCE(v_num_part_alt,'')||''')::varchar as num_part_alt,
+                      ('''||COALESCE(v_cantidad,'')||''')::varchar as cantidad,
+                      ('''||COALESCE(v_descripcion,'')||''')::varchar as descripcion,
+                      ('''||COALESCE(v_serial,'')||''')::varchar as serial,
+                      ('''||COALESCE(v_cd,'')||''')::varchar as cd,
                       ('''||COALESCE(v_precio_unitario,'0')||''')::varchar as precio_unitario,
                       ('''||COALESCE(v_precio_total,'0')||''')::varchar as precio_total,
                       ('||COALESCE(v_suma_totales,0)||')::numeric as suma_total,
-                      ('''||v_payment_terms||''')::varchar as payment_terms,
-                      ('''||v_incoterms||''')::varchar as incoterms,
+                      ('''||COALESCE(v_payment_terms,'')||''')::varchar as payment_terms,
+                      ('''||COALESCE(v_incoterms,'')||''')::varchar as incoterms,
                       ('''||COALESCE(v_fecha_entrega,'')||''')::varchar as delivery_date,
-                      ('''||v_observaciones_sol||''')::varchar as observaciones_sol,
-                      ('''||v_funcionario_sol_rpcd_oficial||''')::varchar as firma_rpc,
-                      ('''||v_serial_original||''')::varchar as serial_original,
-                      ('''||v_id_detalle||''')::varchar as detalle_sol,
-                      ('''||v_corregir_reporte||''')::varchar as corregir_reporte';
+                      ('''||COALESCE(v_observaciones_sol,'')||''')::varchar as observaciones_sol,
+                      ('''||COALESCE(v_funcionario_sol_rpcd_oficial,'')||''')::varchar as firma_rpc,
+                      ('''||COALESCE(v_serial_original,'')||''')::varchar as serial_original,
+                      ('''||COALESCE(v_id_detalle,'')||''')::varchar as detalle_sol,
+                      ('''||COALESCE(v_corregir_reporte,'')||''')::varchar as corregir_reporte';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
@@ -4846,6 +4846,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
               left join mat.tdetalle_sol detsol on detsol.id_detalle = detcot.id_detalle
               where cot.id_solicitud = v_id_solicitud_rec and cot.adjudicado = 'si';
               /*******************************************************************************/
+
+
             if (v_fecha_cotizacion_recu::date >= '01/05/2022' and (v_evaluacion = 'Exchange' or v_evaluacion = 'Flat Exchange')) then
                       select list (detcot.explicacion_detallada_part_cot),
                          list (detcot.nro_parte_alterno_cot),
@@ -5254,12 +5256,19 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    'mayor'
                 end ) into v_es_mayor;
             /******************************************/
+			--raise notice 'Aqui llega data2222 %',v_fecha_cotizacion_recu;
 
-			if (v_fecha_cotizacion::date >= '01/03/2022'::date) then
-            	v_etiqueta = 'si';
+            if (v_fecha_cotizacion != '') THEN
+            	if (v_fecha_cotizacion::date >= '01/03/2022'::date) then
+                    v_etiqueta = 'si';
+                else
+                    v_etiqueta = 'no';
+                end if;
             else
             	v_etiqueta = 'no';
             end if;
+
+
 
           v_consulta:='select
           			  ('''||v_rep||''')::varchar as nro_rep,
@@ -6950,30 +6959,85 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 /*Recuperamos la lista de los proveedores segun la condicion que nos dio Jhonny*/
                  if (v_monto_total_bs between 20000 and 100000) then
 
+							/*with datos as ( (select cot.nro_cotizacion,
+                                                   to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion,
+                                                   0::integer as orden
+                                            from mat.tsolicitud sol
+                                            inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+                                           -- inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                                            where sol.id_proceso_wf = v_parametros.id_proceso_wf
+                                            order by cot.id_cotizacion ASC)
 
-                 with datos as (select cot.nro_cotizacion,
-                                      to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion
-                                from mat.tsolicitud sol
-                                inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
-                                inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
-                                where sol.id_proceso_wf = v_parametros.id_proceso_wf
-                                order by cot.id_cotizacion ASC)
-                  select list(nro_cotizacion::varchar),
-                         list(fecha_cotizacion::varchar)
-                  into
-                             v_nro_cotizacion,
-                             v_fecha_cotizacion_adju
-                  from datos;
+                                            union
+
+                                            (select cot.nro_cotizacion,
+                                                  to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion,
+                                                  cot.id_cotizacion as orden
+                                            from mat.tsolicitud sol
+                                            inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'no'
+                                            --inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                                            where sol.id_proceso_wf = v_parametros.id_proceso_wf
+                                            order by cot.id_cotizacion ASC)
+
+                                            order by orden ASC)
+
+                            select list(nro_cotizacion::varchar),
+                                   list(fecha_cotizacion::varchar)
+                            into
+                                       v_nro_cotizacion,
+                                       v_fecha_cotizacion_adju
+                            from datos;*/
+
+
+                             with datos as (select cot.nro_cotizacion,
+                                                  to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion
+                                            from mat.tsolicitud sol
+                                            inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+                                            --inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                                            where sol.id_proceso_wf = v_parametros.id_proceso_wf
+                                            order by cot.id_cotizacion ASC)
+                              select list(nro_cotizacion::varchar),
+                                     list(fecha_cotizacion::varchar)
+                              into
+                                         v_nro_cotizacion,
+                                         v_fecha_cotizacion_adju
+                              from datos;
 
                  v_marcar =  'si';
 
                  elsif (v_monto_total_bs > 100000) then
 
+
+                 /*(select cot.nro_cotizacion,
+                         to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion,
+                         0::integer as orden
+                  from mat.tsolicitud sol
+                  inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+                 -- inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                  where sol.id_proceso_wf = 1393449
+                  order by cot.id_cotizacion ASC)
+
+                  union
+
+                  (select cot.nro_cotizacion,
+                        to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion,
+                        cot.id_cotizacion as orden
+                  from mat.tsolicitud sol
+                  inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'no'
+                  --inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                  where sol.id_proceso_wf = 1393449
+                  order by cot.id_cotizacion ASC)*/
+
+
+
+
+
+
                  	with datos as (select cot.nro_cotizacion,
                                           to_char(cot.fecha_cotizacion,'DD/MM/YYYY') as fecha_cotizacion
                                     from mat.tsolicitud sol
-                                    inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud
-                                    inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                                    inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+                                    --inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
                                     where sol.id_proceso_wf = v_parametros.id_proceso_wf
                                     order by cot.id_cotizacion ASC)
                     select list(nro_cotizacion::varchar),
@@ -7117,15 +7181,6 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 else
                 	v_fecha_solicitud_compra = v_fecha_sol_recuperado;
                 end if;
-
-				if (v_fecha_cuce is null) then
-                	v_fecha_cuce = '';
-                end if;
-
-                if (v_fecha_pac is null) then
-                	v_fecha_pac = '';
-                end if;
-
 
 
 
