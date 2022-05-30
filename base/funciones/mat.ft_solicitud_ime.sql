@@ -236,6 +236,8 @@ DECLARE
     v_proveedor_hazmat				varchar;
     v_presu_comprometido			varchar;
     v_codigo_estado_siguiente_revision	varchar;
+    v_monto_total					numeric;
+    v_monto_total_bs				numeric;
     /****************************************/
 
 BEGIN
@@ -4676,6 +4678,36 @@ END IF;
               return v_resp;
 
             end;
+
+    	/*********************************
+        #TRANSACCION:  'MAT_MON_ADJU_VERIFI'
+        #DESCRIPCION:	control verificar monto adjudicado
+        #AUTOR:		Ismael Valdivia
+        #FECHA:		30-05-2020 10:30:30
+        ***********************************/
+
+        elsif(p_transaccion='MAT_MON_ADJU_VERIFI')then
+
+            begin
+
+            	select sum(COALESCE(cotdet.precio_unitario_mb,0)) into v_monto_total
+                from mat.tsolicitud sol
+                inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = 'si'
+                inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                where sol.id_proceso_wf = v_parametros.id_proceso_wf;
+
+
+                v_monto_total_bs = param.f_convertir_moneda(2::integer,1::integer,COALESCE(v_monto_total,0)::numeric,now()::date,'CUS',2, NULL,'si');
+
+
+
+                --Definicion de la respuesta
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Solicitud');
+                v_resp = pxp.f_agrega_clave(v_resp,'monto_adjudicado',v_monto_total_bs::varchar);
+                --Devuelve la respuesta
+                return v_resp;
+
+             end;
 
 
 

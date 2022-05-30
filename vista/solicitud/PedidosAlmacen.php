@@ -387,52 +387,70 @@ header("content-type: text/javascript; charset=UTF-8");
               });
             }
             if (this.store.baseParams.pes_estado == 'pedido_al_compra') {
-              if (this.store.baseParams.monto_pac > 20000) {
 
-                Ext.Ajax.request({
-                      url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
-                      params:{id_proceso_wf: data.id_proceso_wf,
-                              estado_sig: 'despachado'},
-                      success:function(resp){
-                          var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                          if (reg.ROOT.datos.v_chekeado == 'no') {
-                              this.getBoton('sig_estado').disable();
-                              this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
-                          } else {
-                            this.getBoton('sig_estado').enable();
-                            this.noti_documentos.setText('');
-                            //this.reload();
-                          }
-                        /************************************************************************************/
+              /*Recuperamos el monto del Adjudicado*/
+              Ext.Ajax.request({
+                  url:'../../sis_gestion_materiales/control/Solicitud/getVerificarMontoAdjudicado',
+                  params:{id_proceso_wf: data.id_proceso_wf},
+                  success:function(resp){
+                      var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                      console.log("aqui llega el monto recuperado",reg);
+                      //this.monto_convertido_bs = reg.ROOT.datos.monto_adjudicado;
 
-                      },
-                      failure: this.conexionFailure,
-                      timeout:this.timeout,
-                      scope:this
-                  });
-              } else {
-                this.getBoton('sig_estado').enable();
-                this.noti_documentos.setText('');
+                      if (reg.ROOT.datos.monto_adjudicado > 20000) {
+                          Ext.Ajax.request({
+                                url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                                params:{id_proceso_wf: data.id_proceso_wf,
+                                        estado_sig: 'despachado'},
+                                success:function(resp){
+                                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                                    if (reg.ROOT.datos.v_chekeado == 'no') {
+                                        this.getBoton('sig_estado').disable();
+                                        this.noti_documentos.setText('Adjuntar doc: '+reg.ROOT.datos.nombre_documento);
+                                    } else {
+                                      this.getBoton('sig_estado').enable();
+                                      this.noti_documentos.setText('');
+                                      //this.reload();
+                                    }
+                                  /************************************************************************************/
 
-                /*Recuperando la fecha cuando autoriza Jaime Lazarte para compra*/
-                Ext.Ajax.request({
-                      url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
-                      params:{id_proceso_wf: data.id_proceso_wf,
-                              estado_sig: 'compra'},
-                      success:function(resp){
-                          var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                          this.store.baseParams.fecha_po_automatico = reg.ROOT.datos.fecha_po_automatico;
-                        /************************************************************************************/
+                                },
+                                failure: this.conexionFailure,
+                                timeout:this.timeout,
+                                scope:this
+                            });
+                        } else {
+                          this.getBoton('sig_estado').enable();
+                          this.noti_documentos.setText('');
 
-                      },
-                      failure: this.conexionFailure,
-                      timeout:this.timeout,
-                      scope:this
-                  });
-                  /****************************************************************/
+                          /*Recuperando la fecha cuando autoriza Jaime Lazarte para compra*/
+                          Ext.Ajax.request({
+                                url:'../../sis_gestion_materiales/control/Solicitud/getVerificarDocumentos',
+                                params:{id_proceso_wf: data.id_proceso_wf,
+                                        estado_sig: 'compra'},
+                                success:function(resp){
+                                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                                    this.store.baseParams.fecha_po_automatico = reg.ROOT.datos.fecha_po_automatico;
+                                  /************************************************************************************/
 
-                //this.reload();
-              }
+                                },
+                                failure: this.conexionFailure,
+                                timeout:this.timeout,
+                                scope:this
+                            });
+                            /****************************************************************/
+
+                          //this.reload();
+                        }
+                    /************************************************************************************/
+
+                  },
+                  failure: this.conexionFailure,
+                  timeout:this.timeout,
+                  scope:this
+              });
+              /*************************************/
+
             }
             /***********************************************/
 
@@ -484,35 +502,88 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             Phx.vista.PedidosAlmacen.superclass.onButtonEdit.call(this);
 
-            if (this.store.baseParams.monto_pac > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
-              Ext.getCmp('datos_adquisiciones_alm').el.dom.style.minHeight = '265px';
-              Ext.getCmp('datos_comite_alm').el.dom.style.minHeight = '250px';
-
-              Ext.getCmp('datos_pac_alm').show();
-              this.Cmp.nro_pac.allowBlank = false;
-              this.Cmp.fecha_pac.allowBlank = false;
-              this.Cmp.objeto_contratacion.allowBlank = false;
-
-              this.mostrarComponente(this.Cmp.nro_pac);
-              this.mostrarComponente(this.Cmp.fecha_pac);
-              this.mostrarComponente(this.Cmp.objeto_contratacion);
-
-            }else{
-              Ext.getCmp('datos_adquisiciones_alm').el.dom.style.minHeight = '520px';
-              Ext.getCmp('datos_comite_alm').el.dom.style.minHeight = '520px';
-              Ext.getCmp('datos_pac_alm').hide();
-              this.Cmp.nro_pac.allowBlank = true;
-              this.Cmp.fecha_pac.allowBlank = true;
-              this.Cmp.objeto_contratacion.allowBlank = true;
-              this.Cmp.nro_pac.reset();
-              this.Cmp.fecha_pac.reset();
-              this.Cmp.objeto_contratacion.reset();
-
-
-              this.ocultarComponente(this.Cmp.nro_pac);
-              this.ocultarComponente(this.Cmp.fecha_pac);
-              this.ocultarComponente(this.Cmp.objeto_contratacion);
+            /*Aumentando para resetear la condicion y el proveedor*/
+            if (data.condicion == '') {
+              this.Cmp.condicion.reset();
             }
+
+            if (data.lista_correos == '') {
+              this.Cmp.lista_correos.reset();
+            }
+            /******************************************************/
+
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/getVerificarMontoAdjudicado',
+                params:{id_proceso_wf: data.id_proceso_wf},
+                success:function(resp){
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    console.log("aqui llega el monto recuperado",reg);
+                      if (reg.ROOT.datos.monto_adjudicado > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
+                        Ext.getCmp('datos_adquisiciones_alm').el.dom.style.minHeight = '265px';
+                        Ext.getCmp('datos_comite_alm').el.dom.style.minHeight = '250px';
+
+                        Ext.getCmp('datos_pac_alm').show();
+                        this.Cmp.nro_pac.allowBlank = false;
+                        this.Cmp.fecha_pac.allowBlank = false;
+                        this.Cmp.objeto_contratacion.allowBlank = false;
+
+                        this.mostrarComponente(this.Cmp.nro_pac);
+                        this.mostrarComponente(this.Cmp.fecha_pac);
+                        this.mostrarComponente(this.Cmp.objeto_contratacion);
+
+                      }else{
+                        Ext.getCmp('datos_adquisiciones_alm').el.dom.style.minHeight = '520px';
+                        Ext.getCmp('datos_comite_alm').el.dom.style.minHeight = '520px';
+                        Ext.getCmp('datos_pac_alm').hide();
+                        this.Cmp.nro_pac.allowBlank = true;
+                        this.Cmp.fecha_pac.allowBlank = true;
+                        this.Cmp.objeto_contratacion.allowBlank = true;
+                        this.Cmp.nro_pac.reset();
+                        this.Cmp.fecha_pac.reset();
+                        this.Cmp.objeto_contratacion.reset();
+
+
+                        this.ocultarComponente(this.Cmp.nro_pac);
+                        this.ocultarComponente(this.Cmp.fecha_pac);
+                        this.ocultarComponente(this.Cmp.objeto_contratacion);
+                      }
+
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+
+
+            // if (this.store.baseParams.monto_pac > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
+            //   Ext.getCmp('datos_adquisiciones_alm').el.dom.style.minHeight = '265px';
+            //   Ext.getCmp('datos_comite_alm').el.dom.style.minHeight = '250px';
+            //
+            //   Ext.getCmp('datos_pac_alm').show();
+            //   this.Cmp.nro_pac.allowBlank = false;
+            //   this.Cmp.fecha_pac.allowBlank = false;
+            //   this.Cmp.objeto_contratacion.allowBlank = false;
+            //
+            //   this.mostrarComponente(this.Cmp.nro_pac);
+            //   this.mostrarComponente(this.Cmp.fecha_pac);
+            //   this.mostrarComponente(this.Cmp.objeto_contratacion);
+            //
+            // }else{
+            //   Ext.getCmp('datos_adquisiciones_alm').el.dom.style.minHeight = '520px';
+            //   Ext.getCmp('datos_comite_alm').el.dom.style.minHeight = '520px';
+            //   Ext.getCmp('datos_pac_alm').hide();
+            //   this.Cmp.nro_pac.allowBlank = true;
+            //   this.Cmp.fecha_pac.allowBlank = true;
+            //   this.Cmp.objeto_contratacion.allowBlank = true;
+            //   this.Cmp.nro_pac.reset();
+            //   this.Cmp.fecha_pac.reset();
+            //   this.Cmp.objeto_contratacion.reset();
+            //
+            //
+            //   this.ocultarComponente(this.Cmp.nro_pac);
+            //   this.ocultarComponente(this.Cmp.fecha_pac);
+            //   this.ocultarComponente(this.Cmp.objeto_contratacion);
+            // }
 
             if (data.remark == '') {
               this.Cmp.remark.setValue(data.motivo_solicitud);

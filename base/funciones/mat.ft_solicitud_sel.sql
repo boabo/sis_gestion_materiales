@@ -370,6 +370,7 @@ DECLARE
     v_mes_3008						varchar;
     v_mes_literal					varchar;
     v_fecha_formateada				varchar;
+    v_fecha_especificacion			varchar;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -7082,20 +7083,20 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
                           WHERE twf.id_proceso_wf = v_parametros.id_proceso_wf
                           AND te.codigo = 'comite_unidad_abastecimientos'
-                          and v_fecha_solicitud::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
+                          and v_fecha_sol_recuperado::date between vf.fecha_asignacion and coalesce(vf.fecha_finalizacion, now())
                           GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg,vf.nombre_cargo,pro.nro_tramite, twf.id_estado_wf--Aumentando el id estado (Ismael Valdivia 12/05/2022)
                           ORDER BY  twf.id_estado_wf DESC
                           limit 1;
-
+				--raise notice 'Aqui llega data %',v_id_estado_aprobado;
                 /*Aumentando para condicionar el reporte del comite del 01/04/2022 al 30/04/2022*/
-                select es.fecha_reg::date into v_fecha_aprobacion
+                select to_char(es.fecha_reg::date,'DD/MM/YYYY') into v_fecha_aprobacion
                 from wf.testado_wf es
                 where es.id_estado_anterior = v_id_estado_aprobado;
 
                 v_fecha_comite_form = v_fecha_po;
 
                 if ((v_fecha_aprobacion between '01/04/2022' and '30/04/2022') OR (v_fecha_aprobacion >= '01/06/2022') ) then
-                	v_fecha_comite_form = v_fecha_aprobacion;
+                	v_fecha_comite_form = to_char(v_fecha_aprobacion::date,'DD/MM/YYYY');
                 end if;
                 /*********************************/
 
@@ -7178,8 +7179,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                   v_fecha_comite_form = v_fecha_solicitud_compra;
 
+                  v_fecha_especificacion = v_fecha_solicitud;
+
                 else
                 	v_fecha_solicitud_compra = v_fecha_sol_recuperado;
+
+                    v_fecha_especificacion = v_fecha_sol_recuperado;
                 end if;
 
 
@@ -7201,7 +7206,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     ('''||COALESCE(v_nro_pac,'')||''')::varchar as nro_pac,
                                     ('''||COALESCE(v_fecha_pac,'')||''')::varchar as fecha_pac,
                                     ('''||COALESCE(v_fecha_precio_referencial,'')||''')::varchar as fecha_precio_referencial,
-                                    ('''||COALESCE(v_fecha_sol_recuperado,'')||''')::varchar as fecha_esp_tecnica,
+                                    ('''||COALESCE(v_fecha_especificacion,'')||''')::varchar as fecha_esp_tecnica,
                                     ('''||COALESCE(v_fecha_solicitud_compra,'')||''')::varchar as fecha_certificacion_pre,
                                     ('''||COALESCE(v_fecha_correo,'')||''')::varchar as fecha_correo,
                                     ('''||COALESCE(v_nro_cotizacion,'')||''')::varchar as nro_cotizacion,

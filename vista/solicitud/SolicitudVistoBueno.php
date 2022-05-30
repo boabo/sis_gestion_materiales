@@ -249,6 +249,17 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             Phx.vista.SolicitudVistoBueno.superclass.onButtonEdit.call(this);
 
+            /*Aumentando para resetear la condicion y el proveedor*/
+            if (data.condicion == '') {
+              this.Cmp.condicion.reset();
+            }
+
+            if (data.lista_correos == '') {
+              this.Cmp.lista_correos.reset();
+            }
+            /******************************************************/
+
+
             if (data.remark == '') {
               this.Cmp.remark.setValue(data.motivo_solicitud);
             } else {

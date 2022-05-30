@@ -1655,6 +1655,26 @@ class MODSolicitud extends MODbase
   		return $this->respuesta;
   	}
 
+
+    function getVerificarMontoAdjudicado()
+  	{
+  		$this->procedimiento = 'mat.ft_solicitud_ime';
+  		$this->transaccion = 'MAT_MON_ADJU_VERIFI';
+  		$this->tipo_procedimiento = 'IME';
+
+  		$this->setParametro('id_proceso_wf', 'id_proceso_wf', 'integer');
+
+      //Ejecuta la instruccion
+  		$this->armarConsulta();
+  		$this->ejecutarConsulta();
+
+  		//Devuelve la respuesta
+  		return $this->respuesta;
+  	}
+
+
+
+
     function obtenerCombosAlkym()
   	{
   		$this->procedimiento = 'mat.ft_solicitud_sel';

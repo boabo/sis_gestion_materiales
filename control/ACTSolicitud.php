@@ -2495,6 +2495,16 @@ class ACTSolicitud extends ACTbase{
    }
    /***************************************************************************************/
 
+   /*Aumentando para controlar los documentos*/
+   function getVerificarMontoAdjudicado(){
+     $this->objFunc=$this->create('MODSolicitud');
+     $this->res=$this->objFunc->getVerificarMontoAdjudicado($this->objParam);
+     $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+   /******************************************/
+
+
+
 }
 
 ?>
