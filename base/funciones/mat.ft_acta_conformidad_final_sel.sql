@@ -297,7 +297,10 @@ BEGIN
                                 inner join param.tconcepto_ingas ing on ing.id_concepto_ingas = det.id_concepto_ingas
                                 inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                                 left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion --and detcot.id_detalle = det.id_detalle
-                      where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'';
+                      where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'
+                      group by ing.desc_ingas,det.cantidad_sol,detcot.cd,sol.origen_pedido,
+                            detcot.explicacion_detallada_part_cot,detcot.descripcion_cot,
+                            detcot.descripcion_cot,detcot.referencia_cot,det.tipo ';
 
             else
             	--Sentencia de la consulta
