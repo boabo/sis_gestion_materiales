@@ -328,10 +328,11 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 								minChars: 2,
 								gwidth: 350,
 								listWidth:'450',
+								enableMultiSelect: true,
 								tpl: new Ext.XTemplate([
 										'<tpl for=".">',
 										'<div class="x-combo-list-item">',
-										'<div>',
+										'<div class="awesomecombo-item {checked}">',
 										'<p><b>Codigo: <span style="color: red;">{pn}</span></b></p>',
 										'</div><p><b>Descripción:</b> <span style="color: blue;">{descripcion}</span></p>',
 										'<p><b>Unidad de Medida:</b> <span style="color: green;">{codigo_unidad_medida}</span></p>',
@@ -349,7 +350,7 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 
                 }
             },
-            type:'ComboBox',
+            type:'AwesomeCombo',
             filters:{pfiltro:'det.nro_parte_alterno',type:'string'},
             id_grupo:0,
             grid:false,
