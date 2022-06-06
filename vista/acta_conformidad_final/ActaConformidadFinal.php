@@ -344,6 +344,7 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 
 	bactGroups:  [1,2],
 	bexcelGroups:  [1,2],
+	bganttGroups:  [1,2],
 
 	actualizarSegunTab: function(name, indice){
  					 this.store.baseParams.pes_estado = name;
@@ -571,7 +572,8 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
   btest:false,
   bnew:false,
   bedit:false,
-  bexcel:true
+  bexcel:true,
+	bgantt:true,
 	}
 )
 </script>
