@@ -555,7 +555,7 @@ BEGIN
                                                   referencial
                                                   ) values(
                                                   v_datos.id_cotizacion,
-                                                  v_id_detalle,
+                                                  v_datos.id_detalle,
                                                   v_datos.id_solicitud,
                                                   v_datos.id_unidad_medida_cot,
                                                   v_datos.cantidad_det,

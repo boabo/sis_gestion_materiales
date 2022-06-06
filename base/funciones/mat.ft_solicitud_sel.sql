@@ -7285,6 +7285,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                               inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
                               inner join param.vproveedor2 prov on prov.id_proveedor = cot.id_proveedor
                               where sol.fecha_po between '''||v_parametros.fecha_inicio||''' and '''||v_parametros.fecha_fin||'''
+
+                              and sol.estado = ''despachado''
+
                               group by cot.id_solicitud,
                                        sol.id_proceso_wf,
                                        sol.nro_tramite,
@@ -7448,6 +7451,9 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                               inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
                               inner join param.vproveedor2 prov on prov.id_proveedor = cot.id_proveedor
                               where sol.fecha_po between '''||v_parametros.fecha_inicio||''' and '''||v_parametros.fecha_fin||'''
+
+                              and sol.estado = ''despachado''
+
                               group by cot.id_solicitud,
                                        sol.id_proceso_wf,
                                        sol.nro_tramite,
