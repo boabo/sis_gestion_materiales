@@ -127,6 +127,49 @@ header("content-type: text/javascript; charset=UTF-8");
             this.tbar.addField(this.fecha_fin);
 
 
+            this.addButton('bspacio1', {
+                text : '                        ',
+                grupo: [5],
+                //iconCls: 'bengine',
+                disabled: true,
+                hidden:false,
+                //handler: this.modPac,
+                //tooltip: '<b>Modificar PAC</b><br/>Permite modificar el PAC de un trámite'
+            });
+
+            this.addButton('bmodPAC', {
+                text: 'PAC',
+                grupo: [0,1,2,3],
+                iconCls: 'bengine',
+                disabled: true,
+                hidden:false,
+                handler: this.modPac,
+                tooltip: '<b>Modificar PAC</b><br/>Permite modificar el PAC de un trámite'
+            });
+
+
+            this.addButton('bmodCuce', {
+                text: 'CUCE',
+                grupo: [0,1,2,3],
+                iconCls: 'bengine',
+                disabled: true,
+                hidden:false,
+                handler: this.modCuce,
+                tooltip: '<b>Modificar CUCE</b><br/>Permite modificar el CUCE de un trámite'
+            });
+
+
+            this.addButton('bfecha_impresion_Form3008', {
+                text: 'Fecha 3008',
+                grupo: [0,1,2,3],
+                iconCls: 'bcalendar',
+                disabled: true,
+                hidden:false,
+                handler: this.modFecha3008,
+                tooltip: '<b>Modificar Fecha Impresión'
+            });
+
+
             this.fecha_fin.on('select',function(value){
                 this.capturarEventos();
             },this);
@@ -138,6 +181,11 @@ header("content-type: text/javascript; charset=UTF-8");
                  this.capturarEventos();
                }
             },this);
+
+
+            this.crearFormCuce();
+            this.crearFormPac();
+            this.crearFormFecha3008();
 
         },
 
@@ -203,6 +251,383 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.id_funcionario=this.cmbAux.getValue();
             this.load({params:{start:0, limit:50}});
         },
+
+
+        /*Aumentando para el CUCE Ismael Valdivia 16/03/2022*/
+        crearFormCuce: function () {
+            var me = this;
+            me.formAjustes = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'cuce',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'CUCE'
+                    },
+                    {
+                        name: 'nro_confirmacion',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'Nro Confirmación'
+                    },
+                    {
+                        name: 'fecha_publicacion_cuce',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha publicación'
+
+                    },
+                    {
+                        xtype: 'field',
+                        name: 'id_solicitud',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    }
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowAjustes = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Registrar CUCE',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveAjustes,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarAjustes,
+                        scope: me
+                    }],
+                items: me.formAjustes,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+
+        crearFormPac: function () {
+            var me = this;
+            me.formPac = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'pac',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'Nro Pac'
+                    },
+                    {
+                        name: 'fecha_pac',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha PAC'
+
+                    },
+                    {
+                        name: 'objeto_contratacion',
+                        xtype: 'textarea',
+                        width: 150,
+                        fieldLabel: 'Objeto de Contratacion'
+                    },
+                    {
+                        xtype: 'field',
+                        name: 'id_solicitud',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    }
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowAjustesPac = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Registrar PAC',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveAjustesPac,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarAjustesPac,
+                        scope: me
+                    }],
+                items: me.formPac,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+
+        saveAjustes: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/insertarCuce',
+                success: me.successAjustes,
+                failure: me.failureAjustes,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'cuce': me.formAjustes.getForm().findField('cuce').getValue(),
+                    'nro_confirmacion': me.formAjustes.getForm().findField('nro_confirmacion').getValue(),
+                    'fecha_publicacion_cuce': me.formAjustes.getForm().findField('fecha_publicacion_cuce').getValue()
+
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+
+
+        successAjustes: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowAjustes.hide();
+            this.reload();
+
+        },
+
+        failureAjustes: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+
+        },
+        onDeclinarAjustes: function () {
+            this.windowAjustes.hide();
+
+        },
+
+        onDeclinarAjustesPac: function () {
+            this.windowAjustesPac.hide();
+
+        },
+
+
+        successAjustesPac: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowAjustesPac.hide();
+            this.reload();
+
+        },
+
+        failureAjustesPac: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+
+        },
+
+        saveAjustesPac: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/insertarPac',
+                success: me.successAjustesPac,
+                failure: me.failureAjustesPac,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'pac': me.formPac.getForm().findField('pac').getValue(),
+                    'fecha_pac': me.formPac.getForm().findField('fecha_pac').getValue(),
+                    'objeto_contratacion': me.formPac.getForm().findField('objeto_contratacion').getValue()
+
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+
+        modCuce: function () {
+            this.windowAjustes.show();
+            this.formAjustes.getForm().reset();
+            var d = this.sm.getSelected().data;
+
+
+            this.formAjustes.getForm().findField('cuce').show();
+            this.formAjustes.getForm().findField('cuce').setValue(d.cuce);
+            this.formAjustes.getForm().findField('nro_confirmacion').show();
+            this.formAjustes.getForm().findField('nro_confirmacion').setValue(d.nro_confirmacion);
+            this.formAjustes.getForm().findField('fecha_publicacion_cuce').show();
+            this.formAjustes.getForm().findField('fecha_publicacion_cuce').setValue(d.fecha_publicacion_cuce);
+
+
+        },
+
+
+        modFecha3008: function () {
+            this.windowFecha3008.show();
+            this.formFecha3008.getForm().reset();
+            var d = this.sm.getSelected().data;
+
+
+            this.formFecha3008.getForm().findField('fecha_form_3008').show();
+            this.formFecha3008.getForm().findField('fecha_form_3008').setValue(d.fecha_3008);
+
+
+        },
+
+
+        crearFormFecha3008: function () {
+            var me = this;
+            me.formFecha3008 = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'fecha_form_3008',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha Formulario'
+                    }
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowFecha3008 = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Fecha del Formulario 3008',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveForm3008,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarForm3008,
+                        scope: me
+                    }],
+                items: me.formFecha3008,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+        saveForm3008: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/Solicitud/insertarFecha3008',
+                success: me.successform3008,
+                failure: me.failureform3008,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'fecha_form_3008': me.formFecha3008.getForm().findField('fecha_form_3008').getValue()
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+        onDeclinarForm3008: function () {
+            this.windowFecha3008.hide();
+        },
+
+
+        successform3008: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowFecha3008.hide();
+            this.reload();
+
+        },
+
+        failureform3008: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+
+        },
+
+        modPac: function () {
+            this.windowAjustesPac.show();
+            this.formPac.getForm().reset();
+            var d = this.sm.getSelected().data;
+
+
+            this.formPac.getForm().findField('pac').show();
+            this.formPac.getForm().findField('pac').setValue(d.nro_pac);
+            this.formPac.getForm().findField('fecha_pac').show();
+            this.formPac.getForm().findField('fecha_pac').setValue(d.fecha_pac);
+            this.formPac.getForm().findField('objeto_contratacion').show();
+            this.formPac.getForm().findField('objeto_contratacion').setValue(d.objeto_contratacion);
+
+
+        },
+        /****************************************************/
 
         Atributos:[
             {
@@ -571,13 +996,19 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.getBoton('diagrama_gantt').enable();
 
             this.getBoton('btnChequeoDocumentosWf').setDisabled(false);
+            this.getBoton('bmodPAC').setDisabled(false);
+            this.getBoton('bmodCuce').setDisabled(false);
+            this.getBoton('bfecha_impresion_Form3008').setDisabled(false);
 
         },
 
         liberaMenu:function(){
             var tb = Phx.vista.ConsultaForm400_500.superclass.liberaMenu.call(this);
             if(tb){
-                this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
+              this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
+              this.getBoton('bmodPAC').setDisabled(true);
+              this.getBoton('bmodCuce').setDisabled(true);
+              this.getBoton('bfecha_impresion_Form3008').setDisabled(true);
               //  this.getBoton('diagrama_gantt').disable();
 
             }
