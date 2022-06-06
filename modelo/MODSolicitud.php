@@ -2455,6 +2455,71 @@ class MODSolicitud extends MODbase
         return $this->respuesta;
     }
 
+    function listarForm400(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_FORM_400_SEL';
+        $this->tipo_procedimiento='SEL';
+
+        $this->setParametro('fecha_inicio','fecha_inicio','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('tipo_formulario','tipo_formulario','varchar');
+        $this->setParametro('id_funcionario','id_funcionario','integer');
+
+        //Define los parametros para la funcion
+
+        $this->captura('nro_tramite', 'varchar');
+        $this->captura('fecha_po', 'varchar');
+        $this->captura('nro_po', 'varchar');
+        $this->captura('chequeado', 'varchar');
+        $this->captura('id_solicitud', 'int4');
+        $this->captura('id_proceso_wf', 'int4');
+        $this->captura('id_encargado_abastecimiento', 'integer');
+        $this->captura('encargado_abastecimiento', 'varchar');
+        $this->captura('id_encargado_adquicisiones', 'integer');
+        $this->captura('encargado_adquicisiones', 'varchar');
+        $this->captura('rotulo_comercial', 'varchar');
+        $this->captura('monto_total_adjudicado', 'numeric');
+
+        $this->captura('fecha_publicacion_cuce', 'varchar');
+        $this->captura('cuce', 'varchar');
+        $this->captura('nro_confirmacion', 'varchar');
+        $this->captura('fecha_pac', 'varchar');
+        $this->captura('nro_pac', 'varchar');
+        $this->captura('objeto_contratacion', 'varchar');
+        $this->captura('fecha_3008', 'varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo($this->consulta);exit;
+        $this->ejecutarConsulta();
+        //var_dump("aqui llega datos",$this->respuesta);exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
+    function listarFuncionariosEncargados(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_LIST_ENCAR_SEL';
+        $this->tipo_procedimiento='SEL';
+
+        //Define los parametros para la funcion
+
+        $this->captura('id_funcionario', 'integer');
+        $this->captura('desc_funcionario', 'varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo($this->consulta);exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
 }
 
 ?>

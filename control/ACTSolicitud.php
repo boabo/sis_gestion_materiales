@@ -2503,7 +2503,38 @@ class ACTSolicitud extends ACTbase{
    }
    /******************************************/
 
+   function listarForm400(){
 
+       if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+           $this->objReporte = new Reporte($this->objParam,$this);
+           $this->res = $this->objReporte->generarReporteListado('MODSolicitud','listarForm400');
+       }else {
+
+           $this->objFunc = $this->create('MODSolicitud');
+           $this->res = $this->objFunc->listarForm400($this->objParam);
+       }
+
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+
+
+
+   function listarFuncionariosEncargados(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->listarFuncionariosEncargados($this->objParam);
+
+       $respuesta = $this->res->getDatos();
+
+       array_unshift ( $respuesta, array(
+ 				'id_funcionario'=>'0',
+ 				'desc_funcionario'=>'TODOS') );
+
+        $this->res->setDatos($respuesta);
+
+
+
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
 
 }
 
