@@ -1368,9 +1368,15 @@ Phx.vista.DetalleSol=Ext.extend(Phx.gridInterfaz,{
 		},
 
 		onButtonEdit: function() {
+			var data = this.getSelectedData();
 			Phx.vista.DetalleSol.superclass.onButtonEdit.call(this);
 
 			this.interfaz_padre = Phx.CP.getPagina(this.idContenedorPadre).store.baseParams.tipo_interfaz;
+
+
+			if (data.nro_parte_alterno == '') {
+				this.Cmp.nro_parte_alterno.reset();
+			}
 
 
 			if (this.interfaz_padre == 'VistoBueno') {
