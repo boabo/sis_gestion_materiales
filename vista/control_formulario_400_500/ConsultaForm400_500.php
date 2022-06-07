@@ -21,6 +21,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'no-400',title:'<H1 align="center" style="font-size:10px; color:red;"><i class="fa fa-times"></i> SIN FORMULARIO <BR/>400</H1>',grupo:1,height:0, width: 300},
             {name:'si-500',title:'<H1 align="center" style="font-size:10px; color:green;"><i class="fa fa-check"></i> CON FORMULARIO <BR/>500</H1>',grupo:2,height:0, width: 300},
             {name:'no-500',title:'<H1 align="center" style="font-size:10px; color:red;"><i class="fa fa-times"></i> SIN FORMULARIO <BR/>500</H1>',grupo:3,height:0, width: 300},
+            //{name:'cantidad_tramites',title:'<H1 align="center" style="font-size:10px; color:blue;"><i class="fa fa-list-ol" aria-hidden="true"></i> TRÁMITES <BR/>ASIGNADOS</H1>',grupo:4,height:0, width: 700},
 
 
         ],
@@ -872,7 +873,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'encargado_abastecimiento',
-                    fieldLabel: 'Encargado Abastecimiento',
+                    fieldLabel: 'Técnico Abastecimiento',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 150,
@@ -891,7 +892,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'encargado_adquicisiones',
-                    fieldLabel: 'Encargado Adquisiciones',
+                    fieldLabel: 'Técnico Administrativo',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 150,
