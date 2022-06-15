@@ -241,7 +241,8 @@ class MODCotizacion extends MODbase{
 				$this->captura('nro_cotizacion','varchar');
 				$this->captura('fecha_solicitud','date');
 				$this->captura('fecha_salida','date');
-        $this->captura('pn_cotizacion','varchar');
+				$this->captura('pn_cotizacion','varchar');
+        $this->captura('nro_tramite','varchar');
 
 
         //Ejecuta la instruccion

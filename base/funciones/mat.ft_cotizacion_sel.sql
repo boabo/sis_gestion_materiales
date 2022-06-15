@@ -72,6 +72,7 @@ DECLARE
     v_insertar_datos	varchar;
     v_id_estado_aprobado	integer;
     v_fecha_aprobacion				date;
+    v_nro_tramite		varchar;
 
 BEGIN
 	v_rango_fecha = '01/11/2018';
@@ -280,10 +281,12 @@ BEGIN
 
                        select
                               s.fecha_po,
-                              s.fecha_solicitud
+                              s.fecha_solicitud,
+                              s.nro_tramite
                               into
                               v_fecha_po,
-                              v_fecha_solicitud
+                              v_fecha_solicitud,
+                              v_nro_tramite
                       from mat.tsolicitud s
                       where s.id_proceso_wf =v_parametros.id_proceso_wf;
 
@@ -324,7 +327,12 @@ BEGIN
 
            if (v_fecha_po is null) then
            	v_fecha_po = '';
+           else
+           	if (v_fecha_po::date < '01/05/2022') then
+            	v_nro_tramite = '';
+            end if;
            end if;
+
 
           v_consulta:='select s.id_solicitud,
 							  d.id_cotizacion,
@@ -355,7 +363,8 @@ BEGIN
                                c.nro_cotizacion,
                                s.fecha_solicitud,
                                '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                               d.explicacion_detallada_part_cot::varchar
+                               d.explicacion_detallada_part_cot::varchar,
+                               '''||v_nro_tramite||'''::varchar as nro_tramite
 							  from mat.tsolicitud s
                               inner join mat.tcotizacion c on c.id_solicitud = s.id_solicitud
                               inner join mat.tcotizacion_detalle d on d.id_cotizacion = c.id_cotizacion

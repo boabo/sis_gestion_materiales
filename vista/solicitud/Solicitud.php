@@ -2239,6 +2239,8 @@ header("content-type: text/javascript; charset=UTF-8");
             resp.argument.wizard.panel.destroy();
 
             var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+            var rec = this.sm.getSelected();
+
             if (reg.ROOT.datos.v_codigo_estado_siguiente == 'despachado') {
               if (reg.ROOT.datos.v_origen_pedido == 'Reparación de Repuestos') {
 
@@ -2253,25 +2255,32 @@ header("content-type: text/javascript; charset=UTF-8");
                 });
 
               } else {
-                if (reg.ROOT.datos.v_nro_po != '' && reg.ROOT.datos.v_nro_po != null) {
+
+                if (rec.data.nro_po != '') {
                   Ext.Msg.show({
                       title:'<h1 style="font-size:15px;">Nro PO</h1>',
-                      msg: '<p style="font-size:12px;"> El número PO generado es: <b style="color:red">'+reg.ROOT.datos.v_nro_po+'</b> Para el Nro de Trámite: <b style="color:red">'+reg.ROOT.datos.v_nro_tramite+'</b></p>',
+                      msg: '<p style="font-size:12px;"> No se generó otro Nro. PO ya que el nro de trámite: <b style="color:red">'+reg.ROOT.datos.v_nro_tramite+'</b> cuenta con el Nro. PO: <b style="color:red">'+rec.data.nro_po+'</b> generado anteriormente.</p>',
                       buttons: Ext.Msg.OK,
                       width:450,
                       height:200,
                       icon: Ext.MessageBox.INFO,
                       scope:this
                   });
+                } else {
+                  if (reg.ROOT.datos.v_nro_po != '' && reg.ROOT.datos.v_nro_po != null) {
+                    Ext.Msg.show({
+                        title:'<h1 style="font-size:15px;">Nro PO</h1>',
+                        msg: '<p style="font-size:12px;"> El número PO generado es: <b style="color:red">'+reg.ROOT.datos.v_nro_po+'</b> Para el Nro de Trámite: <b style="color:red">'+reg.ROOT.datos.v_nro_tramite+'</b></p>',
+                        buttons: Ext.Msg.OK,
+                        width:450,
+                        height:200,
+                        icon: Ext.MessageBox.INFO,
+                        scope:this
+                    });
+                  }
                 }
               }
-
-
               }
-            // this.moneda_base = reg.ROOT.datos.v_codigo_moneda;
-
-
-
             this.reload();
         },
 

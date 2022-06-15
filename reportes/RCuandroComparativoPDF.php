@@ -17,12 +17,16 @@ class RCuandroComparativoPDF extends  ReportePDF
 
         if ($fecha_solicitud >= $fecha_condicion) {
           $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES OBRAS Y SERVICIOS ESPECIALIZADOS'."\n".'EN EL EXTRANJERO', 0, 'C', 0, '', '');
+          $this->SetFontSize(8);
+          $this->MultiCell(50, $height, "\n\n\n\n" .$this->datos[0]['nro_tramite'], 0, 'R', 0, 0,'150', '');
+          $this->SetFontSize(11);
           $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
           $this->ln(19);
           $this->SetFont('times', '', 10);
           $this->MultiCell(0, 5, '(Decreto Supremo N° 26688 y Decreto Supremos N° 3935) Versión II', 0, 'C', 0, '', '');
         } else {
-          $this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES Y SERVICIOS EN EL EXTRANJERO', 0, 'C', 0, '', '');
+          //$this->MultiCell(125, $height, "\n" .'CUADRO COMPARATIVO DE OFERTA PARA ADQUISICIÓN '."\n".'DE BIENES Y SERVICIOS EN EL EXTRANJERO', 0, 'C', 0, '', '');
+          $this->MultiCell(125, $height, "\n" .'HOLA AQUI 2', 0, 'C', 0, '', '');
           $this->MultiCell(0, $height, '', 0, 'C', 0, '', '');
           $this->ln(15);
           $this->SetFont('times', '', 10);

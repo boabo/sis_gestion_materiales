@@ -714,11 +714,11 @@ v_consulta:='select		sol.id_solicitud,
             ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
 
             	 --v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
-                   IF (v_parametros.pes_estado = 'pedido_iniciado') then
-                      v_filtro = '(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
-                   else
-                      v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
-                   end if;
+                  IF (v_parametros.pes_estado = 'pedido_iniciado') then
+                  	v_filtro = '(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                 else
+                 	v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                 end if;
 
             ELSIF (v_parametros.tipo_interfaz = 'PedidoRepuesto' or v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
 
@@ -5724,8 +5724,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	***********************************/
     elsif(p_transaccion='MAT_DETSERV_SEL')then
 		begin
+        	--Comentando para que al momento de enviar para generar el po tome el part number cotizado
+            --(Este cambio se definio con Jhonny, Patty y Grover)
         	v_consulta = 'select
-                                detcot.nro_parte_cot::varchar as partnumber,
+                                --detcot.nro_parte_cot::varchar as partnumber,
+                                detcot.explicacion_detallada_part_cot::varchar as partnumber,
                                 detcot.cantidad_det::integer as cantidad,
                                 detcot.precio_unitario::numeric as preciounitario,
                                 ''USD''::varchar as moneda,

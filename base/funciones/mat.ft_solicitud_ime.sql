@@ -2320,7 +2320,7 @@ END IF;
                 limit 1;
 
             else
-            	select es.id_tipo_estado,
+            	/*select es.id_tipo_estado,
                        es.codigo
                 into v_id_tipo_estado_siguiente,
                      v_codigo_estado_siguiente_auto
@@ -2336,10 +2336,24 @@ END IF;
                        v_id_asignacion
                 from mat.tasginacion_automatica_abastecimiento auto
                 where auto.ultima_asignacion = 'si'
-                and auto.id_tipo_estado = v_id_tipo_estado_siguiente;
+                and auto.id_tipo_estado = v_id_tipo_estado_siguiente;*/
+
+                v_funcionario_encargado = v_parametros.id_funcionario_wf;
+                v_id_tipo_estado_siguiente = v_parametros.id_tipo_estado;
+                v_datos_solicitud.id_estado_wf = v_parametros.id_estado_wf_act;
+                v_datos_solicitud.id_proceso_wf = v_parametros.id_proceso_wf_act;
+
+                select
+                       es.codigo
+                into
+                     v_codigo_estado_siguiente_auto
+                from wf.ttipo_estado es
+                LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                where es.id_tipo_estado = v_id_tipo_estado_siguiente-- and es.codigo = 'cotizacion'
+                limit 1;
 
 
-                if (v_ultimo_funcionario_asignado is null) then
+                /*if (v_ultimo_funcionario_asignado is null) then
 
                 select te.id_tipo_estado,
                        te.id_funcionario,
@@ -2376,6 +2390,9 @@ END IF;
 
 
                 else
+
+
+
 
                 select te.id_funcionario_tipo_estado into v_id_funcionario_tipo_estado
                 from wf.tfuncionario_tipo_estado te
@@ -2459,7 +2476,7 @@ END IF;
 
 
                   end if;
-                end if;
+                end if;*/
             end if;
 
 

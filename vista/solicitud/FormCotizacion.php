@@ -77,13 +77,54 @@ header("content-type: text/javascript; charset=UTF-8");
                         maxLength:5000
                     }),
 
-                     'explicacion_detallada_part_cot': new Ext.form.TextField({
+                     'explicacion_detallada_part_cot': new Ext.form.ComboBox({
                          name: 'explicacion_detallada_part_cot',
-                         msgTarget: 'title',
-                         fieldLabel: 'P/N Cotización',
-                         allowBlank: false,
-                         width: 400,
-                         maxLength:5000
+                         fieldLabel: 'Nro. Parte',
+                         allowBlank: true,
+                         emptyText: 'Part Number...',
+                         store : new Ext.data.JsonStore({
+                          url: '../../sis_gestion_materiales/control/Solicitud/obtenerCombosPartNumber',
+                          id : 'id',
+                          root : 'datos',
+                          sortInfo : {
+                            field : 'PN',
+                            direction : 'ASC'
+                          },
+                          totalProperty: 'total',
+                          fields: ['idproducto', 'idproductopn', 'pn', 'descripcion','tipoproducto', 'idtipoproducto', 'codigo_unidad_medida', 'idunidadmedida', 'reparable'],
+                          remoteSort : true,
+                          baseParams: {auto_complete: 'si'}
+                        }),
+                         valueField : 'pn',
+                         displayField : 'pn',
+                         gdisplayField : 'pn',
+                         hiddenName : 'id',
+                         forceSelection : true,
+                         typeAhead : false,
+                         triggerAction: 'all',
+                         listWidth:'450',
+                         lazyRender: true,
+                         resizable:true,
+                         mode: 'remote',
+                         pageSize: 10,
+                         queryDelay: 100,
+                         width: 200,
+                         gwidth: 200,
+                         minChars: 2,
+                         enableKeyEvents:true,
+                         tpl: new Ext.XTemplate([
+            								 '<tpl for=".">',
+            								 '<div class="x-combo-list-item">',
+            								 '<div>',
+            								 '<p><b>Codigo: <span style="color: red;">{pn}</span></b></p>',
+            								 '</div><p><b>Descripción:</b> <span style="color: blue;">{descripcion}</span></p>',
+                             '<p><b>Unidad de Medida:</b> <span style="color: green;">{codigo_unidad_medida}</span></p>',
+                             '<p><b>Tipo:</b> <span style="color: #38A78C;">{tipoproducto}</span></p>',
+                             '<p><b>Reparable:</b> <span style="color: #5938A7;">{reparable}</span></p>',
+            								 '</div></tpl>'
+            						 ]),
+
+
                      }),
 
                     // 'tipo_cot': new Ext.form.ComboBox({
