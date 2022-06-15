@@ -240,6 +240,9 @@ DECLARE
     v_monto_total_bs				numeric;
     /****************************************/
 
+    v_id_persona					integer;
+    v_restringir					varchar;
+
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -4708,6 +4711,44 @@ END IF;
                 return v_resp;
 
              end;
+
+    	/*********************************
+        #TRANSACCION:  'MAT_VER_USU_IME'
+        #DESCRIPCION:	Verificar si el usuario es restringido
+        #AUTOR:		Ismael Valdivia
+        #FECHA:		07/06/2022
+        ***********************************/
+
+        elsif(p_transaccion='MAT_VER_USU_IME')then
+
+            begin
+
+            	if (p_administrador) then
+                	v_restringir = 'si';
+                else
+                	 select usu.id_persona into v_id_persona
+                      from segu.vusuario usu
+                      where usu.id_usuario = p_id_usuario;
+
+
+                      if (v_id_persona in (14950, 17712)) then
+                          v_restringir = 'si';
+                      else
+                          v_restringir = 'no';
+                      end if;
+                end if;
+
+
+
+
+
+
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+                v_resp = pxp.f_agrega_clave(v_resp,'restringir',v_restringir::varchar);
+
+                return v_resp;
+
+            end;
 
 
 
