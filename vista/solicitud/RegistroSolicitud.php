@@ -356,6 +356,11 @@ header("content-type: text/javascript; charset=UTF-8");
             this.window.items.items[0].body.dom.style.background = '#548DCA';
       			this.window.mask.dom.style.background = '#7E7E7E';
       			this.window.mask.dom.style.opacity = '0.8';
+            //console.log("aqui llega el dato para el campo remark");
+            this.ocultarComponente(this.Cmp.remark);
+            this.Cmp.remark.allowBlank = true;
+
+
             /*Aumentando para recuperar el Id_Moneda (Ismael Valdivia 11/02/2020)*/
             this.Cmp.id_moneda.store.load({params:{start:0,limit:50},
                callback : function (r) {
