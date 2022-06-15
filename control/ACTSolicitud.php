@@ -112,7 +112,7 @@ class ACTSolicitud extends ACTbase{
            }
 
            if($this->objParam->getParametro('pes_estado') == 'pedido_iniciado'){
-             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) ");
+            // $this->objParam->addFiltro(" ");
            }
 
            if($this->objParam->getParametro('pes_estado') == 'pedido_tiene_po'){

@@ -443,8 +443,11 @@ BEGIN
             ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
 
             	 --v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
-                  v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
-
+                 IF (v_parametros.pes_estado = 'pedido_iniciado') then
+                  	v_filtro = '(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                 else
+                 	v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                 end if;
 
                 ELSIF (v_parametros.tipo_interfaz = 'PedidoRepuesto' or v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
 
@@ -613,15 +616,28 @@ v_consulta:='select		sol.id_solicitud,
                                 to_char(sol.fecha_3008,''DD/MM/YYYY'')::varchar,
 
                                 /*Aumentando lo del tecnico administrativo*/
-                                COALESCE((SELECT
-                                     vf.desc_funcionario1
-                                FROM wf.testado_wf twf
-                                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
-                                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
-                                WHERE twf.id_proceso_wf = sol.id_proceso_wf AND te.codigo = ''cotizacion''
-                                GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg
-                                ORDER BY  twf.fecha_reg DESC
-                                limit 1),'''')::varchar as desc_funcionario_administrativo
+                                (CASE
+                                      WHEN sol.origen_pedido = ''Reparación de Repuestos'' THEN
+                                      	COALESCE((SELECT
+                                                       vf.desc_funcionario1
+                                                  FROM wf.testado_wf twf
+                                                  INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                                                  INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                                                  WHERE twf.id_proceso_wf = sol.id_proceso_wf AND te.codigo = ''compra''
+                                                  GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg
+                                                  ORDER BY  twf.fecha_reg DESC
+                                                  limit 1),'''')
+                                      ELSE
+                                      COALESCE((SELECT
+                                                     vf.desc_funcionario1
+                                                FROM wf.testado_wf twf
+                                                INNER JOIN wf.ttipo_estado te ON te.id_tipo_estado = twf.id_tipo_estado
+                                                INNER JOIN orga.vfuncionario_cargo vf ON vf.id_funcionario = twf.id_funcionario
+                                                WHERE twf.id_proceso_wf = sol.id_proceso_wf AND te.codigo = ''cotizacion''
+                                                GROUP BY twf.id_funcionario, vf.desc_funcionario1,twf.fecha_reg
+                                                ORDER BY  twf.fecha_reg DESC
+                                                limit 1),'''')
+                                END)::varchar as desc_funcionario_administrativo
                                 /*************************************************************/
 
                                 from mat.tsolicitud sol
@@ -698,8 +714,11 @@ v_consulta:='select		sol.id_solicitud,
             ELSIF (v_parametros.tipo_interfaz = 'VistoBueno') THEN
 
             	 --v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
-                  v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
-
+                   IF (v_parametros.pes_estado = 'pedido_iniciado') then
+                      v_filtro = '(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                   else
+                      v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                   end if;
 
             ELSIF (v_parametros.tipo_interfaz = 'PedidoRepuesto' or v_parametros.tipo_interfaz =  'PedidoOperacion' or v_parametros.tipo_interfaz = 'PedidoMantenimiento' or v_parametros.tipo_interfaz ='PerdidoAlmacen' or v_parametros.tipo_interfaz ='PedidoDgac')THEN
 
