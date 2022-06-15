@@ -61,7 +61,12 @@ class RInformJustificacionRep extends  ReportePDF
         if ($this->datos[0]['evaluacion'] == NULL) {
           $texto = 'COMPLETAR INFORMACION ADJUDICADA';
         } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
-          $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+
+          if ($this->datos[0]['aplica_mayo'] == 'si') {
+            $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTOS POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+          } else {
+            $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+          }
           $texto_ref = 'en '.$this->datos[0]['evaluacion'];
           $texto_detalle = 'de acuerdo a partes removidas entregadas por parte de la
           Gerencia de Mantenimiento, al Almacén de la unidad de Abastecimientos, con su respectiva Tarjeta verde "Parte Reparable" MOM-005 del manual de Organización
@@ -130,7 +135,7 @@ class RInformJustificacionRep extends  ReportePDF
             </table>
             <table cellspacing="0" cellpadding="1" style="font-size:14px; border:1px solid #000000;">
               <tr>
-                <th align="left" style="font-size:14px; border-right:1px solid #000000;">En cumplimiento a Circular Instructiva <b>OB.GG.CI.002/2020</b> de <b>05/01/2021</b> que establece el procedimiento interno
+                <th align="left" style="font-size:14px; border-right:1px solid #000000;">En cumplimiento a Circular Instructiva <b>'.$this->datos[0]['instructiva'].'</b> de <b>05/01/2021</b> que establece el procedimiento interno
                   para la Contratación de Bienes. Obras y Servicios Especializados en el Extranjero, <b>RESABS-EE</b> BoA. La Unidad de Abastecimientos.
                   acorde al numeral IV "Causales para la Contratación Directa", inciso '.$inciso.':
                   <b>'.$texto.'</b> '.$texto_detalle.'
@@ -306,7 +311,13 @@ class RInformJustificacionRep extends  ReportePDF
         if ($this->datos[0]['evaluacion'] == NULL) {
           $texto = 'COMPLETAR INFORMACION ADJUDICADA';
         } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
-          $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+        
+          if ($this->datos[0]['aplica_mayo'] == 'si') {
+              $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTOS POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+          }else{
+              $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+          }
+
         } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
           $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
         } elseif ($this->datos[0]['evaluacion'] == 'Calibracion') {

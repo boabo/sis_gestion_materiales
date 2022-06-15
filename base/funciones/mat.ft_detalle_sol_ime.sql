@@ -92,6 +92,7 @@ DECLARE
      v_precio_actual	numeric;
      v_interfaz_origen	varchar;
 	 v_precio_recuperado	numeric;
+     v_existe_detalle	numeric;
 
 BEGIN
 
@@ -230,6 +231,35 @@ BEGIN
             v_parametros.id_producto_alkym
             /******************************************************/
             )RETURNING id_detalle into v_id_detalle;
+
+
+
+            /*Aumentando para no duplicar datos*/
+
+            select sol.origen_pedido into v_origen_pedido
+            from mat.tsolicitud sol
+            where sol.id_solicitud = v_parametros.id_solicitud;
+
+
+            if (v_origen_pedido != 'Reparación de Repuestos') then
+
+            	select count(det.id_detalle) into v_existe_detalle
+                from mat.tdetalle_sol det
+                where det.id_solicitud = v_parametros.id_solicitud
+                and trim(det.nro_parte) = regexp_replace(trim(v_parametros.nro_parte),'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&=_ ]+', '-','g');
+
+                if (v_existe_detalle > 1) then
+                	raise exception 'No se puede Repetir Part. Numbers. en el mismo proceso, el Part. Number. repetido es: <b>%</b>',regexp_replace(trim(v_parametros.nro_parte),'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&=_ ]+', '-','g');
+                end if;
+
+
+            end if;
+
+            /***********************************/
+
+
+
+
 
         else
         	/*Recuperamos el id _gestion para recuperar el centro de costo (Ismael Valdivia 17/03/2020)*/
@@ -386,6 +416,32 @@ BEGIN
             v_condicion,
              v_parametros.id_producto_alkym
             )RETURNING id_detalle into v_id_detalle;
+
+
+            /*Aumentando para no duplicar datos*/
+
+            select sol.origen_pedido into v_origen_pedido
+            from mat.tsolicitud sol
+            where sol.id_solicitud = v_parametros.id_solicitud;
+
+
+            if (v_origen_pedido != 'Reparación de Repuestos') then
+
+            	select count(det.id_detalle) into v_existe_detalle
+                from mat.tdetalle_sol det
+                where det.id_solicitud = v_parametros.id_solicitud
+                and trim(det.nro_parte) = regexp_replace(trim(v_parametros.nro_parte),'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&=_ ]+', '-','g');
+
+                if (v_existe_detalle > 1) then
+                	raise exception 'No se puede Repetir Part. Numbers. en el mismo proceso, el Part. Number. repetido es: <b>%</b>',regexp_replace(trim(v_parametros.nro_parte),'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&=_ ]+', '-','g');
+                end if;
+
+
+            end if;
+
+            /***********************************/
+
+
             end if;
 
             --modificar nro_parte, nro_parte_alterno en tsolicitud
@@ -684,6 +740,30 @@ BEGIN
             interfaz_origen = v_parametros.interfaz_origen
             /**********************************************************/
 			where id_detalle=v_parametros.id_detalle;
+
+
+            /*Aumentando para no duplicar datos*/
+            select sol.origen_pedido into v_origen_pedido
+            from mat.tsolicitud sol
+            where sol.id_solicitud = v_parametros.id_solicitud;
+
+            if (v_origen_pedido != 'Reparación de Repuestos') then
+            	select count(det.id_detalle) into v_existe_detalle
+                from mat.tdetalle_sol det
+                where det.id_solicitud = v_parametros.id_solicitud
+                and trim(det.nro_parte) = regexp_replace(trim(v_parametros.nro_parte),'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&=_ ]+', '-','g')
+                and det.id_detalle != v_parametros.id_detalle;
+                --raise exception 'Aqui llega data %',v_existe_detalle;
+                if (v_existe_detalle > 0) then
+                	raise exception 'No se puede Repetir Part. Numbers. en el mismo proceso, el Part. Number. repetido es: <b>%</b>',regexp_replace(trim(v_parametros.nro_parte),'[^a-zA-Z0-9.,#()"°/+*:|!$?¡¿´¨~{}^`&=_ ]+', '-','g');
+                end if;
+            end if;
+
+            /***********************************/
+
+
+
+
 
      --modificar nro_parte, nro_parte_alterno en tsolicitud
         select list(ds.nro_parte)

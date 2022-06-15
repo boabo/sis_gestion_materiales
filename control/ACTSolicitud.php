@@ -112,11 +112,16 @@ class ACTSolicitud extends ACTbase{
            }
 
            if($this->objParam->getParametro('pes_estado') == 'pedido_iniciado'){
-             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''compra'',''despachado'')) and trim(sol.nro_po) = '''' ");
+             $this->objParam->addFiltro("(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) ");
            }
 
            if($this->objParam->getParametro('pes_estado') == 'pedido_tiene_po'){
-             $this->objParam->addFiltro("trim(sol.nro_po) != '''' ");
+             $this->objParam->addFiltro("trim(sol.nro_po) != ''''");
+           }
+
+           if($this->objParam->getParametro('pes_estado') == 'pedido_compra'){
+             $this->objParam->addFiltro("sol.estado in (''compra'') ");
+
            }
         }
         if ($this->objParam->getParametro('tipo_interfaz') == 'SolicitudvoboComite') {
@@ -2533,6 +2538,25 @@ class ACTSolicitud extends ACTbase{
 
 
 
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+
+
+
+   function verificarUsuario(){
+       $this->objParam->defecto('ordenacion','id_funcionario');
+       $this->objParam->defecto('dir_ordenacion','asc');
+
+
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->verificarUsuario($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+
+
+   function listarTotalTramites(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->listarTotalTramites($this->objParam);
        $this->res->imprimirRespuesta($this->res->generarJson());
    }
 

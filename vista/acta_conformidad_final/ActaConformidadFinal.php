@@ -437,7 +437,7 @@ Phx.vista.ActaConformidadFinal=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'estado',
-				fieldLabel: 'Estado',
+				fieldLabel: 'Estado Pagos',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,

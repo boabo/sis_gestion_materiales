@@ -959,7 +959,7 @@ Phx.vista.CotizacionDetalle=Ext.extend(Phx.gridInterfaz, {
 
   			if (this.interfaz_padre == 'VistoBueno') {
   				this.interfaz_origen = 'Tecnico Abastecimiento';
-  			} else if (this.interfaz_padre == 'PedidoMantenimiento' || this.interfaz_padre == 'PedidoOperacion' || this.interfaz_padre == 'PerdidoAlmacen') {
+  			} else if (this.interfaz_padre == 'PedidoMantenimiento' || this.interfaz_padre == 'PedidoOperacion' || this.interfaz_padre == 'PedidoAlmacen') {
   				this.interfaz_origen = 'Tecnico Administrativo';
   			} else {
   				this.interfaz_origen = this.interfaz_padre;

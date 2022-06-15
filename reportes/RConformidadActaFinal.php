@@ -199,15 +199,27 @@ class RConformidadActaFinal extends  ReportePDF
                         }
                         </style>
                         <body>
-                        <table border="1">
-                              <tr>
-                                  <td width="65%"><b>Verificado Por:  </b>'.$nombre_solicitante.'<br></td>
-                                  <td width="35%"> <b>Fecha de Conformidad:  </b>'.$fecha_conformidad_final.'<br></td>
-                                </tr>
-                              <tr>
-                                  <td width="100%"> <b>Número de Trámite:  </b>'.$num_tramite.'<br></td>
+                        <table border="1">';
+              if ($this->datos[0]['firma_almacen'] == 'si') {
+                $html.='
+                                  <tr>
+                                      <td width="65%"><b>Número de Trámite:  </b>'.$num_tramite.'<br></td>
+                                      <td width="35%"> <b>Fecha de Conformidad:  </b>'.$fecha_conformidad_final.'<br></td>
+                                    </tr>';
+              }else{
+                $html.='
+                                  <tr>
+                                      <td width="65%"><b>Verificado Por:  </b>'.$nombre_solicitante.'<br></td>
+                                      <td width="35%"> <b>Fecha de Conformidad:  </b>'.$fecha_conformidad_final.'<br></td>
+                                    </tr>
+                                  <tr>
+                                      <td width="100%"> <b>Número de Trámite:  </b>'.$num_tramite.'<br></td>
 
-                                </tr>
+                                    </tr>';
+              }
+
+
+            $html.='
                               <tr>
                                   <td width="100%"> <b>Proveedor:  </b>'.$proveedor.'<br></td>
                                 </tr>

@@ -167,12 +167,13 @@ header("content-type: text/javascript; charset=UTF-8");
           {name:'pedido_revision',title:'<H1 align="center" style="color:#E85C00; font-size:12px;"><i style="font-size:15px;" class="fa fa-pencil-square"></i> Revisión</h1>',grupo:50,height:0},
           {name:'pedido_iniciado',title:'<H1 align="center" style="color:#0023FF; font-size:12px;"><i style="font-size:15px;" class="fa fa-location-arrow"></i> Iniciados</h1>',grupo:51,height:0},
           {name:'pedido_tiene_po',title:'<H1 align="center" style="color:#31A200; font-size:12px;"><i style="font-size:15px;" class="fa fa-check-square"></i> Tienen PO</h1>',grupo:52,height:0},
+          {name:'pedido_compra',title:'<H1 align="center" style="color:#C93100; font-size:12px;"><i style="font-size:15px;" class="fa fa-money"></i> En Compra</h1>',grupo:53,height:0},
         ],
 
 
-        bactGroups:  [50,51,52],
+        bactGroups:  [50,51,52,53],
         beditGroups: [50,51],
-        bganttGroups: [50,51,52],
+        bganttGroups: [50,51,52,53],
 
         actualizarSegunTab: function(name, indice){
             if(this.finCons){

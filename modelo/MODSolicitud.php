@@ -1247,6 +1247,8 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_envio', 'varchar');
         $this->captura('mayor', 'varchar');
         $this->captura('editar_etiqueta', 'varchar');
+        $this->captura('instructiva', 'varchar');
+        $this->captura('aplica_mayo', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -2488,6 +2490,8 @@ class MODSolicitud extends MODbase
         $this->captura('nro_pac', 'varchar');
         $this->captura('objeto_contratacion', 'varchar');
         $this->captura('fecha_3008', 'varchar');
+        $this->captura('origen_pedido', 'varchar');
+        $this->captura('fecha_asignado', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -2515,6 +2519,48 @@ class MODSolicitud extends MODbase
         //echo($this->consulta);exit;
         $this->ejecutarConsulta();
 
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
+    function verificarUsuario()
+    {
+
+        $this->procedimiento = 'mat.ft_solicitud_ime';
+        $this->transaccion = 'MAT_VER_USU_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        $this->setParametro('prueba', 'prueba', 'varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
+
+    function listarTotalTramites(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='mat.ft_solicitud_sel';
+        $this->transaccion='MAT_LIST_TOT_TRA_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        //Define los parametros para la funcion
+
+        $this->setParametro('fecha_inicio','fecha_inicio','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('tipo_formulario','tipo_formulario','varchar');
+        $this->setParametro('id_funcionario','id_funcionario','integer');
+
+        $this->captura('origen_pedido', 'varchar');
+        $this->captura('cantidad_total', 'numeric');
+        $this->captura('encargado', 'varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo($this->consulta);exit;
+        $this->ejecutarConsulta();
+        //var_dump("aqui llega data",$this->respuesta);
         //Devuelve la respuesta
         return $this->respuesta;
     }

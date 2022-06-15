@@ -21,29 +21,108 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'no-400',title:'<H1 align="center" style="font-size:10px; color:red;"><i class="fa fa-times"></i> SIN FORMULARIO <BR/>400</H1>',grupo:1,height:0, width: 300},
             {name:'si-500',title:'<H1 align="center" style="font-size:10px; color:green;"><i class="fa fa-check"></i> CON FORMULARIO <BR/>500</H1>',grupo:2,height:0, width: 300},
             {name:'no-500',title:'<H1 align="center" style="font-size:10px; color:red;"><i class="fa fa-times"></i> SIN FORMULARIO <BR/>500</H1>',grupo:3,height:0, width: 300},
-            //{name:'cantidad_tramites',title:'<H1 align="center" style="font-size:10px; color:blue;"><i class="fa fa-list-ol" aria-hidden="true"></i> TRÁMITES <BR/>ASIGNADOS</H1>',grupo:4,height:0, width: 700},
+            {name:'cantidad_tramites',title:'<H1 align="center" style="font-size:10px; color:blue;"><i class="fa fa-list-ol" aria-hidden="true"></i> TRÁMITES <BR/>ASIGNADOS</H1>',grupo:4,height:0, width: 700},
 
 
         ],
-        bactGroups:  [0,1,2,3],
-        bexcelGroups: [0,1,2,3],
+        bactGroups:  [0,1,2,3,4],
+        bexcelGroups: [0,1,2,3,4],
         bganttGroups: [0,1,2,3],
+
+        tabeast:[
+              {
+                  url:'../../../sis_gestion_materiales/vista/control_cantidad_procesos/CantidadTotalizado.php',
+                  title:'Cantidad Procesos',
+                  width:'37%',
+                  cls:'CantidadTotalizado'
+             }
+           ],
+
+
 
         actualizarSegunTab: function(name, indice){
             this.store.baseParams.tipo_formulario = name;
 
-
             if (name == 'si-400' || name == 'no-400') {
               this.cm.setHidden(16,true);
               this.cm.setHidden(15,false);
+
+              this.cm.setHidden(2,false);
+              this.cm.setHidden(3,false);
+              this.cm.setHidden(4,false);
+              this.cm.setHidden(5,false);
+              this.cm.setHidden(6,false);
+              this.cm.setHidden(7,false);
+              this.cm.setHidden(8,false);
+              this.cm.setHidden(9,false);
+              this.cm.setHidden(10,false);
+              this.cm.setHidden(11,false);
+              this.cm.setHidden(12,false);
+              this.cm.setHidden(13,false);
+              this.cm.setHidden(15,false);
+              this.cm.setHidden(16,false);
+              this.cm.setHidden(17,true);
+
+              // if (Phx.CP.getPagina('docs-COTRFORM400-east-0') != undefined) {
+              //   Phx.CP.getPagina('docs-COTRFORM400-east-0').cargarPagina(this.fecha_inicio.getValue(),this.fecha_fin.getValue(),this.cmbAux.getValue(),name);
+              // }
+
+
+
             } else if (name == 'si-500' || name == 'no-500') {
               this.cm.setHidden(16,false);
               this.cm.setHidden(15,true);
+
+
+              this.cm.setHidden(2,false);
+              this.cm.setHidden(3,false);
+              this.cm.setHidden(4,false);
+              this.cm.setHidden(5,false);
+              this.cm.setHidden(6,false);
+              this.cm.setHidden(7,false);
+              this.cm.setHidden(8,false);
+              this.cm.setHidden(9,false);
+              this.cm.setHidden(10,false);
+              this.cm.setHidden(11,false);
+              this.cm.setHidden(12,false);
+              this.cm.setHidden(13,false);
+              this.cm.setHidden(15,false);
+              this.cm.setHidden(16,true);
+              this.cm.setHidden(17,true);
+
+              // if (Phx.CP.getPagina('docs-COTRFORM400-east-0') != undefined) {
+              //   Phx.CP.getPagina('docs-COTRFORM400-east-0').cargarPagina(this.fecha_inicio.getValue(),this.fecha_fin.getValue(),this.cmbAux.getValue(),name);
+              // }
+
+            } else if (name == 'cantidad_tramites') {
+                this.cm.setHidden(2,true);
+                this.cm.setHidden(3,true);
+                this.cm.setHidden(4,true);
+                this.cm.setHidden(5,true);
+                this.cm.setHidden(6,true);
+                this.cm.setHidden(7,true);
+                this.cm.setHidden(8,true);
+                this.cm.setHidden(9,true);
+                this.cm.setHidden(10,true);
+                this.cm.setHidden(11,true);
+                this.cm.setHidden(12,true);
+                this.cm.setHidden(13,true);
+                this.cm.setHidden(15,true);
+                this.cm.setHidden(16,true);
+                this.cm.setHidden(17,false);
+
+
             }
 
 
             if (this.fecha_fin.getValue() != '') {
               this.load({params:{start:0, limit:this.tam_pag}});
+
+
+              if (Phx.CP.getPagina('docs-COTRFORM400-east-0') != undefined) {
+                Phx.CP.getPagina('docs-COTRFORM400-east-0').cargarPagina(this.fecha_inicio.getValue(),this.fecha_fin.getValue(),this.cmbAux.getValue(),name);
+              }
+
             }
 
         },
@@ -97,7 +176,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.addButton('btnChequeoDocumentosWf',{
                 text: 'Documentos',
-                grupo: [0,1,2,3,4,5],
+                grupo: [0,1,2,3],
                 iconCls: 'bchecklist',
                 disabled: true,
                 handler: this.loadCheckDocumentosRecWf,
@@ -246,11 +325,20 @@ header("content-type: text/javascript; charset=UTF-8");
         //     store:[ 'Todos','Proceso']
         // }),
 
-        capturarEventos: function () {
+        capturarEventos: function (record) {
+
             this.store.baseParams.fecha_inicio=this.fecha_inicio.getValue();
             this.store.baseParams.fecha_fin=this.fecha_fin.getValue();
             this.store.baseParams.id_funcionario=this.cmbAux.getValue();
             this.load({params:{start:0, limit:50}});
+
+            console.log('record', record);
+
+            if (Phx.CP.getPagina('docs-COTRFORM400-east-0') != undefined) {
+              //Phx.CP.getPagina('docs-COTRFORM400-east-0').cargarPagina(this.fecha_inicio.getValue(),this.fecha_fin.getValue(),this.cmbAux.getValue(),this.store.baseParams.tipo_formulario);
+            }
+
+
         },
 
 
@@ -955,6 +1043,21 @@ header("content-type: text/javascript; charset=UTF-8");
             },
 
 
+            {
+                config: {
+                    name: 'fecha_asignado',
+                    fieldLabel: 'Fecha Asignación',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                },
+                type: 'TextField',
+                id_grupo: 0,
+                grid: true,
+                form: true
+            },
+
+
         ],
         tam_pag:50,
         title:'ConsultaForm400_500',
@@ -981,6 +1084,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'nro_pac', type: 'string'},
             {name:'objeto_contratacion', type: 'string'},
             {name:'fecha_3008', type: 'string'},
+            {name:'fecha_asignado', type: 'string'},
 
         ],
         sortInfo:{

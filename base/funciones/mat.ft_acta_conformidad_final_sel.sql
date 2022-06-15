@@ -298,7 +298,7 @@ BEGIN
                                 inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                                 left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion --and detcot.id_detalle = det.id_detalle
                       where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'
-                      group by ing.desc_ingas,det.cantidad_sol,detcot.cd,sol.origen_pedido,
+                            group by ing.desc_ingas,det.cantidad_sol,detcot.cd,sol.origen_pedido,
                             detcot.explicacion_detallada_part_cot,detcot.descripcion_cot,
                             detcot.descripcion_cot,detcot.referencia_cot,det.tipo ';
 
@@ -336,7 +336,7 @@ BEGIN
 
 
 
-			--raise notice '%',v_consulta;
+			raise notice '%',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -366,7 +366,15 @@ BEGIN
 
     		--Sentencia de la consulta
 			v_consulta:=' select sol.nro_tramite::varchar,
-                                 sol.estado::varchar,
+
+
+                                 --sol.estado::varchar,
+
+                                 (select pago.ultimo_estado_pp
+                                 from tes.tobligacion_pago pago
+                                 where pago.num_tramite = sol.nro_tramite and pago.estado_reg = ''activo'')::varchar as estado,
+
+
                                  to_char(sol.fecha_solicitud,''DD/MM/YYYY'')::varchar as fecha_sol,
                                  pro.rotulo_comercial::varchar as proveedor,
                                  round(sum(cotdet.cantidad_det * cotdet.precio_unitario),2)::numeric as total_a_pagar,

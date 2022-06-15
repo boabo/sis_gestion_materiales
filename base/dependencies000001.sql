@@ -1638,3 +1638,51 @@ FROM mat.tsolicitud so
 WHERE (co.monto_total * 6.96) > 50000::numeric
 ORDER BY so.nro_tramite;
 /***********************************F-DEP-FEA-MAT-0-7/11/2018****************************************/
+
+
+/***********************************I-DEP-IRVA-MAT-0-10/06/2022****************************************/
+CREATE OR REPLACE VIEW mat.vsolicitud_estado_wf(
+    nro_tramite,
+    origen_pedido,
+    codigo,
+    fecha_reg,
+    desc_funcionario1,
+    id_funcionario)
+AS
+WITH datos_compra AS(
+  SELECT sol.nro_tramite,
+         sol.origen_pedido,
+         te.codigo,
+         max(es.id_estado_wf) AS id_estado_wf
+  FROM mat.tsolicitud sol
+       JOIN wf.testado_wf es ON es.id_proceso_wf = sol.id_proceso_wf
+       JOIN wf.ttipo_estado te ON te.id_tipo_estado = es.id_tipo_estado
+  WHERE sol.origen_pedido::text <> 'Reparación de Repuestos'::text AND
+        te.codigo::text = 'cotizacion'::text
+  GROUP BY sol.nro_tramite,
+           sol.origen_pedido,
+           te.codigo
+  UNION
+  SELECT sol.nro_tramite,
+         sol.origen_pedido,
+         te.codigo,
+         max(es.id_estado_wf) AS id_estado_wf
+  FROM mat.tsolicitud sol
+       JOIN wf.testado_wf es ON es.id_proceso_wf = sol.id_proceso_wf
+       JOIN wf.ttipo_estado te ON te.id_tipo_estado = es.id_tipo_estado
+  WHERE sol.origen_pedido::text = 'Reparación de Repuestos'::text AND
+        te.codigo::text = 'compra'::text
+  GROUP BY sol.nro_tramite,
+           sol.origen_pedido,
+           te.codigo)
+      SELECT dc.nro_tramite,
+             dc.origen_pedido,
+             dc.codigo,
+             est.fecha_reg::date AS fecha_reg,
+             fun.desc_funcionario1,
+             fun.id_funcionario
+      FROM datos_compra dc
+           JOIN wf.testado_wf est ON est.id_estado_wf = dc.id_estado_wf
+           JOIN orga.vfuncionario fun ON fun.id_funcionario = est.id_funcionario
+             ;
+/***********************************F-DEP-IRVA-MAT-0-10/06/2022****************************************/

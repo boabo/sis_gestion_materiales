@@ -27,6 +27,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.onNew();
             this.iniciarEventos();
             this.ocultar = false;
+            this.mostrarFlota = '';
         },
         buildComponentesDetalle: function () {
 
@@ -102,7 +103,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //     maxLength:50
                     // }),
 
-                    'nro_parte_alterno': new Ext.form.ComboBox({
+                    'nro_parte_alterno': new Ext.form.AwesomeCombo({
                          name: 'id_concepto_ingas',
                          fieldLabel: 'Concepto',
                          allowBlank: true,
@@ -128,6 +129,7 @@ header("content-type: text/javascript; charset=UTF-8");
                          typeAhead : false,
                          triggerAction: 'all',
                          listWidth:'450',
+                         enableMultiSelect: true,
                          lazyRender: true,
                          resizable:true,
                          mode: 'remote',
@@ -138,16 +140,16 @@ header("content-type: text/javascript; charset=UTF-8");
                          minChars: 2,
                          enableKeyEvents:true,
                          tpl: new Ext.XTemplate([
-            								 '<tpl for=".">',
-            								 '<div class="x-combo-list-item">',
-            								 '<div>',
-            								 '<p><b>Codigo: <span style="color: red;">{pn}</span></b></p>',
-            								 '</div><p><b>Descripción:</b> <span style="color: blue;">{descripcion}</span></p>',
-                             '<p><b>Unidad de Medida:</b> <span style="color: green;">{codigo_unidad_medida}</span></p>',
-                             '<p><b>Tipo:</b> <span style="color: #38A78C;">{tipoproducto}</span></p>',
-                             '<p><b>Reparable:</b> <span style="color: #5938A7;">{reparable}</span></p>',
-            								 '</div></tpl>'
-            						 ]),
+         										'<tpl for=".">',
+         										'<div class="x-combo-list-item">',
+         										'<div class="awesomecombo-item {checked}">',
+         										'<p><b>Codigo: <span style="color: red;">{pn}</span></b></p>',
+         										'</div><p><b>Descripción:</b> <span style="color: blue;">{descripcion}</span></p>',
+         										'<p><b>Unidad de Medida:</b> <span style="color: green;">{codigo_unidad_medida}</span></p>',
+         										'<p><b>Tipo:</b> <span style="color: #38A78C;">{tipoproducto}</span></p>',
+         										'<p><b>Reparable:</b> <span style="color: #5938A7;">{reparable}</span></p>',
+         										'</div></tpl>'
+         								]),
 
 
                      }),
@@ -473,6 +475,35 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.Cmp.id_funcionario_solicitante.store.baseParams.fecha = this.Cmp.fecha_solicitud.getValue().dateFormat(this.Cmp.fecha_solicitud.format);
             },this);
 
+            /*Aumentando para restringir al usuario Ismael Valdivia (07/06/2022)*/
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/verificarUsuario',
+                params:{prueba: 'prueba'},
+                success:function(resp){
+
+                     var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                     //console.log("aqui llega la respuesta",reg.ROOT.datos);
+
+                     if (reg.ROOT.datos.restringir == 'si') {
+                       //this.Cmp.id_matricula.restringir = reg.ROOT.datos.restringir;
+                       this.Cmp.id_matricula.store.baseParams.flota = 'si';
+                       this.mostrarFlota = 'si';
+                     } else {
+                       this.Cmp.id_matricula.store.baseParams.flota = 'no';
+                       this.mostrarFlota = 'no';
+                     }
+
+
+                    // this.detCmp.id_centro_costo.store.baseParams.id_centro_costo = reg.ROOT.datos.id_centro_costo;
+                    /************************************************************************************/
+
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+            /********************************************************************/
+
             /*Aumentando para que el campo Obsevaciones tenga una leyenda por defecto (Ismael Valdivia 26/10/2021)*/
             this.Cmp.observaciones_sol.setValue("La entrega del producto es en Forwarder Miami, de acuerdo a oferta del proveedor, después de la notificación del Purchase Order, sin embargo el ingreso al almacén Cochabamba será hasta la fecha requerida de llegada.");
             /******************************************************************************************************/
@@ -566,7 +597,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Gerencia de Operaciones');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Operaciones'){
-                  this.Cmp.id_matricula.store.baseParams.flota = '';
+                  this.Cmp.id_matricula.store.baseParams.flota = this.mostrarFlota;
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                     this.mostrarComponente(this.Cmp.motivo_solicitud);
                     /*Ocultando los nuevos campos para repuestos*/
@@ -634,7 +665,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Gerencia de Mantenimiento'); this.Cmp.origen_pedido.setValue('Gerencia de Operaciones DGAC');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Gerencia de Mantenimiento'){
-                  this.Cmp.id_matricula.store.baseParams.flota = '';
+                  this.Cmp.id_matricula.store.baseParams.flota = this.mostrarFlota;
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                   this.mostrarComponente(this.Cmp.motivo_solicitud);
                   /*Ocultando los nuevos campos para repuestos*/
@@ -703,7 +734,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.origen_pedido.setValue('Almacenes Consumibles o Rotables');
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Almacenes Consumibles o Rotables'){
-                  this.Cmp.id_matricula.store.baseParams.flota = '';
+                  this.Cmp.id_matricula.store.baseParams.flota = this.mostrarFlota;
                   this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
                   this.mostrarComponente(this.Cmp.motivo_solicitud);
                   /*Ocultando los nuevos campos para repuestos*/
@@ -772,7 +803,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 }
                 if(this.Cmp.origen_pedido.getValue() == 'Centro de Entrenamiento Aeronautico Civil'){
                     this.detCmp.id_unidad_medida.store.baseParams.repuestos = '';
-                    this.Cmp.id_matricula.store.baseParams.flota = '';
+                    this.Cmp.id_matricula.store.baseParams.flota = this.mostrarFlota;
                     this.mostrarComponente(this.Cmp.motivo_solicitud);
                     /*Ocultando los nuevos campos para repuestos*/
                     this.ocultarComponente(this.Cmp.nro_po);
@@ -1275,6 +1306,8 @@ header("content-type: text/javascript; charset=UTF-8");
                             this.sw_init_add = true;
                             this.bloqueaRequisitos(true);
 
+                            this.detCmp.nro_parte_alterno.reset();
+                            
                             this.detCmp.id_centro_costo.store.load({params:{start:0,limit:50},
                                callback : function (r) {
                                		this.detCmp.id_centro_costo.setValue(this.detCmp.id_centro_costo.store.baseParams.id_centro_costo);
