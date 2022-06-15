@@ -851,7 +851,7 @@ class ACTSolicitud extends ACTbase{
              }
 
              if ($datosDetalleHazmat[$i]["condicion"] == '') {
-               throw new Exception("La Condicion Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
+               //throw new Exception("La Condicion Item: ".$item." no puede ser vacio favor verificar el detalle de la cotización adjudicada");
              }
 
              if ($datosDetalleHazmat[$i]["fechaentrega"] == '') {

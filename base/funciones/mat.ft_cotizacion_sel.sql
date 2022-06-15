@@ -364,10 +364,10 @@ BEGIN
                               where s.id_proceso_wf ='||v_parametros.id_proceso_wf||' and ';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-            v_consulta:=v_consulta||'ORDER BY d.id_cotizacion_det DESC, d.precio_unitario DESC, c.adjudicado DESC';
+            v_consulta:=v_consulta||'ORDER BY c.adjudicado asc, d.id_cotizacion_det DESC, d.precio_unitario DESC';
 			--Devuelve la respuesta
 
-
+			raise notice 'Aqui llega data %',v_consulta;
 			return v_consulta;
 		end;
 
