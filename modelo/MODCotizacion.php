@@ -248,7 +248,7 @@ class MODCotizacion extends MODbase{
         $this->armarConsulta();
         $this->ejecutarConsulta();
         //Devuelve la respuesta
-				var_dump("aqui llega ",$this->respuesta);exit;
+				//var_dump("aqui llega ",$this->respuesta);exit;
         return $this->respuesta;
     }
     function listasFrimas(){
