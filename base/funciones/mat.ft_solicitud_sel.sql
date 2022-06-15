@@ -444,7 +444,7 @@ BEGIN
 
             	 --v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
                  IF (v_parametros.pes_estado = 'pedido_iniciado') then
-                  	v_filtro = '(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                  	v_filtro = '((sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != ''''))) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
                  else
                  	v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
                  end if;
@@ -715,7 +715,7 @@ v_consulta:='select		sol.id_solicitud,
 
             	 --v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
                   IF (v_parametros.pes_estado = 'pedido_iniciado') then
-                  	v_filtro = '(sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != '''')) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
+                  	v_filtro = '((sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and trim(sol.nro_po) = '''') or (sol.estado in (''cotizacion'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'') and (sol.origen_pedido = ''Reparación de Repuestos'' and trim(sol.nro_po) != ''''))) AND sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
                  else
                  	v_filtro = 'sol.id_funcionario_solicitante = '||v_record.id_funcionario||' AND ';
                  end if;
