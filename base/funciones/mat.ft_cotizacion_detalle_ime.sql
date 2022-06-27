@@ -534,7 +534,7 @@ BEGIN
 
                                 insert into mat.tcotizacion_detalle(
                                                   id_cotizacion,
-                                                  id_detalle,
+                                                  --id_detalle,
                                                   id_solicitud,
                                                   id_unidad_medida_cot,
                                                   cantidad_det,
@@ -555,7 +555,7 @@ BEGIN
                                                   referencial
                                                   ) values(
                                                   v_datos.id_cotizacion,
-                                                  v_datos.id_detalle,
+                                                  --v_datos.id_detalle,
                                                   v_datos.id_solicitud,
                                                   v_datos.id_unidad_medida_cot,
                                                   v_datos.cantidad_det,
