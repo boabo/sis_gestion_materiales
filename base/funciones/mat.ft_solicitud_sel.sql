@@ -5295,7 +5295,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                 end if;
 
                  /*Aumentando para condiciones de mayo*/
-                  if (v_fecha_cotizacion::date >= '01/05/2022'::date) then
+                  if (v_fecha_cotizacion::date >= '01/05/2022'::date or v_id_solicitud_rec in (7876,7892,7888,7865,7868,7869,7870,7951,7866,7872,7873,7875,7877,7885,7886,7867,7871,7884,7887,7896,7874)) then
                   	v_instructiva = 'OB.GG.CI.002/2021';
                     v_aplica_mayo = 'si';
                   else
