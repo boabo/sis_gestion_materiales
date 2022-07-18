@@ -2421,6 +2421,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                           s.tiempo_entrega::numeric,
                           '''||v_fecha_salida_gm||'''::date as fecha_salida,
 
+						   /*COMENTANDO PARA MEJORAR LA CONSULTA YA QUE CAUSA DUPLICIDAD
                           (CASE
                                      --WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
                                      WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
@@ -2445,15 +2446,67 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                      ELSE  det.nro_parte_alterno
-                                END)::varchar,
+                                END)::varchar,*/
+
+                          --aUMENTANDO ESTA PARTA EN REMPLAZO DE LA COMENTADA
+                          (CASE
+                            WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A''))
+
+                            THEN COALESCE ((CASE WHEN
+                                    (select COUNT(detcot.explicacion_detallada_part_cot)
+                                      from mat.tcotizacion_detalle detcot
+                                      where detcot.id_detalle = det.id_detalle
+                                      AND trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte_alterno)
+                                      AND trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte)
+                                    ) > 0
+                                  THEN
+                                    ''''
+                                  ELSE
+                                    trim(COALESCE(det.nro_parte_alterno,''''))||COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                                                                    THEN
+                                                                                        '',''||detcot.explicacion_detallada_part_cot
+                                                                                    ELSE
+                                                                                        ''''
+                                                                                    END)
+                                                                                from mat.tcotizacion_detalle detcot
+                                                                                where detcot.id_detalle = det.id_detalle
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
+                                                                                ),'''')
+                                  END
+
+                                 ),'''')
+
+
+                            WHEN ((trim(coalesce(det.nro_parte_alterno),'''') = '''' or trim(coalesce(det.nro_parte_alterno),'''') = ''-'' or trim(coalesce(det.nro_parte_alterno),'''') = ''N/A''))
+
+                            THEN COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                                                                    THEN
+                                                                                        '',''||detcot.explicacion_detallada_part_cot
+                                                                                    ELSE
+                                                                                        ''''
+                                                                                    END)
+                                                                                from mat.tcotizacion_detalle detcot
+                                                                                where detcot.id_detalle = det.id_detalle
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
+                                                                                ),'''')
+
+
+                            ELSE det.nro_parte_alterno
+
+                            END)::varchar,
+
+
                           '''||v_cambiar_leyenda||'''::varchar as cambiar_leyenda
 
                           from mat.tdetalle_sol det
                           inner join segu.tusuario usu1 on usu1.id_usuario = det.id_usuario_reg
                           left join segu.tusuario usu2 on usu2.id_usuario = det.id_usuario_mod
 
-                          left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
-                          left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle and det.estado_excluido = ''no''
+							/*COMENTANDO PARA MEJORAR LA CONSULTA YA QUE CAUSA DUPLICIDAD */
+                          --left join mat.tcotizacion cot on cot.id_solicitud = det.id_solicitud and cot.adjudicado = ''si''
+                          --left join mat.tcotizacion_detalle detcot on detcot.id_cotizacion = cot.id_cotizacion and detcot.id_detalle = det.id_detalle and det.estado_excluido = ''no''
 
 
 
@@ -6634,7 +6687,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                    sol.id_solicitud,
                    (select sum(det.cantidad_sol *  det.precio_unitario)
                   from mat.tdetalle_sol det
-                  where det.id_solicitud = sol.id_solicitud) as total_venta,
+                  where det.id_solicitud = sol.id_solicitud and det.estado_excluido != 'si') as total_venta,
                   sol.estado,
                   sol.nro_tramite,
                   sol.fecha_po
