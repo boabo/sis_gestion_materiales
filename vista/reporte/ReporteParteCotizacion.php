@@ -81,7 +81,36 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo:1,
                 grid:true,
                 form:true
-            }
+            },
+            {
+                config:{
+                    name:'proceso',
+                    fieldLabel:'Proceso',
+                    allowBlank:false,
+                    emptyText:'Elija una opción...',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    lazyRender:true,
+                    mode: 'local',
+                    width:300,
+                    gwidth: 230,
+                    store:new Ext.data.ArrayStore({
+                    fields: ['codigo', 'valor'],
+                    data :	[
+                                ['adjudicado','Adjudicados'],
+                                ['comite_unidad_abastecimientos','Pendientes de Autorización (Comité)'],
+                            ]
+                    }),
+                    valueField:'codigo',
+                    displayField:'valor',                    
+
+                },
+                type:'ComboBox',
+                id_grupo:0,
+                grid:true,
+                form:true
+
+            },            
         ],
         title : 'Generar Reporte',
         ActSave : '../../sis_gestion_materiales/control/Cotizacion/ControlPartesCotizacion',

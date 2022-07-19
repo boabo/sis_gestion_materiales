@@ -339,6 +339,7 @@ class MODCotizacion extends MODbase{
         $this->setParametro('origen_pedido','origen_pedido','varchar');
         $this->setParametro('fecha_ini','fecha_ini','date');
         $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('proceso','proceso','varchar');
         $this->setCount(false);
         $this->captura('origen_pedido','varchar');
         $this->captura('nro_tramite','varchar');
@@ -372,6 +373,7 @@ class MODCotizacion extends MODbase{
 
         //Ejecuta la instruccion
         $this->armarConsulta();
+				// echo $this->consulta;exit;
         $this->ejecutarConsulta();
         //var_dump( $this->respuesta);exit;
         //Devuelve la respuesta
