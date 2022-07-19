@@ -2472,6 +2472,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                                                                 where detcot.id_detalle = det.id_detalle
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
+                                                                                group by detcot.explicacion_detallada_part_cot
                                                                                 ),'''')
                                   END
 
@@ -2482,7 +2483,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                             THEN COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                     THEN
-                                                                                        '',''||detcot.explicacion_detallada_part_cot
+                                                                                       detcot.explicacion_detallada_part_cot
                                                                                     ELSE
                                                                                         ''''
                                                                                     END)
@@ -2490,6 +2491,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                                                                 where detcot.id_detalle = det.id_detalle
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
+                                                                                group by detcot.explicacion_detallada_part_cot
                                                                                 ),'''')
 
 
