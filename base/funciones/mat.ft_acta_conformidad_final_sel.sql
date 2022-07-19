@@ -320,7 +320,8 @@ BEGIN
                                 ''''
                                 end ))
                                 END)::varchar as descripcion,
-                                det.cantidad_sol::integer,
+                                --det.cantidad_sol::integer,
+                                detcot.cantidad_det::integer,
                                 ''''::varchar
                                 from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol det on det.id_solicitud = sol.id_solicitud
