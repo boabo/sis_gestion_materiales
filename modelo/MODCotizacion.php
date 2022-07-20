@@ -376,6 +376,7 @@ class MODCotizacion extends MODbase{
 
         //Ejecuta la instruccion
         $this->armarConsulta();
+				// echo $this->consulta;exit;
         $this->ejecutarConsulta();
         //var_dump( $this->respuesta);exit;
         //Devuelve la respuesta
