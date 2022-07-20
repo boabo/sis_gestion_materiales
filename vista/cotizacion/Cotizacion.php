@@ -1096,7 +1096,7 @@ header("content-type: text/javascript; charset=UTF-8");
                       this.mostrarComponente(this.Cmp.id_proveedor_contacto);
                       this.Cmp.id_proveedor_contacto.allowBlank = false;
                       console.log("aqui llega el grupo",Ext.getCmp('data_alkym'));
-                      Ext.getCmp('data_alkym').el.dom.style.height = '580px';
+                      Ext.getCmp('data_alkym').el.dom.style.height = '600px';
                     //} else {
                     //   this.ocultarComponente(this.Cmp.id_condicion_entrega);
                     //   this.ocultarComponente(this.Cmp.id_forma_pago);
