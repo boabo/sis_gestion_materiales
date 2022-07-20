@@ -59,6 +59,8 @@ class MODCotizacion extends MODbase{
 		// $this->captura('codigo_tipo_transaccion','varchar');
 		// $this->captura('codigo_orden_destino','varchar');
 		$this->captura('tipo_evaluacion','varchar');
+		$this->captura('id_proveedor_contacto','int4');
+		$this->captura('desc_contacto','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -125,6 +127,7 @@ class MODCotizacion extends MODbase{
 				$this->setParametro('codigo_orden_destino','codigo_orden_destino','varchar');
 				$this->setParametro('direccion_punto_entrega','direccion_punto_entrega','varchar');
 				$this->setParametro('tipo_evaluacion','tipo_evaluacion','varchar');
+				$this->setParametro('id_proveedor_contacto','id_proveedor_contacto','int4');
 
 
 		//Ejecuta la instruccion
@@ -339,6 +342,7 @@ class MODCotizacion extends MODbase{
         $this->setParametro('origen_pedido','origen_pedido','varchar');
         $this->setParametro('fecha_ini','fecha_ini','date');
         $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('proceso','proceso','varchar');
         $this->setCount(false);
         $this->captura('origen_pedido','varchar');
         $this->captura('nro_tramite','varchar');
@@ -578,7 +582,7 @@ class MODCotizacion extends MODbase{
         //var_dump( $this->respuesta);exit;
         //Devuelve la respuesta
         return $this->respuesta;
-    }
+    } 
 
 }
 ?>

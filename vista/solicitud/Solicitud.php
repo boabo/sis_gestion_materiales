@@ -487,7 +487,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type:'TextField',
                 filters:{pfiltro:'sol.nro_lote',type:'string'},
-                id_grupo:1,
+                id_grupo:2,
                 grid:true,
                 form:true
             },

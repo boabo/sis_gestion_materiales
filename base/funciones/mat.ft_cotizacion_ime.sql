@@ -312,6 +312,10 @@ BEGIN
                     where cot.id_cotizacion = v_parametros.id_cotizacion;
                     /***********************************************************/
 
+                    if (v_datos_cotizacion.id_proveedor_contacto != v_parametros.id_proveedor_contacto) then
+                    	raise exception 'No se puede modificar el contacto del proveedor ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
+                    end if;
+
                     if (v_datos_cotizacion.id_solicitud != v_parametros.id_solicitud) then
                     	raise exception 'No se puede modificar la relacion de la cotización ya que el tramite tiene una obligacion de pago y un PO generado en alkym que podrián ser afectados';
                     end if;
@@ -393,7 +397,8 @@ BEGIN
             nro_cotizacion = v_parametros.nro_cotizacion,
             recomendacion = v_parametros.recomendacion,
             obs = v_parametros.obs,
-            pie_pag = v_parametros.pie_pag
+            pie_pag = v_parametros.pie_pag,
+            id_proveedor_contacto = v_parametros.id_proveedor_contacto
 			where id_cotizacion=v_parametros.id_cotizacion;
 
 			--Definicion de la respuesta

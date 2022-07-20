@@ -891,7 +891,11 @@ class ACTSolicitud extends ACTbase{
          $DetalleCabecera = $this->obtenerDetalleCabecera();
          $datosCabecera = $DetalleCabecera->getDatos();
          $totalarregloCabecera = count($datosCabecera);
+
+
+
          for ($i=0; $i<$totalarregloCabecera; $i++) {
+
            /*Validaciones*/
            if ($datosCabecera[$i]["fecha_po"] == '') {
              throw new Exception("La fecha del PO no puede ser vacia");
@@ -925,8 +929,8 @@ class ACTSolicitud extends ACTbase{
              throw new Exception("No se encontró el Tipo de Transacción en la cabecera de la cotizacion del proveedor adjudicado");
            }
 
-           if ($datosCabecera[$i]["id_proveedor_contacto"] == '') {
-             throw new Exception("No se encontró el Contacto del proveedor en la cabecera de la cotizacion del proveedor adjudicado");
+           if ($datosCabecera[$i]["id_proveedor_contacto"] == '' or $datosCabecera[$i]["id_proveedor_contacto"] == null or $datosCabecera[$i]["id_proveedor_contacto"] == 'null') {
+             throw new Exception("No se encontró el Contacto del proveedor en la cabecera de la cotizacion");
            }
 
            if ($datosCabecera[$i]["id_orden_destino_alkym"] == '') {
@@ -961,7 +965,7 @@ class ACTSolicitud extends ACTbase{
                                  "dato"=>json_encode($CabeceraSolicitud));
            $enviarDatos = json_encode($datosArmados);
            //var_dump("mandar",$_SESSION["_ESTADO_SISTEMA"]);
-           //var_dump("mandar",$enviarDatos);exit;
+           var_dump("mandar",$enviarDatos);exit;
          /***********************************************/
 
 
@@ -991,8 +995,10 @@ class ACTSolicitud extends ACTbase{
           $idPoAlkym = $respuesta_final->objeto->IdPO_alkym;
           $nroPOAlkym = $respuesta_final->objeto->nroPOAlkym;
 
+
+
           if (($respuesta_final->codigo != 0) && ($respuesta_final->codigo != 1)) {
-            throw new Exception("Ocurrio un problema al registrar el PO en el sistema Alkym, favor contactarse con el Area de Sistemas y reportarlo, el mensaje de Respuesta es el siguiente:".$respuesta_final->mensaje."los datos de envio son:".$enviarDatos);
+            throw new Exception("Ocurrio un problema2 al registrar el PO en el sistema Alkym, favor contactarse con el Area de Sistemas y reportarlo, el mensaje de Respuesta es el siguiente:".$respuesta_final->mensaje."los datos de envio son:".$enviarDatos);
           }
 
           if ($respuesta_final->codigo == 0) {

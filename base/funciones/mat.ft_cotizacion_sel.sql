@@ -134,13 +134,16 @@ BEGIN
                           	''''
                           END
                         )::varchar as tipo_evaluacion*/
-                        soli.tipo_evaluacion::varchar as tipo_evaluacion
+                        soli.tipo_evaluacion::varchar as tipo_evaluacion,
+                        cts.id_proveedor_contacto,
+                        conta.nombre_contacto::varchar as desc_contacto
                         /*******************************************************************/
 						from mat.tcotizacion cts
                         left join mat.tsolicitud soli on soli.id_solicitud = cts.id_solicitud
 						inner join segu.tusuario usu1 on usu1.id_usuario = cts.id_usuario_reg
 						inner join param.tmoneda mo on mo.id_moneda = cts.id_moneda
                         inner join param.vproveedor p on p.id_proveedor = cts.id_proveedor
+                        left join param.tproveedor_contacto conta on conta.id_proveedor_contacto = cts.id_proveedor_contacto
                         left join segu.tusuario usu2 on usu2.id_usuario = cts.id_usuario_mod
 						where  '||v_filtro;
 
@@ -168,6 +171,7 @@ BEGIN
 					    inner join segu.tusuario usu1 on usu1.id_usuario = cts.id_usuario_reg
 						inner join param.tmoneda mo on mo.id_moneda = cts.id_moneda
                         inner join param.vproveedor p on p.id_proveedor = cts.id_proveedor
+                        left join param.tproveedor_contacto conta on conta.id_proveedor_contacto = cts.id_proveedor_contacto
                         left join segu.tusuario usu2 on usu2.id_usuario = cts.id_usuario_mod
 					    where ';
 
@@ -1112,11 +1116,19 @@ BEGIN
 	elsif(p_transaccion='MAT_CTS_REP')then
     	begin
 
+        -- {dev: bvasquez, date: 19/07/2022, desc: adicion filtro v_parametros.proceso Adjudicados o los que aun están en la bandeja de Comité pendientes de autorización. }
         if (v_parametros.origen_pedido != 'Todos')then
-                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
-
+        	   if v_parametros.proceso = 'adjudicado' then
+                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+               else
+                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.codigo = '''||v_parametros.proceso||'''';
+               end if;
         else
-                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and c.adjudicado = ''si''';
+        	if v_parametros.proceso = 'adjudicado' then
+                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and c.adjudicado = ''si''';
+            else
+                v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and t.codigo = '''||v_parametros.proceso||'''';
+            end if;
 		end if;
 
 

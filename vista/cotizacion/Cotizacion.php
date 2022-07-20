@@ -251,6 +251,59 @@ header("content-type: text/javascript; charset=UTF-8");
                     grid: true,
                     form: true
                 },
+
+                {
+                    config: {
+                        name: 'id_proveedor_contacto',
+                        fieldLabel: 'Contacto Proveedor',
+                        allowBlank: true,
+                        style:{
+                          background:'#FFCD8C',
+                        },
+                        emptyText: 'Elija una opción...',
+                        store: new Ext.data.JsonStore({
+                            url: '../../sis_gestion_materiales/control/Cotizacion/listarContactos',
+                            id: 'id_proveedor_contacto',
+                            root: 'datos',
+                            sortInfo: {
+                                field: 'id_proveedor_contacto',
+                                direction: 'ASC'
+                            },
+                            totalProperty: 'total',
+                            fields: ['id_proveedor_contacto', 'id_proveedor_contacto_alkym','nombre_contacto'],
+                            remoteSort: true,
+                            baseParams: {par_filtro: 'nombre_contacto'}
+                        }),
+                        valueField: 'id_proveedor_contacto',
+                        displayField: 'nombre_contacto',
+                        gdisplayField: 'nombre_contacto',
+                        hiddenName: 'id_proveedor_contacto',
+                        forceSelection: true,
+                        typeAhead: false,
+                        triggerAction: 'all',
+                        lazyRender: true,
+                        mode: 'remote',
+                        pageSize: 15,
+                        queryDelay: 1000,
+                        width: 300,
+                        gwidth: 300,
+                        //hidden:true,
+                        minChars: 2,
+                        renderer : function(value, p, record) {
+                            return String.format('{0}', record.data['desc_contacto']);
+                        },
+                        listeners: {
+        									  beforequery: function(qe){
+        										delete qe.combo.lastQuery;
+        									}
+        								},
+                    },
+                    type: 'ComboBox',
+                    id_grupo: 0,
+                    filters: {pfiltro: 'nombre_contacto',type: 'string'},
+                    grid: true,
+                    form: true
+                },
                 /************************************************************************/
                 // {
                 //     config: {
@@ -866,7 +919,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 {name:'codigo_puntos_entrega', type: 'string'},
                 {name:'codigo_tipo_transaccion', type: 'string'},
                 {name:'codigo_orden_destino', type: 'string'},
-                {name:'tipo_evaluacion', type: 'string'}
+                {name:'tipo_evaluacion', type: 'string'},
+                {name:'id_proveedor_contacto', type: 'numeric'},
+                {name:'desc_contacto', type: 'string'}
             ],
             sortInfo:{
                 field: 'id_cotizacion',
@@ -918,6 +973,20 @@ header("content-type: text/javascript; charset=UTF-8");
                 var rec = this.getSelectedData();
 
                 Phx.vista.Cotizacion.superclass.onButtonEdit.call(this);
+
+
+                /*Aumentando para filtrar el contacto del proveedor*/
+                this.Cmp.id_proveedor_contacto.store.baseParams.id_proveedor = rec.id_proveedor;
+                /***************************************************/
+
+                this.Cmp.id_proveedor_contacto.store.load({params:{start:0,limit:50},
+                   callback : function (r) {
+                         this.Cmp.id_proveedor_contacto.setValue(rec.id_proveedor_contacto);
+                         this.Cmp.id_proveedor_contacto.fireEvent('select',this.Cmp.id_proveedor_contacto,this.Cmp.id_proveedor_contacto.getValue());
+                    }, scope : this
+                });
+
+
                 this.getComponente('id_solicitud').setValue(this.id_solicitud);
                 this.Cmp.id_proveedor.store.baseParams ={id_solicitud:this.maestro.id_solicitud ,par_filtro: 'desc_proveedor'};
                 this.window.items.items[0].body.dom.style.background = '#548DCA';
@@ -979,6 +1048,13 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.Seleccion(rec);
                 console.log("aqui llega el dato",rec);
+
+
+
+
+
+
+
                 if (rec.adjudicado == 'si') {
                   this.mostrarComponente(this.Cmp.id_condicion_entrega);
                   this.mostrarComponente(this.Cmp.id_forma_pago);
@@ -1005,6 +1081,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.id_puntos_entrega);
                     this.ocultarComponente(this.Cmp.id_tipo_transaccion);
                     this.ocultarComponente(this.Cmp.id_orden_destino);
+                    this.Cmp.id_proveedor_contacto.allowBlank = true;
                   } else {
 
                     /*Aqui ponemos la condicion para saber de que sistema es el tramite*/
@@ -1016,6 +1093,8 @@ header("content-type: text/javascript; charset=UTF-8");
                       this.mostrarComponente(this.Cmp.id_puntos_entrega);
                       this.mostrarComponente(this.Cmp.id_tipo_transaccion);
                       this.mostrarComponente(this.Cmp.id_orden_destino);
+                      this.mostrarComponente(this.Cmp.id_proveedor_contacto);
+                      this.Cmp.id_proveedor_contacto.allowBlank = false;
                       console.log("aqui llega el grupo",Ext.getCmp('data_alkym'));
                       Ext.getCmp('data_alkym').el.dom.style.height = '580px';
                     //} else {

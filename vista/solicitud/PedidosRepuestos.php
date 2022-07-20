@@ -703,6 +703,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.mostrarComponente(this.Cmp.id_proveedor);
                 this.mostrarComponente(this.Cmp.nro_po);
+                this.mostrarComponente(this.Cmp.nro_lote);
                 this.ocultarComponente(this.Cmp.fecha_po);
                 this.Cmp.fecha_po.allowBlank = true;
                 this.CampoBloqueado(true);
@@ -717,6 +718,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.ocultarComponente(this.Cmp.fecha_cotizacion);
                 this.ocultarComponente(this.Cmp.id_proveedor);
                 this.mostrarComponente(this.Cmp.nro_po);
+                this.mostrarComponente(this.Cmp.nro_lote);
                 this.ocultarComponente(this.Cmp.fecha_po);
 
                 this.Cmp.fecha_po.allowBlank = true;
@@ -785,7 +787,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos[this.getIndAtributo('fecha_po')].grid=true;
 
             this.Atributos[this.getIndAtributo('mensaje_correo')].grid = true;
-            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=true;
+            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=true; 
             this.Atributos[this.getIndAtributo('taller_asignado')].grid=true;
             this.Atributos[this.getIndAtributo('observacion_nota')].grid=true;
             this.Atributos[this.getIndAtributo('lugar_entrega')].grid=true;
