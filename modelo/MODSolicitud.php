@@ -2492,6 +2492,7 @@ class MODSolicitud extends MODbase
         $this->captura('fecha_3008', 'varchar');
         $this->captura('origen_pedido', 'varchar');
         $this->captura('fecha_asignado', 'varchar');
+        $this->captura('estado', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

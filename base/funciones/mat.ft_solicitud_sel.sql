@@ -7471,7 +7471,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                     to_char(dat.fecha_pac,''DD/MM/YYYY'')::varchar as fecha_pac,
                                     dat.nro_pac::varchar,
                                     dat.objeto_contratacion::varchar,
-                                    to_char(dat.fecha_3008,''DD/MM/YYYY'')::varchar as fecha_3008
+                                    to_char(dat.fecha_3008,''DD/MM/YYYY'')::varchar as fecha_3008,
+
+                                    (select pago.ultimo_estado_pp
+                                     from tes.tobligacion_pago pago
+                                     where pago.num_tramite = dat.nro_tramite and pago.estado_reg = ''activo'')::varchar as estado
+
                               from wf.tdocumento_wf dwf
                               INNER JOIN  wf.ttipo_documento  td on td.id_tipo_documento  = dwf.id_tipo_documento
                               inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = dwf.id_proceso_wf
@@ -7505,7 +7510,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                       datos.objeto_contratacion::varchar,
                                       datos.fecha_3008::varchar,
                                       ''''::varchar as origen_pedido,
-                                      ''''::varchar as fecha_asignado
+                                      ''''::varchar as fecha_asignado,
+                                      datos.estado
                               from datos_recuperados datos
                               where ' ||v_id_funcionario_listado||'';
 
@@ -7532,7 +7538,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                        ''''::varchar as fecha_3008,
 
                                       sol.origen_pedido::varchar,
-                                      to_char(sol.fecha_reg,''DD/MM/YYYY'')::varchar as fecha_asignado
+                                      to_char(sol.fecha_reg,''DD/MM/YYYY'')::varchar as fecha_asignado,
+                                      ''''::varchar as estado
 
                               from mat.vsolicitud_estado_wf sol
                               where sol.fecha_reg between '''||v_parametros.fecha_inicio||''' and '''||v_parametros.fecha_fin||'''

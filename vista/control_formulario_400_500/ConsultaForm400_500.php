@@ -44,10 +44,9 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams.tipo_formulario = name;
 
             if (name == 'si-400' || name == 'no-400') {
-              this.cm.setHidden(16,true);
-              this.cm.setHidden(15,false);
-
-              this.cm.setHidden(2,false);
+              this.cm.setHidden(17,true);
+              this.cm.setHidden(18,false);
+              this.cm.setHidden(1,false);
               this.cm.setHidden(3,false);
               this.cm.setHidden(4,false);
               this.cm.setHidden(5,false);
@@ -59,9 +58,10 @@ header("content-type: text/javascript; charset=UTF-8");
               this.cm.setHidden(11,false);
               this.cm.setHidden(12,false);
               this.cm.setHidden(13,false);
-              this.cm.setHidden(15,false);
+              this.cm.setHidden(14,false);
               this.cm.setHidden(16,false);
-              this.cm.setHidden(17,true);
+              this.cm.setHidden(17,false);
+              this.cm.setHidden(18,true);
 
               // if (Phx.CP.getPagina('docs-COTRFORM400-east-0') != undefined) {
               //   Phx.CP.getPagina('docs-COTRFORM400-east-0').cargarPagina(this.fecha_inicio.getValue(),this.fecha_fin.getValue(),this.cmbAux.getValue(),name);
@@ -73,7 +73,7 @@ header("content-type: text/javascript; charset=UTF-8");
               this.cm.setHidden(16,false);
               this.cm.setHidden(15,true);
 
-
+              this.cm.setHidden(1,false);
               this.cm.setHidden(2,false);
               this.cm.setHidden(3,false);
               this.cm.setHidden(4,false);
@@ -95,7 +95,7 @@ header("content-type: text/javascript; charset=UTF-8");
               // }
 
             } else if (name == 'cantidad_tramites') {
-                this.cm.setHidden(2,true);
+                this.cm.setHidden(1,true);
                 this.cm.setHidden(3,true);
                 this.cm.setHidden(4,true);
                 this.cm.setHidden(5,true);
@@ -107,9 +107,10 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.cm.setHidden(11,true);
                 this.cm.setHidden(12,true);
                 this.cm.setHidden(13,true);
-                this.cm.setHidden(15,true);
+                this.cm.setHidden(14,true);
                 this.cm.setHidden(16,true);
-                this.cm.setHidden(17,false);
+                this.cm.setHidden(17,true);
+                this.cm.setHidden(18,false);
 
 
             }
@@ -168,7 +169,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.ConsultaForm400_500.superclass.constructor.call(this,config);
             this.init();
             //this.store.baseParams.tipo_formulario = 'si-400';
-            this.cm.setHidden(16,true);
+            this.cm.setHidden(17,true);
             //this.cmbGestion.on('select',this.capturarEventos, this);
             //this.load({params:{start:0, limit: 50}});
 
@@ -728,6 +729,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'Field',
                 form:false
             },
+
+            /*Aumetnando el estado del plan de pago*/
+            {
+                config:{
+                    name: 'estado',
+                    fieldLabel: 'Ultima Cuota Plan de Pago',
+                    allowBlank: true,
+                    anchor: '50%',
+                    gwidth: 150,
+                    maxLength:20,
+                    readOnly:true,
+                    renderer: function(value,p,record) {
+                        console.log("Aqui llega el estado de la couta",value);
+                        if (value == '') {
+                          return String.format('<b><font>SIN PLAN DE PAGOS</font></b>');
+                        } else if (value == 'anulado') {
+                          return String.format('<b><font color="red">ANULADO</font></b>');
+                        } else {
+                          return String.format('<b><font color="green">{0}</font></b>', value);
+                        }
+
+                        //;
+                    }
+                },
+                type:'TextField',
+                bottom_filter: true,
+                filters:{pfiltro:'dat.estado',type:'string'},
+                id_grupo:0,
+                grid:true,
+                form:false
+            },
+            /***************************************/
+
+
             {
                 config:{
                     name: 'nro_tramite',
@@ -1085,6 +1120,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'objeto_contratacion', type: 'string'},
             {name:'fecha_3008', type: 'string'},
             {name:'fecha_asignado', type: 'string'},
+            {name:'estado', type: 'string'},
 
         ],
         sortInfo:{
