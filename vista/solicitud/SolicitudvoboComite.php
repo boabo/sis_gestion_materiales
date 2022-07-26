@@ -23,7 +23,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 height:'50%',
                 cls:'DetalleComite'
             }
-        ], 
+        ],
         constructor: function (config) {
             this.Atributos.unshift({
                 config: {
@@ -151,10 +151,38 @@ header("content-type: text/javascript; charset=UTF-8");
             var tramite = rec.data['nro_tramite'];
             var tipo_tramite = tramite.substring(0,2);
             //this.onSaveWizard(rec);
-            if (rec.data.origen_solicitud == 'control_mantenimiento'/*|| tipo_tramite == 'GO' || tipo_tramite == 'GA'*/)  {
+            console.log("aqui para los boa rep",tipo_tramite);
+            if (rec.data.origen_solicitud == 'control_mantenimiento' && tipo_tramite != 'GR'/*|| tipo_tramite == 'GO' || tipo_tramite == 'GA'*/)  {
               this.onCambiarEstadoProcesoServicio(rec);
             } else {
-              this.onSaveWizard(rec);
+              if (tipo_tramite == 'GR') {
+                this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+                    'Estado de Wf',
+                    {
+                        modal: true,
+                        width: 700,
+                        height: 450
+                    },
+                    {
+                        data: {
+                            id_estado_wf: rec.data.id_estado_wf,
+                            id_proceso_wf: rec.data.id_proceso_wf,
+                            /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                            id_solicitud: rec.data.id_solicitud,
+                            }
+                    }, this.idContenedor, 'FormEstadoWf',
+
+                    {
+                        config: [{
+                            event: 'beforesave',
+                            delegate: this.onSaveWizard2
+                        }],
+                        scope: this
+                    }
+                );
+              } else {
+                this.onSaveWizard(rec);
+              }
             }
 
             /***********************COMENTANDO ESTA PARTE PARA QUE PASE DIRECTAMENTE EL ESTADO**************************/
@@ -183,6 +211,33 @@ header("content-type: text/javascript; charset=UTF-8");
             //     }
             // );
         },
+
+        onSaveWizard2:function(wizard,resp){
+            Phx.CP.loadingShow();
+            console.log("aqui llega data",resp);
+            Ext.Ajax.request({
+                url:'../../sis_gestion_materiales/control/Solicitud/siguienteEstadoSolicitud',
+                params:{
+
+                    id_proceso_wf_act:  resp.id_proceso_wf_act,
+                    id_estado_wf_act:   resp.id_estado_wf_act,
+                    id_tipo_estado:     resp.id_tipo_estado,
+                    id_funcionario_wf:  resp.id_funcionario_wf,
+                    id_depto_wf:        resp.id_depto_wf,
+                    obs:                resp.obs,
+                    json_procesos:      Ext.util.JSON.encode(resp.procesos),
+                    /*Aumentando este campo para controlar que se tenga adjudicados (Ismael Valdivia 19/02/2020)*/
+                    id_solicitud:       wizard.data.id_solicitud,
+                },
+                success:this.successWizard2,
+                failure: this.conexionFailure,
+                argument:{wizard:wizard},
+                timeout:this.timeout,
+                scope:this
+            });
+
+        },
+
         onSaveWizard:function(rec){
             Phx.CP.loadingShow();
             Ext.Ajax.request({
@@ -210,6 +265,13 @@ header("content-type: text/javascript; charset=UTF-8");
         successWizard:function(){
             Phx.CP.loadingHide();
             //resp.argument.wizard.panel.destroy();
+            //this.onCambiarEstadoProcesoServicio();
+            this.reload();
+        },
+
+        successWizard2:function(resp){
+            Phx.CP.loadingHide();
+            resp.argument.wizard.panel.destroy();
             //this.onCambiarEstadoProcesoServicio();
             this.reload();
         },

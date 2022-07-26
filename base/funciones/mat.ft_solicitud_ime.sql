@@ -1874,7 +1874,24 @@ END IF;
                         LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
                         where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'compra';
 				  else
-                  		select es.id_tipo_estado,
+                  		/*Cambiando la logica para que pase al siguiente estado compra con la asignacion*/
+
+                        v_funcionario_encargado = v_parametros.id_funcionario_wf;
+
+
+                        select es.id_tipo_estado,
+                               es.codigo
+                        into v_id_tipo_estado_siguiente,
+                             v_codigo_estado_siguiente_auto
+                        from wf.ttipo_estado es
+                        LEFT join wf.tfuncionario_tipo_estado fun on fun.id_tipo_estado = es.id_tipo_estado
+                        where es.id_tipo_proceso = v_id_tipo_proceso_wf and es.codigo = 'compra';
+                        /********************************************************************************/
+
+
+
+
+                  		/*select es.id_tipo_estado,
                                    es.codigo
                             into v_id_tipo_estado_siguiente,
                                  v_codigo_estado_siguiente_auto
@@ -2013,7 +2030,7 @@ END IF;
 
                             update mat.tasginacion_automatica_abastecimiento set
                             ultima_asignacion = 'no'
-                            where id_asignacion = v_id_asignacion;
+                            where id_asignacion = v_id_asignacion;*/
 
                         /******************************/
 
@@ -2084,9 +2101,9 @@ END IF;
                   where esta.id_proceso_wf = v_id_proceso_wf and es.codigo = 'vb_rpcd';
 
                   /*Si es Nulo entonces registramos el dato con el funcionario Asignado*/
-                  update mat.tasginacion_automatica_abastecimiento set
+                  /*update mat.tasginacion_automatica_abastecimiento set
                   id_funcionario_rpc = v_funcionario_encargado_rpcd
-                  where id_solicitud = v_solicitud_actual.id_solicitud;
+                  where id_solicitud = v_solicitud_actual.id_solicitud;*/
                   /************************************************************************************************************/
 
 
