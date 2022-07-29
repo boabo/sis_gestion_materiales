@@ -380,6 +380,7 @@ DECLARE
     v_id_funcionario_listado		varchar;
     v_instructiva					varchar;
     v_aplica_mayo					varchar;
+    v_id_fun_gerencia_mantenimiento_go	integer;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -963,7 +964,32 @@ v_consulta:='select		sol.id_solicitud,
 		if (v_fecha_solicitud_recu >= v_fecha_salida_gm or v_id_solicitud_reporte in (7285,7187,7286,7268,7301,6507,7292,7283,7298,7284)) then
         v_id_fun_gerencia_mantenimiento = pxp.f_get_variable_global('gm_funcionario_gerencia_mantenimiento')::integer;
 
-                    select
+
+        /*AUMENTNADO CONDICION PARA EL CAMBIO DEL REPORTE*/
+        SELECT
+        substr (s.nro_tramite,1,2)
+        into v_cod_tramite
+        FROM mat.tsolicitud s
+        WHERE s.id_proceso_wf = v_parametros.id_proceso_wf;
+
+            IF(v_cod_tramite = 'GO' AND v_fecha_solicitud_recu::DATE >= '01/07/2022') then
+
+            	v_id_fun_gerencia_mantenimiento_go = pxp.f_get_variable_global('gm_funcionario_gerencia_mantenimiento_go')::integer;
+
+
+            	select
+                          fun.id_funcionario,
+                          fun.desc_funcionario1,
+                          ''::text as fecha
+                    into v_id_funcionario_qr_oficial,
+                    	 v_nombre_funcionario_qr_oficial,
+                         v_fecha_firma_qr
+                    from orga.vfuncionario_cargo fun
+                    where fun.id_funcionario = v_id_fun_gerencia_mantenimiento_go
+                    and v_fecha_solicitud_recu::date between fun.fecha_asignacion
+                    and COALESCE(fun.fecha_finalizacion,now()::date);
+            ELSE
+            	select
                           fun.id_funcionario,
                           fun.desc_funcionario1,
                           ''::text as fecha
@@ -974,6 +1000,10 @@ v_consulta:='select		sol.id_solicitud,
                     where fun.nombre_cargo = 'Gerencia de Mantenimiento'
                     and v_fecha_solicitud_recu::date between fun.fecha_asignacion
                     and COALESCE(fun.fecha_finalizacion,now()::date);
+            END IF;
+        /************************************************/
+
+
 
 
 
