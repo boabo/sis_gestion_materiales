@@ -522,6 +522,14 @@ END IF;
         end if;
         /********************************/
 
+        /*Aumentando el control para que la fecha del PO no sea superior a la fecha de Entrega*/
+
+    	if (v_parametros.fecha_po is not null) then
+          if (v_parametros.fecha_po::date > now()::date) then
+              raise exception 'La fecha del PO no puede ser mayor a la fecha de entrega';
+          end if;
+        end if;
+        /**************************************************************************************/
 
 
         select s.estado
