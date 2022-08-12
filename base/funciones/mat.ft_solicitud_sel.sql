@@ -5897,11 +5897,11 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                       where fun.id_funcionario = (select pxp.f_get_variable_global(''funcionario_solicitante_gm'')::integer))::varchar as nro_documento,
                                       sol.fecha_po
                               from mat.tsolicitud sol
-                              inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud
+                              inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                               left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
                               left join param.tproveedor_contacto procont on procont.id_proveedor_contacto = cot.id_proveedor_contacto
-                              inner join param.tproveedor pro on pro.id_proveedor = sol.id_proveedor
-                              where cot.adjudicado = ''si'' and sol.id_solicitud = '||v_parametros.id_solicitud::integer||'';
+                              inner join param.tproveedor pro on pro.id_proveedor = cot.id_proveedor
+                              where sol.id_solicitud = '||v_parametros.id_solicitud::integer||'';
                 raise notice '%', v_consulta;
                 return v_consulta;
             end;

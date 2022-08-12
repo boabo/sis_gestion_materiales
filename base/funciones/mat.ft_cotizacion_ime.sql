@@ -85,6 +85,7 @@ DECLARE
      v_recomendacion	varchar;
      v_datos_solicitud	record;
      v_datos_cotizacion	record;
+     v_existe_adjudicado	integer;
 
 BEGIN
 
@@ -483,10 +484,10 @@ BEGIN
             adjudicado = 'no'
             where id_cotizacion = v_parametros.id_cotizacion;
 
-            update mat.tsolicitud set
+            /*update mat.tsolicitud set
             id_proveedor = null,
             fecha_cotizacion = null
-            where id_solicitud = v_proveedor.id_solicitud;
+            where id_solicitud = v_proveedor.id_solicitud;*/
 
             end if;
             if v_valor = 'no' then
@@ -495,11 +496,45 @@ BEGIN
             adjudicado = 'si'
             where id_cotizacion = v_parametros.id_cotizacion;
 
-            update mat.tsolicitud set
+           /* update mat.tsolicitud set
             id_proveedor = v_proveedor.id_proveedor,
             fecha_cotizacion = v_proveedor.fecha_cotizacion
-            where id_solicitud = v_proveedor.id_solicitud;
+            where id_solicitud = v_proveedor.id_solicitud;*/
+
             end if;
+
+
+            select count(cot.id_proveedor)
+            into
+            	   v_existe_adjudicado
+            from mat.tcotizacion cot
+            where cot.id_solicitud = v_proveedor.id_solicitud
+            and cot.adjudicado = 'si';
+
+            if (v_existe_adjudicado > 1) then
+            	raise exception 'No se puede tener dos proveedores adjudicados favor seleccione solo uno';
+            elsif (v_existe_adjudicado = 1) then
+            	select	c.id_proveedor,
+                        c.fecha_cotizacion,
+                        c.id_solicitud
+                        into
+                        v_proveedor
+                from mat.tcotizacion c
+                where c.id_solicitud = v_proveedor.id_solicitud
+                and c.adjudicado = 'si';
+
+                update mat.tsolicitud set
+                id_proveedor = v_proveedor.id_proveedor,
+                fecha_cotizacion = v_proveedor.fecha_cotizacion
+                where id_solicitud = v_proveedor.id_solicitud;
+            else
+            	update mat.tsolicitud set
+                id_proveedor = null,
+                fecha_cotizacion = null
+                where id_solicitud = v_proveedor.id_solicitud;
+
+            end if;
+
 
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Cotización');
