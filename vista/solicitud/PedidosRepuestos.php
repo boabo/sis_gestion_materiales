@@ -10,7 +10,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
     Phx.vista.PedidosRepuestos = {
-      fheight:650,
+      fheight:'100%',
       fwidth:1410,
         require: '../../../sis_gestion_materiales/vista/solicitud/Solicitud.php',
         requireclase: 'Phx.vista.Solicitud',
@@ -68,7 +68,7 @@ header("content-type: text/javascript; charset=UTF-8");
                       style:{
                             background:'#FFB09C',
                             width:'330px',
-                            minHeight:'520px',
+                            minHeight:'620px',
                             border:'1px solid black',
                             marginLeft:'2px',
                             borderRadius:'2px',
@@ -96,7 +96,7 @@ header("content-type: text/javascript; charset=UTF-8");
                               style:{
                                     background:'#81D3FF',
                                     width:'330px',
-                                    minHeight:'520px',
+                                    minHeight:'620px',
                                     marginLeft:'2px',
                                     marginTop:'2px',
                                     border:'1px solid black',
@@ -514,8 +514,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     console.log("aqui llega el monto recuperado",reg);
                       //if (reg.ROOT.datos.monto_adjudicado > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
                       if (reg.ROOT.datos.monto_adjudicado > 20000 && (data.estado != 'borrador' && data.estado != 'revision' && data.estado != 'cotizacion' && data.estado != 'revision_tecnico_abastecimiento')) {
-                        Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '265px';
-                        Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '250px';
+                        Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '310px';
+                        Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '305px';
 
                         Ext.getCmp('datos_pac_rep').show();
                         this.Cmp.nro_pac.allowBlank = false;
@@ -527,8 +527,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         this.mostrarComponente(this.Cmp.objeto_contratacion);
 
                       }else{
-                        Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '520px';
-                        Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '520px';
+                        Ext.getCmp('datos_adquisiciones_rep').el.dom.style.minHeight = '620px';
+                        Ext.getCmp('datos_comite_rep').el.dom.style.minHeight = '620px';
                         Ext.getCmp('datos_pac_rep').hide();
                         this.Cmp.nro_pac.allowBlank = true;
                         this.Cmp.fecha_pac.allowBlank = true;
@@ -645,7 +645,9 @@ header("content-type: text/javascript; charset=UTF-8");
           this.ocultarComponente(this.Cmp.obs_pac);
           this.ocultarComponente(this.Cmp.condicion);
           this.ocultarComponente(this.Cmp.remark);
+          this.ocultarComponente(this.Cmp.remark_2);
           this.Cmp.remark.allowBlank=true;
+          this.Cmp.remark_2.allowBlank=true;
 
           this.mostrarComponente(this.Cmp.metodo_de_adjudicación);
           this.Cmp.metodo_de_adjudicación.allowBlank=false;
@@ -787,7 +789,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos[this.getIndAtributo('fecha_po')].grid=true;
 
             this.Atributos[this.getIndAtributo('mensaje_correo')].grid = true;
-            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=true; 
+            this.Atributos[this.getIndAtributo('tipo_evaluacion')].grid=true;
             this.Atributos[this.getIndAtributo('taller_asignado')].grid=true;
             this.Atributos[this.getIndAtributo('observacion_nota')].grid=true;
             this.Atributos[this.getIndAtributo('lugar_entrega')].grid=true;

@@ -971,7 +971,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'remark_2',
                     fieldLabel: 'Remark 2',
-                    allowBlank: false,
+                    allowBlank: true,
                     qtip: 'Este dato se concatenara en el Remark 1 para el envio a Alkym',
                     width: 200,
                     gwidth: 150,
