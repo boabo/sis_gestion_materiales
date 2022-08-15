@@ -1251,6 +1251,7 @@ class MODSolicitud extends MODbase
         $this->captura('editar_etiqueta', 'varchar');
         $this->captura('instructiva', 'varchar');
         $this->captura('aplica_mayo', 'varchar');
+        $this->captura('quitar_etiqueta', 'varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

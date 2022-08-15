@@ -381,6 +381,7 @@ DECLARE
     v_instructiva					varchar;
     v_aplica_mayo					varchar;
     v_id_fun_gerencia_mantenimiento_go	integer;
+    v_quitar_etiqueta				varchar;
 BEGIN
 
 	v_rango_fecha = '01/11/2018';
@@ -5518,7 +5519,20 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
 
 
+		  /*Aumentando para quitar el prefijo Unidad Soli y gerencia de area*/
+          if (v_fecha_cotizacion is not null) then
 
+          	if (v_fecha_cotizacion::date >= '01/07/2022'::date) then
+            	v_quitar_etiqueta = 'si';
+            else
+            	v_quitar_etiqueta = 'no';
+            end if;
+
+          else
+          	v_quitar_etiqueta = 'no';
+
+          end if;
+          /*******************************************************************/
 
 
           v_consulta:='select
@@ -5554,7 +5568,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                       ('''||v_es_mayor||''')::varchar as mayor,
                       ('''||v_etiqueta||''')::varchar as editar_etiqueta,
                       ('''||v_instructiva||''')::varchar as instructiva,
-                      ('''||v_aplica_mayo||''')::varchar as aplica_mayo';
+                      ('''||v_aplica_mayo||''')::varchar as aplica_mayo,
+                      ('''||v_quitar_etiqueta||''')::varchar as quitar_etiqueta';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;

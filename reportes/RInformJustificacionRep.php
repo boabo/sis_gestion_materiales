@@ -118,11 +118,18 @@ class RInformJustificacionRep extends  ReportePDF
                 <th align="center" width="250" style="border:1px solid #000000;"><b>OB.DAB.REP. '.$this->datos[0]['nro_rep'].' .'.$this->datos[0]['gestion'].'</b></th>
               </tr>
               </table>
-            <table cellspacing="0" cellpadding="1" style="font-size:14px; border:1px solid #000000;">
-              <tr>
-                <th align="center" style="font-size:14px; border-right:1px solid #000000;"><b>Unidad Solicitante:</b></th>
-                <th align="center" ><b>Gerencia de Área:</b></th>
-              </tr>
+            <table cellspacing="0" cellpadding="1" style="font-size:14px; border:1px solid #000000;">';
+
+            if ($this->datos[0]["quitar_etiqueta"] == 'no') {
+              $tb.='
+                <tr>
+                  <th align="center" style="font-size:14px; border-right:1px solid #000000;"><b>Unidad Solicitante:</b></th>
+                  <th align="center" ><b>Gerencia de Área:</b></th>
+                </tr>';
+            }            
+
+
+            $tb.='
               <tr>
                 <th align="center" style="font-size:14px; border-right:1px solid #000000;"><b>Unidad Abastecimientos</b></th>
                 <th align="center" ><b>Gerencia Administrativa y Financiera</b></th>
@@ -311,7 +318,7 @@ class RInformJustificacionRep extends  ReportePDF
         if ($this->datos[0]['evaluacion'] == NULL) {
           $texto = 'COMPLETAR INFORMACION ADJUDICADA';
         } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
-        
+
           if ($this->datos[0]['aplica_mayo'] == 'si') {
               $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTOS POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
           }else{
