@@ -858,7 +858,7 @@ v_consulta:='select		sol.id_solicitud,
     elsif(p_transaccion='MAT_REING_SEL')then
 
 		begin
-			v_consulta:='WITH part_number_cotizaciones as (select
+			v_consulta:='/*WITH part_number_cotizaciones as (select
                                                             replace (list(distinct(CASE
                                                                  --WHEN trim(de.nro_parte_alterno) != '''''' and trim(de.nro_parte_alterno) != ''-''
                                                                  WHEN ((trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)))
@@ -891,7 +891,7 @@ v_consulta:='select		sol.id_solicitud,
                                                             inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo''  and de.estado_excluido = ''no''
                                                             left join mat.tcotizacion_detalle detcot on detcot.id_detalle = de.id_detalle
                                                             where sol.id_proceso_wf = '||v_parametros.id_proceso_wf||'
-                                                            group by de.id_detalle)
+                                                            group by de.id_detalle)*/
                           select
                                 sol.id_solicitud,
                                 to_char( sol.fecha_solicitud,''DD/MM/YYYY'') as fecha_solicitud,
@@ -926,12 +926,69 @@ v_consulta:='select		sol.id_solicitud,
                                 sol.tipo_de_adjudicacion,
                                 sol.metodo_de_adjudicación,
                                 '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                                coti.part_number_alternos::varchar
+                                --coti.part_number_alternos::varchar
+
+                                (CASE
+                                  WHEN ((trim(de.nro_parte_alterno) != '''' and trim(de.nro_parte_alterno) != ''-'' and trim(de.nro_parte_alterno) != ''N/A''))
+
+                                  THEN COALESCE ((CASE WHEN
+                                          (select COUNT(detcot.explicacion_detallada_part_cot)
+                                            from mat.tcotizacion_detalle detcot
+                                            inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
+                                            where detcot.id_detalle = de.id_detalle
+                                            AND trim(detcot.explicacion_detallada_part_cot) = trim(de.nro_parte_alterno)
+                                            AND trim(detcot.explicacion_detallada_part_cot) = trim(de.nro_parte)
+                                            group by detcot.explicacion_detallada_part_cot
+                                          ) > 0
+                                        THEN
+                                          ''''
+                                        ELSE
+                                          trim(COALESCE(de.nro_parte_alterno,''''))||COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                                                                          THEN
+                                                                                              '',''||detcot.explicacion_detallada_part_cot
+                                                                                          ELSE
+                                                                                              ''''
+                                                                                          END)
+                                                                                      from mat.tcotizacion_detalle detcot
+                                                                                      inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
+                                                                                      where detcot.id_detalle = de.id_detalle
+                                                                                      AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)
+                                                                                      AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)
+                                                                                      group by detcot.explicacion_detallada_part_cot
+                                                                                      ),'''')
+                                        END
+
+                                       ),'''')
+
+
+                                  WHEN ((trim(coalesce(de.nro_parte_alterno),'''') = '''' or trim(coalesce(de.nro_parte_alterno),'''') = ''-'' or trim(coalesce(de.nro_parte_alterno),'''') = ''N/A''))
+
+                                  THEN COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                                                                          THEN
+                                                                                             detcot.explicacion_detallada_part_cot
+                                                                                          ELSE
+                                                                                              ''''
+                                                                                          END)
+                                                                                      from mat.tcotizacion_detalle detcot
+                                                                                      inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
+                                                                                      where detcot.id_detalle = de.id_detalle
+                                                                                      AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)
+                                                                                      AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)
+                                                                                      group by detcot.explicacion_detallada_part_cot
+                                                                                      ),'''')
+
+
+                                  ELSE de.nro_parte_alterno
+
+                                  END)::varchar
+
+
+
                                 /*****************************************/
           						from mat.tsolicitud sol
                                 inner join mat.tdetalle_sol de on de.id_solicitud = sol.id_solicitud and de.estado_reg = ''activo'' and de.estado_excluido = ''no''
 
-                                inner join part_number_cotizaciones coti on coti.id_detalle = de.id_detalle
+                                --inner join part_number_cotizaciones coti on coti.id_detalle = de.id_detalle
 
 
                                 left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula
@@ -2486,7 +2543,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                             THEN COALESCE ((CASE WHEN
                                     (select COUNT(detcot.explicacion_detallada_part_cot)
                                       from mat.tcotizacion_detalle detcot
-                                      inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion and cot.adjudicado = ''si''
+                                      inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                       where detcot.id_detalle = det.id_detalle
                                       AND trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte_alterno)
                                       AND trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte)
@@ -2502,7 +2559,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                                                                         ''''
                                                                                     END)
                                                                                 from mat.tcotizacion_detalle detcot
-                                                                                inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion and cot.adjudicado = ''si''
+                                                                                inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                 where detcot.id_detalle = det.id_detalle
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
@@ -2522,7 +2579,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                                                                         ''''
                                                                                     END)
                                                                                 from mat.tcotizacion_detalle detcot
-                                                                                inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion and cot.adjudicado = ''si''
+                                                                                inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                 where detcot.id_detalle = det.id_detalle
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
                                                                                 AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
@@ -3925,7 +3982,8 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                            sp.observaciones,
                            substring(s.nro_tramite from 1 for 2)::varchar as tipo_proceso,
                            '''||v_fecha_salida_gm||'''::date as fecha_salida,
-                           coalesce(array_to_string(pxp.aggarray(CASE
+
+                           /*coalesce(array_to_string(pxp.aggarray(CASE
                                      --WHEN trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-''
                                       WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A'') and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)) and (trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)))
 
@@ -3951,7 +4009,62 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                                      --ELSE  detcot.explicacion_detallada_part_cot
                                       ELSE  det.nro_parte_alterno
-                                END),''|'')::varchar,''''::varchar)::varchar,
+                                END),''|'')::varchar,''''::varchar)::varchar,*/
+
+                           (CASE
+                            WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A''))
+
+                            THEN COALESCE ((CASE WHEN
+                                    (select COUNT(detcot.explicacion_detallada_part_cot)
+                                      from mat.tcotizacion_detalle detcot
+                                      inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
+                                      where detcot.id_detalle = det.id_detalle
+                                      AND trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte_alterno)
+                                      AND trim(detcot.explicacion_detallada_part_cot) = trim(det.nro_parte)
+                                      group by detcot.explicacion_detallada_part_cot
+                                    ) > 0
+                                  THEN
+                                    ''''
+                                  ELSE
+                                    trim(COALESCE(det.nro_parte_alterno,''''))||COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                                                                    THEN
+                                                                                        '',''||detcot.explicacion_detallada_part_cot
+                                                                                    ELSE
+                                                                                        ''''
+                                                                                    END)
+                                                                                from mat.tcotizacion_detalle detcot
+                                                                                inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
+                                                                                where detcot.id_detalle = det.id_detalle
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
+                                                                                group by detcot.explicacion_detallada_part_cot
+                                                                                ),'''')
+                                  END
+
+                                 ),'''')
+
+
+                            WHEN ((trim(coalesce(det.nro_parte_alterno),'''') = '''' or trim(coalesce(det.nro_parte_alterno),'''') = ''-'' or trim(coalesce(det.nro_parte_alterno),'''') = ''N/A''))
+
+                            THEN COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                                                                    THEN
+                                                                                       detcot.explicacion_detallada_part_cot
+                                                                                    ELSE
+                                                                                        ''''
+                                                                                    END)
+                                                                                from mat.tcotizacion_detalle detcot
+                                                                                inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
+                                                                                where detcot.id_detalle = det.id_detalle
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte_alterno)
+                                                                                AND trim(detcot.explicacion_detallada_part_cot) != trim(det.nro_parte)
+                                                                                group by detcot.explicacion_detallada_part_cot
+                                                                                ),'''')
+
+
+                            ELSE det.nro_parte_alterno
+
+                            END)::varchar,
+
                            '''||v_es_mayor||'''::varchar as mayor,
                            '''||v_aplica_nuevo_flujo||'''::varchar as nuevo_flujo,
                            '''||initcap(COALESCE(v_funcionario_sol_aux_abas,''))||'''::varchar as funcionario_auxiliar_abas
@@ -4008,7 +4121,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	end if;
 
 
-          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite';
+          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite,det.nro_parte_alterno, det.id_detalle';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
@@ -5892,7 +6005,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                      ot.codigo::varchar as matricula,
                                      procont.id_proveedor_contacto_alkym::integer,
                                      sol.id_orden_destino_alkym::integer,
-                                     (sol.remark::varchar || '' ''||sol.remark_2::varchar)::varchar,
+                                     (sol.remark::varchar || '' ''||COALESCE(sol.remark_2,'''')::varchar)::varchar,
                                      (select fun.ci
                                       from orga.vfuncionario_ultimo_cargo fun
                                       where fun.id_funcionario = (select pxp.f_get_variable_global(''funcionario_solicitante_gm'')::integer))::varchar as nro_documento,
