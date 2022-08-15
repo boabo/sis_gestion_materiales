@@ -585,6 +585,7 @@ END IF;
             metodo_de_adjudicación = v_parametros.metodo_de_adjudicación,
             tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion,
             remark = v_parametros.remark,
+            remark_2 = v_parametros.remark_2,
             /************************************************/
 
             /*Aumentando el PAC (Ismael Valdivia 20/05/2022)*/
@@ -639,6 +640,7 @@ END IF;
             metodo_de_adjudicación = v_parametros.metodo_de_adjudicación,
             tipo_de_adjudicacion = v_parametros.tipo_de_adjudicacion,
             remark = v_parametros.remark,
+            remark_2 = v_parametros.remark_2,
             /************************************************/
             /*Aumentando el PAC (Ismael Valdivia 20/05/2022)*/
             nro_pac = v_parametros.nro_pac,
@@ -4655,6 +4657,21 @@ END IF;
         elsif(p_transaccion='MAT_INS_CUCE_IME')then
 
             begin
+
+            	   if( select char_length(v_parametros.cuce) <> 22)then
+                    raise exception 'El campo CUCE debe tener 22 Dígitos';
+                   end if;
+
+
+                   if( select char_length(v_parametros.nro_confirmacion) < 7)then
+                    raise exception 'El campo Nro Confirmacion debe tener minimo 7 Dígitos';
+                   end if;
+
+                   if( select char_length(v_parametros.nro_confirmacion) > 8)then
+                    raise exception 'El campo Nro Confirmacion debe tener Maximo 8 Dígitos';
+                   end if;
+
+
 
                     update mat.tsolicitud  set
                     cuce = v_parametros.cuce,

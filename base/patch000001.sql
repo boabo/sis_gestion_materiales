@@ -1090,3 +1090,8 @@ ALTER TABLE mat.tsolicitud
 COMMENT ON COLUMN mat.tsolicitud.fecha_3008
 IS 'fecha que se mostrará en el reporte al momento de imprimir';
 /***********************************F-SCP-IRVA-MAT-0-25/05/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-15/08/2022****************************************/
+ALTER TABLE mat.tsolicitud
+  ADD COLUMN remark_2 TEXT;
+/***********************************F-SCP-IRVA-MAT-0-15/08/2022****************************************/

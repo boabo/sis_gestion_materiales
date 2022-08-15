@@ -350,31 +350,35 @@ header("content-type: text/javascript; charset=UTF-8");
                 //id: me.idContenedor + '_AJUSTES',
                 margins: ' 10 10 10 10',
                 items: [
-                    {
-                        name: 'cuce',
-                        xtype: 'field',
-                        width: 150,
-                        fieldLabel: 'CUCE'
-                    },
-                    {
-                        name: 'nro_confirmacion',
-                        xtype: 'field',
-                        width: 150,
-                        fieldLabel: 'Nro Confirmación'
-                    },
-                    {
-                        name: 'fecha_publicacion_cuce',
-                        xtype: 'datefield',
-                        width: 150,
-                        fieldLabel: 'Fecha publicación'
+                  new Ext.form.TextField({
+                      name: 'cuce',
+                      xtype: 'field',
+                      width: 150,
+                      fieldLabel: 'CUCE',
+                      minLength: 22,
+                      maxLength: 22,
+                  }),
+                  new Ext.form.TextField({
+                      name: 'nro_confirmacion',
+                      xtype: 'field',
+                      width: 150,
+                      fieldLabel: 'Nro Confirmación',
+                      minLength: 7,
+                      maxLength: 8,
+                  }),
+                  new Ext.form.DateField({
+                      name: 'fecha_publicacion_cuce',
+                      xtype: 'datefield',
+                      width: 150,
+                      fieldLabel: 'Fecha publicación'
 
-                    },
-                    {
-                        xtype: 'field',
-                        name: 'id_solicitud',
-                        labelSeparator: '',
-                        inputType: 'hidden'
-                    }
+                  }),
+                  {
+                      xtype: 'field',
+                      name: 'id_solicitud',
+                      labelSeparator: '',
+                      inputType: 'hidden'
+                  }
                     ],
                 autoScroll: false,
                 autoDestroy: true

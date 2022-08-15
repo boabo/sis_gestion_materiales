@@ -965,6 +965,24 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:true
             },
+
+
+            {
+                config:{
+                    name: 'remark_2',
+                    fieldLabel: 'Remark 2',
+                    allowBlank: false,
+                    qtip: 'Este dato se concatenara en el Remark 1 para el envio a Alkym',
+                    width: 200,
+                    gwidth: 150,
+                    maxLength:10000
+                },
+                type:'TextArea',
+                filters:{pfiltro:'sol.remark_2',type:'string'},
+                id_grupo:0,
+                grid:true,
+                form:true
+            },
             /**********************************************************************/
             {
                 config:{
@@ -1827,6 +1845,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'metodo_de_adjudicación', type: 'string'},
             {name:'tipo_de_adjudicacion', type: 'string'},
             {name:'remark', type: 'string'},
+            {name:'remark_2', type: 'string'},
             {name:'id_obligacion_pago', type: 'numeric'},
             {name:'nuevo_flujo', type: 'numeric'},
 
@@ -1884,7 +1903,7 @@ header("content-type: text/javascript; charset=UTF-8");
                       style:{
                             background:'#5EDE82',
                             width:'330px',
-                            height:'520px',
+                            height:'620px',
                             border:'1px solid black',
                             borderRadius:'2px'
                            },
@@ -1912,7 +1931,7 @@ header("content-type: text/javascript; charset=UTF-8");
                       style:{
                             background:'#EEDE5A',
                             width:'330px',
-                            height:'520px',
+                            height:'620px',
                             marginLeft:'2px',
                             border:'1px solid black',
                             borderRadius:'2px'
@@ -2778,25 +2797,29 @@ header("content-type: text/javascript; charset=UTF-8");
                 //id: me.idContenedor + '_AJUSTES',
                 margins: ' 10 10 10 10',
                 items: [
-                    {
+                    new Ext.form.TextField({
                         name: 'cuce',
                         xtype: 'field',
                         width: 150,
-                        fieldLabel: 'CUCE'
-                    },
-                    {
+                        fieldLabel: 'CUCE',
+                        minLength: 22,
+                        maxLength: 22,
+                    }),
+                    new Ext.form.TextField({
                         name: 'nro_confirmacion',
                         xtype: 'field',
                         width: 150,
-                        fieldLabel: 'Nro Confirmación'
-                    },
-                    {
+                        fieldLabel: 'Nro Confirmación',
+                        minLength: 7,
+                        maxLength: 8,
+                    }),
+                    new Ext.form.DateField({
                         name: 'fecha_publicacion_cuce',
                         xtype: 'datefield',
                         width: 150,
                         fieldLabel: 'Fecha publicación'
 
-                    },
+                    }),
                     {
                         xtype: 'field',
                         name: 'id_solicitud',

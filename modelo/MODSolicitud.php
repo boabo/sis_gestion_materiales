@@ -115,6 +115,7 @@ class MODSolicitud extends MODbase
         $this->captura('metodo_de_adjudicación', 'varchar');
         $this->captura('tipo_de_adjudicacion', 'varchar');
         $this->captura('remark', 'varchar');
+        $this->captura('remark_2', 'varchar');
         $this->captura('id_obligacion_pago', 'int4');
         $this->captura('nuevo_flujo', 'varchar');
 
@@ -260,6 +261,7 @@ class MODSolicitud extends MODbase
         $this->setParametro('metodo_de_adjudicación', 'metodo_de_adjudicación', 'varchar');
         $this->setParametro('tipo_de_adjudicacion', 'tipo_de_adjudicacion', 'varchar');
         $this->setParametro('remark', 'remark', 'text');
+        $this->setParametro('remark_2', 'remark_2', 'text');
         /************************************************************/
 
         /*Aumentando para mandar el PAC*/
@@ -2094,6 +2096,7 @@ class MODSolicitud extends MODbase
         $this->captura('motivo_solicitud','varchar');
         $this->captura('observaciones_sol','varchar');
         $this->captura('remark','varchar');
+        $this->captura('remark_2','varchar');
         $this->captura('justificacion','varchar');
         $this->captura('nro_justificacion','varchar');
          $this->captura('tipo_solicitud','varchar');
