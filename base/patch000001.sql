@@ -1095,3 +1095,20 @@ IS 'fecha que se mostrará en el reporte al momento de imprimir';
 ALTER TABLE mat.tsolicitud
   ADD COLUMN remark_2 TEXT;
 /***********************************F-SCP-IRVA-MAT-0-15/08/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-16/08/2022****************************************/
+CREATE TABLE mat.tfirmas_documentos (
+  id_firma_documento SERIAL,
+  fecha_inicio DATE,
+  fecha_fin DATE,
+  id_funcionario INTEGER,
+  tipo_firma VARCHAR,
+  motivo_asignacion TEXT NOT NULL,
+  tipo_documento VARCHAR(200),
+  CONSTRAINT tfirmas_documentos_pkey PRIMARY KEY(id_firma_documento)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+ALTER TABLE mat.tfirmas_documentos
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-0-16/08/2022****************************************/
