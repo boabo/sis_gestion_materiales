@@ -4289,21 +4289,21 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             from mat.tfirmas_documentos firma
             where firma.tipo_documento = 'Certificacion POA'
             and firma.tipo_firma = 'Aprobado Por'
-            and v_record_sol.fecha_solicitud between firma.fecha_inicio and firma.fecha_fin;
+            and v_record_sol.fecha_solicitud between firma.fecha_inicio and COALESCE(firma.fecha_fin,now()::date);
 
 
             select firma.id_funcionario into v_poa_elaborado
             from mat.tfirmas_documentos firma
             where firma.tipo_documento = 'Certificacion POA'
             and firma.tipo_firma = 'Elaborado Por'
-            and v_record_sol.fecha_solicitud between firma.fecha_inicio and firma.fecha_fin;
+            and v_record_sol.fecha_solicitud between firma.fecha_inicio and COALESCE(firma.fecha_fin,now()::date);
 
 
             select firma.id_funcionario into v_vobo_poa
             from mat.tfirmas_documentos firma
             where firma.tipo_documento = 'Certificacion POA'
             and firma.tipo_firma = 'VoBo POA'
-            and v_record_sol.fecha_solicitud between firma.fecha_inicio and firma.fecha_fin;
+            and v_record_sol.fecha_solicitud between firma.fecha_inicio and COALESCE(firma.fecha_fin,now()::date);
 
 
 
@@ -4318,15 +4318,18 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                           from orga.vfuncionario_ultimo_cargo fun
                                           where fun.id_funcionario =v_poa_aprobado*/
 
-                                          select fun.id_funcionario,
+                                          (select fun.id_funcionario,
                                                  fun.nombre_cargo,
                                                  fun.desc_funcionario1,
-                                                 ofi.nombre as oficina_nombre
+                                                 ofi.nombre as oficina_nombre,
+                                                 1::integer as orden
                                           from orga.vfuncionario_cargo fun
                                           inner join orga.tcargo car on car.id_cargo = fun.id_cargo
                                           inner join orga.toficina ofi on ofi.id_oficina = car.id_oficina
                                           where fun.id_funcionario = v_poa_aprobado
                                           and v_record_sol.fecha_solicitud between fun.fecha_asignacion and COALESCE(fun.fecha_finalizacion,now()::date)
+										   order by fun.fecha_asignacion desc
+                                          limit 1)
 
                                           UNION
 
@@ -4338,15 +4341,18 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                           where fun.id_funcionario = v_poa_elaborado*/
 
 
-                                          select fun.id_funcionario,
+                                          (select fun.id_funcionario,
                                                  fun.nombre_cargo,
                                                  fun.desc_funcionario1,
-                                                 ofi.nombre as oficina_nombre
+                                                 ofi.nombre as oficina_nombre,
+                                                 2::integer as orden
                                           from orga.vfuncionario_cargo fun
                                           inner join orga.tcargo car on car.id_cargo = fun.id_cargo
                                           inner join orga.toficina ofi on ofi.id_oficina = car.id_oficina
                                           where fun.id_funcionario = v_poa_elaborado
                                           and v_record_sol.fecha_solicitud between fun.fecha_asignacion and COALESCE(fun.fecha_finalizacion,now()::date)
+											order by fun.fecha_asignacion desc
+                                          limit 1)
 
                                           UNION
 
@@ -4357,18 +4363,22 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                           from orga.vfuncionario_ultimo_cargo fun
                                           where fun.id_funcionario = v_vobo_poa*/
 
-                                          select fun.id_funcionario,
+                                          (select fun.id_funcionario,
                                                  fun.nombre_cargo,
                                                  fun.desc_funcionario1,
-                                                 ofi.nombre as oficina_nombre
+                                                 ofi.nombre as oficina_nombre,
+                                                 3::integer as orden
                                           from orga.vfuncionario_cargo fun
                                           inner join orga.tcargo car on car.id_cargo = fun.id_cargo
                                           inner join orga.toficina ofi on ofi.id_oficina = car.id_oficina
                                           where fun.id_funcionario = v_vobo_poa
                                           and v_record_sol.fecha_solicitud between fun.fecha_asignacion and COALESCE(fun.fecha_finalizacion,now()::date)
-
+											order by fun.fecha_asignacion desc
+                                          limit 1
                                           )
-                                          ORDER BY id_funcionario ASC )
+                                          )
+                                          ORDER BY orden desc
+                                          )
         	LOOP
                 v_firmas[v_index] = v_record_funcionario.desc_funcionario1::VARCHAR||','||v_record_funcionario.nombre_cargo::VARCHAR||','||v_record_funcionario.oficina_nombre;
             	v_index = v_index + 1;
