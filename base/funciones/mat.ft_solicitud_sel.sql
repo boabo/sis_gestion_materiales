@@ -4280,9 +4280,34 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
             WHERE ts.id_proceso_wf = v_parametros.id_proceso_wf;
 
 
-            v_poa_aprobado = pxp.f_get_variable_global('poa_funcionario_aprobado_por')::integer;
-            v_poa_elaborado = pxp.f_get_variable_global('poa_funcionario_elaborado_por')::integer;
-            v_vobo_poa = pxp.f_get_variable_global('poa_vobo')::integer;
+            --v_poa_aprobado = pxp.f_get_variable_global('poa_funcionario_aprobado_por')::integer;
+            --v_poa_elaborado = pxp.f_get_variable_global('poa_funcionario_elaborado_por')::integer;
+            --v_vobo_poa = pxp.f_get_variable_global('poa_vobo')::integer;
+
+
+            select firma.id_funcionario into v_poa_aprobado
+            from mat.tfirmas_documentos firma
+            where firma.tipo_documento = 'Certificacion POA'
+            and firma.tipo_firma = 'Aprobado Por'
+            and v_record_sol.fecha_solicitud between firma.fecha_inicio and firma.fecha_fin;
+
+
+            select firma.id_funcionario into v_poa_elaborado
+            from mat.tfirmas_documentos firma
+            where firma.tipo_documento = 'Certificacion POA'
+            and firma.tipo_firma = 'Elaborado Por'
+            and v_record_sol.fecha_solicitud between firma.fecha_inicio and firma.fecha_fin;
+
+
+            select firma.id_funcionario into v_vobo_poa
+            from mat.tfirmas_documentos firma
+            where firma.tipo_documento = 'Certificacion POA'
+            and firma.tipo_firma = 'VoBo POA'
+            and v_record_sol.fecha_solicitud between firma.fecha_inicio and firma.fecha_fin;
+
+
+
+
             v_index = 1;
             FOR v_record_funcionario IN ( (
 
