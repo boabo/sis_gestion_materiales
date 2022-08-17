@@ -1872,6 +1872,7 @@ class MODSolicitud extends MODbase
         $this->captura('observaciones_sol', 'varchar');
         $this->captura('nro_documento', 'varchar');
         $this->captura('fecha_po', 'date');
+        $this->captura('tipo_evaluacion', 'integer');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

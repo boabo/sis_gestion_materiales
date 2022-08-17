@@ -6059,7 +6059,15 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                      (select fun.ci
                                       from orga.vfuncionario_ultimo_cargo fun
                                       where fun.id_funcionario = (select pxp.f_get_variable_global(''funcionario_solicitante_gm'')::integer))::varchar as nro_documento,
-                                      sol.fecha_po
+                                      sol.fecha_po,
+                                      (CASE
+                                        WHEN sol.tipo_evaluacion = ''Compra''  THEN
+                                          1
+                                        WHEN (sol.tipo_evaluacion = ''Exchange'' or sol.tipo_evaluacion = ''Flat Exchange'')  THEN
+                                          2
+                                        else
+                                          3
+                                      END) as tipo_evaluacion
                               from mat.tsolicitud sol
                               inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
                               left join conta.torden_trabajo ot on ot.id_orden_trabajo = sol.id_matricula

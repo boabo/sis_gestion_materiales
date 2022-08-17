@@ -399,6 +399,12 @@ class ACTSolicitud extends ACTbase{
                 $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and  sol.estado  in (''revision'')");
             }
             /********************************************************/
+            /*Aumentando para repuestos Ismael Valdivia (16/08/2022)*/
+            if ($this->objParam->getParametro('pes_estado') == 'origen_da') {
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Dirección de Aeronavegabilidad'') and  sol.estado  in (''revision'')");
+            }
+            /********************************************************/
+
         }
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
@@ -940,7 +946,7 @@ class ACTSolicitud extends ACTbase{
            //var_dump("aqui llega data",$tipoEvaluacion);exit;
                  $CabeceraSolicitud = array(
                                              "Fecha"=>$datosCabecera[$i]["fecha_po"],
-                                             "TipoOrden"=>$tipoEvaluacion,//1 para orden de compra 2 para orden de reparacion
+                                             "TipoOrden"=>$datosCabecera[$i]["tipo_evaluacion"],//1 para orden de compra 2 para orden de reparacion
                                              "IdProveedor"=>$datosCabecera[$i]["id_proveedor"],
                                              "IdTipoCriticidad"=>$datosCabecera[$i]["id_criticidad"],
                                              "IdCondicionEntrega"=>$datosCabecera[$i]["id_condicion_entrega_alkym"],
