@@ -5557,7 +5557,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 		  /*Aumentando para quitar el prefijo Unidad Soli y gerencia de area*/
           if (v_fecha_cotizacion is not null) then
 
-          	if (v_fecha_cotizacion::date >= '01/07/2022'::date) then
+          	if (v_fecha_cotizacion::date >= '01/07/2022'::date or v_id_solicitud_rec in (8175,8189,8190,8267,8275,8284,8288,8277,8293,8280,8281,8016)) then
             	v_quitar_etiqueta = 'si';
             else
             	v_quitar_etiqueta = 'no';
