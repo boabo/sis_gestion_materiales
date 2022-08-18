@@ -106,6 +106,12 @@ class ACTCotizacion extends ACTbase{
         $this->res=$this->objFunc->ListadoAdjudicados ($this->objParam);
 				$this->objParam->addParametro('adjudicados',$this->res->datos);
 
+
+				$this->objParam->addParametro('tipo_reporte',$this->objParam->getParametro('proceso'));
+
+
+				//var_dump("aqu llega el parametro",);exit;
+
         //obtener titulo de reporte
         $titulo ='Control Partes';
         //Genera el nombre del archivo (aleatorio + titulo)

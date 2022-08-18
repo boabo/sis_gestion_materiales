@@ -97,12 +97,14 @@ header("content-type: text/javascript; charset=UTF-8");
                     store:new Ext.data.ArrayStore({
                     fields: ['codigo', 'valor'],
                     data :	[
-                                ['adjudicado','Adjudicados'],
+                                ['adjudicado','Detallado Adjudicados'],
+                                ['resumido','Resumen Adjudicados'],
                                 ['comite_unidad_abastecimientos','Pendientes de Autorización (Comité)'],
+
                             ]
                     }),
                     valueField:'codigo',
-                    displayField:'valor',                    
+                    displayField:'valor',
 
                 },
                 type:'ComboBox',
@@ -110,7 +112,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form:true
 
-            },            
+            },
         ],
         title : 'Generar Reporte',
         ActSave : '../../sis_gestion_materiales/control/Cotizacion/ControlPartesCotizacion',
