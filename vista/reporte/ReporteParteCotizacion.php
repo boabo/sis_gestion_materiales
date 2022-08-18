@@ -97,9 +97,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     store:new Ext.data.ArrayStore({
                     fields: ['codigo', 'valor'],
                     data :	[
-                                ['adjudicado','Detallado Adjudicados'],
-                                ['resumido','Resumen Adjudicados'],
-                                ['comite_unidad_abastecimientos','Pendientes de Autorización (Comité)'],
+                                ['adjudicado','Adjudicados (Detallado)'],
+                                ['comite_unidad_abastecimientos','Pendientes de Autorización (Comité) Detallado'],
+                                ['resumido','Pendientes de Autorización (Comité) Resumen'],
 
                             ]
                     }),

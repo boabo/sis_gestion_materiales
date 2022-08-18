@@ -1118,14 +1118,19 @@ BEGIN
 
 		-- {dev: bvasquez, date: 19/07/2022, desc: adicion filtro v_parametros.proceso Adjudicados o los que aun están en la bandeja de Comité pendientes de autorización. }
         if (v_parametros.origen_pedido != 'Todos')then
-        	   if v_parametros.proceso in ('adjudicado','resumido') then
+        	   if v_parametros.proceso in ('adjudicado') then
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
+
+               elsif(v_parametros.proceso in ('resumido')) then
+               	v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.codigo = ''comite_unidad_abastecimientos''';
                else
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.codigo = '''||v_parametros.proceso||'''';
                end if;
         else
-        	if v_parametros.proceso in ('adjudicado','resumido') then
+        	if v_parametros.proceso in ('adjudicado') then
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and c.adjudicado = ''si''';
+            elsif(v_parametros.proceso in ('resumido')) then
+            	v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and t.codigo = ''comite_unidad_abastecimientos''';
             else
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and t.codigo = '''||v_parametros.proceso||'''';
             end if;
