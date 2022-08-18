@@ -4012,7 +4012,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                       ELSE  det.nro_parte_alterno
                                 END),''|'')::varchar,''''::varchar)::varchar,*/
 
-                           (CASE
+                           coalesce(array_to_string(pxp.aggarray(CASE
                             WHEN ((trim(det.nro_parte_alterno) != '''' and trim(det.nro_parte_alterno) != ''-'' and trim(det.nro_parte_alterno) != ''N/A''))
 
                             THEN COALESCE ((CASE WHEN
@@ -4064,7 +4064,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                             ELSE det.nro_parte_alterno
 
-                            END)::varchar,
+                            END),''|'')::varchar,''''::varchar)::varchar,
 
                            '''||v_es_mayor||'''::varchar as mayor,
                            '''||v_aplica_nuevo_flujo||'''::varchar as nuevo_flujo,
@@ -4122,7 +4122,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	end if;
 
 
-          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite,det.nro_parte_alterno, det.id_detalle';
+          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite,det.nro_parte_alterno';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
