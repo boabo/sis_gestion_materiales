@@ -44,9 +44,9 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.getBoton('btnproveedor').setVisible(false);
             this.getBoton('Cotizacion').setVisible(false);
             this.getBoton('btnCheckPresupeusto').setVisible(true);
-            this.getBoton('bmodCuce').setVisible(true);
-            this.getBoton('bfecha_impresion_Form3008').setVisible(true);
-            this.getBoton('bmodPAC').setVisible(true);
+            this.getBoton('bmodCuce').setVisible(false);
+            this.getBoton('bfecha_impresion_Form3008').setVisible(false);
+            this.getBoton('bmodPAC').setVisible(false);
 
             this.getBoton('bspacio1').setVisible(true);
 

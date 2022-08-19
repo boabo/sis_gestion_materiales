@@ -243,6 +243,13 @@ DECLARE
     v_id_persona					integer;
     v_restringir					varchar;
 
+    v_tipo_formulatio 				varchar;
+    v_chequeado 					varchar;
+    v_id_funcionario_listado		varchar;
+    v_lista_ids						varchar;
+
+    v_consulta						varchar;
+
 BEGIN
 
     v_nombre_funcion = 'mat.ft_solicitud_ime';
@@ -4727,14 +4734,160 @@ END IF;
 
             begin
 
-                    update mat.tsolicitud  set
+            	if (v_parametros.tipo_formulario = 'si-400') then
+                    v_tipo_formulatio = 'FORM-400';
+                    v_chequeado = 'si';
+                 elsif (v_parametros.tipo_formulario = 'no-400') then
+                    v_tipo_formulatio = 'FORM-400';
+                    v_chequeado = 'no';
+                 elsif (v_parametros.tipo_formulario = 'si-500') then
+                    v_tipo_formulatio = 'FORM-500';
+                    v_chequeado = 'si';
+                 elsif (v_parametros.tipo_formulario = 'no-500') then
+                    v_tipo_formulatio = 'FORM-500';
+                    v_chequeado = 'no';
+                 end if;
+
+                 if (v_parametros.id_funcionario != 0) then
+
+                    if (v_parametros.tipo_formulario != 'cantidad_tramites') then
+                        v_id_funcionario_listado = 'datos.id_encargado_adquicisiones = '||v_parametros.id_funcionario;
+                    else
+                        v_id_funcionario_listado = 'sol.id_funcionario = '||v_parametros.id_funcionario;
+                    end if;
+
+                 else
+                    v_id_funcionario_listado = '0=0';
+                 end if;
+
+
+                 	v_consulta = 'with datos as (select  cot.id_solicitud,
+                                      sol.id_proceso_wf,
+                                      sum(cotdet.precio_unitario_mb) as monto_total_adjudicado,
+                                      param.f_convertir_moneda(2::integer,1::integer,COALESCE(sum(cotdet.precio_unitario_mb),0)::numeric,now()::date,''CUS'',2, NULL,''si'') as convertido,
+                                      sol.nro_tramite,
+                                      sol.fecha_po,
+                                      sol.nro_po,
+                                      prov.rotulo_comercial,
+                                      sol.fecha_publicacion_cuce,
+                                      sol.cuce,
+                                      sol.nro_confirmacion,
+                                      sol.fecha_pac,
+                                      sol.nro_pac,
+                                      sol.objeto_contratacion,
+                                      sol.fecha_3008
+                              from mat.tsolicitud sol
+                              inner join mat.tcotizacion cot on cot.id_solicitud = sol.id_solicitud and cot.adjudicado = ''si''
+                              inner join mat.tcotizacion_detalle cotdet on cotdet.id_cotizacion = cot.id_cotizacion
+                              inner join param.vproveedor2 prov on prov.id_proveedor = cot.id_proveedor
+                              where sol.fecha_po between '''||v_parametros.fecha_inicio||''' and '''||v_parametros.fecha_fin||'''
+
+                              and sol.estado = ''despachado''
+
+                              group by cot.id_solicitud,
+                                       sol.id_proceso_wf,
+                                       sol.nro_tramite,
+                                       sol.fecha_po,
+                                       sol.nro_po,
+                                       prov.rotulo_comercial,
+                                       sol.fecha_publicacion_cuce,
+                                       sol.cuce,
+                                       sol.nro_confirmacion,
+                                       sol.fecha_pac,
+                                       sol.nro_pac,
+                                       sol.objeto_contratacion,
+                                       sol.fecha_3008)
+
+                              select
+                                    dat.nro_tramite::varchar,
+                                    to_char(dat.fecha_po,''DD/MM/YYYY'')::varchar as fecha_po,
+                                    dat.nro_po::varchar,
+                                    dwf.chequeado::varchar,
+                                    dat.id_solicitud,
+                                    dat.id_proceso_wf,
+
+                                    (select fun.id_funcionario
+                                    from wf.testado_wf es
+                                    inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                                    inner join orga.vfuncionario fun on fun.id_funcionario = es.id_funcionario
+                                    where te.codigo in (''revision_tecnico_abastecimientos'')
+                                    and es.id_proceso_wf = dat.id_proceso_wf
+                                    order by es.fecha_reg::date desc
+                                    limit 1
+                                    )::integer as id_encargado_abastecimiento,
+
+                                    (select fun.desc_funcionario1
+                                    from wf.testado_wf es
+                                    inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                                    inner join orga.vfuncionario fun on fun.id_funcionario = es.id_funcionario
+                                    where te.codigo in (''revision_tecnico_abastecimientos'')
+                                    and es.id_proceso_wf = dat.id_proceso_wf
+                                    order by es.fecha_reg::date desc
+                                    limit 1
+                                    )::varchar as encargado_abastecimiento,
+
+                                    (select fun.id_funcionario
+                                    from wf.testado_wf es
+                                    inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                                    inner join orga.vfuncionario fun on fun.id_funcionario = es.id_funcionario
+                                    where te.codigo in (''compra'')
+                                    and es.id_proceso_wf = dat.id_proceso_wf
+                                    order by es.fecha_reg::date desc
+                                    limit 1
+                                    )::integer as id_encargado_adquicisiones,
+
+                                    (select fun.desc_funcionario1
+                                    from wf.testado_wf es
+                                    inner join wf.ttipo_estado te on te.id_tipo_estado = es.id_tipo_estado
+                                    inner join orga.vfuncionario fun on fun.id_funcionario = es.id_funcionario
+                                    where te.codigo in (''compra'')
+                                    and es.id_proceso_wf = dat.id_proceso_wf
+                                    order by es.fecha_reg::date desc
+                                    limit 1
+                                    )::varchar as encargado_adquicisiones,
+                                    dat.rotulo_comercial,
+                                    dat.monto_total_adjudicado::numeric,
+
+                                    to_char(dat.fecha_publicacion_cuce,''DD/MM/YYYY'')::varchar as fecha_publicacion_cuce,
+                                    dat.cuce::varchar,
+                                    dat.nro_confirmacion::varchar,
+                                    to_char(dat.fecha_pac,''DD/MM/YYYY'')::varchar as fecha_pac,
+                                    dat.nro_pac::varchar,
+                                    dat.objeto_contratacion::varchar,
+                                    to_char(dat.fecha_3008,''DD/MM/YYYY'')::varchar as fecha_3008,
+
+                                    (select pago.ultimo_estado_pp
+                                     from tes.tobligacion_pago pago
+                                     where pago.num_tramite = dat.nro_tramite and pago.estado_reg = ''activo'')::varchar as estado
+
+                              from wf.tdocumento_wf dwf
+                              INNER JOIN  wf.ttipo_documento  td on td.id_tipo_documento  = dwf.id_tipo_documento
+                              inner join wf.tproceso_wf pwf on pwf.id_proceso_wf = dwf.id_proceso_wf
+                              inner join datos dat on dat.id_proceso_wf = pwf.id_proceso_wf
+                              where  dat.convertido > 20000 and td.nombre = '''||v_tipo_formulatio||'''
+                              and dwf.chequeado = '''||v_chequeado||'''';
+
+
+                v_consulta = 'with datos_recuperados as ('||v_consulta||')
+                		      select
+                                      list(datos.id_solicitud::varchar)
+
+                              from datos_recuperados datos
+                              where ' ||v_id_funcionario_listado||'';
+
+
+                 	execute v_consulta into v_lista_ids;
+
+                	--raise exception 'Aqui llega data %, %',v_lista_ids, v_parametros.fecha_form_3008;
+
+                	update mat.tsolicitud  set
                     fecha_3008 = v_parametros.fecha_form_3008
-                    where id_solicitud = v_parametros.id_solicitud;
+                    where id_solicitud in (SELECT UNNEST(REGEXP_SPLIT_TO_ARRAY(v_lista_ids, ','))::integer);
 
 
                     --Definicion de la respuesta
                     v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se insertaron ajustes ');
-                    v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_parametros.id_solicitud::varchar);
+                    v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_lista_ids::varchar);
 
               --Devuelve la respuesta
               return v_resp;

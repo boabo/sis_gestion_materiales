@@ -2450,7 +2450,11 @@ class MODSolicitud extends MODbase
         $this->tipo_procedimiento = 'IME';
 
         //Define los parametros para la funcion
-        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        //$this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('tipo_formulario', 'tipo_formulario', 'varchar');
+        $this->setParametro('id_funcionario', 'id_funcionario', 'int4');
+        $this->setParametro('fecha_inicio', 'fecha_inicio', 'date');
+        $this->setParametro('fecha_fin', 'fecha_fin', 'date');
         $this->setParametro('fecha_form_3008', 'fecha_form_3008', 'date');
 
 

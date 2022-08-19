@@ -29,14 +29,15 @@ header("content-type: text/javascript; charset=UTF-8");
         bexcelGroups: [0,1,2,3,4],
         bganttGroups: [0,1,2,3],
 
-        tabeast:[
+        east:
               {
                   url:'../../../sis_gestion_materiales/vista/control_cantidad_procesos/CantidadTotalizado.php',
                   title:'Cantidad Procesos',
                   width:'37%',
+                  collapsed: true,
                   cls:'CantidadTotalizado'
-             }
-           ],
+             },
+
 
 
 
@@ -671,14 +672,23 @@ header("content-type: text/javascript; charset=UTF-8");
         saveForm3008: function () {
             var me = this,
                 d = me.sm.getSelected().data;
-            console.log('llega1',d)
+            tipo_formulario = this.store.baseParams.tipo_formulario;
+            id_funcionario = this.store.baseParams.id_funcionario;
+            fecha_inicio = this.store.baseParams.fecha_inicio;
+            fecha_fin = this.store.baseParams.fecha_fin;
+
+            //console.log('llega1',this.store.baseParams.tipo_formulario)
             Phx.CP.loadingShow();
             Ext.Ajax.request({
                 url: '../../sis_gestion_materiales/control/Solicitud/insertarFecha3008',
                 success: me.successform3008,
                 failure: me.failureform3008,
                 params: {
-                    'id_solicitud': d.id_solicitud,
+                    //'id_solicitud': d.id_solicitud,
+                    'tipo_formulario': tipo_formulario,
+                    'id_funcionario':id_funcionario,
+                    'fecha_inicio':fecha_inicio,
+                    'fecha_fin':fecha_fin,
                     'fecha_form_3008': me.formFecha3008.getForm().findField('fecha_form_3008').getValue()
                 },
                 timeout: me.timeout,
@@ -758,7 +768,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     }
                 },
                 type:'TextField',
-                bottom_filter: true,
+                //bottom_filter: true,
                 filters:{pfiltro:'dat.estado',type:'string'},
                 id_grupo:0,
                 grid:true,
