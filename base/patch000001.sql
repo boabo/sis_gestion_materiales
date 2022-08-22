@@ -1112,3 +1112,54 @@ WITH (oids = false);
 ALTER TABLE mat.tfirmas_documentos
   OWNER TO postgres;
 /***********************************F-SCP-IRVA-MAT-0-16/08/2022****************************************/
+/***********************************I-SCP-IRVA-MAT-0-22/08/2022****************************************/
+CREATE TABLE mat.tlog_modificaciones (
+  id_log SERIAL,
+  id_funcionario_solicitante INTEGER,
+  motivo_modificacion TEXT,
+  nro_po_anterior VARCHAR(200),
+  nro_po_nuevo VARCHAR(200),
+  fecha_cotizacion_antigua DATE,
+  fecha_cotizacion_nueva DATE,
+  nro_cotizacion_anterior VARCHAR(200),
+  nro_cotizacion_nueva VARCHAR(200),
+  id_cotizacion INTEGER,
+  id_solicitud INTEGER,
+  fecha_modificacion TIMESTAMP WITHOUT TIME ZONE DEFAULT now()::timestamp without time zone,
+  CONSTRAINT tlog_modificaciones_pkey PRIMARY KEY(id_log)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+COMMENT ON COLUMN mat.tlog_modificaciones.id_funcionario_solicitante
+IS 'Id Funcionario solicitante';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.motivo_modificacion
+IS 'descripcion porque se esta realizando la modificacion';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.nro_po_anterior
+IS 'Nro del Po antes de modificar';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.nro_po_nuevo
+IS 'Nro del PO modificado';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.fecha_cotizacion_antigua
+IS 'Fecha de la cotizacion del proveedor adjudicado antes de la modificacion';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.fecha_cotizacion_nueva
+IS 'Fecha de la cotizacion del Proveedor Adjudicado despues de la modificacion';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.nro_cotizacion_anterior
+IS 'Nro de Cotizacion del proveedor adjudicado antes de la modificacion';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.nro_cotizacion_nueva
+IS 'Nro de Cotizacion Nueva del proveedor Adjudicado despues de la modificacion';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.id_cotizacion
+IS 'Id de la cotizacion que se hace la modificacion';
+
+COMMENT ON COLUMN mat.tlog_modificaciones.id_solicitud
+IS 'Id de la solicitud que se hace la modificacion';
+
+ALTER TABLE mat.tlog_modificaciones
+  OWNER TO postgres;
+  /***********************************F-SCP-IRVA-MAT-0-22/08/2022****************************************/
