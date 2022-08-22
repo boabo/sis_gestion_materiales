@@ -186,6 +186,28 @@ header("content-type: text/javascript; charset=UTF-8");
                 //tooltip: '<b>Modificar PAC</b><br/>Permite modificar el PAC de un trámite'
             });
 
+            this.addButton('bmodPO', {
+                text: 'Modificar <br>PO',
+                grupo: [5],
+                iconCls: 'bengine',
+                disabled: true,
+                hidden:true,
+                id:'modificar_po',
+                handler: this.modPO,
+                tooltip: '<b>Modificar el Nro de PO</b>'
+            });
+
+            this.addButton('bmodCotizacion', {
+                text: 'Modificar Datos de <br>Cotización',
+                grupo: [5],
+                iconCls: 'bengine',
+                disabled: true,
+                hidden:true,
+                id:'modificar_cotizacion',
+                handler: this.modCot,
+                tooltip: '<b>Modificar La fecha y nro de la cotización Adjudicada</b>'
+            });
+
             this.addButton('bmodPAC', {
                 text: 'PAC',
                 grupo: [5],
@@ -240,6 +262,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.crearFormCuce();
             this.crearFormPac();
             this.crearFormFecha3008();
+            this.crearFormPO();
+            this.crearFormCot();
 
         },
 
@@ -2979,7 +3003,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         failureAjustes: function (resp) {
             Phx.CP.loadingHide();
-            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+            Phx.vista.Solicitud.superclass.conexionFailure.call(this, resp);
 
         },
         onDeclinarAjustes: function () {
@@ -3002,7 +3026,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         failureAjustesPac: function (resp) {
             Phx.CP.loadingHide();
-            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+            Phx.vista.Solicitud.superclass.conexionFailure.call(this, resp);
 
         },
 
@@ -3149,7 +3173,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         failureform3008: function (resp) {
             Phx.CP.loadingHide();
-            Phx.vista.SolicitudHistorico.superclass.conexionFailure.call(this, resp);
+            Phx.vista.Solicitud.superclass.conexionFailure.call(this, resp);
 
         },
 
@@ -3169,6 +3193,409 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         /****************************************************/
+
+        /*Aqui para crear el formulario de modificacion PO*/
+        crearFormPO: function () {
+            var me = this;
+            me.formPO = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'nro_po',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'Nro PO'
+                    },
+                    new Ext.form.ComboBox({
+                      name: 'id_funcionario',
+                      fieldLabel: 'Solicitante',
+                      allowBlank: false,
+                      emptyText: 'Solicitante...',
+                      store: new Ext.data.JsonStore({
+                          url:    '../../sis_gestion_materiales/control/Solicitud/listarFuncionariosEncargados',
+                          id: 'id_funcionario',
+                          root:'datos',
+                          sortInfo:{
+                              field:'id_funcionario',
+                              direction:'ASC'
+                          },
+                          totalProperty:'total',
+                          fields: ['id_funcionario','desc_funcionario'],
+                          // turn on remote sorting
+                          remoteSort: true,
+                          baseParams:{todos:'no'}
+                      }),
+                      valueField: 'id_funcionario',
+                      displayField: 'desc_funcionario',
+                      gdisplayField: 'desc_funcionario',
+                      hiddenName: 'id_funcionario',
+                      forceSelection: true,
+                      typeAhead: false,
+                      triggerAction: 'all',
+                      lazyRender: true,
+                      mode: 'remote',
+                      resizable:true,
+                      pageSize: 15,
+                      queryDelay: 1000,
+                      //anchor: '100%',
+                      width : 150,
+                      listWidth:'600',
+                      minChars: 2 ,
+                      //disabled:true,
+
+                   }),
+                    {
+                        name: 'motivo_modificacion',
+                        xtype: 'textarea',
+                        width: 150,
+                        fieldLabel: 'Motivo de Modificacion'
+                    },
+                    {
+                        xtype: 'field',
+                        name: 'id_solicitud',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    },
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowAjustesPO = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Modificar PO',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveAjustesPO,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarAjustesPO,
+                        scope: me
+                    }],
+                items: me.formPO,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+
+        successAjustesPO: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowAjustesPO.hide();
+            this.reload();
+
+        },
+
+        failureAjustesPO: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.Solicitud.superclass.conexionFailure.call(this, resp);
+
+        },
+
+        saveAjustesPO: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+            console.log('llega1',d)
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/LogModificaciones/insertarLogModificaciones',
+                success: me.successAjustesPO,
+                failure: me.failureAjustesPO,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'nro_po_nuevo': me.formPO.getForm().findField('nro_po').getValue(),
+                    'id_funcionario_solicitante': me.formPO.getForm().findField('id_funcionario').getValue(),
+                    'motivo_modificacion': me.formPO.getForm().findField('motivo_modificacion').getValue(),
+                    'interfaz_origen': 'modificar_po'
+
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+        onDeclinarAjustesPO: function () {
+            this.windowAjustesPO.hide();
+        },
+
+        modPO: function () {
+          var d = this.sm.getSelected().data;
+          if (d.nro_po == '') {
+            Ext.Msg.show({
+               title:'<center><h1 style="color:red; font-size:18px">SIN NRO. PO</h1></center>',
+               msg: '<span style="font-size:15px">No se encontó un Nro. PO generado para esta solicitud</span>',
+               maxWidth : 500,
+               width: 500,
+               buttons: Ext.Msg.OK,
+               scope:this
+               });
+          } else {
+            this.windowAjustesPO.show();
+            this.formPO.getForm().reset();
+
+
+
+            this.formPO.getForm().findField('nro_po').show();
+            this.formPO.getForm().findField('nro_po').setValue(d.nro_po);
+            this.formPO.getForm().findField('id_funcionario').show();
+            //this.formPO.getForm().findField('id_funcionario').setValue(d.solicitante);
+            this.formPO.getForm().findField('motivo_modificacion').show();
+            this.formPO.getForm().findField('motivo_modificacion').setValue(d.motivo_modificacion);
+          }
+
+
+
+
+
+
+        },
+        /*************************************************/
+
+
+
+        /*Formulario para modificar datos de la cotizacion Adjudicada*/
+        crearFormCot: function () {
+            var me = this;
+            me.formCot = new Ext.form.FormPanel({
+                //id: me.idContenedor + '_AJUSTES',
+                margins: ' 10 10 10 10',
+                items: [
+                    {
+                        name: 'fecha_cotizacion',
+                        xtype: 'datefield',
+                        width: 150,
+                        fieldLabel: 'Fecha Cotizacion'
+                    },
+
+                    {
+                        name: 'nro_cotizacion',
+                        xtype: 'field',
+                        width: 150,
+                        fieldLabel: 'Nro Cotizacion'
+                    },
+
+                    new Ext.form.ComboBox({
+                      name: 'id_funcionario',
+                      fieldLabel: 'Solicitante',
+                      allowBlank: false,
+                      emptyText: 'Solicitante...',
+                      store: new Ext.data.JsonStore({
+                          url:    '../../sis_gestion_materiales/control/Solicitud/listarFuncionariosEncargados',
+                          id: 'id_funcionario',
+                          root:'datos',
+                          sortInfo:{
+                              field:'id_funcionario',
+                              direction:'ASC'
+                          },
+                          totalProperty:'total',
+                          fields: ['id_funcionario','desc_funcionario'],
+                          // turn on remote sorting
+                          remoteSort: true,
+                          baseParams:{todos:'no'}
+                      }),
+                      valueField: 'id_funcionario',
+                      displayField: 'desc_funcionario',
+                      gdisplayField: 'desc_funcionario',
+                      hiddenName: 'id_funcionario',
+                      forceSelection: true,
+                      typeAhead: false,
+                      triggerAction: 'all',
+                      lazyRender: true,
+                      mode: 'remote',
+                      resizable:true,
+                      pageSize: 15,
+                      queryDelay: 1000,
+                      //anchor: '100%',
+                      width : 150,
+                      listWidth:'600',
+                      minChars: 2 ,
+                      //disabled:true,
+
+                   }),
+                    {
+                        name: 'motivo_modificacion',
+                        xtype: 'textarea',
+                        width: 150,
+                        fieldLabel: 'Motivo de Modificacion'
+                    },
+                    {
+                        xtype: 'field',
+                        name: 'id_solicitud',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    },
+
+                    {
+                        xtype: 'field',
+                        name: 'id_cotizacion',
+                        labelSeparator: '',
+                        inputType: 'hidden'
+                    },
+
+                    ],
+                autoScroll: false,
+                autoDestroy: true
+            });
+
+            // Definicion de la ventana que contiene al formulario
+            me.windowAjustesCot = new Ext.Window({
+                // id:this.idContenedor+'_W',
+                title: 'Modificar PO',
+                margins: ' 10 10 10 10',
+                modal: true,
+                width: 400,
+                height: 250,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                layout: 'fit',
+                plain: true,
+                hidden: true,
+                autoScroll: false,
+                maximizable: true,
+                buttons: [{
+                    text: 'Guardar',
+                    arrowAlign: 'bottom',
+                    handler: me.saveAjustesCot,
+                    argument: {
+                        'news': false
+                    },
+                    scope: me
+
+                },
+                    {
+                        text: 'Declinar',
+                        handler: me.onDeclinarAjustesCot,
+                        scope: me
+                    }],
+                items: me.formCot,
+                autoDestroy: true,
+                closeAction: 'hide'
+            });
+
+
+        },
+
+
+        successAjustesCot: function (resp) {
+            Phx.CP.loadingHide();
+            this.windowAjustesCot.hide();
+            this.reload();
+
+        },
+
+        failureAjustesCot: function (resp) {
+            Phx.CP.loadingHide();
+            Phx.vista.Solicitud.superclass.conexionFailure.call(this, resp);
+
+        },
+
+        saveAjustesCot: function () {
+            var me = this,
+                d = me.sm.getSelected().data;
+                console.log('llega1',d)
+            console.log('llega irva',me.formCot.getForm().findField('id_cotizacion').getValue())
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url: '../../sis_gestion_materiales/control/LogModificaciones/insertarLogModificaciones',
+                success: me.successAjustesCot,
+                failure: me.failureAjustesCot,
+                params: {
+                    'id_solicitud': d.id_solicitud,
+                    'fecha_cotizacion_nueva': me.formCot.getForm().findField('fecha_cotizacion').getValue(),
+                    'nro_cotizacion_nueva': me.formCot.getForm().findField('nro_cotizacion').getValue(),
+                    'motivo_modificacion': me.formCot.getForm().findField('motivo_modificacion').getValue(),
+                    'id_funcionario_solicitante': me.formCot.getForm().findField('id_funcionario').getValue(),
+                    'id_cotizacion': me.formCot.getForm().findField('id_cotizacion').getValue(),
+                    'interfaz_origen': 'modificar_cot'
+
+                },
+                timeout: me.timeout,
+                scope: me
+            });
+
+
+        },
+
+        onDeclinarAjustesCot: function () {
+            this.windowAjustesCot.hide();
+        },
+
+        modCot: function () {
+          var d = this.sm.getSelected().data;
+          /*Aqui para verificar el proveedor Adjudicado*/
+          Ext.Ajax.request({
+              url:'../../sis_gestion_materiales/control/LogModificaciones/verificarAdjudicado',
+              params:{
+                      'id_solicitud':d.id_solicitud
+              },
+              success: function(resp){
+                var respuesta = JSON.parse(resp.responseText);
+                //console.log("aqui llega la respuesta",respuesta);
+                if (respuesta.ROOT.datos.existe_cotizacion == 'no') {
+                  Ext.Msg.show({
+                     title:'<center><h1 style="color:red; font-size:18px">SIN PROVEEDOR ADJUDICADO</h1></center>',
+                     msg: '<span style="font-size:15px">No se encontó un proveedor adjudicado para la solicitud</span>',
+                     maxWidth : 500,
+                     width: 500,
+                     buttons: Ext.Msg.OK,
+                     scope:this
+                     });
+                } else {
+                  this.windowAjustesCot.show();
+                  this.formCot.getForm().reset();
+                  this.formCot.getForm().findField('fecha_cotizacion').show();
+                  this.formCot.getForm().findField('fecha_cotizacion').setValue(respuesta.ROOT.datos.fecha_cotizacion);
+                  this.formCot.getForm().findField('nro_cotizacion').show();
+                  this.formCot.getForm().findField('nro_cotizacion').setValue(respuesta.ROOT.datos.nro_cotizacion);
+                  this.formCot.getForm().findField('id_cotizacion').setValue(respuesta.ROOT.datos.id_cotizacion_adjudicada);
+                }
+
+              },
+              failure: this.conexionFailure,
+              timeout:this.timeout,
+              scope:this
+          });
+
+          /*********************************************/
+
+
+
+
+
+            // this.formCot.getForm().findField('motivo_modificacion').show();
+            // this.formCot.getForm().findField('motivo_modificacion').setValue(d.motivo_modificacion);
+
+
+        },
+        /*************************************************************/
+
+
+
+
 
     })
 </script>

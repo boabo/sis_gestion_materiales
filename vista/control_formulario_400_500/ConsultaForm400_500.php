@@ -1212,7 +1212,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fields: ['id_funcionario','desc_funcionario'],
                     // turn on remote sorting
                     remoteSort: true,
-                    //baseParams:{par_filtro:'person.nombre_completo1', id_depto:2}
+                    baseParams:{todos:'si'}
                 }),
             valueField: 'id_funcionario',
             displayField: 'desc_funcionario',

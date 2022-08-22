@@ -2542,9 +2542,12 @@ class ACTSolicitud extends ACTbase{
 
        $respuesta = $this->res->getDatos();
 
-       array_unshift ( $respuesta, array(
- 				'id_funcionario'=>'0',
- 				'desc_funcionario'=>'TODOS') );
+       if ($this->objParam->getParametro('todos') == 'si') {
+         array_unshift ( $respuesta, array(
+           'id_funcionario'=>'0',
+           'desc_funcionario'=>'TODOS') );
+       }
+
 
         $this->res->setDatos($respuesta);
 
