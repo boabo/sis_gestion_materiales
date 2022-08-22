@@ -48,6 +48,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('bmodCuce').setVisible(false);
             this.getBoton('bfecha_impresion_Form3008').setVisible(false);
             this.getBoton('bmodPAC').setVisible(false);
+            this.getBoton('bhistorialModificaciones').setVisible(true);
 
             this.getBoton('bspacio1').setVisible(true);
             /*Aumentando botones del Administrador*/
@@ -63,9 +64,11 @@ header("content-type: text/javascript; charset=UTF-8");
             if (rec) {
               Ext.getCmp('modificar_cotizacion').setDisabled(false);
               Ext.getCmp('modificar_po').setDisabled(false);
+              this.getBoton('bhistorialModificaciones').setDisabled(false);
             } else {
               Ext.getCmp('modificar_cotizacion').setDisabled(true);
               Ext.getCmp('modificar_po').setDisabled(true);
+              this.getBoton('bhistorialModificaciones').setDisabled(true);
             }
 
             return tb;

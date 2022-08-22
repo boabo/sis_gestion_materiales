@@ -17,6 +17,16 @@ Phx.vista.LogModificaciones=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.LogModificaciones.superclass.constructor.call(this,config);
 		this.init();
+
+		if (this.especifico != undefined) {
+			this.store.baseParams.id_solicitud = this.maestro.id_solicitud;
+			console.log("aqui llega data 2",this);
+		}	else {
+			console.log("aqui llega data 22",this);
+			this.store.baseParams.id_solicitud = '';
+		}
+
+
 		this.load({params:{start:0, limit:this.tam_pag}})
 	},
 
@@ -65,7 +75,7 @@ Phx.vista.LogModificaciones=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'desc_funcionario_solicitante',
-				fieldLabel: 'Solicitado Por',
+				fieldLabel: 'Modificacion Solicitada Por',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 250,

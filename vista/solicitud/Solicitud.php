@@ -208,6 +208,17 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Modificar La fecha y nro de la cotización Adjudicada</b>'
             });
 
+
+            this.addButton('bhistorialModificaciones', {
+                text: 'Historial Modificaciones',
+                grupo: [5],
+                iconCls: 'blist',
+                disabled: true,
+                hidden:true,
+                handler: this.historialModifi,
+                tooltip: '<b>Interfaz de historial</b>'
+            });
+
             this.addButton('bmodPAC', {
                 text: 'PAC',
                 grupo: [5],
@@ -3209,7 +3220,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     },
                     new Ext.form.ComboBox({
                       name: 'id_funcionario',
-                      fieldLabel: 'Solicitante',
+                      fieldLabel: 'Solicitante de Modificacion',
                       allowBlank: false,
                       emptyText: 'Solicitante...',
                       store: new Ext.data.JsonStore({
@@ -3400,7 +3411,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                     new Ext.form.ComboBox({
                       name: 'id_funcionario',
-                      fieldLabel: 'Solicitante',
+                      fieldLabel: 'Solicitante de Modificacion',
                       allowBlank: false,
                       emptyText: 'Solicitante...',
                       store: new Ext.data.JsonStore({
@@ -3594,6 +3605,27 @@ header("content-type: text/javascript; charset=UTF-8");
         /*************************************************************/
 
 
+
+
+
+        historialModifi: function(){
+
+            //Phx.vista.ArchivoAcmDet.superclass.onButtonAcm.call(this);
+                    var rec = {maestro: this.sm.getSelected().data}
+                    rec.especifico='especifico';
+
+
+                    Phx.CP.loadWindows('../../../sis_gestion_materiales/vista/log_modificaciones/LogModificaciones.php',
+                        'Historial de Modificacion',
+                        {
+                            width:1200,
+                            height:600
+                        },
+                        rec,
+                        this.idContenedor,
+                        'LogModificaciones');
+
+                },
 
 
 
