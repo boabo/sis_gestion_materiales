@@ -1002,6 +1002,18 @@ class ACTSolicitud extends ACTbase{
           $nroPOAlkym = $respuesta_final->objeto->nroPOAlkym;
 
 
+          $this->objParam->addParametro('id_solicitud',$this->objParam->getParametro('id_solicitud'));
+          $this->objParam->addParametro('json_enviado',$enviarDatos);
+          $this->objParam->addParametro('respuesta_final',$respuesta->InsertarOrdenCompraResult);
+          $this->objFunc=$this->create('MODSolicitud');
+          $this->resLog=$this->objFunc->logOrdenCompraAlkym($this->objParam);
+
+          if ($this->resLog->getTipo() != 'EXITO') {
+             $this->resLog->imprimirRespuesta($this->resLog->generarJson());
+             exit;
+         }
+
+         //var_dump("llega aqui el dato",$respuesta_final);
 
           if (($respuesta_final->codigo != 0) && ($respuesta_final->codigo != 1)) {
             throw new Exception("Ocurrio un problema2 al registrar el PO en el sistema Alkym, favor contactarse con el Area de Sistemas y reportarlo, el mensaje de Respuesta es el siguiente:".$respuesta_final->mensaje."los datos de envio son:".$enviarDatos);

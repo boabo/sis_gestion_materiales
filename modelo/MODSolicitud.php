@@ -2576,6 +2576,24 @@ class MODSolicitud extends MODbase
     }
 
 
+    function logOrdenCompraAlkym()
+    {
+
+        $this->procedimiento = 'mat.ft_solicitud_ime';
+        $this->transaccion = 'MAT_INS_LOG_IME';
+        $this->tipo_procedimiento = 'IME';
+
+        $this->setParametro('id_solicitud', 'id_solicitud', 'int4');
+        $this->setParametro('json_enviado', 'json_enviado', 'text');
+        $this->setParametro('respuesta_final', 'respuesta_final', 'text');        
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
+
+
 }
 
 ?>

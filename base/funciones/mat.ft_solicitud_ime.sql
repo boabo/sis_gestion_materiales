@@ -249,6 +249,7 @@ DECLARE
     v_lista_ids						varchar;
 
     v_consulta						varchar;
+    v_id_log						integer;
 
 BEGIN
 
@@ -378,7 +379,7 @@ END IF;
         ELSIF (substr(v_nro_tramite,1,2)='GR')THEN
           v_nro_cite_dce = 'OB.DAB.DCE.GR.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         /******************************************************/
-        END IF;
+       END IF;
 
             --Sentencia de la insercion
         	insert into mat.tsolicitud(
@@ -4957,6 +4958,51 @@ END IF;
 
                 v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
                 v_resp = pxp.f_agrega_clave(v_resp,'restringir',v_restringir::varchar);
+
+                return v_resp;
+
+            end;
+
+        /*********************************
+        #TRANSACCION:  'MAT_INS_LOG_IME'
+        #DESCRIPCION:	Almacena en la tabla log los datos de respuesta
+        #AUTOR:		Ismael Valdivia
+        #FECHA:		23/08/2022
+        ***********************************/
+
+        elsif(p_transaccion='MAT_INS_LOG_IME')then
+
+            begin
+
+            	--Sentencia de la insercion
+                insert into mat.tlog_push_order_alkym(
+                estado_reg,
+                json_enviado,
+                respuesta_servicio,
+                id_solicitud,
+                id_usuario_reg,
+                fecha_reg,
+                id_usuario_ai,
+                usuario_ai,
+                id_usuario_mod,
+                fecha_mod
+                ) values(
+                'activo',
+                v_parametros.json_enviado,
+                v_parametros.respuesta_final,
+                v_parametros.id_solicitud,
+                p_id_usuario,
+                now(),
+                v_parametros._id_usuario_ai,
+                v_parametros._nombre_usuario_ai,
+                null,
+                null
+                )RETURNING id_log into v_id_log;
+
+
+
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+                v_resp = pxp.f_agrega_clave(v_resp,'id_log',v_id_log::varchar);
 
                 return v_resp;
 

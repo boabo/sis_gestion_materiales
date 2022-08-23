@@ -1163,3 +1163,17 @@ IS 'Id de la solicitud que se hace la modificacion';
 ALTER TABLE mat.tlog_modificaciones
   OWNER TO postgres;
   /***********************************F-SCP-IRVA-MAT-0-22/08/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-23/08/2022****************************************/
+  CREATE TABLE mat.tlog_push_order_alkym (
+  id_log SERIAL,
+  json_enviado TEXT,
+  respuesta_servicio TEXT,
+  id_solicitud INTEGER,
+  CONSTRAINT tlog_push_order_alkym_pkey PRIMARY KEY(id_log)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+ALTER TABLE mat.tlog_push_order_alkym
+  OWNER TO postgres;
+/***********************************F-SCP-IRVA-MAT-0-23/08/2022****************************************/
