@@ -1185,4 +1185,99 @@ ADD COLUMN enviar_correo VARCHAR(5) DEFAULT 'si' NOT NULL;
 COMMENT ON COLUMN mat.tsolicitud.enviar_correo
 IS 'Bandera para la regla del envio de correo del WF';
 
+
+
+CREATE OR REPLACE VIEW mat.vsolicitud(
+    id_solicitud,
+    fecha_solicitud,
+    motivo_orden,
+    matricula,
+    nro_tramite,
+    justificacion,
+    tipo_solicitud,
+    fecha_requerida,
+    motivo_solicitud,
+    observaciones_sol,
+    desc_funcionario1,
+    tipo_falla,
+    tipo_reporte,
+    mel,
+    estado,
+    detalle,
+    origen_pedido,
+    id_estado_wf,
+    id_proceso_wf,
+    nro_cotizacion,
+    f_recuperar_correos,
+    cotizacion_solicitadas,
+    mensaje_correo,
+    mensaje_tiempo_entrega,
+    nombre_proveedores,
+    enviar_correo)
+AS
+  SELECT sol.id_solicitud,
+         to_char(sol.fecha_solicitud::timestamp with time zone, 'DD/MM/YYYY'::
+           text) AS fecha_solicitud,
+         ot.motivo_orden,
+         "left"(ot.desc_orden::text, 20) AS matricula,
+         sol.nro_tramite,
+         sol.justificacion,
+         sol.tipo_solicitud,
+         COALESCE(to_char(sol.fecha_requerida::timestamp with time zone,
+           'DD/MM/YYYY'::text), ''::text) AS fecha_requerida,
+         sol.motivo_solicitud,
+         sol.observaciones_sol,
+         initcap(f.desc_funcionario1) AS desc_funcionario1,
+         sol.tipo_falla,
+         sol.tipo_reporte,
+         sol.mel,
+         ti.codigo AS estado,
+         mat.f_get_detalle_html(sol.id_solicitud)::text AS detalle,
+         sol.origen_pedido,
+         sol.id_estado_wf,
+         sol.id_proceso_wf,
+         CASE
+           WHEN substr(sol.nro_tramite::text, 1, 2) = 'GM'::text THEN 'GM - '::
+             text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+           WHEN substr(sol.nro_tramite::text, 1, 2) = 'GA'::text THEN 'GA - '::
+             text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+           WHEN substr(sol.nro_tramite::text, 1, 2) = 'GO'::text THEN 'GO - '::
+             text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+           WHEN substr(sol.nro_tramite::text, 1, 2) = 'GC'::text THEN 'GC - '::
+             text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+           WHEN substr(sol.nro_tramite::text, 1, 2) = 'GR'::text THEN 'GR - '::
+             text || ltrim(substr(sol.nro_tramite::text, 7, 6), '0'::text)
+           ELSE 'SIN GERENCIA'::text
+         END AS nro_cotizacion,
+         mat.f_recuperar_correos((
+                                   SELECT pxp.aggarray(n.id_proveedor) AS
+                                     aggarray
+                                   FROM mat.tgestion_proveedores_new n
+                                   WHERE n.id_solicitud = sol.id_solicitud
+                                   GROUP BY n.id_solicitud
+         )) AS f_recuperar_correos,
+         tgp.cotizacion_solicitadas,
+         sol.mensaje_correo,
+         CASE
+           WHEN COALESCE(sol.tiempo_entrega::numeric, 0::numeric) > 0::numeric
+             THEN ('"Plazo de entrega de propuesta hasta '::text ||
+             sol.tiempo_entrega) || ' día(s) después de la invitación."'::text
+           ELSE ''::text
+         END AS mensaje_tiempo_entrega,
+         ((
+            SELECT list(pro.rotulo_comercial::text) AS list
+            FROM mat.tgestion_proveedores_new ge
+                 JOIN param.vproveedor pro ON pro.id_proveedor = ge.id_proveedor
+            WHERE ge.id_solicitud = sol.id_solicitud
+         ))::character varying AS nombre_proveedores,
+         sol.enviar_correo
+  FROM mat.tsolicitud sol
+       LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo =
+         sol.id_matricula
+       JOIN orga.vfuncionario f ON f.id_funcionario = sol.id_funcionario_sol
+       JOIN wf.testado_wf wof ON wof.id_estado_wf = sol.id_estado_wf
+       JOIN wf.ttipo_estado ti ON ti.id_tipo_estado = wof.id_tipo_estado
+       LEFT JOIN mat.tgestion_proveedores tgp ON tgp.id_solicitud =
+         sol.id_solicitud;
+
 /***********************************F-SCP-IRVA-MAT-0-24/08/2022****************************************/
