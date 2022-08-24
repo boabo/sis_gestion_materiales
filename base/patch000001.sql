@@ -1177,3 +1177,12 @@ WITH (oids = false);
 ALTER TABLE mat.tlog_push_order_alkym
   OWNER TO postgres;
 /***********************************F-SCP-IRVA-MAT-0-23/08/2022****************************************/
+
+/***********************************I-SCP-IRVA-MAT-0-24/08/2022****************************************/
+ALTER TABLE mat.tsolicitud
+ADD COLUMN enviar_correo VARCHAR(5) DEFAULT 'si' NOT NULL;
+
+COMMENT ON COLUMN mat.tsolicitud.enviar_correo
+IS 'Bandera para la regla del envio de correo del WF';
+
+/***********************************F-SCP-IRVA-MAT-0-24/08/2022****************************************/
