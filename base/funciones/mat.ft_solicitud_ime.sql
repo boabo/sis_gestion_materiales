@@ -379,7 +379,7 @@ END IF;
         ELSIF (substr(v_nro_tramite,1,2)='GR')THEN
           v_nro_cite_dce = 'OB.DAB.DCE.GR.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
         /******************************************************/
-       END IF;
+        END IF;
 
             --Sentencia de la insercion
         	insert into mat.tsolicitud(
@@ -5007,6 +5007,34 @@ END IF;
                 return v_resp;
 
             end;
+
+
+            /*********************************
+            #TRANSACCION:  'MAT_UPD_ESTCORR_IME'
+            #DESCRIPCION:	Actualiza el estado para la regla del WF al momento de enviar correo
+            #AUTOR:		Ismael Valdivia
+            #FECHA:		24/08/2022
+            ***********************************/
+
+            elsif(p_transaccion='MAT_UPD_ESTCORR_IME')then
+
+                begin
+                	/*Actualizamos el estado para la regla del WF*/
+                    update mat.tsolicitud set
+                    	enviar_correo = v_parametros.estado_correo
+                    where id_solicitud = v_parametros.id_solicitud;
+                	/*********************************************/
+
+
+                    v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Modificacion exitosa');
+                    v_resp = pxp.f_agrega_clave(v_resp,'id_solicitud',v_parametros.id_solicitud::varchar);
+                    v_resp = pxp.f_agrega_clave(v_resp,'enviar_correo',v_parametros.estado_correo::varchar);
+
+                    return v_resp;
+
+                end;
+
+
 
 
 

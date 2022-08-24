@@ -178,7 +178,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.addButton('bspacio1', {
                 text : '                        ',
-                grupo: [5],
+                grupo: [5,100],
                 //iconCls: 'bengine',
                 disabled: true,
                 hidden:false,
@@ -188,7 +188,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.addButton('bmodPO', {
                 text: 'Modificar <br>PO',
-                grupo: [5],
+                grupo: [100],
                 iconCls: 'bengine',
                 disabled: true,
                 hidden:true,
@@ -199,7 +199,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.addButton('bmodCotizacion', {
                 text: 'Modificar Datos de <br>Cotización',
-                grupo: [5],
+                grupo: [100],
                 iconCls: 'bengine',
                 disabled: true,
                 hidden:true,
@@ -211,7 +211,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.addButton('bhistorialModificaciones', {
                 text: 'Historial Modificaciones',
-                grupo: [5],
+                grupo: [100],
                 iconCls: 'blist',
                 disabled: true,
                 hidden:true,
@@ -2081,6 +2081,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var rec = this.sm.getSelected();
             var tramite = rec.data['nro_tramite'];
             var tipo_tramite = tramite.substring(0,2);
+
                 if(rec.data.estado == 'cotizacion' || rec.data.estado == 'compra' || rec.data.estado == 'cotizacion_solicitada' /*|| (rec.data.estado == 'revision' && tipo_tramite != 'GR')*/){
                     if(rec.data.lista_correos=='' || rec.data.estado == 'compra' || rec.data.tipo_solicitud == '' || (rec.data.estado == 'cotizacion' && (rec.data.tiempo_entrega == '' || rec.data.tiempo_entrega == null)) || ((rec.data.estado == 'cotizacion_solicitada' && tipo_tramite == 'GR') && (rec.data.tiempo_entrega == '' || rec.data.tiempo_entrega == null) )) {
                         this.onButtonEdit();
@@ -2133,10 +2134,32 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         confirmarEstado:function () {
-          console.log("aqui llega guardar");
             var rec = this.sm.getSelected();
             var tramite = rec.data['nro_tramite'];
             var tipo_tramite = tramite.substring(0,2);
+
+            /*Aqui actualizamos el estado para que se realize el envio de correo*/
+            if (this.store.baseParams.tipo_interfaz != 'AdministrarRequerimientos') {
+              Ext.Ajax.request({
+                  url:'../../sis_gestion_materiales/control/Solicitud/updateEstadoCorreo',
+                  params:{id_solicitud:rec.data.id_solicitud,
+                          estado_correo : 'si'
+                        },
+                  success: function(resp){
+                      var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                      console.log("Se enviara Correo ",reg.ROOT.datos.enviar_correo);
+
+                  },
+                  failure: this.conexionFailure,
+                  timeout:this.timeout,
+                  scope:this
+              });
+            }
+            /********************************************************************/
+
+
+
+
             if (((tipo_tramite != 'GR') && (rec.data.nro_po == '' || rec.data.nro_po == null) /*&& rec.data.origen_solicitud == 'control_mantenimiento'*/) && rec.data.estado == 'compra') {
               this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
                   'Estado de Wf',
@@ -2388,6 +2411,28 @@ header("content-type: text/javascript; charset=UTF-8");
             var rec=this.sm.getSelected();
             var tramite = rec.data['nro_tramite'];
             var tipo_tramite = tramite.substring(0,2);
+            
+            /**Actualizamos el estado para no enviar Correo
+            Ismael Valdivia (24/08/2022)*/
+            if (rec.data.estado == 'cotizacion_solicitada') {
+              if (this.store.baseParams.tipo_interfaz != 'AdministrarRequerimientos') {
+                  Ext.Ajax.request({
+                      url:'../../sis_gestion_materiales/control/Solicitud/updateEstadoCorreo',
+                      params:{id_solicitud:rec.data.id_solicitud,
+                              estado_correo : 'no'
+                            },
+                      success: function(resp){
+                          var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                          console.log("Se enviara Correo ",reg.ROOT.datos.enviar_correo);
+
+                      },
+                      failure: this.conexionFailure,
+                      timeout:this.timeout,
+                      scope:this
+                  });
+             }
+            }
+          /*******************************************************************************************/
 
             /*Aqui ponemos la condicion para que consuma el servicio de erio los tramites diferentes GR*/
             if (rec.data.estado == 'revision' && (tipo_tramite == 'GM' || tipo_tramite == 'GO' || tipo_tramite == 'GA') ) {

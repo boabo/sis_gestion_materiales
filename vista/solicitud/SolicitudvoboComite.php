@@ -323,6 +323,28 @@ header("content-type: text/javascript; charset=UTF-8");
         antEstado:function(res){
 
             var rec=this.sm.getSelected();
+
+            /**Actualizamos el estado para no enviar Correo
+            Ismael Valdivia (24/08/2022)*/
+            if (rec.data.estado == 'comite_unidad_abastecimientos') {
+              if (this.store.baseParams.tipo_interfaz != 'AdministrarRequerimientos') {
+                  Ext.Ajax.request({
+                      url:'../../sis_gestion_materiales/control/Solicitud/updateEstadoCorreo',
+                      params:{id_solicitud:rec.data.id_solicitud,
+                              estado_correo : 'no'
+                            },
+                      success: function(resp){
+                          var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                          console.log("Se enviara Correo ",reg.ROOT.datos.enviar_correo);
+
+                      },
+                      failure: this.conexionFailure,
+                      timeout:this.timeout,
+                      scope:this
+                  });
+             }
+            }
+          /*******************************************************************************************/
             Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
                 'Estado de Wf',
                 {

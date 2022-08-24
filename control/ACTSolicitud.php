@@ -105,6 +105,27 @@ class ACTSolicitud extends ACTbase{
             /********************************************************/
         }
 
+        if ($this->objParam->getParametro('tipo_interfaz') == 'AdministrarRequerimientos' ) {
+
+            if ($this->objParam->getParametro('pes_estado') == 'consulta_op') {
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Operaciones'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+            }
+            if ($this->objParam->getParametro('pes_estado') == 'consulta_mal') {
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Gerencia de Mantenimiento'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+            }
+            if ($this->objParam->getParametro('pes_estado') == 'consulta_ab') {
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Almacenes Consumibles o Rotables'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''comite_aeronavegabilidad'',''comite_dpto_abastecimientos'')");
+            }
+            if ($this->objParam->getParametro('pes_estado') == 'consulta_ceac') {
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Centro de Entrenamiento Aeronautico Civil'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''departamento_ceac'',''comite_dpto_abastecimientos'')");
+            }
+            /*Aumentando para listar las solicitudes de reparaciones*/
+            if ($this->objParam->getParametro('pes_estado') == 'consulta_repu') {
+                $this->objParam->addFiltro("sol.origen_pedido  in (''Reparación de Repuestos'') and sol.estado  in (''borrador'',''revision_tecnico_abastecimientos'',''revision'',''cotizacion'',''compra'',''despachado'',''arribo'',''desaduanizado'',''almacen'',''finalizado'',''anulado'',''cotizacion_sin_respuesta'',''cotizacion_solicitada'',''comite_unidad_abastecimientos'',''departamento_ceac'',''comite_dpto_abastecimientos'')");
+            }
+            /********************************************************/
+        }
+
         if ($this->objParam->getParametro('tipo_interfaz') == 'VistoBueno' ) {
               /*Aumentando esta parte del codigo para filtrar en la interfaz los vb_dpto_abastecimientos y vb_rpcd Ismael Valdivia (03/02/2020)*/
            if($this->objParam->getParametro('pes_estado') == 'pedido_revision'){
@@ -2586,6 +2607,15 @@ class ACTSolicitud extends ACTbase{
        $this->res=$this->objFunc->listarTotalTramites($this->objParam);
        $this->res->imprimirRespuesta($this->res->generarJson());
    }
+
+   /*Aumentando para actualizar el estado de enviar correo a los proveedores
+   Ismael Valdivia (24/08/2022)*/
+   function updateEstadoCorreo(){
+       $this->objFunc=$this->create('MODSolicitud');
+       $this->res=$this->objFunc->updateEstadoCorreo($this->objParam);
+       $this->res->imprimirRespuesta($this->res->generarJson());
+   }
+   /********************************************************************/
 
 }
 
