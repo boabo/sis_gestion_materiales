@@ -1022,10 +1022,10 @@ class ACTSolicitud extends ACTbase{
           $idPoAlkym = $respuesta_final->objeto->IdPO_alkym;
           $nroPOAlkym = $respuesta_final->objeto->nroPOAlkym;
 
-
+          //var_dump("aqui llega data",str_replace("'","",$respuesta->InsertarOrdenCompraResult));exit;
           $this->objParam->addParametro('id_solicitud',$this->objParam->getParametro('id_solicitud'));
           $this->objParam->addParametro('json_enviado',$enviarDatos);
-          $this->objParam->addParametro('respuesta_final',$respuesta->InsertarOrdenCompraResult);
+          $this->objParam->addParametro('respuesta_final',str_replace("'","",$respuesta->InsertarOrdenCompraResult));
           $this->objFunc=$this->create('MODSolicitud');
           $this->resLog=$this->objFunc->logOrdenCompraAlkym($this->objParam);
 
