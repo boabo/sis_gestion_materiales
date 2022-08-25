@@ -944,18 +944,18 @@ v_consulta:='select		sol.id_solicitud,
                                         THEN
                                           ''''
                                         ELSE
-                                          trim(COALESCE(de.nro_parte_alterno,''''))||COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                          trim(COALESCE(de.nro_parte_alterno,''''))||COALESCE((select list(distinct(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                           THEN
-                                                                                              '',''||detcot.explicacion_detallada_part_cot
+                                                                                              detcot.explicacion_detallada_part_cot
                                                                                           ELSE
                                                                                               ''''
-                                                                                          END)
+                                                                                          END))
                                                                                       from mat.tcotizacion_detalle detcot
                                                                                       inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                       where detcot.id_detalle = de.id_detalle
                                                                                       AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)
                                                                                       AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)
-                                                                                      group by detcot.explicacion_detallada_part_cot
+                                                                                     -- group by detcot.explicacion_detallada_part_cot
                                                                                       ),'''')
                                         END
 
@@ -964,18 +964,18 @@ v_consulta:='select		sol.id_solicitud,
 
                                   WHEN ((trim(coalesce(de.nro_parte_alterno),'''') = '''' or trim(coalesce(de.nro_parte_alterno),'''') = ''-'' or trim(coalesce(de.nro_parte_alterno),'''') = ''N/A''))
 
-                                  THEN COALESCE((select (CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                  THEN COALESCE((select list(distinct(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                           THEN
                                                                                              detcot.explicacion_detallada_part_cot
                                                                                           ELSE
                                                                                               ''''
-                                                                                          END)
+                                                                                          END))
                                                                                       from mat.tcotizacion_detalle detcot
                                                                                       inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                       where detcot.id_detalle = de.id_detalle
                                                                                       AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte_alterno)
                                                                                       AND trim(detcot.explicacion_detallada_part_cot) != trim(de.nro_parte)
-                                                                                      group by detcot.explicacion_detallada_part_cot
+                                                                                      --group by detcot.explicacion_detallada_part_cot
                                                                                       ),'''')
 
 
@@ -2553,12 +2553,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                   THEN
                                     ''''
                                   ELSE
-                                    trim(COALESCE(det.nro_parte_alterno,''''))||COALESCE((select list(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                    trim(COALESCE(det.nro_parte_alterno,''''))||COALESCE((select list(distinct(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                     THEN
                                                                                         detcot.explicacion_detallada_part_cot
                                                                                     ELSE
                                                                                         ''''
-                                                                                    END)
+                                                                                    END))
                                                                                 from mat.tcotizacion_detalle detcot
                                                                                 inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                 where detcot.id_detalle = det.id_detalle
@@ -2573,12 +2573,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                             WHEN ((trim(coalesce(det.nro_parte_alterno),'''') = '''' or trim(coalesce(det.nro_parte_alterno),'''') = ''-'' or trim(coalesce(det.nro_parte_alterno),'''') = ''N/A''))
 
-                            THEN COALESCE((select list(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                            THEN COALESCE((select list(distinct(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                     THEN
                                                                                        detcot.explicacion_detallada_part_cot
                                                                                     ELSE
                                                                                         ''''
-                                                                                    END)
+                                                                                    END))
                                                                                 from mat.tcotizacion_detalle detcot
                                                                                 inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                 where detcot.id_detalle = det.id_detalle
@@ -4027,12 +4027,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
                                   THEN
                                     ''''
                                   ELSE
-                                    trim(COALESCE(det.nro_parte_alterno,''''))||COALESCE((select list(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                                    trim(COALESCE(det.nro_parte_alterno,''''))||COALESCE((select list(distinct(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                     THEN
                                                                                         '',''||detcot.explicacion_detallada_part_cot
                                                                                     ELSE
                                                                                         ''''
-                                                                                    END)
+                                                                                    END))
                                                                                 from mat.tcotizacion_detalle detcot
                                                                                 inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                 where detcot.id_detalle = det.id_detalle
@@ -4047,12 +4047,12 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 
                             WHEN ((trim(coalesce(det.nro_parte_alterno),'''') = '''' or trim(coalesce(det.nro_parte_alterno),'''') = ''-'' or trim(coalesce(det.nro_parte_alterno),'''') = ''N/A''))
 
-                            THEN COALESCE((select list(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
+                            THEN COALESCE((select list(distinct(CASE WHEN  COALESCE(detcot.explicacion_detallada_part_cot,'''') != ''''
                                                                                     THEN
                                                                                        detcot.explicacion_detallada_part_cot
                                                                                     ELSE
                                                                                         ''''
-                                                                                    END)
+                                                                                    END))
                                                                                 from mat.tcotizacion_detalle detcot
                                                                                 inner join mat.tcotizacion cot on cot.id_cotizacion = detcot.id_cotizacion --and cot.adjudicado = ''si''
                                                                                 where detcot.id_detalle = det.id_detalle
