@@ -4122,7 +4122,7 @@ initcap(pxp.f_convertir_num_a_letra( mat.f_id_detalle_cotizacion(c.id_cotizacion
 	end if;
 
 
-          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite,det.nro_parte_alterno';
+          v_consulta=v_consulta||' GROUP BY tgp.adjudicado,s.motivo_solicitud,s.fecha_solicitud, monto_ref,sp.observaciones,s.nro_tramite/*,det.nro_parte_alterno*/';
 
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
