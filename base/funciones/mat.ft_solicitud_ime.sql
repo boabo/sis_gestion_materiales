@@ -3487,7 +3487,10 @@ END IF;
 
         END LOOP;
 
-        if v_registros.origen_pedido = 'Gerencia de Operaciones'
+
+        --Comentando ya que aqui se origina el error
+        --Consultar Con Grover como se procedera
+       /* if v_registros.origen_pedido = 'Gerencia de Operaciones'
         or v_registros.origen_pedido = 'Gerencia de Mantenimiento'then
 
         if v_registros.origen_pedido ='Gerencia de Operaciones' THEN
@@ -3528,7 +3531,6 @@ END IF;
        v_id
        from wf.testado_wf e
        where e.id_proceso_wf = v_id_proceso_wf and e.id_tipo_estado = v_id_estado_tipo;
-
 
 
        SELECT	 			 ps_id_proceso_wf,
@@ -3585,7 +3587,7 @@ END IF;
 
         END LOOP;
 
-    end if;
+    end if;*/
 
           IF (substr(v_nro_tramite,1,2)='GM')THEN
           	v_nro_cite_dce = 'OB.DAB.DCE.GM.'||ltrim(substr(v_nro_tramite,7,6),'0')||'.'||substr(v_nro_tramite,14,17);
