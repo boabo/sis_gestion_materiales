@@ -3380,10 +3380,9 @@ END IF;
         from mat.tsolicitud
         where id_proceso_wf = v_parametros.id_proceso_wf;
 
-     /*   if v_registros.estado != 'cotizacion_solicitada'then
-        raise exception 'Solo puede ejecutar la clonacion de solicitud en estado Cotizacion Solicitada';
+        if v_registros.estado != 'cotizacion_solicitada'then
+        	raise exception 'Solo puede ejecutar la clonacion de solicitud en estado Cotizacion Solicitada';
         end if;
-*/
 
 
          IF v_registros.origen_pedido ='Gerencia de Operaciones' THEN
@@ -3656,7 +3655,16 @@ END IF;
                                 nro_cite_cobs,
                                 mensaje_correo,
                                 tipo,
-                                id_solicitud_padre)
+                                id_solicitud_padre,
+
+                                --Aumentando los nuevos campos
+                                id_funcionario_solicitante,
+                                id_depto,
+                                codigo_poa,
+                                tipo_cambio,
+                                id_moneda
+
+                                )
 								VALUES (
                                 v_record_clon.id_usuario_reg,
                                 v_record_clon.id_usuario_mod,
@@ -3709,7 +3717,15 @@ END IF;
                                 v_nro_cite_dce,
                                 v_record_clon.mensaje_correo,
                                 'clon',
-                                v_record_clon.id_solicitud
+                                v_record_clon.id_solicitud,
+
+                                --Aumentando los nuevos campos
+                                v_record_clon.id_funcionario_solicitante,
+                                v_record_clon.id_depto,
+                                v_record_clon.codigo_poa,
+                                v_record_clon.tipo_cambio,
+                                v_record_clon.id_moneda
+
 								)RETURNING id_solicitud into v_id_solicitud ;
                                   select g.id_gestion
            	 		into v_id_gestion
