@@ -292,11 +292,166 @@ class RInformJustificacionRep extends  ReportePDF
                        </tr>
                     </table>';
 
+                    $funcionario_sol = $this->datos[0]["firma_unidad"];
+                    $jefeDepartamento = $this->datos[0]["firma_jefe_departamento"];
+                    $nro_lote = $this->datos[0]["nro_lote"];
+
+                    $nro_partes = explode(',',$this->datos[0]["num_part"]);
+                    $cd = explode(',',$this->datos[0]["cd"]);
+
+                    if ($this->datos[0]['evaluacion'] == NULL) {
+                      $texto = 'COMPLETAR INFORMACION ADJUDICADA';
+                    } elseif ($this->datos[0]['evaluacion'] == 'Exchange' || $this->datos[0]['evaluacion'] == 'Flat Exchange') {
+
+                      if ($this->datos[0]['aplica_mayo'] == 'si') {
+                          $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTOS POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+                      }else{
+                          $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO POR INTERCAMBIO (FLAT EXCHANGE) LOTE '.$nro_lote.'';
+                      }
+
+                    } elseif ($this->datos[0]['evaluacion'] == 'Reparacion') {
+                      $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE REPARACIÓN DE REPUESTOS LOTE '.$nro_lote.'';
+                    } elseif ($this->datos[0]['evaluacion'] == 'Calibracion') {
+                      $texto = '(REP '.$this->datos[0]['nro_rep'].') CONTRATACIÓN DE SERVICIO DE CALIBRACION DE EQUIPOS LOTE '.$nro_lote.'';
+                    }
+
+
+
+                    $incluyeBerTexto = 'NO';
+                    foreach ($nro_partes as $indice=>$partes){
+                      if($cd[$indice] == 'B.E.R.'){
+                        $incluyeBerTexto = 'SI';
+                      }
+                     }
+
+                     if ($incluyeBerTexto == 'SI' && $this->datos[0]['evaluacion'] != 'Reparacion') {
+                       $texto = '(REP '.$this->datos[0]['nro_rep'].') COMPRA DE REPUESTO EN REEMPLAZO DE UNIDAD DECLARADA B.E.R REQUERIDO PARA FLOTA BOA LOTE '.$nro_lote.'';
+                     }
+
+
+                    $fun_sol = explode('|', $funcionario_sol);
+
+                    /*Aqui ponemos las condiciones para que no genere el error por las firmas*/
+                    if ($funcionario_sol == NULL) {
+                      $fun_sol_0 = ' ';
+                      $fun_sol_1 = '';
+                      $fun_sol_3 = '';
+                      $fun_sol_4 = '';
+                    } else {
+                      $fun_sol_0 = $fun_sol[0];
+                      $fun_sol_1 = $fun_sol[1];
+                      $fun_sol_3 = $fun_sol[3];
+                      $fun_sol_4 = $fun_sol[4];
+                    }
+                    /****************************************************************************/
+
+                    $jefeDepto = explode('|', $jefeDepartamento);
+
+                    /*Aqui ponemos las condiciones para que no genere el error por las firmas*/
+                    if ($jefeDepartamento == NULL) {
+                      $jefeDepto_0 = ' ';
+                      $jefeDepto_1 = '';
+                      $jefeDepto_3 = '';
+                      $jefeDepto_4 = '';
+                    } else {
+                      $jefeDepto_0 = $jefeDepto[0];
+                      $jefeDepto_1 = $jefeDepto[1];
+                      $jefeDepto_3 = $jefeDepto[3];
+                      $jefeDepto_4 = $jefeDepto[4];
+                    }
+                    /*************************************************************************/
+
+
+                          $tb2='
+                          <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                             <tr>
+                               <th align="center"><b>SOLICITUD DE AUTORIZACIÓN Y RECOMENDACIÓN</b></th>
+                             </tr>
+                          </table>
+                          <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                             <tr>
+                               <th align="left">Por lo expuesto en el presente informe, sustentados en el análisis y la evaluación realizada por el <b>Comité de Evaluación de Compra y Selección de Proveedores,</b> se solicita al Responsable de Proceso de Contratación  en el Exterior
+                               (RPCE), que en cumplimineto a los procedimientos administrativos internos autorice el proceso de contratación directa en el exterior denominado:
+                               <b>'.$texto.'</b> y se recomienda la adjudicación a la empresa: <b>'.$this->datos[0]['nom_provee'].'.</b>
+                               por un importe total de $us: <b>'.number_format($this->datos[0]['suma_total'], 2, ',', '.').' ('.$this->datos[0]['suma_literal'].' Dólares Americanos)</b> en razón
+                               de que su propuesta CUMPLE CON TODOS los requerimientos establecidos en las Especificaciones Técnicas.
+                               </th>
+                            </tr>
+                          </table>';
+
+                          if ($this->datos[0]["mayor"] == 'menor') {
+                          $tb2 .=   '
+                          <table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                              <tr>
+                                  <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe de Unidad de Abastecimientos:</b> </td>
+                                  <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe Departamento Abastecimiento y Logistica:</b><br></td>
+                              </tr>
+                              <tr>
+                                  <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                      <br><br>
+                                      <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_sol_0, $fun_sol_1,$fun_sol_4,$fun_sol_3).'" alt="Logo">
+                                      <br>'.$fun_sol_0.'
+                                  </td>
+                                  <td align="center" style="font-family: Calibri; font-size: 9px;" colspan="2">
+                                  <br><br>
+                                  <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($jefeDepto_0, $jefeDepto_1,$jefeDepto_4,$jefeDepto_3) . '" alt="Logo">
+                                   <br>'.$jefeDepto_0.'
+                                  </td>
+                               </tr>
+                          </table>
+                          ';
+                          } else {
+
+                            if ($this->datos[0]['editar_etiqueta'] == 'si') {
+                              $tb2 .= '<table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                                  <tr>
+                                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Elaborado Por:</b> </td>
+                                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> '.$fun_sol_1.':</b><br></td>
+                                  </tr>';
+                            } else {
+                              $tb2 .= '<table table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
+                                  <tr>
+                                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Elaborado Por:</b> </td>
+                                    <td style="font-family: Calibri; font-size: 9px; text-align: center;"><b> Jefe Departamento Abastecimiento y Logistica:</b><br></td>
+                                  </tr>';
+                            }
+
+
+                            $tb2 .=   '
+
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                        <br><br>
+                                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($jefeDepto_0, $jefeDepto_1,$jefeDepto_4,$jefeDepto_3) . '" alt="Logo">
+                                         <br>'.$jefeDepto_0.'
+                                    </td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">
+                                        <br><br>
+                                        <img  style="width: 95px; height: 95px;" src="' . $this->generarImagen($fun_sol_0, $fun_sol_1,$fun_sol_4,$fun_sol_3).'" alt="Logo">
+                                        <br>'.$fun_sol_0.'
+                                    </td>
+                                 </tr>
+                            </table>
+                            ';
+                          }
+
+
 
         $this->writeHTML($tb);
+
+        if ($this->getNumPages() == 1) {
+          
+          $this->AddPage();
+          $this->writeHTML($tb2);
+        }else{
+          $this->writeHTML($tb2);
+        }
+
         $this->writeHTML($firmas);
         $this->writeHTML($firmas2);
         $this->writeHTML($pie);
+
+
 
     }
     function ReporteComiteEvaluacion2(){
@@ -378,8 +533,8 @@ class RInformJustificacionRep extends  ReportePDF
         }
         /*************************************************************************/
 
-
-              $tb='
+        var_dump("aqui llega data",$this->getNumPages());exit;
+              $tb.='
               <table cellspacing="0" cellpadding="1" border="1" style="font-size:14px;">
                  <tr>
                    <th align="center"><b>SOLICITUD DE AUTORIZACIÓN Y RECOMENDACIÓN</b></th>
@@ -491,7 +646,7 @@ class RInformJustificacionRep extends  ReportePDF
         //$this->AddPage();
         $this->SetMargins(10,40,10);
         $this->ReporteComiteEvaluacion();
-        $this->ReporteComiteEvaluacion2();
+        //$this->ReporteComiteEvaluacion2();
         //$this->revisarfinPagina();
     }
 }
