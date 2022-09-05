@@ -1122,7 +1122,7 @@ BEGIN
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and c.adjudicado = ''si''';
 
                elsif(v_parametros.proceso in ('resumido')) then
-               	v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.codigo = ''comite_unidad_abastecimientos''';
+               	v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.codigo = ''comite_unidad_abastecimientos'' and c.adjudicado = ''si''';
                else
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||'''and s.origen_pedido='''||v_parametros.origen_pedido||''' and t.codigo = '''||v_parametros.proceso||'''';
                end if;
@@ -1130,7 +1130,7 @@ BEGIN
         	if v_parametros.proceso in ('adjudicado') then
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and c.adjudicado = ''si''';
             elsif(v_parametros.proceso in ('resumido')) then
-            	v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and t.codigo = ''comite_unidad_abastecimientos''';
+            	v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and t.codigo = ''comite_unidad_abastecimientos'' and c.adjudicado = ''si''';
             else
                 v_fill = ' s.fecha_solicitud >='''||v_parametros.fecha_ini||''' and s.fecha_solicitud <= '''||v_parametros.fecha_fin||''' and t.codigo = '''||v_parametros.proceso||'''';
             end if;
